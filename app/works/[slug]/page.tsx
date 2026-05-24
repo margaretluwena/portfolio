@@ -140,6 +140,20 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                 </div>
               )
             }
+            if (block.type === 'video') {
+              return (
+                <div key={i}>
+                  <video
+                    src={block.src}
+                    poster={block.poster}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="w-full h-auto block bg-black"
+                  />
+                </div>
+              )
+            }
             if (block.type === 'placeholder') {
               return (
                 <div

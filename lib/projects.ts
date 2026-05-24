@@ -1,6 +1,7 @@
 export type ContentBlock =
   | { type: 'two-column'; left: string; right: string }
   | { type: 'full-width'; image: string }
+  | { type: 'video'; src: string; poster?: string }
   | { type: 'placeholder'; message: string }
 
 export interface Project {
@@ -87,9 +88,9 @@ export const projects: Project[] = [
     intro:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for the Atlix case study — replace with the real story when ready. Cover the brief, the constraints, and what shipped.',
     deliverables: ['Product Design', 'UX Research', 'Prototyping'],
-    heroImage: '',
+    heroImage: '/images/atlix/hero.png',
     content: [
-      { type: 'placeholder', message: 'Case study in progress — content coming soon.' },
+      { type: 'video', src: '/videos/atlix-pitch.mp4', poster: '/images/atlix/hero.png' },
     ],
     isProtected: false,
     nextSlug: 'mountaindew',
