@@ -24,7 +24,7 @@ export default function Home() {
       <section className="relative flex items-end justify-center h-screen overflow-hidden">
         <h1
           className="font-unbounded font-black text-white uppercase leading-none select-none w-full text-center pb-8"
-          style={{ fontSize: 'clamp(3rem, 14vw, 18rem)' }}
+          style={{ fontSize: 'clamp(3rem, 14vw, 18rem)', letterSpacing: 'var(--tracking-display)' }}
         >
           MARGARET LUWENA
         </h1>
@@ -57,7 +57,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
           {/* Text */}
           <div>
-            <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-6">
+            <p className="eyebrow mb-6">
               More about me!
             </p>
             <p className="text-white/80 font-inter text-sm leading-relaxed mb-4">
@@ -101,7 +101,7 @@ export default function Home() {
       {/* What I do */}
       <FadeInOnScroll>
       <section className="px-6 md:px-12 py-16 border-t border-white/10">
-        <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-8">
+        <p className="eyebrow mb-8">
           What I do
         </p>
         <div className="flex flex-col gap-2">

@@ -48,7 +48,7 @@ export default function Footer() {
       {/* Wordmark — tight tracking so letters touch */}
       <p
         className="font-unbounded font-black text-white uppercase leading-[0.85] text-center w-full select-none"
-        style={{ fontSize: 'clamp(3.5rem, 18vw, 22rem)', letterSpacing: '-0.05em' }}
+        style={{ fontSize: 'clamp(3.5rem, 18vw, 22rem)', letterSpacing: 'var(--tracking-display)' }}
       >
         MARGARET LUWENA
       </p>

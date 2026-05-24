@@ -49,7 +49,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           <div className="absolute inset-0 flex items-center justify-center px-6">
             <span
               className="font-unbounded font-black text-white/90 uppercase leading-none text-center"
-              style={{ fontSize: 'clamp(3rem, 12vw, 12rem)', letterSpacing: '-0.05em' }}
+              style={{ fontSize: 'clamp(3rem, 12vw, 12rem)', letterSpacing: 'var(--tracking-display)' }}
             >
               {project.title}
             </span>
@@ -61,16 +61,15 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <FadeInOnScroll>
       <section className="px-6 md:px-12 py-12 border-b border-white/10">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
-          <h1 className="font-unbounded font-black text-white text-3xl md:text-5xl">
+          <h1
+            className="font-unbounded font-black text-white text-3xl md:text-5xl"
+            style={{ letterSpacing: 'var(--tracking-tight)' }}
+          >
             {project.title}
           </h1>
-          <div className="flex gap-2 flex-shrink-0">
-            <span className="text-[10px] font-roboto-condensed tracking-widest text-white border border-white px-2 py-0.5">
-              {project.category}
-            </span>
-            <span className="text-[10px] font-roboto-condensed tracking-widest text-white border border-white px-2 py-0.5">
-              {project.year}
-            </span>
+          <div className="flex gap-2 flex-shrink-0 text-white">
+            <span className="tag-pill">{project.category}</span>
+            <span className="tag-pill">{project.year}</span>
           </div>
         </div>
       </section>
@@ -80,13 +79,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <FadeInOnScroll>
       <section className="px-6 md:px-12 py-12 grid grid-cols-1 md:grid-cols-3 gap-12 border-b border-white/10">
         <div className="md:col-span-2">
-          <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-4">
+          <p className="eyebrow mb-4">
             Intro
           </p>
           <p className="text-white/80 font-inter text-sm leading-relaxed">{project.intro}</p>
         </div>
         <div>
-          <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-4">
+          <p className="eyebrow mb-4">
             Deliverables
           </p>
           <ul className="space-y-1">
@@ -98,20 +97,20 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           </ul>
           {project.role && (
             <div className="mt-8">
-              <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-1">
+              <p className="eyebrow mb-1">
                 Role
               </p>
               <p className="text-white/80 font-roboto-condensed text-sm">{project.role}</p>
             </div>
           )}
           <div className="mt-4">
-            <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-1">
+            <p className="eyebrow mb-1">
               Year
             </p>
             <p className="text-white/80 font-roboto-condensed text-sm">{project.year}</p>
           </div>
           <div className="mt-4">
-            <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-1">
+            <p className="eyebrow mb-1">
               Client
             </p>
             <p className="text-white/80 font-roboto-condensed text-sm">{project.client}</p>
@@ -162,7 +161,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       {nextProject && (
         <FadeInOnScroll>
         <section className="px-6 md:px-12 py-16 border-t border-white/10">
-          <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-4">
+          <p className="eyebrow mb-4">
             Next work
           </p>
           <Link

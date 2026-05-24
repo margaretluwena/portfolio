@@ -10,16 +10,12 @@ export default function ProjectCard({ project }: { project: Project }) {
     >
       {/* Header row */}
       <div className="flex items-start justify-between px-3 py-2">
-        <span className="text-xs font-roboto-condensed tracking-wide text-white">
+        <span className="text-xs font-roboto-condensed text-white font-medium">
           {project.title}
         </span>
-        <div className="flex items-center gap-1.5">
-          <span className="text-[10px] font-roboto-condensed tracking-widest text-white border border-white px-2 py-0.5">
-            {project.category}
-          </span>
-          <span className="text-[10px] font-roboto-condensed tracking-widest text-white border border-white px-2 py-0.5">
-            {project.year}
-          </span>
+        <div className="flex items-center gap-1.5 text-white">
+          <span className="tag-pill">{project.category}</span>
+          <span className="tag-pill">{project.year}</span>
         </div>
       </div>
 
@@ -38,7 +34,7 @@ export default function ProjectCard({ project }: { project: Project }) {
           <div className="w-full aspect-[8/5] bg-zinc-900 border-t border-white/10 flex items-center justify-center px-6">
             <span
               className="font-unbounded font-black text-white/90 uppercase leading-none text-center"
-              style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', letterSpacing: '-0.04em' }}
+              style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', letterSpacing: 'var(--tracking-display)' }}
             >
               {project.title}
             </span>

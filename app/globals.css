@@ -13,6 +13,22 @@
   --duration-fast: 300ms;
   --duration-base: 500ms;
   --duration-slow: 700ms;
+
+  /* Type scale tokens — keep weights in clean steps: 400 body / 500 emphasis / 700 display / 900 wordmark */
+  --text-eyebrow: 0.625rem; /* 10px — eyebrows, tag pills */
+  --text-label: 0.75rem;    /* 12px — small nav/labels */
+  --text-body: 0.875rem;    /* 14px — body */
+  --text-body-lg: 1rem;     /* 16px — emphasized body */
+  --text-h3: 1.5rem;        /* 24px — small headings */
+  --text-h2: 2.25rem;       /* 36px — page section headings */
+  --text-h1: 3rem;          /* 48px — page titles */
+
+  /* Letter-spacing tokens */
+  --tracking-display: -0.05em; /* giant wordmark + hero */
+  --tracking-tight: -0.03em;   /* page titles (h1) */
+  --tracking-body: 0.005em;    /* body copy — gentle openness for readability */
+  --tracking-wide: 0.1em;      /* small labels */
+  --tracking-eyebrow: 0.3em;   /* uppercase eyebrows */
 }
 
 :root {
@@ -40,6 +56,35 @@ body {
 .t-fast {
   transition-duration: var(--duration-fast);
   transition-timing-function: var(--ease-out-expo);
+}
+
+/* Eyebrow label — the small uppercase "INTRO", "DELIVERABLES" etc. that
+   appears in 9 places across the site. Single source of truth. */
+.eyebrow {
+  font-family: var(--nf-roboto-condensed), system-ui, sans-serif;
+  font-size: var(--text-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.4);
+  font-weight: 400;
+}
+
+/* Small tag pill — used for category/year badges next to titles */
+.tag-pill {
+  display: inline-block;
+  font-family: var(--nf-roboto-condensed), system-ui, sans-serif;
+  font-size: var(--text-eyebrow);
+  letter-spacing: var(--tracking-wide);
+  border: 1px solid currentColor;
+  padding: 0.125rem 0.5rem;
+  font-weight: 400;
+}
+
+/* Body copy default tracking — slightly opens Inter for readability */
+.body-copy {
+  font-family: var(--nf-inter), system-ui, sans-serif;
+  letter-spacing: var(--tracking-body);
+  line-height: 1.6;
 }
 
 /* Scroll reveal — initial state for FadeInOnScroll wrapper */
