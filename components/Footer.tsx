@@ -50,7 +50,7 @@ export default function Footer() {
       <div className="overflow-hidden">
         <p
           className="font-unbounded font-normal text-white uppercase leading-[0.9] text-center w-full select-none whitespace-nowrap"
-          style={{ fontSize: '7.65vw', letterSpacing: 'var(--tracking-display)' }}
+          style={{ fontSize: '8vw', letterSpacing: 'var(--tracking-display)' }}
         >
           MARGARET LUWENA
         </p>

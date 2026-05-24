@@ -31,7 +31,7 @@ export const projects: Project[] = [
     year: '2025',
     client: 'Mark',
     intro:
-      "I had the opportunity to work with Mark's founder, Eason Tang, as a designer on his team when Mark was part of TroyLab's build program. The majority of my time was spent on UI/UX of the app, packaging designs, merchandise designs, and the final pitch deck that was to be presented at LAUNCH. Unfortunately, I did sign an NDA regarding these designs, but I'd be happy to discuss more about it in real life :)",
+      "Mark is a reading companion that brings the analog moment of underlining a sentence in a physical book into the digital life you already have. A small hardware device captures highlights and handwritten notes from whatever you're reading, and the companion app organizes them by book, by category, and by your own reading habits. I had the opportunity to work with Mark's founder, Eason Tang, as a designer on his team when Mark was part of TroyLab's build program. I led design across the app's UI/UX, the brand identity, the packaging and merchandise, and the final pitch deck presented at LAUNCH. This case study walks through the process, the iterations, and what I took away.",
     deliverables: ['UI/UX Design', 'Merchandise', 'Pitch/Slide Deck', 'Brand System'],
     heroImage: '/images/mark-hero.png',
     content: [
@@ -42,8 +42,8 @@ export const projects: Project[] = [
       },
       {
         type: 'text',
-        heading: 'Learning the product before designing for it',
-        body: "Mark is under NDA so I won't go into what it actually does, but I can talk about the process. The product had a specific user mental model that I didn't share at first. To get to a place where I could design for those users, I spent a couple of weeks doing my own version of user research: shadowing Eason's conversations with people in the target audience, reading the kinds of writing those people did, and trying out adjacent products to see what they expected an interface to feel like. By the time I started sketching, I had a sense of what to leave out.",
+        heading: 'Listening before designing',
+        body: "To get to a place where I could design for the people Mark was built for, I spent a couple of weeks listening before producing. I sat in on Eason's calls with potential users, watched how people actually mark up the books they're reading, and tried out adjacent products (Readwise, Notion, Apple Notes) to see what those readers already expected from a digital surface. The biggest thing that surfaced was that nobody wanted another inbox. They wanted their highlights to come back to them in moments that felt useful: a flashcard review on a commute, a search across every book when writing, a category they could trust without having to retag by hand. That insight shaped almost every screen.",
       },
       {
         type: 'text',
@@ -54,7 +54,7 @@ export const projects: Project[] = [
       {
         type: 'text',
         heading: 'The app',
-        body: "The app screens went through many rounds. Early versions tried to surface too much state at once. I learned to trust empty space and let the user's content be the foreground. The home and notes flows ended up using a system of paired panels where the wordmark sits as an anchor in the corner, so the product always feels like a continuation of the same object.",
+        body: "The app organizes everything the hardware captures: a Home that surfaces what's most recent and a daily reading session card, a Notes view that lets you flip through highlights like flashcards, and a Scans view that groups notes by book and category. Early versions tried to surface too much state at once. I learned to trust empty space and let the user's content (the quote, the highlight, the photo) be the foreground. The home and notes flows ended up using a system of paired panels where the wordmark sits as an anchor in the corner, so the product always feels like a continuation of the same object across screens.",
       },
       { type: 'full-width', image: '/images/mark/home-thumbnails.png' },
       { type: 'full-width', image: '/images/mark/home-thumbnails-detail.png' },
@@ -175,8 +175,8 @@ export const projects: Project[] = [
       },
       {
         type: 'text',
-        heading: 'What I took away',
-        body: "The biggest thing I learned was that research before design isn't a checkbox. Every time I shortcut it and started designing first, I had to throw work away. The reverse was also true: every conversation I had before opening Figma made the actual design work go faster, because half the decisions were already made. I also learned a lot about restraint. Cutting a field off a card felt scary at first, but it ended up making the whole grid feel more confident than adding one ever would have.",
+        heading: 'Outcome',
+        body: "The dashboard and pitch deck took us to the global finalist round of the Asian Leadership Conference, beating out hundreds of teams from Stanford, Harvard, Cornell, and UC Berkeley along the way. The biggest thing I learned was that research before design isn't a checkbox. Every time I shortcut it and started designing first, I had to throw work away. The reverse was also true: every conversation I had before opening Figma made the actual design work go faster, because half the decisions were already made. I also learned a lot about restraint. Cutting a field off a card felt scary at first, but it ended up making the whole grid feel more confident than adding one ever would have.",
       },
     ],
     isProtected: false,

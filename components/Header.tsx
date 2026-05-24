@@ -16,7 +16,7 @@ export default function Header() {
         <p
           className="font-unbounded font-normal text-white uppercase select-none whitespace-nowrap text-center leading-[0.9]"
           style={{
-            fontSize: '7.65vw',
+            fontSize: '8vw',
             letterSpacing: 'var(--tracking-display)',
           }}
         >
