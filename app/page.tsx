@@ -20,16 +20,6 @@ export default function Home() {
 
   return (
     <main className="bg-black min-h-screen">
-      {/* Hero title */}
-      <section className="relative flex items-end justify-center h-screen overflow-hidden">
-        <h1
-          className="font-unbounded font-black text-white uppercase leading-none select-none w-full text-center pb-8"
-          style={{ fontSize: 'clamp(3rem, 14vw, 18rem)', letterSpacing: 'var(--tracking-display)' }}
-        >
-          MARGARET LUWENA
-        </h1>
-      </section>
-
       {/* Intro */}
       <FadeInOnScroll>
         <section className="px-6 md:px-12 py-16 max-w-3xl">

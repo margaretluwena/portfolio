@@ -4,17 +4,13 @@ const EMAIL = 'luwena@usc.edu'
 
 export default function Footer() {
   return (
-    <footer className="bg-black px-6 md:px-12 pt-24 pb-6 overflow-hidden">
-      {/* Top row: copy + email actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-end mb-20">
-        <div />
-        <p className="text-white font-inter text-base md:text-lg leading-snug max-w-md md:justify-self-end">
+    <footer className="bg-black pt-24 pb-6 overflow-hidden">
+      {/* Reach-out copy + email actions — left-aligned */}
+      <div className="px-6 md:px-12 mb-20">
+        <p className="text-white font-inter text-base md:text-lg leading-snug max-w-md mb-6">
           Feel free to reach out with any questions about me or my work!
         </p>
-      </div>
-
-      <div className="flex justify-end mb-24">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <a
             href={`mailto:${EMAIL}`}
             className="bg-white text-black rounded-full px-5 py-2.5 text-sm font-roboto-condensed tracking-wide hover:bg-white/90 transition-colors t-smooth"
@@ -26,7 +22,7 @@ export default function Footer() {
       </div>
 
       {/* Social links anchored to the bottom corners */}
-      <div className="flex items-end justify-between mb-4">
+      <div className="px-6 md:px-12 flex items-end justify-between mb-4">
         <a
           href="https://www.instagram.com/margaret.luwena/"
           target="_blank"
@@ -45,13 +41,15 @@ export default function Footer() {
         </a>
       </div>
 
-      {/* Wordmark — tight tracking so letters touch */}
-      <p
-        className="font-unbounded font-black text-white uppercase leading-[0.85] text-center w-full select-none"
-        style={{ fontSize: 'clamp(3.5rem, 18vw, 22rem)', letterSpacing: 'var(--tracking-display)' }}
-      >
-        MARGARET LUWENA
-      </p>
+      {/* Wordmark — full-width, single line, edge-to-edge, lighter weight */}
+      <div className="px-2 overflow-hidden">
+        <p
+          className="font-unbounded font-normal text-white uppercase leading-[0.9] text-center w-full select-none whitespace-nowrap"
+          style={{ fontSize: '7.5vw', letterSpacing: 'var(--tracking-display)' }}
+        >
+          MARGARET LUWENA
+        </p>
+      </div>
     </footer>
   )
 }

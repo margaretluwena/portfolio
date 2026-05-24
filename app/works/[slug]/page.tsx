@@ -48,7 +48,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         ) : (
           <div className="absolute inset-0 flex items-center justify-center px-6">
             <span
-              className="font-unbounded font-black text-white/90 uppercase leading-none text-center"
+              className="font-unbounded font-medium text-white/90 uppercase leading-none text-center"
               style={{ fontSize: 'clamp(3rem, 12vw, 12rem)', letterSpacing: 'var(--tracking-display)' }}
             >
               {project.title}
@@ -62,7 +62,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <section className="px-6 md:px-12 py-12 border-b border-white/10">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
           <h1
-            className="font-unbounded font-black text-white text-3xl md:text-5xl"
+            className="font-unbounded font-medium text-white text-3xl md:text-5xl"
             style={{ letterSpacing: 'var(--tracking-tight)' }}
           >
             {project.title}
@@ -166,7 +166,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           </p>
           <Link
             href={`/works/${nextProject.slug}`}
-            className="font-unbounded font-bold text-white text-2xl md:text-4xl hover:text-white/60 transition-colors t-smooth"
+            className="font-unbounded font-medium text-white text-2xl md:text-4xl hover:text-white/60 transition-colors t-smooth"
           >
             {nextProject.title}
           </Link>

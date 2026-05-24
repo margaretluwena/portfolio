@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 import { Unbounded, Roboto_Condensed, Inter } from 'next/font/google'
 import './globals.css'
-import Nav from '@/components/Nav'
+import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
 const unbounded = Unbounded({
   subsets: ['latin'],
   variable: '--nf-unbounded',
-  weight: ['400', '700', '900'],
+  weight: ['400', '500', '600', '700', '900'],
 })
 
 const robotoCondensed = Roboto_Condensed({
@@ -33,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${unbounded.variable} ${robotoCondensed.variable} ${inter.variable} antialiased`}
     >
       <body className="bg-black text-white antialiased">
-        <Nav />
+        <Header />
         {children}
         <Footer />
       </body>

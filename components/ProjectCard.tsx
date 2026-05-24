@@ -33,7 +33,7 @@ export default function ProjectCard({ project }: { project: Project }) {
         ) : (
           <div className="w-full aspect-[8/5] bg-zinc-900 border-t border-white/10 flex items-center justify-center px-6">
             <span
-              className="font-unbounded font-black text-white/90 uppercase leading-none text-center"
+              className="font-unbounded font-medium text-white/90 uppercase leading-none text-center"
               style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', letterSpacing: 'var(--tracking-display)' }}
             >
               {project.title}
