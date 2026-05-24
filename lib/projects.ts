@@ -28,9 +28,16 @@ export const projects: Project[] = [
     client: 'Mark',
     intro:
       "I had the opportunity to work with Mark's founder, Eason Tang, as a designer on his team when Mark was part of TroyLab's build program. The majority of my time was spent on UI/UX of the app, packaging designs, merchandise designs, and the final pitch deck that was to be presented at LAUNCH. Unfortunately, I did sign an NDA regarding these designs, but I'd be happy to discuss more about it in real life :)",
-    deliverables: ['UI/UX Design', 'Merchandise', 'Pitch/Slide Deck'],
+    deliverables: ['UI/UX Design', 'Merchandise', 'Pitch/Slide Deck', 'Brand System'],
     heroImage: '/images/mark-hero.png',
-    content: [],
+    content: [
+      { type: 'full-width', image: '/images/mark/home-thumbnails.png' },
+      { type: 'full-width', image: '/images/mark/home-thumbnails-detail.png' },
+      { type: 'full-width', image: '/images/mark/share-screens.png' },
+      { type: 'full-width', image: '/images/mark/stickers.png' },
+      { type: 'full-width', image: '/images/mark/shirts.png' },
+      { type: 'full-width', image: '/images/mark/packaging.png' },
+    ],
     isProtected: true,
     nextSlug: 'glance',
   },
