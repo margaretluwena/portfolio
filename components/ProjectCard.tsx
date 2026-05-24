@@ -35,9 +35,12 @@ export default function ProjectCard({ project }: { project: Project }) {
             style={{ display: 'block' }}
           />
         ) : (
-          <div className="w-full aspect-[8/5] bg-zinc-900 border-t border-white/10 flex items-center justify-center">
-            <span className="text-white/30 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase">
-              Coming Soon
+          <div className="w-full aspect-[8/5] bg-zinc-900 border-t border-white/10 flex items-center justify-center px-6">
+            <span
+              className="font-unbounded font-black text-white/90 uppercase leading-none text-center"
+              style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', letterSpacing: '-0.04em' }}
+            >
+              {project.title}
             </span>
           </div>
         )}

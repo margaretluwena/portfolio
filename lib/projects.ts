@@ -6,6 +6,7 @@ export type ContentBlock =
 export interface Project {
   slug: string
   title: string
+  role: string
   category: string
   year: string
   client: string
@@ -21,6 +22,7 @@ export const projects: Project[] = [
   {
     slug: 'mark',
     title: 'Mark',
+    role: 'Designer',
     category: 'AI Hardware',
     year: '2025',
     client: 'Mark',
@@ -35,6 +37,7 @@ export const projects: Project[] = [
   {
     slug: 'glance',
     title: 'Glance',
+    role: 'Designer',
     category: 'Productivity Software',
     year: '2025',
     client: 'Glance',
@@ -51,14 +54,16 @@ export const projects: Project[] = [
   {
     slug: 'traeco',
     title: 'Traeco',
-    category: 'AI Infrastructure',
+    role: 'Co-founder & CPO',
+    category: 'Product Design / Brand',
     year: '2025',
     client: 'Traeco',
-    intro: 'Coming soon.',
-    deliverables: [],
+    intro:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for the Traeco case study — replace with the real story when ready. Cover the brief, the constraints, and what shipped.',
+    deliverables: ['Product Design', 'Brand Identity', 'Design System'],
     heroImage: '',
     content: [
-      { type: 'placeholder', message: 'Content coming soon.' },
+      { type: 'placeholder', message: 'Case study in progress — content coming soon.' },
     ],
     isProtected: false,
     nextSlug: 'atlix',
@@ -66,14 +71,16 @@ export const projects: Project[] = [
   {
     slug: 'atlix',
     title: 'Atlix',
-    category: 'Branding',
+    role: 'Co-founder',
+    category: 'Product Design',
     year: '2025',
     client: 'Atlix',
-    intro: 'Coming soon.',
-    deliverables: [],
+    intro:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for the Atlix case study — replace with the real story when ready. Cover the brief, the constraints, and what shipped.',
+    deliverables: ['Product Design', 'UX Research', 'Prototyping'],
     heroImage: '',
     content: [
-      { type: 'placeholder', message: 'Content coming soon.' },
+      { type: 'placeholder', message: 'Case study in progress — content coming soon.' },
     ],
     isProtected: false,
     nextSlug: 'mountaindew',
@@ -81,6 +88,7 @@ export const projects: Project[] = [
   {
     slug: 'mountaindew',
     title: 'Mountain Dew',
+    role: 'Design Consultant',
     category: 'CPG',
     year: '2024',
     client: 'Mountain Dew',
@@ -97,6 +105,7 @@ export const projects: Project[] = [
   {
     slug: 'charitablefoundation',
     title: 'Ichioka and Nakao',
+    role: 'Design Consultant',
     category: 'Nonprofit',
     year: '2024',
     client: 'Ichioka and Nakao Charitable Foundation',
@@ -115,6 +124,7 @@ export const projects: Project[] = [
   {
     slug: 'smallworks',
     title: 'Small Works',
+    role: 'Designer',
     category: 'Personal',
     year: '2023–2025',
     client: 'Varied',
@@ -132,6 +142,7 @@ export const projects: Project[] = [
   {
     slug: 'graphics',
     title: 'Graphics',
+    role: 'Designer / Illustrator',
     category: 'Graphic Design',
     year: '2023–2025',
     client: 'Varied',
@@ -152,14 +163,16 @@ export const projects: Project[] = [
   {
     slug: 'impeccable-chicken',
     title: 'Impeccable Chicken',
-    category: 'Branding',
+    role: 'Pitch Deck Design',
+    category: 'Brand / Deck',
     year: '2025',
     client: 'Impeccable Chicken',
-    intro: 'Coming soon.',
-    deliverables: [],
+    intro:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for the Impeccable Chicken pitch deck — replace with the real story when ready.',
+    deliverables: ['Pitch Deck', 'Brand System'],
     heroImage: '',
     content: [
-      { type: 'placeholder', message: 'Content coming soon.' },
+      { type: 'placeholder', message: 'Case study in progress — content coming soon.' },
     ],
     isProtected: true,
     nextSlug: 'mark',

@@ -45,9 +45,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             priority
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-white/30 text-xs font-roboto-condensed tracking-[0.3em] uppercase">
-              Hero image coming soon
+          <div className="absolute inset-0 flex items-center justify-center px-6">
+            <span
+              className="font-unbounded font-black text-white/90 uppercase leading-none text-center"
+              style={{ fontSize: 'clamp(3rem, 12vw, 12rem)', letterSpacing: '-0.05em' }}
+            >
+              {project.title}
             </span>
           </div>
         )}
@@ -89,7 +92,15 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               </li>
             ))}
           </ul>
-          <div className="mt-8">
+          {project.role && (
+            <div className="mt-8">
+              <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-1">
+                Role
+              </p>
+              <p className="text-white/80 font-roboto-condensed text-sm">{project.role}</p>
+            </div>
+          )}
+          <div className="mt-4">
             <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-1">
               Year
             </p>
