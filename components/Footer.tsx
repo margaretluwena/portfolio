@@ -5,19 +5,24 @@ const EMAIL = 'luwena@usc.edu'
 export default function Footer() {
   return (
     <footer className="bg-black pt-24 pb-6 overflow-hidden">
-      {/* Reach-out copy + email actions — left-aligned */}
+      {/* Reach-out copy + email actions — eyebrow left, content locked right */}
       <div className="px-6 md:px-12 mb-20">
-        <p className="text-white font-inter text-base md:text-lg leading-snug max-w-md mb-6">
-          Feel free to reach out with any questions about me or my work!
-        </p>
-        <div className="flex items-center gap-3 flex-wrap">
-          <a
-            href={`mailto:${EMAIL}`}
-            className="bg-white text-black rounded-full px-5 py-2.5 text-sm font-roboto-condensed tracking-wide hover:bg-white/90 transition-colors t-smooth"
-          >
-            {EMAIL}
-          </a>
-          <CopyEmailButton />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
+          <p className="eyebrow">Get in touch</p>
+          <div>
+            <p className="text-white font-inter text-base md:text-lg leading-snug max-w-md mb-6">
+              Feel free to reach out with any questions about me or my work!
+            </p>
+            <div className="flex items-center gap-3 flex-wrap">
+              <a
+                href={`mailto:${EMAIL}`}
+                className="bg-white text-black rounded-full px-5 py-2.5 text-sm font-roboto-condensed tracking-wide hover:bg-white/90 transition-colors t-smooth"
+              >
+                {EMAIL}
+              </a>
+              <CopyEmailButton />
+            </div>
+          </div>
         </div>
       </div>
 

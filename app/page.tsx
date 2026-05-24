@@ -5,13 +5,14 @@ import FadeInOnScroll from '@/components/FadeInOnScroll'
 import { projects } from '@/lib/projects'
 
 const SKILLS = [
-  'Website Design',
-  'Graphic Design',
-  'Branding',
   'UX / UI Design',
+  'Product Design',
+  'Website Design',
+  'Brand Identity',
   'Brand Strategy',
-  'Decking',
-  'Design System',
+  'Design Systems',
+  'Art Direction',
+  'Pitch Deck Design',
   'Illustration',
 ]
 
@@ -88,21 +89,21 @@ export default function Home() {
       </section>
       </FadeInOnScroll>
 
-      {/* What I do */}
+      {/* What I do — eyebrow left, list locked right */}
       <FadeInOnScroll>
       <section className="px-6 md:px-12 py-16 border-t border-white/10">
-        <p className="eyebrow mb-8">
-          What I do
-        </p>
-        <div className="flex flex-col gap-2">
-          {SKILLS.map((skill) => (
-            <p
-              key={skill}
-              className="text-white font-roboto-condensed text-lg tracking-wide uppercase"
-            >
-              {skill}
-            </p>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
+          <p className="eyebrow">What I do</p>
+          <div className="flex flex-col gap-2">
+            {SKILLS.map((skill) => (
+              <p
+                key={skill}
+                className="text-white font-roboto-condensed text-lg tracking-wide uppercase"
+              >
+                {skill}
+              </p>
+            ))}
+          </div>
         </div>
       </section>
       </FadeInOnScroll>
