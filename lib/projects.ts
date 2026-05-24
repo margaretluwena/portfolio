@@ -128,6 +128,7 @@ export const projects: Project[] = [
     deliverables: ['Product Design', 'Pitch Deck Design', 'Design System', 'Brand Identity'],
     heroImage: '/images/atlix/hero.png',
     content: [
+      { type: 'full-width', image: '/images/atlix/dashboard.png' },
       { type: 'video', src: '/videos/atlix-pitch.mp4', poster: '/images/atlix/hero.png' },
     ],
     isProtected: false,
