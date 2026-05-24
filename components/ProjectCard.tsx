@@ -25,14 +25,22 @@ export default function ProjectCard({ project }: { project: Project }) {
 
       {/* Image — natural aspect ratio, no cropping */}
       <div className="relative w-full overflow-hidden">
-        <Image
-          src={project.heroImage}
-          alt={project.title}
-          width={800}
-          height={500}
-          className="w-full h-auto"
-          style={{ display: 'block' }}
-        />
+        {project.heroImage ? (
+          <Image
+            src={project.heroImage}
+            alt={project.title}
+            width={800}
+            height={500}
+            className="w-full h-auto"
+            style={{ display: 'block' }}
+          />
+        ) : (
+          <div className="w-full aspect-[8/5] bg-zinc-900 border-t border-white/10 flex items-center justify-center">
+            <span className="text-white/30 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase">
+              Coming Soon
+            </span>
+          </div>
+        )}
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
           <span className="text-white text-xs font-roboto-condensed tracking-widest opacity-0 group-hover:opacity-100 transition-opacity border border-white px-4 py-1.5">

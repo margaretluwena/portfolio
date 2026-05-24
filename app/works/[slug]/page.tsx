@@ -35,14 +35,22 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   return (
     <main className="bg-black min-h-screen">
       {/* Hero image — full-width, fixed height, intentional cover crop */}
-      <div className="relative w-full h-[60vh] md:h-[80vh] overflow-hidden">
-        <Image
-          src={project.heroImage}
-          alt={project.title}
-          fill
-          className="object-cover object-center"
-          priority
-        />
+      <div className="relative w-full h-[60vh] md:h-[80vh] overflow-hidden bg-zinc-900">
+        {project.heroImage ? (
+          <Image
+            src={project.heroImage}
+            alt={project.title}
+            fill
+            className="object-cover object-center"
+            priority
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-white/30 text-xs font-roboto-condensed tracking-[0.3em] uppercase">
+              Hero image coming soon
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Project header */}
