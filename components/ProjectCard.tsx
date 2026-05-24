@@ -19,19 +19,18 @@ export default function ProjectCard({ project }: { project: Project }) {
         </div>
       </div>
 
-      {/* Image — natural aspect ratio, no cropping */}
-      <div className="relative w-full overflow-hidden">
+      {/* Image — fixed 3:2 aspect, object-cover center crop */}
+      <div className="relative w-full aspect-[3/2] overflow-hidden bg-zinc-900">
         {project.heroImage ? (
           <Image
             src={project.heroImage}
             alt={project.title}
-            width={800}
-            height={500}
-            className="w-full h-auto"
-            style={{ display: 'block' }}
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover object-center"
           />
         ) : (
-          <div className="w-full aspect-[8/5] bg-zinc-900 border-t border-white/10 flex items-center justify-center px-6">
+          <div className="absolute inset-0 border-t border-white/10 flex items-center justify-center px-6">
             <span
               className="font-unbounded font-medium text-white/90 uppercase leading-none text-center"
               style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', letterSpacing: 'var(--tracking-display)' }}
