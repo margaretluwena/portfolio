@@ -53,7 +53,7 @@ export default function Home() {
             <p className="text-white/80 font-inter text-sm leading-relaxed mb-4">
               I love making digital experiences by blending design and a distinct story. My approach
               combines creativity with innovation, and I strive to deliver work that feels both
-              functional and inspiring. Primary tools involve Figma, Procreate, and Framer.
+              functional and inspiring. Primary tools involve Figma, Procreate, and Claude Code.
             </p>
             <p className="text-white/80 font-inter text-sm leading-relaxed">
               From startups to the Fortune 500, I work diligently on projects to bring ideas to
