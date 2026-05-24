@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import ProjectCard from '@/components/ProjectCard'
+import FadeInOnScroll from '@/components/FadeInOnScroll'
 import { projects } from '@/lib/projects'
 
 const SKILLS = [
@@ -30,23 +31,28 @@ export default function Home() {
       </section>
 
       {/* Intro */}
-      <section className="px-6 md:px-12 py-16 max-w-3xl">
-        <p className="text-white/70 font-inter text-sm leading-relaxed">
-          Hi, my name is Margaret! I&apos;m currently a student at USC with a passion for
-          UI/UX, design, and creative direction.
-        </p>
-      </section>
+      <FadeInOnScroll>
+        <section className="px-6 md:px-12 py-16 max-w-3xl">
+          <p className="text-white/70 font-inter text-sm leading-relaxed">
+            Hi, my name is Margaret! I&apos;m currently a student at USC with a passion for
+            UI/UX, design, and creative direction.
+          </p>
+        </section>
+      </FadeInOnScroll>
 
       {/* Project grid */}
       <section id="works" className="px-6 md:px-12 pb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10">
-          {displayProjects.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
+          {displayProjects.map((project, i) => (
+            <FadeInOnScroll key={project.slug} delay={i * 60}>
+              <ProjectCard project={project} />
+            </FadeInOnScroll>
           ))}
         </div>
       </section>
 
       {/* About */}
+      <FadeInOnScroll>
       <section id="info" className="px-6 md:px-12 py-24 border-t border-white/10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
           {/* Text */}
@@ -90,8 +96,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+      </FadeInOnScroll>
 
       {/* What I do */}
+      <FadeInOnScroll>
       <section className="px-6 md:px-12 py-16 border-t border-white/10">
         <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-8">
           What I do
@@ -107,7 +115,7 @@ export default function Home() {
           ))}
         </div>
       </section>
-
+      </FadeInOnScroll>
     </main>
   )
 }

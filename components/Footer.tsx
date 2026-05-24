@@ -17,7 +17,7 @@ export default function Footer() {
         <div className="flex items-center gap-3">
           <a
             href={`mailto:${EMAIL}`}
-            className="bg-white text-black rounded-full px-5 py-2.5 text-sm font-roboto-condensed tracking-wide hover:bg-white/90 transition-[background-color] duration-[var(--duration-base,500ms)] [transition-timing-function:var(--ease-out-expo,cubic-bezier(0.22,1,0.36,1))]"
+            className="bg-white text-black rounded-full px-5 py-2.5 text-sm font-roboto-condensed tracking-wide hover:bg-white/90 transition-colors t-smooth"
           >
             {EMAIL}
           </a>
@@ -31,7 +31,7 @@ export default function Footer() {
           href="https://www.instagram.com/margaret.luwena/"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-white/80 hover:text-white text-xs font-roboto-condensed tracking-[0.25em] uppercase inline-flex items-center gap-1 transition-colors duration-[var(--duration-base,500ms)] [transition-timing-function:var(--ease-out-expo,cubic-bezier(0.22,1,0.36,1))]"
+          className="text-white/80 hover:text-white text-xs font-roboto-condensed tracking-[0.25em] uppercase inline-flex items-center gap-1 transition-colors t-smooth"
         >
           INSTA <span aria-hidden="true">↗</span>
         </a>
@@ -39,7 +39,7 @@ export default function Footer() {
           href="https://www.linkedin.com/in/margaretluwena/"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-white/80 hover:text-white text-xs font-roboto-condensed tracking-[0.25em] uppercase inline-flex items-center gap-1 transition-colors duration-[var(--duration-base,500ms)] [transition-timing-function:var(--ease-out-expo,cubic-bezier(0.22,1,0.36,1))]"
+          className="text-white/80 hover:text-white text-xs font-roboto-condensed tracking-[0.25em] uppercase inline-flex items-center gap-1 transition-colors t-smooth"
         >
           LNKDN <span aria-hidden="true">↗</span>
         </a>

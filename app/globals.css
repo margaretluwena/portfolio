@@ -7,6 +7,19 @@
 
   --color-background: #000000;
   --color-foreground: #ffffff;
+
+  /* Motion tokens — single easing language sitewide */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 300ms;
+  --duration-base: 500ms;
+  --duration-slow: 700ms;
+}
+
+:root {
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 300ms;
+  --duration-base: 500ms;
+  --duration-slow: 700ms;
 }
 
 body {
@@ -17,4 +30,43 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+/* Motion utility — pairs with `transition-*` classes from Tailwind */
+.t-smooth {
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out-expo);
+}
+.t-fast {
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-out-expo);
+}
+
+/* Scroll reveal — initial state for FadeInOnScroll wrapper */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--duration-slow) var(--ease-out-expo),
+    transform var(--duration-slow) var(--ease-out-expo);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }

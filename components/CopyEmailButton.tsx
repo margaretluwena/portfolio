@@ -20,7 +20,7 @@ export default function CopyEmailButton() {
   return (
     <button
       onClick={handleCopy}
-      className="inline-flex items-center gap-2 bg-black text-white border border-white rounded-full px-5 py-2.5 text-sm font-roboto-condensed tracking-wide hover:bg-white hover:text-black transition-[background-color,color] duration-[var(--duration-base,500ms)] [transition-timing-function:var(--ease-out-expo,cubic-bezier(0.22,1,0.36,1))]"
+      className="inline-flex items-center gap-2 bg-black text-white border border-white rounded-full px-5 py-2.5 text-sm font-roboto-condensed tracking-wide hover:bg-white hover:text-black transition-colors t-smooth"
       aria-label="Copy email to clipboard"
     >
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

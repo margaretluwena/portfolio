@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { projects, getProject, getNextProject } from '@/lib/projects'
 import PasswordGate from '@/components/PasswordGate'
+import FadeInOnScroll from '@/components/FadeInOnScroll'
 
 export async function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }))
@@ -57,6 +58,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       </div>
 
       {/* Project header */}
+      <FadeInOnScroll>
       <section className="px-6 md:px-12 py-12 border-b border-white/10">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
           <h1 className="font-unbounded font-black text-white text-3xl md:text-5xl">
@@ -72,8 +74,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
       </section>
+      </FadeInOnScroll>
 
       {/* Intro + deliverables */}
+      <FadeInOnScroll>
       <section className="px-6 md:px-12 py-12 grid grid-cols-1 md:grid-cols-3 gap-12 border-b border-white/10">
         <div className="md:col-span-2">
           <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-4">
@@ -114,9 +118,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
       </section>
+      </FadeInOnScroll>
 
       {/* Content images — natural aspect ratio, no cropping */}
       {project.content.length > 0 && (
+        <FadeInOnScroll>
         <section className="px-6 md:px-12 py-12 space-y-6">
           {project.content.map((block, i) => {
             if (block.type === 'two-column') {
@@ -149,21 +155,24 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             return null
           })}
         </section>
+        </FadeInOnScroll>
       )}
 
       {/* Next project */}
       {nextProject && (
+        <FadeInOnScroll>
         <section className="px-6 md:px-12 py-16 border-t border-white/10">
           <p className="text-white/40 text-[10px] font-roboto-condensed tracking-[0.3em] uppercase mb-4">
             Next work
           </p>
           <Link
             href={`/works/${nextProject.slug}`}
-            className="font-unbounded font-bold text-white text-2xl md:text-4xl hover:text-white/60 transition-colors"
+            className="font-unbounded font-bold text-white text-2xl md:text-4xl hover:text-white/60 transition-colors t-smooth"
           >
             {nextProject.title}
           </Link>
         </section>
+        </FadeInOnScroll>
       )}
 
     </main>
