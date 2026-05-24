@@ -63,24 +63,24 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Photos */}
+          {/* Photos — matched height, bottom-aligned */}
           <div className="flex items-end gap-6">
-            <div className="w-48 flex-shrink-0">
+            <div className="h-60 flex-shrink-0">
               <Image
                 src="/images/margaret-photo.jpg"
                 alt="Margaret Luwena"
-                width={400}
-                height={500}
-                className="w-full h-auto object-cover"
+                width={414}
+                height={450}
+                className="h-full w-auto object-cover"
               />
             </div>
-            <div className="w-28 flex-shrink-0">
+            <div className="h-60 flex-shrink-0">
               <Image
                 src="/images/margaret-chibi.png"
                 alt="Margaret illustration"
-                width={200}
-                height={300}
-                className="w-full h-auto"
+                width={1180}
+                height={1668}
+                className="h-full w-auto"
               />
             </div>
           </div>
