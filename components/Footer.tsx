@@ -47,10 +47,10 @@ export default function Footer() {
       </div>
 
       {/* Wordmark — full-width, single line, edge-to-edge, lighter weight */}
-      <div className="px-2 overflow-hidden">
+      <div className="overflow-hidden">
         <p
           className="font-unbounded font-normal text-white uppercase leading-[0.9] text-center w-full select-none whitespace-nowrap"
-          style={{ fontSize: '7.5vw', letterSpacing: 'var(--tracking-display)' }}
+          style={{ fontSize: '7.65vw', letterSpacing: 'var(--tracking-display)' }}
         >
           MARGARET LUWENA
         </p>

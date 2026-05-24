@@ -42,47 +42,44 @@ export default function Home() {
         </div>
       </section>
 
-      {/* About */}
+      {/* About — eyebrow left, bio + photos locked right (matches What I do / Get in touch) */}
       <FadeInOnScroll>
       <section id="info" className="px-6 md:px-12 py-24 border-t border-white/10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
-          {/* Text */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
+          <p className="eyebrow">More about me!</p>
           <div>
-            <p className="eyebrow mb-6">
-              More about me!
-            </p>
             <p className="text-white/80 font-inter text-sm leading-relaxed mb-4">
               I love making digital experiences by blending design and a distinct story. My approach
               combines creativity with innovation, and I strive to deliver work that feels both
               functional and inspiring. Primary tools involve Figma, Procreate, and Claude Code.
             </p>
-            <p className="text-white/80 font-inter text-sm leading-relaxed">
+            <p className="text-white/80 font-inter text-sm leading-relaxed mb-10">
               From startups to the Fortune 500, I work diligently on projects to bring ideas to
               life, shaping interactive experiences that connect with audiences. Every project is
               more than just that—it&apos;s my own journey of transforming a vision into digital
               realities that (hopefully) leave a lasting impression.
             </p>
-          </div>
 
-          {/* Photos — matched height, bottom-aligned */}
-          <div className="flex items-end gap-6">
-            <div className="h-60 flex-shrink-0">
-              <Image
-                src="/images/margaret-photo.jpg"
-                alt="Margaret Luwena"
-                width={414}
-                height={450}
-                className="h-full w-auto object-cover"
-              />
-            </div>
-            <div className="h-60 flex-shrink-0">
-              <Image
-                src="/images/margaret-chibi.png"
-                alt="Margaret illustration"
-                width={1180}
-                height={1668}
-                className="h-full w-auto"
-              />
+            {/* Photos — matched height, bottom-aligned, below the bio */}
+            <div className="flex items-end gap-6">
+              <div className="h-60 flex-shrink-0">
+                <Image
+                  src="/images/margaret-photo.jpg"
+                  alt="Margaret Luwena"
+                  width={414}
+                  height={450}
+                  className="h-full w-auto object-cover"
+                />
+              </div>
+              <div className="h-60 flex-shrink-0">
+                <Image
+                  src="/images/margaret-chibi.png"
+                  alt="Margaret illustration"
+                  width={1180}
+                  height={1668}
+                  className="h-full w-auto"
+                />
+              </div>
             </div>
           </div>
         </div>

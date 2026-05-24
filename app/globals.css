@@ -29,6 +29,9 @@
   --tracking-body: 0.005em;    /* body copy — gentle openness for readability */
   --tracking-wide: 0.1em;      /* small labels */
   --tracking-eyebrow: 0.3em;   /* uppercase eyebrows */
+
+  /* Border / outline colors — subtle dark grey for refined button outlines */
+  --color-border-subtle: #3f3f46; /* zinc-700 */
 }
 
 :root {
@@ -75,7 +78,7 @@ body {
   font-family: var(--nf-roboto-condensed), system-ui, sans-serif;
   font-size: var(--text-eyebrow);
   letter-spacing: var(--tracking-wide);
-  border: 1px solid currentColor;
+  border: 1px solid var(--color-border-subtle, #3f3f46);
   padding: 0.125rem 0.5rem;
   font-weight: 400;
 }

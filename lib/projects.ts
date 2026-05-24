@@ -65,12 +65,12 @@ export const projects: Project[] = [
     slug: 'traeco',
     title: 'Traeco',
     role: 'Co-founder & CPO',
-    category: 'Product Design / Brand',
-    year: '2025',
+    category: 'AI B2B SaaS',
+    year: '2026',
     client: 'Traeco',
     intro:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for the Traeco case study — replace with the real story when ready. Cover the brief, the constraints, and what shipped.',
-    deliverables: ['Product Design', 'Brand Identity', 'Design System'],
+    deliverables: ['Website Design', 'Product Design', 'Pitch Deck Design', 'Design System', 'Brand Identity'],
     heroImage: '',
     content: [
       { type: 'placeholder', message: 'Case study in progress — content coming soon.' },
@@ -82,12 +82,12 @@ export const projects: Project[] = [
     slug: 'atlix',
     title: 'Atlix',
     role: 'Co-founder',
-    category: 'Product Design',
-    year: '2025',
+    category: 'AI B2B SaaS',
+    year: '2026',
     client: 'Atlix',
     intro:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for the Atlix case study — replace with the real story when ready. Cover the brief, the constraints, and what shipped.',
-    deliverables: ['Product Design', 'UX Research', 'Prototyping'],
+    deliverables: ['Product Design', 'Pitch Deck Design', 'Design System', 'Brand Identity'],
     heroImage: '/images/atlix/hero.png',
     content: [
       { type: 'video', src: '/videos/atlix-pitch.mp4', poster: '/images/atlix/hero.png' },

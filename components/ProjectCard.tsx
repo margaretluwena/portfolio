@@ -42,7 +42,7 @@ export default function ProjectCard({ project }: { project: Project }) {
         )}
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors t-smooth flex items-center justify-center">
-          <span className="text-white text-xs font-roboto-condensed tracking-widest opacity-0 group-hover:opacity-100 transition-opacity t-smooth border border-white px-4 py-1.5">
+          <span className="text-white text-xs font-roboto-condensed tracking-widest opacity-0 group-hover:opacity-100 transition-opacity t-smooth border border-zinc-700 px-4 py-1.5">
             View project
           </span>
         </div>
