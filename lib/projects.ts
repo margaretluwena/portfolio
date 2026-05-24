@@ -43,23 +43,6 @@ export const projects: Project[] = [
       { type: 'full-width', image: '/images/mark/packaging.png' },
     ],
     isProtected: true,
-    nextSlug: 'glance',
-  },
-  {
-    slug: 'glance',
-    title: 'Glance',
-    role: 'Designer',
-    category: 'Productivity Software',
-    year: '2025',
-    client: 'Glance',
-    intro:
-      "I had the opportunity to work with Glance's founders as a designer on their team when Glance was part of TroyLab's build program. The majority of my time was spent on website design and iterations of logo designs. Unfortunately, I no longer have access to the website and therefore can't upload any designs for it, but I still have the sketches of the logo iterations.",
-    deliverables: ['UI/UX Design', 'Website Design', 'Logo Design', 'Framer Development'],
-    heroImage: '/images/glance-hero.png',
-    content: [
-      { type: 'full-width', image: '/images/glance-content.png' },
-    ],
-    isProtected: false,
     nextSlug: 'traeco',
   },
   {
@@ -130,6 +113,23 @@ export const projects: Project[] = [
     content: [
       { type: 'full-width', image: '/images/atlix/dashboard.png' },
       { type: 'video', src: '/videos/atlix-pitch.mp4', poster: '/images/atlix/hero.png' },
+    ],
+    isProtected: false,
+    nextSlug: 'glance',
+  },
+  {
+    slug: 'glance',
+    title: 'Glance',
+    role: 'Designer',
+    category: 'Productivity Software',
+    year: '2025',
+    client: 'Glance',
+    intro:
+      "I had the opportunity to work with Glance's founders as a designer on their team when Glance was part of TroyLab's build program. The majority of my time was spent on website design and iterations of logo designs. Unfortunately, I no longer have access to the website and therefore can't upload any designs for it, but I still have the sketches of the logo iterations.",
+    deliverables: ['UI/UX Design', 'Website Design', 'Logo Design', 'Framer Development'],
+    heroImage: '/images/glance-hero.png',
+    content: [
+      { type: 'full-width', image: '/images/glance-content.png' },
     ],
     isProtected: false,
     nextSlug: 'mountaindew',
