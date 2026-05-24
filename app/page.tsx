@@ -108,48 +108,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact */}
-      <section className="px-6 md:px-12 py-16 border-t border-white/10">
-        <p className="text-white/50 font-inter text-sm mb-8">
-          Feel free to reach out with any questions about me or my work!
-        </p>
-        <div className="flex flex-col gap-4">
-          <a
-            href="mailto:luwena@usc.edu"
-            className="text-white font-roboto-condensed tracking-widest text-sm hover:text-white/60 transition-colors"
-          >
-            luwena@usc.edu
-          </a>
-          <div className="flex gap-4">
-            <a
-              href="https://www.instagram.com/margaret.luwena/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[10px] font-roboto-condensed tracking-[0.3em] text-white/70 border border-white/30 px-3 py-1.5 hover:border-white hover:text-white transition-colors"
-            >
-              INSTA
-            </a>
-            <a
-              href="https://www.linkedin.com/in/margaretluwena/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[10px] font-roboto-condensed tracking-[0.3em] text-white/70 border border-white/30 px-3 py-1.5 hover:border-white hover:text-white transition-colors"
-            >
-              LNKDN
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer title */}
-      <footer className="overflow-hidden py-8 border-t border-white/10">
-        <p
-          className="font-unbounded font-black text-white uppercase leading-none text-center w-full"
-          style={{ fontSize: 'clamp(2rem, 10vw, 14rem)' }}
-        >
-          MARGARET LUWENA
-        </p>
-      </footer>
     </main>
   )
 }

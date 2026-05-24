@@ -155,15 +155,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </section>
       )}
 
-      {/* Footer */}
-      <footer className="overflow-hidden py-8 border-t border-white/10">
-        <p
-          className="font-unbounded font-black text-white uppercase leading-none text-center w-full"
-          style={{ fontSize: 'clamp(2rem, 10vw, 14rem)' }}
-        >
-          MARGARET LUWENA
-        </p>
-      </footer>
     </main>
   )
 }

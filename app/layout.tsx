@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Unbounded, Roboto_Condensed, Inter } from 'next/font/google'
 import './globals.css'
 import Nav from '@/components/Nav'
+import Footer from '@/components/Footer'
 
 const unbounded = Unbounded({
   subsets: ['latin'],
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-black text-white antialiased">
         <Nav />
         {children}
+        <Footer />
       </body>
     </html>
   )
