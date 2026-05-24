@@ -42,7 +42,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             src={project.heroImage}
             alt={project.title}
             fill
-            className="object-cover object-center"
+            className="object-cover"
+            style={{ objectPosition: project.heroPosition ?? 'center' }}
             priority
           />
         ) : (

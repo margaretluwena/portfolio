@@ -13,6 +13,8 @@ export interface Project {
   intro: string
   deliverables: string[]
   heroImage: string
+  /** object-position for hero/thumbnail crop. Defaults to 'center'. */
+  heroPosition?: 'center' | 'top' | 'bottom' | 'left' | 'right'
   content: ContentBlock[]
   isProtected: boolean
   nextSlug: string
@@ -157,6 +159,7 @@ export const projects: Project[] = [
       "This is a collection of all the miscellaneous graphics I've created over the course of several years! This collection spans graphics made for Instagram posts, flyers, and even illustrative work, combined with graphic design elements made for fun :)",
     deliverables: ['Art Direction', 'Graphic Design', 'Illustration'],
     heroImage: '/images/graphics-hero.webp',
+    heroPosition: 'top',
     content: [
       { type: 'two-column', left: '/images/graphics-hero.webp', right: '/images/graphics-2.webp' },
       { type: 'full-width', image: '/images/graphics-3.webp' },

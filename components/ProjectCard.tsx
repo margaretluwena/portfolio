@@ -27,7 +27,8 @@ export default function ProjectCard({ project }: { project: Project }) {
             alt={project.title}
             fill
             sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover object-center"
+            className="object-cover"
+            style={{ objectPosition: project.heroPosition ?? 'center' }}
           />
         ) : (
           <div className="absolute inset-0 border-t border-white/10 flex items-center justify-center px-6">
