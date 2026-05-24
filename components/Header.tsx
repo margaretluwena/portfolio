@@ -12,7 +12,7 @@ export default function Header() {
   return (
     <header className="w-full pt-3 pb-4 overflow-hidden">
       {/* Wordmark — full-width, single line, edge-to-edge */}
-      <Link href="/" aria-label="Margaret Luwena — home" className="block overflow-hidden">
+      <Link href="/" aria-label="Margaret Luwena, home" className="block overflow-hidden">
         <p
           className="font-unbounded font-normal text-white uppercase select-none whitespace-nowrap text-center leading-[0.9]"
           style={{

@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const project = getProject(slug)
   if (!project) return {}
-  return { title: `${project.title} — Margaret Luwena` }
+  return { title: `${project.title} | Margaret Luwena` }
 }
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {

@@ -56,7 +56,7 @@ export default function Home() {
             <p className="text-white/80 font-inter text-sm leading-relaxed mb-10">
               From startups to the Fortune 500, I work diligently on projects to bring ideas to
               life, shaping interactive experiences that connect with audiences. Every project is
-              more than just that—it&apos;s my own journey of transforming a vision into digital
+              more than just that. It&apos;s my own journey of transforming a vision into digital
               realities that (hopefully) leave a lasting impression.
             </p>
 

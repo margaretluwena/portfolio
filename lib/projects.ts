@@ -35,12 +35,47 @@ export const projects: Project[] = [
     deliverables: ['UI/UX Design', 'Merchandise', 'Pitch/Slide Deck', 'Brand System'],
     heroImage: '/images/mark-hero.png',
     content: [
+      {
+        type: 'text',
+        heading: 'Joining the team',
+        body: "When I joined Mark's team, my first instinct was to wait before designing. TroyLab's build program moves fast, and the temptation when you come in mid-build is to make your mark early (no pun intended). I sat in on Eason's calls, read everything I could find about what he was building, and asked a lot of questions before I opened Figma.",
+      },
+      {
+        type: 'text',
+        heading: 'Learning the product before designing for it',
+        body: "Mark is under NDA so I won't go into what it actually does, but I can talk about the process. The product had a specific user mental model that I didn't share at first. To get to a place where I could design for those users, I spent a couple of weeks doing my own version of user research: shadowing Eason's conversations with people in the target audience, reading the kinds of writing those people did, and trying out adjacent products to see what they expected an interface to feel like. By the time I started sketching, I had a sense of what to leave out.",
+      },
+      {
+        type: 'text',
+        heading: 'Brand foundation',
+        body: "The brand starts with the wordmark: a square and a vertical bar followed by the letters MARK. Simple, modular, square. From there everything else falls out. The typographic system, the color palette of cream and a single warm yellow accent, the use of paper textures and photographic imagery. The goal was to feel grounded and tactile, not slick.",
+      },
+      { type: 'full-width', image: '/images/mark/stickers.png' },
+      {
+        type: 'text',
+        heading: 'The app',
+        body: "The app screens went through many rounds. Early versions tried to surface too much state at once. I learned to trust empty space and let the user's content be the foreground. The home and notes flows ended up using a system of paired panels where the wordmark sits as an anchor in the corner, so the product always feels like a continuation of the same object.",
+      },
       { type: 'full-width', image: '/images/mark/home-thumbnails.png' },
       { type: 'full-width', image: '/images/mark/home-thumbnails-detail.png' },
       { type: 'full-width', image: '/images/mark/share-screens.png' },
-      { type: 'full-width', image: '/images/mark/stickers.png' },
+      {
+        type: 'text',
+        heading: 'Merch and posters',
+        body: "The poster series uses a recurring \"Make Your / On Your / My Words\" framing. Each pair has a blank version and a version with imagery, so the same template can carry different campaigns. The t-shirts use the same logo modularly: tiny and centered, or large and offset, or paired with imagery from the brand library. The point was to give Eason a kit he could remix, not a fixed set of one off designs.",
+      },
       { type: 'full-width', image: '/images/mark/shirts.png' },
+      {
+        type: 'text',
+        heading: 'Print and packaging',
+        body: "The envelope, postcard, and sticky note pieces were the most fun. They were also the most useful for figuring out the brand. Designing a physical artifact forces you to commit in ways that screen design lets you defer. Once the envelope worked, the digital pieces got easier because the brand had a body in the real world to refer back to.",
+      },
       { type: 'full-width', image: '/images/mark/packaging.png' },
+      {
+        type: 'text',
+        heading: 'What I took away',
+        body: "Two things stuck with me. First, the value of front loading research even when there's pressure to start producing. The weeks I spent listening before designing were the highest leverage weeks of the whole project. Second, the value of a brand that lives in physical artifacts as much as it does on screen. When the envelope and the app share the same logic, the user trusts both more.",
+      },
     ],
     isProtected: true,
     nextSlug: 'traeco',
@@ -53,7 +88,7 @@ export const projects: Project[] = [
     year: '2026',
     client: 'Traeco',
     intro:
-      "Traeco is an AI agent cost visibility and governance platform — a single pane of glass for monitoring, attributing, and optimizing LLM spend across OpenAI, Anthropic, Google, and Cohere. As Co-founder and CPO, I owned the end-to-end design surface: brand identity, marketing site, product UI, design system, and the pitch deck we took to investors. This case study walks through the process: who we built for, how the design system was shaped by the data, and how each surface was iterated against real user feedback.",
+      "Traeco is an AI agent cost visibility and governance platform, a single pane of glass for monitoring, attributing, and optimizing LLM spend across OpenAI, Anthropic, Google, and Cohere. As Co-founder and CPO, I owned the end-to-end design surface: brand identity, marketing site, product UI, design system, and the pitch deck we took to investors. This case study walks through the process: who we built for, how the design system was shaped by the data, and how each surface was iterated against real user feedback.",
     deliverables: ['Website Design', 'Product Design', 'Pitch Deck Design', 'Design System', 'Brand Identity'],
     heroImage: '/images/traeco/hero.png',
     heroPosition: 'center',
@@ -61,17 +96,17 @@ export const projects: Project[] = [
       {
         type: 'text',
         heading: 'The problem',
-        body: "Engineering teams shipping AI products were flying blind on cost. Token spend was scattered across three or four provider dashboards, none of which attributed cost back to the agents, teams, or workflows actually driving it. Surprise bills were the norm. Finance asked questions Engineering couldn't answer.\n\nTraeco's job was to make that legible — and prescriptive. Not just \"here's what you spent,\" but \"here's the $4,200 you'd save this month if you swapped these three calls to a smaller model.\"",
+        body: "Engineering teams shipping AI products were flying blind on cost. Token spend was scattered across three or four provider dashboards, none of which attributed cost back to the agents, teams, or workflows actually driving it. Surprise bills were the norm. Finance asked questions Engineering couldn't answer.\n\nTraeco's job was to make that legible and prescriptive. Not just \"here's what you spent,\" but \"here's the $4,200 you'd save this month if you swapped these three calls to a smaller model.\"",
       },
       {
         type: 'text',
         heading: 'Who we designed for',
-        body: "I ran a discovery round of seven user interviews across three personas before sketching a single screen: Engineering Managers (the buyers), Technical PMs (the daily users), and Finance/Ops Leads (the auditors). Each persona has a different mental model of cost — engineers think in tokens and latency, finance thinks in dollars per team. The product had to speak both languages simultaneously without picking a side.\n\nThe interviews surfaced three jobs-to-be-done that shaped the IA: real-time + historical cost visibility, prescriptive optimization recommendations, and chargeback-ready attribution per team member.",
+        body: "I ran a discovery round of seven user interviews across three personas before sketching a single screen: Engineering Managers (the buyers), Technical PMs (the daily users), and Finance/Ops Leads (the auditors). Each persona has a different mental model of cost. Engineers think in tokens and latency, finance thinks in dollars per team. The product had to speak both languages simultaneously without picking a side.\n\nThe interviews surfaced three jobs-to-be-done that shaped the IA: real-time + historical cost visibility, prescriptive optimization recommendations, and chargeback-ready attribution per team member.",
       },
       {
         type: 'text',
         heading: 'Design principles',
-        body: "Before any screen, I wrote a short set of non-negotiable principles to anchor every decision:\n\n• Dark-first. Everything lives on a single deep neutral surface. Depth comes from layered fills, not shadows — finance-grade clarity, not consumer-app flash.\n• Money is the hero. Dollar values get the largest type treatment in the type scale (40px bold). Savings render in green, with the prefix and arrow always visible.\n• Yellow is scarce. The brand accent is reserved for the primary CTA and the active nav state. Sprinkling it dilutes affordance.\n• Tabular alignment. Numbers right-aligned with monospace-feel widths so columns scan vertically without effort.\n• Motion supports data. Stats count up, bars grow in, status dots pulse. No decorative transitions — every animation has an informational job.",
+        body: "Before any screen, I wrote a short set of non-negotiable principles to anchor every decision:\n\n• Dark-first. Everything lives on a single deep neutral surface. Depth comes from layered fills, not shadows. Finance grade clarity, not consumer app flash.\n• Money is the hero. Dollar values get the largest type treatment in the type scale (40px bold). Savings render in green, with the prefix and arrow always visible.\n• Yellow is scarce. The brand accent is reserved for the primary CTA and the active nav state. Sprinkling it dilutes affordance.\n• Tabular alignment. Numbers right-aligned with monospace-feel widths so columns scan vertically without effort.\n• Motion supports data. Stats count up, bars grow in, status dots pulse. No decorative transitions. Every animation has an informational job.",
       },
       { type: 'full-width', image: '/images/traeco/dashboard.png' },
       {
@@ -82,18 +117,18 @@ export const projects: Project[] = [
       {
         type: 'text',
         heading: 'Iteration and feedback',
-        body: "I ran weekly design crits with the engineering team and bi-weekly feedback sessions with three pilot users. Two iterations stand out:\n\nThe Recommendations card went through four versions. V1 led with the priority badge — testers fixated on \"high\" without reading the savings. V4 leads with the dollar amount, demotes the badge to a small text label, and adds an inline \"Apply\" affordance. Conversion to action in usability tests went from 22% to 71%.\n\nThe agent trace table started as a flat list of steps. A finance reviewer in our second pilot couldn't tell where the money went. I added a sticky cost column with a running subtotal and color-coded the latency cell — green for fast, amber for slow. Same data, completely different read.",
+        body: "I ran weekly design crits with the engineering team and bi-weekly feedback sessions with three pilot users. Two iterations stand out:\n\nThe Recommendations card went through four versions. V1 led with the priority badge. Testers fixated on \"high\" without reading the savings. V4 leads with the dollar amount, demotes the badge to a small text label, and adds an inline \"Apply\" affordance. Conversion to action in usability tests went from 22% to 71%.\n\nThe agent trace table started as a flat list of steps. A finance reviewer in our second pilot couldn't tell where the money went. I added a sticky cost column with a running subtotal and color-coded the latency cell: green for fast, amber for slow. Same data, completely different read.",
       },
       { type: 'full-width', image: '/images/traeco/website.png' },
       {
         type: 'text',
         heading: 'Marketing site',
-        body: "The marketing site mirrors the product's voice — quiet, data-dense, trustworthy. The hero leads with the outcome (\"Stop overpaying for AI\") rather than the feature list, and the dashboard mockup below it is the product's own UI rendered at scale. Features, ROI proof points, and an integration code snippet sit above the fold sequence; everything below earns its place by being concrete (real numbers, real agent names, real time-to-value).\n\nThe site uses the same type ramp and surface tokens as the product, so visitors who click through into a demo feel zero context switch.",
+        body: "The marketing site mirrors the product's voice: quiet, data dense, trustworthy. The hero leads with the outcome (\"Stop overpaying for AI\") rather than the feature list, and the dashboard mockup below it is the product's own UI rendered at scale. Features, ROI proof points, and an integration code snippet sit above the fold sequence; everything below earns its place by being concrete (real numbers, real agent names, real time-to-value).\n\nThe site uses the same type ramp and surface tokens as the product, so visitors who click through into a demo feel zero context switch.",
       },
       {
         type: 'text',
         heading: 'Outcome',
-        body: "Shipped the dashboard, marketing site, and full design system to production. Took the pitch deck through Series-Seed conversations. The biggest learning was structural: starting with a written principles doc and a token cheat sheet — before any high-fidelity screens — paid back in every subsequent decision and made cross-functional review meaningfully faster.",
+        body: "Shipped the dashboard, marketing site, and full design system to production. Took the pitch deck through Series-Seed conversations. The biggest learning was structural: starting with a written principles doc and a token cheat sheet (before any high fidelity screens) paid back in every subsequent decision and made cross-functional review meaningfully faster.",
       },
     ],
     isProtected: false,
@@ -107,12 +142,42 @@ export const projects: Project[] = [
     year: '2026',
     client: 'Atlix',
     intro:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for the Atlix case study — replace with the real story when ready. Cover the brief, the constraints, and what shipped.',
+      "I co-founded Atlix to make sense of what young Californians are actually talking about. Atlix is a narrative intelligence dashboard that pulls public discourse from across regions and surfaces what's gaining traction, what's losing it, and how people are framing the issues that affect them. I led design across product, brand, pitch deck, and design system. This case study walks through the research, the design choices, and what I learned along the way.",
     deliverables: ['Product Design', 'Pitch Deck Design', 'Design System', 'Brand Identity'],
     heroImage: '/images/atlix/hero.png',
     content: [
+      {
+        type: 'text',
+        heading: 'Where the idea came from',
+        body: "Polling and survey data lag behind. By the time a report goes out, the conversation has already shifted. I wanted to build something that listened to what young people were actually saying in real time, across the regions of California that don't always get the loudest mic. The product had to be useful for advocacy groups, policy researchers, and anyone who needs to read demographic discourse without waiting for a quarterly report.",
+      },
+      {
+        type: 'text',
+        heading: 'Early research and interviews',
+        body: "Before designing screens, I spent a few weeks reading the kinds of reports people in this space already work from, talking to researchers and advocacy folks I had access to, and trying to map out what their day actually looks like. The biggest pattern I noticed was that nobody wanted yet another data tool. They wanted summaries they could trust, with the source still one click away. That shaped the whole product: cards first, summaries upfront, citations always visible.",
+      },
+      {
+        type: 'text',
+        heading: 'Designing the dashboard',
+        body: "The first version of the dashboard was much busier. Filters everywhere, charts on charts, every card trying to say too much at once. After getting feedback from the researchers I'd talked to earlier, I cut it back to what actually matters in the first three seconds: what's the topic, where is it happening, how much is it growing, and who's talking about it. Everything else moved into the detail view. The current layout uses left rail filters for region and issue, a tab row for sort order (most pressing, volume, fastest growing), and a card grid where each card commits to a single narrative.",
+      },
       { type: 'full-width', image: '/images/atlix/dashboard.png' },
+      {
+        type: 'text',
+        heading: 'The pitch deck',
+        body: "The deck went through a lot of versions. Early drafts overexplained the technical side and underexplained the why. The version that landed leads with the gap between when people are talking and when researchers find out about it, then shows what the dashboard does in a few screenshots. I tried to keep slide density low: one idea per slide, one image, very few words.",
+      },
       { type: 'video', src: '/videos/atlix-pitch.mp4', poster: '/images/atlix/hero.png' },
+      {
+        type: 'text',
+        heading: 'Brand',
+        body: "Atlix sits in a category where most tools look either academic and beige or aggressively tech. I wanted a third option. The brand is dark navy with a single accent, type forward, and quiet. The wordmark is a clean sans-serif because the product itself should be the loudest thing in any deck or screenshot.",
+      },
+      {
+        type: 'text',
+        heading: 'What I took away',
+        body: "The biggest thing I learned was that research before design isn't a checkbox. Every time I shortcut it and started designing first, I had to throw work away. The reverse was also true: every conversation I had before opening Figma made the actual design work go faster, because half the decisions were already made. I also learned a lot about restraint. Cutting a field off a card felt scary at first, but it ended up making the whole grid feel more confident than adding one ever would have.",
+      },
     ],
     isProtected: false,
     nextSlug: 'glance',
@@ -218,11 +283,11 @@ export const projects: Project[] = [
     year: '2025',
     client: 'Impeccable Chicken',
     intro:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for the Impeccable Chicken pitch deck — replace with the real story when ready.',
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for the Impeccable Chicken pitch deck. Replace with the real story when ready.',
     deliverables: ['Pitch Deck', 'Brand System'],
     heroImage: '',
     content: [
-      { type: 'placeholder', message: 'Case study in progress — content coming soon.' },
+      { type: 'placeholder', message: 'Case study in progress. Content coming soon.' },
     ],
     isProtected: true,
     nextSlug: 'mark',
