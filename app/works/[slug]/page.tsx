@@ -154,6 +154,23 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                 </div>
               )
             }
+            if (block.type === 'text') {
+              return (
+                <div key={i} className="py-6 max-w-3xl">
+                  {block.heading && (
+                    <h3
+                      className="font-unbounded font-medium text-white text-2xl md:text-3xl mb-4"
+                      style={{ letterSpacing: 'var(--tracking-tight)' }}
+                    >
+                      {block.heading}
+                    </h3>
+                  )}
+                  <p className="text-white/80 font-inter text-sm md:text-base leading-relaxed whitespace-pre-line">
+                    {block.body}
+                  </p>
+                </div>
+              )
+            }
             if (block.type === 'placeholder') {
               return (
                 <div
