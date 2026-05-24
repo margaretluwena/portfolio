@@ -171,6 +171,22 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                 </div>
               )
             }
+            if (block.type === 'link') {
+              const external = /^https?:\/\//i.test(block.href)
+              return (
+                <div key={i} className="py-4 max-w-3xl">
+                  <a
+                    href={block.href}
+                    target={external ? '_blank' : undefined}
+                    rel={external ? 'noopener noreferrer' : undefined}
+                    className="inline-flex items-center gap-2 bg-white text-black rounded-full px-5 py-2.5 text-sm font-roboto-condensed tracking-wide hover:bg-white/90 transition-colors t-smooth"
+                  >
+                    {block.label}
+                    {external && <span aria-hidden="true">↗</span>}
+                  </a>
+                </div>
+              )
+            }
             if (block.type === 'placeholder') {
               return (
                 <div

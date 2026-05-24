@@ -4,6 +4,7 @@ export type ContentBlock =
   | { type: 'video'; src: string; poster?: string }
   | { type: 'placeholder'; message: string }
   | { type: 'text'; heading?: string; body: string }
+  | { type: 'link'; href: string; label: string }
 
 export interface Project {
   slug: string
@@ -93,6 +94,7 @@ export const projects: Project[] = [
     heroImage: '/images/traeco/hero.png',
     heroPosition: 'center',
     content: [
+      { type: 'link', href: 'https://traeco.dev', label: 'Visit live site (traeco.dev)' },
       {
         type: 'text',
         heading: 'The problem',
@@ -128,7 +130,7 @@ export const projects: Project[] = [
       {
         type: 'text',
         heading: 'Outcome',
-        body: "Shipped the dashboard, marketing site, and full design system to production. Took the pitch deck through Series-Seed conversations. The biggest learning was structural: starting with a written principles doc and a token cheat sheet (before any high fidelity screens) paid back in every subsequent decision and made cross-functional review meaningfully faster.",
+        body: "Shipped the dashboard, marketing site, and full design system to production. The marketing site is live at traeco.dev. Took the pitch deck through Series-Seed conversations. The biggest learning was structural: starting with a written principles doc and a token cheat sheet (before any high fidelity screens) paid back in every subsequent decision and made cross-functional review meaningfully faster.",
       },
     ],
     isProtected: false,
