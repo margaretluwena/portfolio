@@ -23,6 +23,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
         <motion.aside
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.2, delay: 0 } }}
           transition={{ duration: 0.6, delay: isOverlay ? 0.4 : 0.35 }}
           className="text-body-lg text-ink/80 md:max-w-[319px] md:justify-self-end md:text-right"
         >
@@ -44,6 +45,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
         <motion.aside
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.2, delay: 0 } }}
           transition={{ duration: 0.6, delay: isOverlay ? 0.5 : 0.45 }}
           className="text-body-lg text-ink/80 md:max-w-[319px]"
         >

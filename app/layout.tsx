@@ -35,10 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${nohemi.variable}`}>
       <body style={{ ["--font-body" as string]: "var(--font-inter)", ["--font-display" as string]: "var(--font-nohemi)" }}>
-        <RouteMotion>
-          {children}
-          {modal}
-        </RouteMotion>
+        <RouteMotion modal={modal}>{children}</RouteMotion>
       </body>
     </html>
   );

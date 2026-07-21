@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { getWork } from "@/lib/works";
@@ -14,14 +14,29 @@ import CaseStudyContent from "@/components/works/CaseStudyContent";
   (shared layoutId). A hard load / direct link skips this and hits the real page.
 
   Close = router.back() (restores the home page). Esc and backdrop click both close.
-  NOTE for Claude Code: verify the shared-layout morph plays here; if the image
-  "pops" instead of flying, ensure RouteMotion's LayoutGroup wraps both slots and
-  that WorkList's card and this panel use the exact same layoutId string.
+  Exit animations run because RouteMotion keys this slot inside AnimatePresence.
+
+  IMPORTANT: the scrolling panel has NO opacity/transform animation of its own —
+  the shared-layout image inside it must stay fully visible while it flies, and an
+  animated ancestor would drag or fade it mid-morph. The flanks fade individually.
 */
 export default function WorkOverlay({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const router = useRouter();
   const work = getWork(slug);
+
+  // Esc closes; body scroll locks while the overlay is up
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && router.back();
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [router]);
+
   if (!work) return null;
 
   return (
@@ -31,27 +46,27 @@ export default function WorkOverlay({ params }: { params: Promise<{ slug: string
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ duration: 0.35 }}
         onClick={() => router.back()}
         className="absolute inset-0 bg-paper/80 backdrop-blur-sm"
       />
-      {/* panel */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute inset-0 overflow-y-auto"
-      >
-        <button
+      {/* panel — static wrapper; content inside animates */}
+      <div className="absolute inset-0 overflow-y-auto">
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
           onClick={() => router.back()}
           aria-label="Close"
-          className="fixed right-[var(--margin-outer)] top-[var(--nav-top)] z-10 text-body-lg text-ink/60 hover:text-ink"
+          className="fixed right-[var(--margin-outer)] top-[var(--nav-top)] z-10 text-body-lg text-ink/60 transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
         >
           Close ✕
-        </button>
+        </motion.button>
         <div className="px-[var(--margin-outer)] pt-[18vh]">
           <CaseStudyContent work={work} variant="overlay" />
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
