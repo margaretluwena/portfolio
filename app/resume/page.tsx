@@ -14,7 +14,7 @@ export default function ResumePage() {
       <PageEnter className="px-[var(--margin-outer)] pt-[20vh] pb-[10vh]">
         <div className="mb-6 flex items-baseline justify-between">
           <h1 className="wordmark text-title text-ink">Resume</h1>
-          <Prox baseOpacity={0.5} maxScale={1.05} radius={140}>
+          <Prox baseOpacity={0.5} maxScale={1} radius={140}>
             <a href="/resume.pdf" className="text-body-lg text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink" download>
               Download PDF ↓
             </a>

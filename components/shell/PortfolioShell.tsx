@@ -79,12 +79,12 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
 
             <motion.div {...enter(0.8)} className="mt-[10vh] max-w-[24ch] space-y-4 text-body-lg text-ink">
               <p>Exploring the intersection of design, product, and the things in between.</p>
-              <p>Currently at USC pursuing Economics and Business, head of BUILD at TroyLabs, and a cofounder of Traeco.</p>
+              <p>From startups to the Fortune 500: currently at USC studying Economics and Business, head of BUILD at TroyLabs, and cofounder of Traeco.</p>
             </motion.div>
           </div>
 
           <motion.div {...enter(0.92)}>
-            <Prox baseOpacity={0.5} maxScale={1.04} radius={160}>
+            <Prox baseOpacity={0.5} maxScale={1} radius={160}>
               <TransitionLink
                 href="/contact"
                 className="inline-flex items-center gap-2 text-body-lg tracking-[0.06em] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"

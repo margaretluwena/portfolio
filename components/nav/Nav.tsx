@@ -31,7 +31,7 @@ export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
             {links.map((l, i) => (
               <span key={l.href}>
                 {i > 0 && <span className="mx-2 select-none text-ink/40">+</span>}
-                <Prox baseOpacity={0.55} maxScale={1.08} radius={110}>
+                <Prox baseOpacity={0.55} maxScale={1} radius={110}>
                   <TransitionLink
                     href={l.href}
                     className="text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
@@ -45,7 +45,7 @@ export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
 
           {/* center: the hand-drawn scribble mark (Figma 99:33), pinned to true center */}
           <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <Prox maxScale={1.15} radius={100}>
+            <Prox maxScale={1.1} radius={100}>
               <TransitionLink
                 href="/"
                 aria-label="Home"

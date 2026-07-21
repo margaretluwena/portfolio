@@ -2,7 +2,8 @@
 
 import { motion } from "motion/react";
 import type { Work } from "@/lib/works";
-import RecapSection from "@/components/works/RecapSection";
+import StudyBlocks from "@/components/works/StudyBlocks";
+import NdaGate from "@/components/works/NdaGate";
 
 /*
   The case-study body, rendered in two places:
@@ -10,11 +11,28 @@ import RecapSection from "@/components/works/RecapSection";
     - variant="overlay" → the intercepting-route overlay on top of the home page
   Both render the SAME centered image with layoutId={`work-${slug}`}, which is what lets
   the image fly from the WorkList column to center when opened as an overlay.
+
+  Protected works: the intro + flanks stay public; scrolling down hits the
+  NdaGate, which reveals the blocks in place on the right password.
 */
 
 export default function CaseStudyContent({ work, variant }: { work: Work; variant: "page" | "overlay" }) {
   const study = work.study;
   const isOverlay = variant === "overlay";
+
+  const body = study?.blocks?.length ? (
+    <section className="mt-[14vh]">
+      {work.protected ? (
+        <NdaGate slug={work.slug} title={work.title}>
+          <StudyBlocks blocks={study.blocks} />
+        </NdaGate>
+      ) : (
+        <StudyBlocks blocks={study.blocks} />
+      )}
+    </section>
+  ) : (
+    <section className="py-[12vh] text-center text-body-lg text-ink/50">Case study in progress.</section>
+  );
 
   return (
     <>
@@ -38,7 +56,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
           transition={{ layout: { duration: 0.8, ease: [0.7, 0, 0.2, 1] } }}
           className="aspect-[541/744] w-[min(541px,80vw)] justify-self-center bg-placeholder"
         >
-          {/* {work.cover && <Image src={work.cover} fill ... />} */}
+          {/* cover lands here once the new covers are ready */}
         </motion.div>
 
         {/* RIGHT flank */}
@@ -54,18 +72,16 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
             <Meta k="Timeline" v={study?.timeline} />
             <Meta k="Team" v={study?.team} />
           </dl>
+          {study?.deliverables?.length ? (
+            <p className="mb-6 text-[13px] uppercase tracking-[0.06em] text-ink/50">
+              {study.deliverables.join(" · ")}
+            </p>
+          ) : null}
           {study?.right.map((p, i) => <p key={i} className="mb-4">{p}</p>)}
         </motion.aside>
       </section>
 
-      {/* Compiled recap. In the overlay it scrolls inside the panel; on the page, down the page. */}
-      {study?.sections?.length ? (
-        <section className="mx-auto mt-[16vh] max-w-[1100px] space-y-[16vh] pb-[10vh]">
-          {study.sections.map((s, i) => <RecapSection key={s.id} section={s} index={i} />)}
-        </section>
-      ) : (
-        <section className="py-[12vh] text-body-lg text-ink/50">Case study in progress.</section>
-      )}
+      {body}
     </>
   );
 }

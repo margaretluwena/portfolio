@@ -60,7 +60,7 @@ export default function WorkOverlay({ params }: { params: Promise<{ slug: string
           transition={{ duration: 0.3, delay: 0.3 }}
           className="fixed right-[var(--margin-outer)] top-[var(--nav-top)] z-10"
         >
-          <Prox baseOpacity={0.6} maxScale={1.08} radius={130}>
+          <Prox baseOpacity={0.6} maxScale={1} radius={130}>
             <button
               onClick={() => router.back()}
               aria-label="Close"

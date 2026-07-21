@@ -1,31 +1,57 @@
+import Image from "next/image";
 import Nav from "@/components/nav/Nav";
 import { PageEnter } from "@/components/providers/PageTransition";
+import { playWorks, type Block } from "@/lib/works";
 
 /*
-  PLAY — experiments, side projects, small interactive things.
-  A loose grid so it feels like a sketchbook, not a portfolio. Fill `items` with real work.
+  PLAY — the sketchbook. Graphics + Small Works collections: Instagram posts,
+  flyers, illustration, hackathon and class projects. Loose image flow, minimal
+  chrome; the images carry it.
 */
-const items = [
-  { title: "Experiment 01", note: "Replace with a real play piece" },
-  { title: "Experiment 02", note: "Shader / motion / toy" },
-  { title: "Experiment 03", note: "Link out or embed" },
-  { title: "Experiment 04", note: "…" },
-];
+
+function flatImages(blocks: Block[] = []): string[] {
+  return blocks.flatMap((b) =>
+    b.type === "image" ? [b.src] : b.type === "pair" ? [b.left, b.right] : []
+  );
+}
 
 export default function PlayPage() {
   return (
     <main className="min-h-screen bg-paper">
       <Nav rightSlot={<span>&ndash; play &ndash;</span>} />
       <PageEnter className="px-[var(--margin-outer)] pt-[22vh] pb-[18vh]">
-        <h1 className="wordmark text-title mb-10 text-ink">Play</h1>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((it) => (
-            <div key={it.title} className="aspect-square bg-placeholder p-6">
-              <p className="wordmark text-body-lg text-ink">{it.title}</p>
-              <p className="mt-1 text-body-lg text-ink/50">{it.note}</p>
+        <h1 className="wordmark text-title mb-3 text-ink">Play</h1>
+        <p className="mb-14 max-w-[52ch] text-body-lg text-ink/60">
+          The sketchbook: graphics, flyers, illustration, and small projects from
+          hackathons, design challenges, and class. Made for fun, kept for the record.
+        </p>
+
+        {playWorks.map((w) => (
+          <section key={w.slug} className="mb-[14vh]">
+            <div className="mb-6 flex items-baseline justify-between">
+              <h2 className="wordmark text-[15px] text-ink">{w.title}</h2>
+              <p className="text-[13px] tracking-[0.02em] text-ink/40">
+                {w.category} · {w.year}
+              </p>
             </div>
-          ))}
-        </div>
+            {w.study?.summary && (
+              <p className="mb-8 max-w-[52ch] text-body-lg text-ink/60">{w.study.summary}</p>
+            )}
+            <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 [&>img]:mb-6">
+              {flatImages(w.study?.blocks).map((src) => (
+                <Image
+                  key={src}
+                  src={src}
+                  alt=""
+                  width={900}
+                  height={900}
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  className="h-auto w-full break-inside-avoid"
+                />
+              ))}
+            </div>
+          </section>
+        ))}
       </PageEnter>
     </main>
   );

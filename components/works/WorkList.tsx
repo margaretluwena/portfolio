@@ -41,10 +41,10 @@ export default function WorkList() {
             </motion.div>
 
             <div className="mt-2 flex max-w-[541px] items-baseline justify-between">
-              <Prox baseOpacity={0.85} maxScale={1.03} radius={120}>
+              <Prox baseOpacity={0.85} maxScale={1} radius={120}>
                 <span className="wordmark text-[15px] text-ink">{work.title}</span>
               </Prox>
-              <Prox baseOpacity={0.4} maxScale={1.03} radius={120}>
+              <Prox baseOpacity={0.4} maxScale={1} radius={120}>
                 <span className="text-[13px] tracking-[0.02em] text-ink">
                   {work.category} · {work.year}
                 </span>

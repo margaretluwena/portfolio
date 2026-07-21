@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PROTECTED_SLUGS } from '@/lib/projects'
+import { PROTECTED_SLUGS } from '@/lib/works'
 
 const PASSWORDS: Record<string, string | undefined> = {
   mark: process.env.MARK_PASSWORD,

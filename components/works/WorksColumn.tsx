@@ -36,15 +36,19 @@ export default function WorksColumn({ onIndex }: { onIndex?: (i: number) => void
     const pulling = (atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0) || cur !== 0;
     if (!pulling) return;
 
-    // resistance grows as the stretch grows
-    const give = 0.38 * (1 - Math.min(1, Math.abs(cur) / MAX_STRETCH));
-    const next = Math.max(-MAX_STRETCH, Math.min(MAX_STRETCH, cur - e.deltaY * give));
+    y.stop(); // wheeling mid-springback must take over, not fight the spring
+
+    // normalize notchy mouse wheels (trackpads stream small deltas already)
+    const d = Math.sign(e.deltaY) * Math.min(Math.abs(e.deltaY), 60);
+    // progressive resistance: generous at rest, asymptotic near full stretch
+    const give = 0.26 * Math.pow(1 - Math.min(1, Math.abs(cur) / MAX_STRETCH), 1.4);
+    const next = Math.max(-MAX_STRETCH, Math.min(MAX_STRETCH, cur - d * give));
     y.set(next);
 
     if (settle.current) clearTimeout(settle.current);
     settle.current = setTimeout(() => {
-      animate(y, 0, { type: "spring", stiffness: 240, damping: 19 }); // the bounce back
-    }, 130);
+      animate(y, 0, { type: "spring", stiffness: 200, damping: 15 }); // springs past 0 — the bounce
+    }, 90);
   }
 
   // live index: the work whose card is nearest 40% down the viewport
@@ -75,10 +79,10 @@ export default function WorksColumn({ onIndex }: { onIndex?: (i: number) => void
         <WorkList />
 
         {/* colophon — the column's sign-off */}
-        <footer className="mt-[18vh] border-t border-ink/15 pb-[8vh] pt-6 text-[13px] leading-relaxed text-ink/40">
+        <footer className="mt-[7vh] border-t border-ink/15 pb-[8vh] pt-5 text-[13px] leading-relaxed text-ink/40">
           <p>Designed in Figma. Built with Claude Code.</p>
           <p>
-            Los Angeles, CA — <LocalTime /> · © {new Date().getFullYear()} Margaret Luwena
+            Los Angeles, CA · <LocalTime /> · © {new Date().getFullYear()} Margaret Luwena
           </p>
         </footer>
       </motion.div>
