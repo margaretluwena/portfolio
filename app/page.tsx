@@ -1,109 +1,77 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import ProjectCard from '@/components/ProjectCard'
-import FadeInOnScroll from '@/components/FadeInOnScroll'
-import { projects } from '@/lib/projects'
+"use client";
 
-const SKILLS = [
-  'UX / UI Design',
-  'Product Design',
-  'Website Design',
-  'Brand Identity',
-  'Brand Strategy',
-  'Design Systems',
-  'Art Direction',
-  'Pitch Deck Design',
-  'Illustration',
-]
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import InteractiveTexture from "@/components/hero/InteractiveTexture";
+import PortfolioShell from "@/components/shell/PortfolioShell";
+import Nav from "@/components/nav/Nav";
 
-export default function Home() {
-  const displayProjects = projects.filter((p) => p.slug !== 'impeccable-chicken')
+/*
+  THE OPENING.
+  1. Full-screen interactive texture + "MARGARET LUWENA" centered (Figma frame 96:4).
+  2. After a beat, the texture recedes to a top band and the wordmark TRAVELS to its
+     corner slot in the left panel — one element, animated via Framer's shared layout
+     (layoutId="wordmark"), so no manual measuring.
+  3. The rest of the main page reveals.
+
+  The corner wordmark itself is rendered inside PortfolioShell when `reveal` is true,
+  which is what hands the shared-layout element off from center to corner.
+*/
+
+const HOLD_MS = 1900;
+
+export default function Page() {
+  const reduce = useReducedMotion();
+  const [phase, setPhase] = useState<"intro" | "main">("intro");
+
+  useEffect(() => {
+    if (reduce) return setPhase("main");
+    const t = setTimeout(() => setPhase("main"), HOLD_MS);
+    return () => clearTimeout(t);
+  }, [reduce]);
+
+  const isMain = phase === "main";
 
   return (
-    <main className="bg-black min-h-screen">
-      {/* Intro */}
-      <FadeInOnScroll>
-        <section className="px-6 md:px-12 py-16 max-w-3xl">
-          <p className="text-white/70 font-inter text-sm leading-relaxed">
-            Hi, my name is Margaret! I&apos;m currently a student at USC with a passion for
-            UI/UX, design, and creative direction.
-          </p>
-        </section>
-      </FadeInOnScroll>
+    <main
+      className="relative min-h-screen bg-paper"
+      onClick={() => !isMain && setPhase("main")} /* click to skip */
+    >
+        {/* persistent texture: full screen in intro, collapses to the top band */}
+        <motion.div
+          className="fixed inset-x-0 top-0 z-0 overflow-hidden"
+          initial={false}
+          animate={{ height: isMain ? "42vh" : "100vh" }}
+          transition={{ duration: reduce ? 0 : 1.1, ease: [0.7, 0, 0.2, 1] }}
+        >
+          <InteractiveTexture className="h-full w-full" />
+        </motion.div>
 
-      {/* Project grid */}
-      <section id="works" className="px-6 md:px-12 pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10">
-          {displayProjects.map((project, i) => (
-            <FadeInOnScroll key={project.slug} delay={i * 60}>
-              <ProjectCard project={project} />
-            </FadeInOnScroll>
-          ))}
-        </div>
-      </section>
+        {/* nav fades in with the main page */}
+        <motion.div
+          initial={false}
+          animate={{ opacity: isMain ? 1 : 0 }}
+          transition={{ duration: 0.6, delay: isMain ? 0.5 : 0 }}
+          style={{ pointerEvents: isMain ? "auto" : "none" }}
+        >
+          <Nav rightSlot={isMain ? <span>– selected works –</span> : null} />
+        </motion.div>
 
-      {/* About — eyebrow left, bio + photos locked right (matches What I do / Get in touch) */}
-      <FadeInOnScroll>
-      <section id="info" className="px-6 md:px-12 py-24 border-t border-white/10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
-          <p className="eyebrow">More about me!</p>
-          <div>
-            <p className="text-white/80 font-inter text-sm leading-relaxed mb-4">
-              I love making digital experiences by blending design and a distinct story. My approach
-              combines creativity with innovation, and I strive to deliver work that feels both
-              functional and inspiring. Primary tools involve Figma, Procreate, and Claude Code.
-            </p>
-            <p className="text-white/80 font-inter text-sm leading-relaxed mb-10">
-              From startups to the Fortune 500, I work diligently on projects to bring ideas to
-              life, shaping interactive experiences that connect with audiences. Every project is
-              more than just that. It&apos;s my own journey of transforming a vision into digital
-              realities that (hopefully) leave a lasting impression.
-            </p>
-
-            {/* Photos — matched height, bottom-aligned, below the bio */}
-            <div className="flex items-end gap-6">
-              <div className="h-60 flex-shrink-0">
-                <Image
-                  src="/images/margaret-photo.jpg"
-                  alt="Margaret Luwena"
-                  width={414}
-                  height={450}
-                  className="h-full w-auto object-cover"
-                />
-              </div>
-              <div className="h-60 flex-shrink-0">
-                <Image
-                  src="/images/margaret-chibi.png"
-                  alt="Margaret illustration"
-                  width={1180}
-                  height={1668}
-                  className="h-full w-auto"
-                />
-              </div>
-            </div>
+        {/* intro-position wordmark: present only during intro; layoutId hands it to the corner */}
+        {!isMain && (
+          <div className="fixed inset-0 z-20 grid place-items-center">
+            <motion.h1
+              layoutId="wordmark"
+              className="wordmark text-hero text-ink px-6 text-center"
+              transition={{ layout: { duration: reduce ? 0 : 1.1, ease: [0.7, 0, 0.2, 1] } }}
+            >
+              MARGARET LUWENA
+            </motion.h1>
           </div>
-        </div>
-      </section>
-      </FadeInOnScroll>
+        )}
 
-      {/* What I do — eyebrow left, list locked right */}
-      <FadeInOnScroll>
-      <section className="px-6 md:px-12 py-16 border-t border-white/10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
-          <p className="eyebrow">What I do</p>
-          <div className="flex flex-col gap-2">
-            {SKILLS.map((skill) => (
-              <p
-                key={skill}
-                className="text-white font-roboto-condensed text-lg tracking-wide uppercase"
-              >
-                {skill}
-              </p>
-            ))}
-          </div>
-        </div>
-      </section>
-      </FadeInOnScroll>
-    </main>
-  )
+        {/* main page underneath; renders the corner wordmark when revealed */}
+        <PortfolioShell reveal={isMain} reduce={!!reduce} />
+      </main>
+  );
 }

@@ -1,19 +1,28 @@
-import ProjectCard from '@/components/ProjectCard'
-import FadeInOnScroll from '@/components/FadeInOnScroll'
-import { projects } from '@/lib/projects'
+import Link from "next/link";
+import { works } from "@/lib/works";
+import Nav from "@/components/nav/Nav";
 
-export default function WorksPage() {
+/*
+  WORKS index — every project (the home page shows only `featured`; this lists all).
+  Simple, legible list. Add thumbnails per work when assets exist.
+*/
+export default function WorksIndex() {
   return (
-    <main className="bg-black min-h-screen">
-      <section className="px-6 md:px-12 pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10">
-          {projects.map((project, i) => (
-            <FadeInOnScroll key={project.slug} delay={i * 60}>
-              <ProjectCard project={project} />
-            </FadeInOnScroll>
+    <main className="min-h-screen bg-paper">
+      <Nav rightSlot={<Link href="/">LOGO</Link>} />
+      <section className="px-[var(--margin-outer)] pt-[22vh] pb-[18vh]">
+        <h1 className="wordmark text-title mb-10 text-ink">Works</h1>
+        <ul className="divide-y divide-ink/10 border-y border-ink/10">
+          {works.map((w) => (
+            <li key={w.slug}>
+              <Link href={`/works/${w.slug}`} className="group flex items-baseline justify-between py-5 text-body-lg">
+                <span className="wordmark text-ink transition-opacity group-hover:opacity-60">{w.title}</span>
+                <span className="text-ink/50">{w.category} · {w.year}</span>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
     </main>
-  )
+  );
 }

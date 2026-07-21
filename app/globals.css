@@ -1,120 +1,61 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme inline {
-  --font-unbounded: var(--nf-unbounded);
-  --font-roboto-condensed: var(--nf-roboto-condensed);
-  --font-inter: var(--nf-inter);
-
-  --color-background: #000000;
-  --color-foreground: #ffffff;
-
-  /* Motion tokens — single easing language sitewide */
-  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
-  --duration-fast: 300ms;
-  --duration-base: 500ms;
-  --duration-slow: 700ms;
-
-  /* Type scale tokens — keep weights in clean steps: 400 body / 500 emphasis / 700 display / 900 wordmark */
-  --text-eyebrow: 0.625rem; /* 10px — eyebrows, tag pills */
-  --text-label: 0.75rem;    /* 12px — small nav/labels */
-  --text-body: 0.875rem;    /* 14px — body */
-  --text-body-lg: 1rem;     /* 16px — emphasized body */
-  --text-h3: 1.5rem;        /* 24px — small headings */
-  --text-h2: 2.25rem;       /* 36px — page section headings */
-  --text-h1: 3rem;          /* 48px — page titles */
-
-  /* Letter-spacing tokens */
-  --tracking-display: -0.05em; /* giant wordmark + hero */
-  --tracking-tight: -0.03em;   /* page titles (h1) */
-  --tracking-body: 0.005em;    /* body copy — gentle openness for readability */
-  --tracking-wide: 0.1em;      /* small labels */
-  --tracking-eyebrow: 0.3em;   /* uppercase eyebrows */
-
-  /* Border / outline colors — subtle dark grey for refined button outlines */
-  --color-border-subtle: #3f3f46; /* zinc-700 */
-}
+/*
+  DESIGN TOKENS — extracted from Figma "Portfolio Revamp" (node 96:6).
+  Every value here is derived from the actual file, not guessed.
+  Change tokens here; components read them through Tailwind's theme (see tailwind.config.ts)
+  or directly via var(--token).
+*/
 
 :root {
-  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
-  --duration-fast: 300ms;
-  --duration-base: 500ms;
-  --duration-slow: 700ms;
-}
+  /* ---- Color ---- */
+  --ink: 0 0% 0%;                 /* #000000 — primary text */
+  --ink-70: 0 0% 0% / 0.7;        /* nav */
+  --ink-50: 0 0% 0% / 0.5;        /* secondary / CONTACT */
+  --accent: 298 62% 41%;          /* #a728ab — "is a design engineer" */
+  --paper: 0 0% 100%;             /* #ffffff — background */
+  --placeholder: 0 0% 85%;        /* #d9d9d9 — work image placeholder */
 
-body {
-  background: #000;
-  color: #fff;
-  font-family: var(--nf-inter, system-ui, sans-serif);
-}
+  /* ---- Type ---- */
+  --font-display: "Nohemi", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --tracking-display: -0.05em;    /* -1.25px @ 25px in Figma */
 
-* {
-  box-sizing: border-box;
-}
-
-/* Motion utility — pairs with `transition-*` classes from Tailwind */
-.t-smooth {
-  transition-duration: var(--duration-base);
-  transition-timing-function: var(--ease-out-expo);
-}
-.t-fast {
-  transition-duration: var(--duration-fast);
-  transition-timing-function: var(--ease-out-expo);
-}
-
-/* Eyebrow label — the small uppercase "INTRO", "DELIVERABLES" etc. that
-   appears in 9 places across the site. Single source of truth. */
-.eyebrow {
-  font-family: var(--nf-roboto-condensed), system-ui, sans-serif;
-  font-size: var(--text-eyebrow);
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  color: rgb(255 255 255 / 0.4);
-  font-weight: 400;
-}
-
-/* Small tag pill — used for category/year badges next to titles */
-.tag-pill {
-  display: inline-block;
-  font-family: var(--nf-roboto-condensed), system-ui, sans-serif;
-  font-size: var(--text-eyebrow);
-  letter-spacing: var(--tracking-wide);
-  border: 1px solid var(--color-border-subtle, #3f3f46);
-  padding: 0.125rem 0.5rem;
-  font-weight: 400;
-}
-
-/* Body copy default tracking — slightly opens Inter for readability */
-.body-copy {
-  font-family: var(--nf-inter), system-ui, sans-serif;
-  letter-spacing: var(--tracking-body);
-  line-height: 1.6;
-}
-
-/* Scroll reveal — initial state for FadeInOnScroll wrapper */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition:
-    opacity var(--duration-slow) var(--ease-out-expo),
-    transform var(--duration-slow) var(--ease-out-expo);
-  will-change: opacity, transform;
-}
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
+  /* ---- Layout ----
+     Figma canvas is 1728 wide. Ratios preserved so it scales:
+       outer margin  92 / 1728  = 5.32vw
+       content inset 161 / 1728 = 9.32vw
+       column split  864 / 1728 = 50%
+       nav band      y81..y111  = 30px tall
+  */
+  --margin-outer: clamp(1.25rem, 5.32vw, 6rem);
+  --inset-left: clamp(1.5rem, 9.32vw, 10rem);
+  --nav-top: clamp(1.5rem, 4.7vw, 5rem);
+  --col-split: 50%;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal,
-  .reveal.is-visible {
-    opacity: 1;
-    transform: none;
-    transition: none;
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    transition-duration: 0.001ms !important;
-  }
+}
+
+html { background: hsl(var(--paper)); color: hsl(var(--ink)); }
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Wordmark helper — matches Figma "MARGARET LUWENA" treatment */
+.wordmark {
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-display);
+  font-weight: 400;
 }

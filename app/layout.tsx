@@ -1,42 +1,45 @@
-import type { Metadata } from 'next'
-import { Unbounded, Roboto_Condensed, Inter } from 'next/font/google'
-import './globals.css'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import localFont from "next/font/local";
+import "./globals.css";
+import RouteMotion from "@/components/providers/RouteMotion";
 
-const unbounded = Unbounded({
-  subsets: ['latin'],
-  variable: '--nf-unbounded',
-  weight: ['400', '500', '600', '700', '900'],
-})
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
-const robotoCondensed = Roboto_Condensed({
-  subsets: ['latin'],
-  variable: '--nf-roboto-condensed',
-  weight: ['400', '700'],
-})
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--nf-inter',
-})
+/*
+  Nohemi is not on Google Fonts. Drop Nohemi-Regular.woff2 into /public/fonts/.
+  Weight used in the design: Regular (400).
+*/
+const nohemi = localFont({
+  src: [{ path: "../public/fonts/Nohemi-Regular.woff2", weight: "400", style: "normal" }],
+  variable: "--font-nohemi",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: 'Margaret Luwena',
-  description: 'UI/UX Designer & Creative Director based in Los Angeles.',
-}
+  title: "Margaret Luwena",
+  description: "Margaret Luwena is a design engineer.",
+};
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+/*
+  `modal` is the parallel route slot (app/@modal) that renders the works overlay
+  on top of `children` without unmounting the page beneath it.
+*/
+export default function RootLayout({
+  children,
+  modal,
+}: {
+  children: React.ReactNode;
+  modal: React.ReactNode;
+}) {
   return (
-    <html
-      lang="en"
-      className={`${unbounded.variable} ${robotoCondensed.variable} ${inter.variable} antialiased`}
-    >
-      <body className="bg-black text-white antialiased">
-        <Header />
-        {children}
-        <Footer />
+    <html lang="en" className={`${inter.variable} ${nohemi.variable}`}>
+      <body style={{ ["--font-body" as string]: "var(--font-inter)", ["--font-display" as string]: "var(--font-nohemi)" }}>
+        <RouteMotion>
+          {children}
+          {modal}
+        </RouteMotion>
       </body>
     </html>
-  )
+  );
 }
