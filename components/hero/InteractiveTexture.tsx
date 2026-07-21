@@ -18,8 +18,8 @@
   Off-screen → render loop pauses.
 */
 
-import { Canvas, useFrame, useLoader } from "@react-three/fiber";
-import { useRef, useMemo, Suspense } from "react";
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
+import { useRef, useMemo, useEffect, Suspense } from "react";
 import { useInView, useReducedMotion } from "motion/react";
 import * as THREE from "three";
 
@@ -108,8 +108,24 @@ function TexturePlane({ motionAmount }: { motionAmount: number }) {
 
   tex.colorSpace = THREE.SRGBColorSpace;
 
+  // Track the pointer on window, not the canvas: the texture sits at z-0 under
+  // the content grid, so canvas-local pointer events die on whatever's above it.
+  const { gl } = useThree();
+  useEffect(() => {
+    if (motionAmount === 0) return;
+    const onMove = (e: PointerEvent) => {
+      const r = gl.domElement.getBoundingClientRect();
+      if (r.height < 2) return;
+      target.current.set(
+        (e.clientX - r.left) / r.width,
+        1 - (e.clientY - r.top) / r.height // GL v: up
+      );
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [gl, motionAmount]);
+
   useFrame((state, delta) => {
-    target.current.set((state.pointer.x + 1) / 2, (state.pointer.y + 1) / 2);
     mouse.current.lerp(target.current, Math.min(1, delta * 3.5));
     uniforms.uMouse.value.copy(mouse.current);
     uniforms.uTime.value = state.clock.elapsedTime;
@@ -135,6 +151,7 @@ export default function InteractiveTexture({ className }: { className?: string }
         gl={{ antialias: true }}
         dpr={[1, 2]}
         frameloop={reduce || !inView ? "demand" : "always"}
+        resize={{ debounce: 0 }} /* keep the buffer in step with the collapsing band */
       >
         <Suspense fallback={null}>
           <TexturePlane motionAmount={reduce ? 0 : 1} />
