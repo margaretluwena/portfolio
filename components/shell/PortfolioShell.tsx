@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "motion/react";
 import WorkList from "@/components/works/WorkList";
 
@@ -74,13 +75,13 @@ export default function PortfolioShell({ reveal, reduce }: { reveal: boolean; re
           </div>
 
           <motion.div {...fade(0.7)}>
-            <a
-              href="mailto:luwena@usc.edu"
+            <Link
+              href="/contact"
               className="inline-flex items-center gap-2 text-body-lg tracking-wide text-ink/50 transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
             >
               CONTACT
               <Image src="/assets/contact-arrow.svg" alt="" width={16} height={18} />
-            </a>
+            </Link>
           </motion.div>
         </aside>
 
