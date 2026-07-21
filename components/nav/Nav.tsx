@@ -1,11 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 /*
-  Top nav band. In Figma it sits between two hairlines (y81..y111) and spans the
-  full width: nav links left, center logo mark, "- selected works -" right.
-  On the main page this bar overlays the interactive texture, so keep it text-only.
+  Top nav band. In Figma it sits between two hairlines (y81..y111 on the 1728
+  canvas): nav links at the content inset (x161), scribble mark on center, and
+  the contextual label ("- selected works -") right. Text-only so it can sit
+  over the interactive texture.
 */
 
 const links = [
@@ -17,50 +19,39 @@ const links = [
 
 export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-40">
-      <div className="border-b border-ink/15">
-        <div
-          className="pointer-events-auto flex items-center justify-between px-[var(--margin-outer)]"
-          style={{ paddingTop: "var(--nav-top)", paddingBottom: "0.6rem" }}
-        >
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-40" style={{ paddingTop: "var(--nav-top)" }}>
+      <div className="border-y border-ink/25">
+        <div className="pointer-events-auto relative flex items-center justify-between px-[var(--inset-left)] py-[0.35rem]">
           {/* left: nav links, joined by + like the design */}
           <nav className="text-body-lg text-ink/70">
             {links.map((l, i) => (
               <span key={l.href}>
                 {i > 0 && <span className="mx-2 select-none">+</span>}
-                <Link href={l.href} className="transition-opacity hover:opacity-60">
+                <Link
+                  href={l.href}
+                  className="transition-opacity hover:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+                >
                   {l.label}
                 </Link>
               </span>
             ))}
           </nav>
 
-          {/* center: the scribble logo mark (imgVector1 in Figma). Swap in the SVG. */}
-          <Link href="/" aria-label="Home" className="transition-transform hover:rotate-6">
-            <ScribbleMark />
+          {/* center: the hand-drawn scribble mark (Figma 99:33), pinned to true center */}
+          <Link
+            href="/"
+            aria-label="Home"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-transform hover:rotate-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          >
+            <Image src="/assets/scribble-mark.svg" alt="" width={42} height={33} priority />
           </Link>
 
           {/* right: contextual label, e.g. "- selected works -" */}
-          <div className="text-body-lg italic text-ink min-w-[12ch] text-right">
+          <div className="min-w-[12ch] text-right text-body-lg italic text-ink">
             {rightSlot}
           </div>
         </div>
       </div>
     </header>
-  );
-}
-
-/* Placeholder for the hand-drawn mark. Replace `d` with the path exported
-   from Figma (node 99:33 / imgVector1) or drop the SVG file in and <img> it. */
-function ScribbleMark() {
-  return (
-    <svg width="42" height="34" viewBox="0 0 54 42" fill="none" className="text-ink">
-      <path
-        d="M8 21c6-14 20-16 26-6 4 7-4 16-12 14-6-2-6-11 1-13 8-2 16 5 16 13"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
   );
 }

@@ -1,41 +1,43 @@
 "use client";
 
 /*
-  THE SIGNATURE GRAPHIC.
-  A flowing, painterly gradient that reacts to the cursor — this is both the
-  full-screen intro background AND the top band on the main page (same component,
-  different height).
+  THE SIGNATURE GRAPHIC — the real Figma texture (assets/hero-texture.png,
+  exported from node 116:73), liquid-displaced around the cursor.
 
-  Why a shader instead of distorting your Figma PNG: the flow reads as *alive*,
-  responds to the mouse per-pixel, costs one draw call, and needs no asset. The
-  palette below is sampled from your Figma texture (pale yellow-green → sage →
-  soft blue → white) so it stays on-brand.
+  One fullscreen quad, one texture read. The vertex shader bypasses the camera
+  entirely (gl_Position = position), so no ortho/zoom sizing traps.
 
-  If you'd rather use your actual Figma texture, see OPTION B at the bottom.
+  Mapping: cover-fit, anchored to the BOTTOM of the image. The PNG's baked
+  white fade lives at its bottom edge, and the Figma main page shows exactly
+  that bottom slice in the top band — so during the 100vh → 36vh collapse the
+  fade stays glued to the band's bottom and the page always melts into white.
 
-  Interaction: cursor position feeds a uniform; the flow warps toward the pointer
-  and a soft highlight follows it. Falls back to a static gradient when
-  prefers-reduced-motion is set.
+  Interaction: eased cursor uniform; pixels near the cursor get a swirl + push
+  displacement and a faint sheen. Idle: a slow breathing warp.
+  prefers-reduced-motion → static frame (uMotion = 0, no render loop).
+  Off-screen → render loop pauses.
 */
 
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRef, useMemo } from "react";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { useRef, useMemo, Suspense } from "react";
+import { useInView, useReducedMotion } from "motion/react";
 import * as THREE from "three";
+
+const vertex = /* glsl */ `
+  varying vec2 vUv;
+  void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }
+`;
 
 const fragment = /* glsl */ `
   precision highp float;
+  uniform sampler2D uTex;
+  uniform vec2  uRes;      // canvas px
+  uniform vec2  uTexRes;   // texture px
   uniform float uTime;
-  uniform vec2  uMouse;      // 0..1, follows cursor (eased)
-  uniform vec2  uRes;
+  uniform vec2  uMouse;    // 0..1, y up, eased
+  uniform float uMotion;   // 0 = static, 1 = animated
   varying vec2  vUv;
 
-  // palette sampled from the Figma texture
-  const vec3 c0 = vec3(0.83, 0.86, 0.62); // pale yellow-green
-  const vec3 c1 = vec3(0.72, 0.80, 0.72); // sage
-  const vec3 c2 = vec3(0.74, 0.82, 0.86); // soft blue
-  const vec3 c3 = vec3(1.00, 1.00, 1.00); // white
-
-  // cheap flowing noise
   vec2 hash(vec2 p){ p = vec2(dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3))); return fract(sin(p)*43758.5453)*2.0-1.0; }
   float noise(vec2 p){
     vec2 i = floor(p), f = fract(p);
@@ -44,93 +46,100 @@ const fragment = /* glsl */ `
                mix(dot(hash(i+vec2(0,1)),f-vec2(0,1)), dot(hash(i+vec2(1,1)),f-vec2(1,1)), u.x), u.y);
   }
 
+  // cover-fit, anchored bottom (image y=0) and centered horizontally
+  vec2 coverUv(vec2 uv){
+    float ca = uRes.x / uRes.y;
+    float ta = uTexRes.x / uTexRes.y;
+    vec2 s = vec2(1.0), o = vec2(0.0);
+    if (ca > ta) { s.y = ta / ca; }                       // wider canvas: crop height, keep bottom
+    else         { s.x = ca / ta; o.x = (1.0 - s.x)*0.5; } // taller canvas: crop sides, centered
+    return uv * s + o;
+  }
+
   void main(){
     vec2 uv = vUv;
-    // warp the field toward the cursor
-    vec2 toMouse = uv - uMouse;
-    float pull = 0.18 / (dot(toMouse, toMouse) + 0.05);
-    vec2 p = uv * 3.0 + toMouse * pull * 0.35;
+    float aspect = uRes.x / uRes.y;
 
-    float t = uTime * 0.06;
-    float n = 0.0;
-    n += 0.60 * noise(p + t);
-    n += 0.30 * noise(p * 2.0 - t * 1.3);
-    n += 0.15 * noise(p * 4.0 + t * 0.7);
-    n = n * 0.5 + 0.5;
+    // aspect-corrected vector to cursor for circular falloff
+    vec2 tm = vec2((uv.x - uMouse.x) * aspect, uv.y - uMouse.y);
+    float d = length(tm);
+    float influence = smoothstep(0.5, 0.0, d) * uMotion;
 
-    vec3 col = mix(c0, c1, smoothstep(0.2, 0.5, n));
-    col = mix(col, c2, smoothstep(0.45, 0.75, n));
-    col = mix(col, c3, smoothstep(0.7, 1.0, n));
+    vec2 dir  = tm / (d + 1e-4);
+    vec2 perp = vec2(-dir.y, dir.x);
 
-    // soft highlight following the cursor
-    col = mix(col, c3, smoothstep(0.35, 0.0, length(toMouse)) * 0.25);
+    // swirl + gentle push away from the cursor, modulated by flowing noise
+    float mod1 = 0.7 + 0.3 * noise(uv * 3.0 + uTime * 0.15);
+    vec2 disp = (perp * 0.055 + dir * 0.03) * influence * mod1;
 
-    // fade to white toward the bottom (matches the Figma gradient overlay)
-    col = mix(col, c3, smoothstep(0.35, 1.0, uv.y));
+    // idle breathing warp so the field never feels frozen
+    vec2 idle = vec2(
+      noise(uv * 2.5 + uTime * 0.05),
+      noise(uv * 2.5 - uTime * 0.04)
+    ) * 0.012 * uMotion;
+
+    vec4 tex = texture2D(uTex, coverUv(uv + disp + idle));
+    // composite over white (the PNG fade may be alpha-based)
+    vec3 col = mix(vec3(1.0), tex.rgb, tex.a);
+
+    // faint sheen following the cursor
+    col += influence * 0.05;
 
     gl_FragColor = vec4(col, 1.0);
   }
 `;
 
-const vertex = /* glsl */ `
-  varying vec2 vUv;
-  void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
-`;
-
-function Plane() {
-  const mat = useRef<THREE.ShaderMaterial>(null!);
-  const mouse = useRef(new THREE.Vector2(0.5, 0.5));
-  const target = useRef(new THREE.Vector2(0.5, 0.5));
-  const { size } = useThree();
+function TexturePlane({ motionAmount }: { motionAmount: number }) {
+  const tex = useLoader(THREE.TextureLoader, "/assets/hero-texture.png");
+  const mouse = useRef(new THREE.Vector2(0.5, 0.6));
+  const target = useRef(new THREE.Vector2(0.5, 0.6));
 
   const uniforms = useMemo(
     () => ({
-      uTime: { value: 0 },
-      uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+      uTex: { value: tex },
       uRes: { value: new THREE.Vector2(1, 1) },
+      uTexRes: { value: new THREE.Vector2(tex.image.width, tex.image.height) },
+      uTime: { value: 0 },
+      uMouse: { value: new THREE.Vector2(0.5, 0.6) },
+      uMotion: { value: motionAmount },
     }),
-    []
+    [tex, motionAmount]
   );
 
+  tex.colorSpace = THREE.SRGBColorSpace;
+
   useFrame((state, delta) => {
-    // read the shared pointer (0..1, y flipped for GL)
-    target.current.set(
-      (state.pointer.x + 1) / 2,
-      (state.pointer.y + 1) / 2
-    );
-    mouse.current.lerp(target.current, Math.min(1, delta * 3)); // easing = weight
+    target.current.set((state.pointer.x + 1) / 2, (state.pointer.y + 1) / 2);
+    mouse.current.lerp(target.current, Math.min(1, delta * 3.5));
     uniforms.uMouse.value.copy(mouse.current);
     uniforms.uTime.value = state.clock.elapsedTime;
-    uniforms.uRes.value.set(size.width, size.height);
+    uniforms.uRes.value.set(state.size.width, state.size.height);
   });
 
   return (
-    <mesh>
+    <mesh frustumCulled={false}>
       <planeGeometry args={[2, 2]} />
-      <shaderMaterial ref={mat} fragmentShader={fragment} vertexShader={vertex} uniforms={uniforms} />
+      <shaderMaterial fragmentShader={fragment} vertexShader={vertex} uniforms={uniforms} />
     </mesh>
   );
 }
 
 export default function InteractiveTexture({ className }: { className?: string }) {
+  const reduce = useReducedMotion();
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(wrapRef);
+
   return (
-    <div className={className} aria-hidden>
+    <div ref={wrapRef} className={className} aria-hidden>
       <Canvas
         gl={{ antialias: true }}
-        orthographic
-        camera={{ position: [0, 0, 1], zoom: 1 }}
         dpr={[1, 2]}
+        frameloop={reduce || !inView ? "demand" : "always"}
       >
-        <Plane />
+        <Suspense fallback={null}>
+          <TexturePlane motionAmount={reduce ? 0 : 1} />
+        </Suspense>
       </Canvas>
     </div>
   );
 }
-
-/*
-  OPTION B — use your real Figma texture instead of the shader:
-  - Pull the asset (imgImage1 in the Figma design-context response) into /public/assets/hero-texture.png
-  - Swap the fragment shader for a texture read + a domain-warp displacement around uMouse
-    (sample the texture at uv + warp*flow). Ask Claude Code: "make InteractiveTexture sample
-    /assets/hero-texture.png and liquid-displace it around the cursor instead of the noise palette."
-*/

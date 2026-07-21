@@ -30,7 +30,7 @@ const config: Config = {
         "corner": ["clamp(1rem, 1.45vw, 1.5625rem)", { lineHeight: "1", letterSpacing: "-0.05em" }], // 25px wordmark
         "title": ["clamp(1.75rem, 2.3vw, 2.5rem)", { lineHeight: "1.1" }],                            // 40px "is a design engineer"
         "body-lg": ["clamp(1rem, 1.45vw, 1.5625rem)", { lineHeight: "1.35" }],                         // 25px body / nav / labels
-        "hero": ["clamp(2.75rem, 8vw, 7rem)", { lineHeight: "1", letterSpacing: "-0.04em" }],          // intro MARGARET LUWENA
+        "hero": ["clamp(2.5rem, 6.83vw, 7.375rem)", { lineHeight: "1", letterSpacing: "-0.05em" }],    // intro MARGARET LUWENA — 118px @1728 (Figma 96:5)
       },
     },
   },
