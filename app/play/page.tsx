@@ -1,5 +1,5 @@
-import Link from "next/link";
 import Nav from "@/components/nav/Nav";
+import { PageEnter } from "@/components/providers/PageTransition";
 
 /*
   PLAY — experiments, side projects, small interactive things.
@@ -15,8 +15,8 @@ const items = [
 export default function PlayPage() {
   return (
     <main className="min-h-screen bg-paper">
-      <Nav rightSlot={<Link href="/">LOGO</Link>} />
-      <section className="px-[var(--margin-outer)] pt-[22vh] pb-[18vh]">
+      <Nav rightSlot={<span>&ndash; play &ndash;</span>} />
+      <PageEnter className="px-[var(--margin-outer)] pt-[22vh] pb-[18vh]">
         <h1 className="wordmark text-title mb-10 text-ink">Play</h1>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((it) => (
@@ -26,7 +26,7 @@ export default function PlayPage() {
             </div>
           ))}
         </div>
-      </section>
+      </PageEnter>
     </main>
   );
 }

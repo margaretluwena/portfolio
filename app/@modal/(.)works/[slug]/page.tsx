@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { getWork } from "@/lib/works";
 import CaseStudyContent from "@/components/works/CaseStudyContent";
+import Prox from "@/components/ui/Prox";
 
 /*
   INTERCEPTING OVERLAY.
@@ -52,17 +53,23 @@ export default function WorkOverlay({ params }: { params: Promise<{ slug: string
       />
       {/* panel — static wrapper; content inside animates */}
       <div className="absolute inset-0 overflow-y-auto">
-        <motion.button
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3, delay: 0.3 }}
-          onClick={() => router.back()}
-          aria-label="Close"
-          className="fixed right-[var(--margin-outer)] top-[var(--nav-top)] z-10 text-body-lg text-ink/60 transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+          className="fixed right-[var(--margin-outer)] top-[var(--nav-top)] z-10"
         >
-          Close ✕
-        </motion.button>
+          <Prox baseOpacity={0.6} maxScale={1.08} radius={130}>
+            <button
+              onClick={() => router.back()}
+              aria-label="Close"
+              className="text-body-lg tracking-[0.06em] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+            >
+              Close ✕
+            </button>
+          </Prox>
+        </motion.div>
         <div className="px-[var(--margin-outer)] pt-[18vh]">
           <CaseStudyContent work={work} variant="overlay" />
         </div>

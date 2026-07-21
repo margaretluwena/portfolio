@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "motion/react";
 import WorksColumn from "@/components/works/WorksColumn";
 import RotatingTitle from "@/components/shell/RotatingTitle";
 import Prox from "@/components/ui/Prox";
+import { TransitionLink } from "@/components/providers/PageTransition";
 
 /*
   MAIN PAGE.
@@ -21,11 +21,11 @@ import Prox from "@/components/ui/Prox";
 
 const socials = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/margaretluwena/", icon: "/assets/icon-linkedin.png" },
-  { label: "X", href: "https://x.com/", icon: "/assets/icon-x.png" },
+  { label: "X", href: "https://x.com/marluwena", icon: "/assets/icon-x.png" },
   { label: "Instagram", href: "https://www.instagram.com/margaret.luwena/", icon: "/assets/icon-instagram.png" },
 ];
 
-export default function PortfolioShell({ reveal, reduce }: { reveal: boolean; reduce: boolean }) {
+export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { reveal: boolean; reduce: boolean; onWorksIndex?: (i: number) => void }) {
   // staggered entrance: fade + rise, sequenced after the wordmark lands (~1.1s flight)
   const enter = (delay: number) => ({
     initial: false as const,
@@ -62,7 +62,7 @@ export default function PortfolioShell({ reveal, reduce }: { reveal: boolean; re
             <motion.ul {...enter(0.68)} className="mt-5 flex items-center gap-5">
               {socials.map((s) => (
                 <li key={s.label}>
-                  <Prox maxScale={1.18} radius={90}>
+                  <Prox maxScale={1.22} radius={120}>
                     <a
                       href={s.href}
                       aria-label={s.label}
@@ -85,20 +85,20 @@ export default function PortfolioShell({ reveal, reduce }: { reveal: boolean; re
 
           <motion.div {...enter(0.92)}>
             <Prox baseOpacity={0.5} maxScale={1.04} radius={160}>
-              <Link
+              <TransitionLink
                 href="/contact"
-                className="inline-flex items-center gap-2 text-body-lg tracking-wide text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                className="inline-flex items-center gap-2 text-body-lg tracking-[0.06em] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
               >
                 CONTACT
                 <Image src="/assets/contact-arrow.svg" alt="" width={16} height={18} />
-              </Link>
+              </TransitionLink>
             </Prox>
           </motion.div>
         </aside>
 
         {/* RIGHT — scrolls inside itself, rubber-bands at the ends */}
         <motion.section {...enter(0.6)} className="md:border-l md:border-ink/20">
-          <WorksColumn />
+          <WorksColumn onIndex={onWorksIndex} />
         </motion.section>
       </div>
     </div>

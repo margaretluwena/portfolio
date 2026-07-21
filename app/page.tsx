@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import InteractiveTexture from "@/components/hero/InteractiveTexture";
 import PortfolioShell from "@/components/shell/PortfolioShell";
 import Nav from "@/components/nav/Nav";
+import { featuredWorks } from "@/lib/works";
 
 /*
   THE OPENING.
@@ -12,24 +13,34 @@ import Nav from "@/components/nav/Nav";
   2. After a beat, the texture recedes to a top band and the wordmark TRAVELS to its
      corner slot in the left panel — one element, animated via Framer's shared layout
      (layoutId="wordmark"), so no manual measuring.
-  3. The rest of the main page reveals.
+  3. The rest of the main page reveals (staggered, inside PortfolioShell).
 
-  The corner wordmark itself is rendered inside PortfolioShell when `reveal` is true,
-  which is what hands the shared-layout element off from center to corner.
+  The intro plays once per session — returning to "/" via ABOUT or the scribble
+  goes straight to the main page (sessionStorage gate, applied pre-paint).
 
-  Texture collapse and wordmark flight share ONE duration + ease so they read as a
-  single gesture. Skip: click anywhere or press any key.
+  Texture collapse and wordmark flight share ONE duration + ease so they read as
+  a single gesture. Skip: click anywhere or press any key.
 */
 
 const HOLD_MS = 1900;
 const GESTURE = { duration: 1.1, ease: [0.7, 0, 0.2, 1] as const };
+const SEEN_KEY = "ml-intro-seen";
 
 export default function Page() {
   const reduce = useReducedMotion();
   const [phase, setPhase] = useState<"intro" | "main">("intro");
+  const [worksIndex, setWorksIndex] = useState(0);
+
+  // returning within the session? skip the intro before first paint
+  useLayoutEffect(() => {
+    if (reduce || sessionStorage.getItem(SEEN_KEY)) setPhase("main");
+  }, [reduce]);
 
   useEffect(() => {
-    if (reduce) return setPhase("main");
+    if (phase === "main") {
+      sessionStorage.setItem(SEEN_KEY, "1");
+      return;
+    }
     const t = setTimeout(() => setPhase("main"), HOLD_MS);
     const skip = () => setPhase("main");
     window.addEventListener("keydown", skip);
@@ -37,7 +48,7 @@ export default function Page() {
       clearTimeout(t);
       window.removeEventListener("keydown", skip);
     };
-  }, [reduce]);
+  }, [phase]);
 
   const isMain = phase === "main";
 
@@ -65,14 +76,23 @@ export default function Page() {
         />
       </motion.div>
 
-      {/* nav fades in with the main page */}
+      {/* nav fades in with the main page; right slot = live works index */}
       <motion.div
         initial={false}
         animate={{ opacity: isMain ? 1 : 0 }}
         transition={{ duration: 0.6, delay: isMain && !reduce ? 0.5 : 0 }}
         style={{ pointerEvents: isMain ? "auto" : "none" }}
       >
-        <Nav rightSlot={isMain ? <span>&ndash; selected works &ndash;</span> : null} />
+        <Nav
+          rightSlot={
+            isMain ? (
+              <span className="tabular-nums">
+                {String(worksIndex + 1).padStart(2, "0")} / {String(featuredWorks.length).padStart(2, "0")}
+                <span className="ml-3 not-italic text-ink/50">&ndash; selected works &ndash;</span>
+              </span>
+            ) : null
+          }
+        />
       </motion.div>
 
       {/* intro-position wordmark: present only during intro; layoutId hands it to the corner */}
@@ -89,7 +109,7 @@ export default function Page() {
       )}
 
       {/* main page underneath; renders the corner wordmark when revealed */}
-      <PortfolioShell reveal={isMain} reduce={!!reduce} />
+      <PortfolioShell reveal={isMain} reduce={!!reduce} onWorksIndex={setWorksIndex} />
     </main>
   );
 }

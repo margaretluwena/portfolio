@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import RouteMotion from "@/components/providers/RouteMotion";
+import { TransitionProvider } from "@/components/providers/PageTransition";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
@@ -17,8 +18,18 @@ const nohemi = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Margaret Luwena",
-  description: "Margaret Luwena is a design engineer.",
+  metadataBase: new URL("https://margaretluwena.net"),
+  title: { default: "Margaret Luwena", template: "%s — Margaret Luwena" },
+  description:
+    "Margaret Luwena is a design engineer — exploring the intersection of design, product, and the things in between.",
+  openGraph: {
+    title: "Margaret Luwena",
+    description: "Design engineer. USC. Head of BUILD at TroyLabs. Cofounder of Traeco.",
+    url: "https://margaretluwena.net",
+    siteName: "Margaret Luwena",
+    type: "website",
+  },
+  twitter: { card: "summary_large_image", creator: "@marluwena" },
 };
 
 /*
@@ -35,7 +46,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${nohemi.variable}`}>
       <body style={{ ["--font-body" as string]: "var(--font-inter)", ["--font-display" as string]: "var(--font-nohemi)" }}>
-        <RouteMotion modal={modal}>{children}</RouteMotion>
+        <RouteMotion modal={modal}>
+          <TransitionProvider>{children}</TransitionProvider>
+        </RouteMotion>
       </body>
     </html>
   );
