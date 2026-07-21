@@ -62,7 +62,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
             <motion.ul {...enter(0.68)} className="mt-5 flex items-center gap-5">
               {socials.map((s) => (
                 <li key={s.label}>
-                  <Prox maxScale={1.22} radius={120}>
+                  <Prox maxScale={1.12} radius={55}>
                     <a
                       href={s.href}
                       aria-label={s.label}

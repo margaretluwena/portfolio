@@ -46,7 +46,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
           className="text-body-lg text-ink/80 md:max-w-[319px] md:justify-self-end md:text-right"
         >
           <h1 className="wordmark text-corner mb-3 text-ink">{work.title}</h1>
-          {study?.summary && <p className="mb-6 italic">{study.summary}</p>}
+          {study?.summary && <p className="mb-6 text-ink/55">{study.summary}</p>}
           {study?.left.map((p, i) => <p key={i} className="mb-4">{p}</p>)}
         </motion.aside>
 
