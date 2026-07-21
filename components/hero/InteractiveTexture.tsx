@@ -72,13 +72,17 @@ const fragment = /* glsl */ `
     float mod1 = 0.7 + 0.3 * noise(uv * 3.0 + uTime * 0.15);
     vec2 disp = (perp * 0.055 + dir * 0.03) * influence * mod1;
 
-    // idle breathing warp so the field never feels frozen
+    // idle breathing + a slower deep drift so the field visibly lives on its own
     vec2 idle = vec2(
       noise(uv * 2.5 + uTime * 0.05),
       noise(uv * 2.5 - uTime * 0.04)
-    ) * 0.012 * uMotion;
+    ) * 0.02 * uMotion;
+    vec2 drift = vec2(
+      noise(uv * 1.6 + uTime * 0.07),
+      noise(uv * 1.7 - uTime * 0.05)
+    ) * 0.022 * uMotion;
 
-    vec4 tex = texture2D(uTex, coverUv(uv + disp + idle));
+    vec4 tex = texture2D(uTex, coverUv(uv + disp + idle + drift));
     // composite over white (the PNG fade may be alpha-based)
     vec3 col = mix(vec3(1.0), tex.rgb, tex.a);
 
@@ -111,11 +115,13 @@ function TexturePlane({ motionAmount }: { motionAmount: number }) {
   // Track the pointer on window, not the canvas: the texture sits at z-0 under
   // the content grid, so canvas-local pointer events die on whatever's above it.
   const { gl } = useThree();
+  const lastMove = useRef(-10);
   useEffect(() => {
     if (motionAmount === 0) return;
     const onMove = (e: PointerEvent) => {
       const r = gl.domElement.getBoundingClientRect();
       if (r.height < 2) return;
+      lastMove.current = performance.now() / 1000;
       target.current.set(
         (e.clientX - r.left) / r.width,
         1 - (e.clientY - r.top) / r.height // GL v: up
@@ -126,9 +132,19 @@ function TexturePlane({ motionAmount }: { motionAmount: number }) {
   }, [gl, motionAmount]);
 
   useFrame((state, delta) => {
-    mouse.current.lerp(target.current, Math.min(1, delta * 3.5));
+    // pointer quiet for a bit → a phantom cursor wanders a slow lissajous path,
+    // so the swirl keeps living on its own
+    const t = state.clock.elapsedTime;
+    const idleFor = performance.now() / 1000 - lastMove.current;
+    if (idleFor > 2.5) {
+      target.current.set(
+        0.5 + 0.38 * Math.sin(t * 0.21),
+        0.55 + 0.28 * Math.sin(t * 0.33 + 1.7)
+      );
+    }
+    mouse.current.lerp(target.current, Math.min(1, delta * (idleFor > 2.5 ? 1.2 : 3.5)));
     uniforms.uMouse.value.copy(mouse.current);
-    uniforms.uTime.value = state.clock.elapsedTime;
+    uniforms.uTime.value = t;
     uniforms.uRes.value.set(state.size.width, state.size.height);
   });
 

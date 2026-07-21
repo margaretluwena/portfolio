@@ -3,19 +3,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
-import WorkList from "@/components/works/WorkList";
+import WorksColumn from "@/components/works/WorksColumn";
+import RotatingTitle from "@/components/shell/RotatingTitle";
+import Prox from "@/components/ui/Prox";
 
 /*
   MAIN PAGE.
   50/50 split (Figma center guide at x=864/1728):
-    LEFT  — fixed, does not scroll: wordmark (arrives from the intro), tagline,
+    LEFT  — fixed: wordmark (arrives from the intro), rotating tagline,
             socials, bio, CONTACT.
-    RIGHT — scrolls: the "selected works" column.
-  The interactive texture band and nav are owned by the Stage (app/page.tsx),
-  which is also where the wordmark's shared-layout journey ends — here.
+    RIGHT — its own scroll container with rubber-band overscroll (WorksColumn).
 
   The wordmark is NOT inside the fading group: it must stay fully opaque while
-  it flies in from the intro (shared layoutId). Everything else fades in around it.
+  it flies in from the intro (shared layoutId). Everything else enters after it
+  lands — a staggered rise, top to bottom, so the page assembles around the name.
 */
 
 const socials = [
@@ -25,17 +26,21 @@ const socials = [
 ];
 
 export default function PortfolioShell({ reveal, reduce }: { reveal: boolean; reduce: boolean }) {
-  const fade = (delay: number) => ({
+  // staggered entrance: fade + rise, sequenced after the wordmark lands (~1.1s flight)
+  const enter = (delay: number) => ({
     initial: false as const,
-    animate: { opacity: reveal ? 1 : 0 },
-    transition: { duration: reduce ? 0 : 0.6, delay: reduce ? 0 : delay },
+    animate: { opacity: reveal ? 1 : 0, y: reveal ? 0 : 16 },
+    transition: {
+      opacity: { duration: reduce ? 0 : 0.55, delay: reduce ? 0 : delay },
+      y: { duration: reduce ? 0 : 0.65, delay: reduce ? 0 : delay, ease: [0.22, 1, 0.36, 1] as const },
+    },
   });
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative md:h-screen md:overflow-hidden">
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-2">
-        {/* LEFT — sticky */}
-        <aside className="md:sticky md:top-0 md:flex md:h-screen flex-col justify-between px-[var(--inset-left)] pt-[30vh] pb-[calc(var(--margin-outer)+0.5rem)]">
+        {/* LEFT — pinned */}
+        <aside className="flex flex-col justify-between px-[var(--inset-left)] pt-[30vh] pb-[calc(var(--margin-outer)+0.5rem)] md:h-screen">
           <div>
             {/* the wordmark lands HERE — shared layoutId with the intro; never faded */}
             {reveal && (
@@ -48,46 +53,52 @@ export default function PortfolioShell({ reveal, reduce }: { reveal: boolean; re
               </motion.p>
             )}
 
-            <motion.div {...fade(0.55)}>
-              <p className="text-title italic text-accent mt-2 font-body">is a design engineer</p>
+            <motion.div {...enter(0.55)}>
+              <p className="text-title italic mt-2 font-body">
+                <RotatingTitle active={reveal} />
+              </p>
+            </motion.div>
 
-              <ul className="mt-5 flex items-center gap-5">
-                {socials.map((s) => (
-                  <li key={s.label}>
+            <motion.ul {...enter(0.68)} className="mt-5 flex items-center gap-5">
+              {socials.map((s) => (
+                <li key={s.label}>
+                  <Prox maxScale={1.18} radius={90}>
                     <a
                       href={s.href}
                       aria-label={s.label}
                       target="_blank"
                       rel="noreferrer"
-                      className="block transition-opacity hover:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                      className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
                     >
                       <Image src={s.icon} alt="" width={26} height={26} className="h-[26px] w-auto" />
                     </a>
-                  </li>
-                ))}
-              </ul>
+                  </Prox>
+                </li>
+              ))}
+            </motion.ul>
 
-              <div className="mt-[10vh] max-w-[24ch] space-y-4 text-body-lg text-ink">
-                <p>Exploring the intersection of design, product, and the things in between.</p>
-                <p>Currently at USC pursuing Economics and Business, head of BUILD at TroyLabs, and a cofounder of Traeco.</p>
-              </div>
+            <motion.div {...enter(0.8)} className="mt-[10vh] max-w-[24ch] space-y-4 text-body-lg text-ink">
+              <p>Exploring the intersection of design, product, and the things in between.</p>
+              <p>Currently at USC pursuing Economics and Business, head of BUILD at TroyLabs, and a cofounder of Traeco.</p>
             </motion.div>
           </div>
 
-          <motion.div {...fade(0.7)}>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 text-body-lg tracking-wide text-ink/50 transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-            >
-              CONTACT
-              <Image src="/assets/contact-arrow.svg" alt="" width={16} height={18} />
-            </Link>
+          <motion.div {...enter(0.92)}>
+            <Prox baseOpacity={0.5} maxScale={1.04} radius={160}>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 text-body-lg tracking-wide text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+              >
+                CONTACT
+                <Image src="/assets/contact-arrow.svg" alt="" width={16} height={18} />
+              </Link>
+            </Prox>
           </motion.div>
         </aside>
 
-        {/* RIGHT — scrolls */}
-        <motion.section {...fade(0.45)} className="px-[var(--margin-outer)] pt-[16vh] pb-[20vh] md:border-l md:border-ink/20">
-          <WorkList />
+        {/* RIGHT — scrolls inside itself, rubber-bands at the ends */}
+        <motion.section {...enter(0.6)} className="md:border-l md:border-ink/20">
+          <WorksColumn />
         </motion.section>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import Prox from "@/components/ui/Prox";
 
 /*
   Top nav band. In Figma it sits between two hairlines (y81..y111 on the 1728
@@ -11,7 +12,7 @@ import Link from "next/link";
 */
 
 const links = [
-  { label: "ABOUT", href: "/about" },
+  { label: "ABOUT", href: "/" }, // the main page IS the about
   { label: "WORKS", href: "/works" },
   { label: "PLAY", href: "/play" },
   { label: "RESUME", href: "/resume" },
@@ -23,16 +24,18 @@ export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
       <div className="border-y border-ink/25">
         <div className="pointer-events-auto relative flex items-center justify-between px-[var(--inset-left)] py-[0.35rem]">
           {/* left: nav links, joined by + like the design */}
-          <nav className="text-body-lg text-ink/70">
+          <nav className="text-body-lg">
             {links.map((l, i) => (
               <span key={l.href}>
-                {i > 0 && <span className="mx-2 select-none">+</span>}
-                <Link
-                  href={l.href}
-                  className="transition-opacity hover:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-                >
-                  {l.label}
-                </Link>
+                {i > 0 && <span className="mx-2 select-none text-ink/40">+</span>}
+                <Prox baseOpacity={0.55} maxScale={1.08} radius={110}>
+                  <Link
+                    href={l.href}
+                    className="text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+                  >
+                    {l.label}
+                  </Link>
+                </Prox>
               </span>
             ))}
           </nav>

@@ -59,3 +59,18 @@ body {
   letter-spacing: var(--tracking-display);
   font-weight: 400;
 }
+
+/* blinking caret for the rotating tagline */
+.tagline-caret {
+  display: inline-block;
+  width: 2px;
+  height: 0.95em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  animation: caret-blink 1.1s steps(1) infinite;
+}
+@keyframes caret-blink { 50% { opacity: 0; } }
+
+/* internal scroll column without a visible scrollbar (works column) */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
