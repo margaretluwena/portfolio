@@ -88,7 +88,7 @@ export default function Page() {
             isMain ? (
               <span className="tabular-nums">
                 {String(worksIndex + 1).padStart(2, "0")} / {String(featuredWorks.length).padStart(2, "0")}
-                <span className="ml-3 not-italic text-ink/50">&ndash; selected works &ndash;</span>
+                <span className="ml-3 hidden not-italic text-ink/50 sm:inline">&ndash; selected works &ndash;</span>
               </span>
             ) : null
           }

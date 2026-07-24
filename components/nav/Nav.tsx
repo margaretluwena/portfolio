@@ -27,10 +27,10 @@ export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
       <div className="border-y border-ink/25">
         <div className="pointer-events-auto relative flex items-center justify-between px-[var(--inset-left)] py-[0.35rem]">
           {/* left: nav links, joined by + like the design */}
-          <nav className="text-body-lg tracking-[0.06em]">
+          <nav className="text-[12px] tracking-[0.06em] md:text-body-lg">
             {links.map((l, i) => (
               <span key={l.href}>
-                {i > 0 && <span className="mx-2 select-none text-ink/40">+</span>}
+                {i > 0 && <span className="mx-1.5 select-none text-ink/40 md:mx-2">+</span>}
                 <Prox baseOpacity={0.55} maxScale={1} radius={110}>
                   <TransitionLink
                     href={l.href}
@@ -44,7 +44,7 @@ export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
           </nav>
 
           {/* center: the hand-drawn scribble mark (Figma 99:33), pinned to true center */}
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <span className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
             <Prox maxScale={1.1} radius={100}>
               <TransitionLink
                 href="/"
@@ -57,7 +57,7 @@ export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
           </span>
 
           {/* right: contextual label, e.g. "- selected works -" or the live index */}
-          <div className="min-w-[12ch] text-right text-body-lg italic text-ink">
+          <div className="text-right text-[12px] italic text-ink md:min-w-[12ch] md:text-body-lg">
             {rightSlot}
           </div>
         </div>

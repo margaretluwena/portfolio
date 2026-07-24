@@ -18,7 +18,7 @@
 */
 
 import { useEffect, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ContactShadows, Html, RoundedBox } from "@react-three/drei";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import * as THREE from "three";
@@ -51,6 +51,10 @@ function Scene({ phase, onSend }: { phase: Phase; onSend: () => void }) {
   const flap = useRef<THREE.Group>(null!);
   const flyStart = useRef(0);
   const tmp = useRef(new THREE.Vector3());
+  // fit the scene on narrow canvases: the letter is 2.4 units wide, a phone
+  // viewport shows ~1.7 — scale everything down together (Html follows)
+  const { viewport } = useThree();
+  const fit = Math.min(1, viewport.width / 3.4);
 
   useFrame((state, dt) => {
     const L = letter.current, F = flap.current;
@@ -97,6 +101,7 @@ function Scene({ phase, onSend }: { phase: Phase; onSend: () => void }) {
       <directionalLight position={[-3, 5, 2]} intensity={1.1} />
       <directionalLight position={[0, 0.5, 5]} intensity={0.35} /> {/* soft front fill so the paper reads white */}
 
+      <group scale={fit}>
       {/* LETTER */}
       <group ref={letter} position={LETTER_HOME.toArray()}>
         <RoundedBox args={[2.4, 1.5, 0.02]} radius={0.04}>
@@ -108,7 +113,7 @@ function Scene({ phase, onSend }: { phase: Phase; onSend: () => void }) {
               <p className="text-[17px] text-ink">Margaret Luwena is…</p>
               <div className="mt-4 space-y-2 text-[15px] text-ink/60">
                 <p>a designer, engineer, and builder.</p>
-                <p>Say hello — luwena@usc.edu</p>
+                <p>Say hello: luwena@usc.edu</p>
               </div>
               <button
                 onClick={onSend}
@@ -137,6 +142,7 @@ function Scene({ phase, onSend }: { phase: Phase; onSend: () => void }) {
       </group>
 
       <ContactShadows position={[0, -1.21, 0]} opacity={0.35} scale={8} blur={2.4} far={2.5} />
+      </group>
     </>
   );
 }
@@ -166,7 +172,7 @@ export default function LetterCard() {
           <p className="text-body-lg text-ink">Margaret Luwena is…</p>
           <div className="mt-6 space-y-3 text-body-lg text-ink/60">
             <p>a designer, engineer, and builder.</p>
-            <p>Say hello — luwena@usc.edu</p>
+            <p>Say hello: luwena@usc.edu</p>
           </div>
           {phase !== "sent" ? (
             <button

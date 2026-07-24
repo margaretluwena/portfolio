@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, LayoutGroup } from "motion/react";
+import { AnimatePresence, LayoutGroup, MotionConfig } from "motion/react";
 import { useSelectedLayoutSegment } from "next/navigation";
 
 /*
@@ -24,11 +24,16 @@ export default function RouteMotion({
   const modalActive = modalSegment !== null && modalSegment !== "__DEFAULT__";
 
   return (
-    <LayoutGroup>
-      {children}
-      <AnimatePresence>
-        {modalActive && <div key="works-overlay">{modal}</div>}
-      </AnimatePresence>
-    </LayoutGroup>
+    /* reducedMotion="user": every motion component (morphs, reveals, entrances)
+       drops transform/layout animation for prefers-reduced-motion users —
+       the CSS blanket rule alone can't reach framer's JS-driven transforms */
+    <MotionConfig reducedMotion="user">
+      <LayoutGroup>
+        {children}
+        <AnimatePresence>
+          {modalActive && <div key="works-overlay">{modal}</div>}
+        </AnimatePresence>
+      </LayoutGroup>
+    </MotionConfig>
   );
 }
