@@ -19,7 +19,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { ContactShadows, Html, RoundedBox } from "@react-three/drei";
+import { ContactShadows, Environment, Html, Lightformer, RoundedBox } from "@react-three/drei";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import * as THREE from "three";
 
@@ -97,9 +97,15 @@ function Scene({ phase, onSend }: { phase: Phase; onSend: () => void }) {
 
   return (
     <>
-      <ambientLight intensity={0.85} />
-      <directionalLight position={[-3, 5, 2]} intensity={1.1} />
-      <directionalLight position={[0, 0.5, 5]} intensity={0.35} /> {/* soft front fill so the paper reads white */}
+      {/* image-based studio light (local Lightformers, no CDN fetch like the
+          named presets): big soft top + front panels make the paper read white */}
+      <Environment resolution={64}>
+        <Lightformer intensity={1.3} position={[0, 4, 2]} rotation-x={-Math.PI / 2.6} scale={[7, 5, 1]} />
+        <Lightformer intensity={1.0} position={[0, 0.6, 6]} scale={[9, 6, 1]} />
+        <Lightformer intensity={0.5} position={[-5, 1.5, 1]} rotation-y={Math.PI / 2.4} scale={[4, 5, 1]} />
+      </Environment>
+      <ambientLight intensity={0.35} />
+      <directionalLight position={[-3, 5, 2]} intensity={0.7} /> {/* keeps a hint of directional shading */}
 
       <group scale={fit}>
       {/* LETTER */}

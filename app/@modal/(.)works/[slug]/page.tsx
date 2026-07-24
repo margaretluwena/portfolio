@@ -70,7 +70,7 @@ export default function WorkOverlay({ params }: { params: Promise<{ slug: string
             </button>
           </Prox>
         </motion.div>
-        <div className="px-[var(--margin-outer)] pt-[18vh]">
+        <div className="px-[var(--inset-left)] pt-[18vh]">
           <CaseStudyContent work={work} variant="overlay" />
         </div>
       </div>

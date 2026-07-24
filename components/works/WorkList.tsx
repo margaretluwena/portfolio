@@ -24,7 +24,8 @@ export default function WorkList() {
           <Link href={`/works/${work.slug}`} className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink">
             <motion.div
               layoutId={`work-${work.slug}`}
-              className="relative aspect-[3/4] w-full max-w-[541px] overflow-hidden bg-placeholder"
+              data-cursor="view"
+              className="relative aspect-[3/4] w-full max-w-[541px] cursor-none overflow-hidden bg-placeholder"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-15%" }}

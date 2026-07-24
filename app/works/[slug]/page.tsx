@@ -26,7 +26,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
   return (
     <main className="min-h-screen bg-paper">
       <Nav rightSlot={<Link href="/">LOGO</Link>} />
-      <div className="px-[var(--margin-outer)] pt-[22vh]">
+      <div className="px-[var(--inset-left)] pt-[22vh]">
         <CaseStudyContent work={work} variant="page" />
         <footer className="pb-[10vh]">
           <Link href="/" className="text-body-lg text-ink/50 hover:text-ink">&#8592; All works</Link>

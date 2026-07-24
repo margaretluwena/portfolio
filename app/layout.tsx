@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import RouteMotion from "@/components/providers/RouteMotion";
 import { TransitionProvider } from "@/components/providers/PageTransition";
+import Cursor from "@/components/ui/Cursor";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
@@ -49,6 +50,7 @@ export default function RootLayout({
         <RouteMotion modal={modal}>
           <TransitionProvider>{children}</TransitionProvider>
         </RouteMotion>
+        <Cursor />
       </body>
     </html>
   );
