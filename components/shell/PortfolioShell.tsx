@@ -111,9 +111,8 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
           </motion.div>
         </aside>
 
-        {/* RIGHT — fixed masked scroll context on desktop (.works-column in
-            globals.css); cards dissolve into the texture band as they rise.
-            Normal flow on mobile. */}
+        {/* RIGHT — fixed scroll context on desktop (.works-column in
+            globals.css); normal flow on mobile. */}
         <motion.section {...enter(0.6)}>
           <WorksColumn onIndex={onWorksIndex} />
         </motion.section>
