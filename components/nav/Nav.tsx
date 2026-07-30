@@ -5,13 +5,15 @@ import Prox from "@/components/ui/Prox";
 import { TransitionLink } from "@/components/providers/PageTransition";
 
 /*
-  Top nav band. In Figma it sits between two hairlines (y81..y111 on the 1728
-  canvas): nav links at the content inset (x161), scribble mark on center, and
-  the contextual label ("- selected works -") right. Text-only so it can sit
-  over the interactive texture.
+  Top nav band: two 1px hairlines 32px apart, the top one 62px from the
+  viewport top; text vertically centered between them. Nav links at the
+  content inset (--inset), scribble mark on center, contextual label
+  ("- selected works -") right. The band is FIXED — the works column
+  scrolls underneath it. Text-only so it can sit over the texture.
 
-  Small caps read best tracked OUT (+0.06em) — the inverse of the wordmark's
-  tight display tracking. All links: proximity hover + soft page transition.
+  Everything in the band is --type-label (13px, +0.06em); the right slot is
+  the italic variant. Small caps read best tracked OUT — the inverse of the
+  wordmark's tight display tracking. All links: proximity hover + transition.
 */
 
 const links = [
@@ -23,15 +25,15 @@ const links = [
 
 export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-40" style={{ paddingTop: "var(--nav-top)" }}>
-      <div className="border-y border-ink/25">
-        <div className="pointer-events-auto relative flex items-center justify-between px-[var(--inset-left)] py-[0.35rem]">
+    <header className="pointer-events-none fixed inset-x-0 top-[62px] z-40">
+      <div className="h-[32px] border-y border-hairline">
+        <div className="pointer-events-auto relative flex h-full items-center justify-between px-[var(--inset)]">
           {/* left: nav links, joined by + like the design */}
-          <nav className="text-[12px] tracking-[0.06em] md:text-body-lg">
+          <nav className="text-label uppercase">
             {links.map((l, i) => (
               <span key={l.href}>
                 {i > 0 && <span className="mx-1.5 select-none text-ink/40 md:mx-2">+</span>}
-                <Prox baseOpacity={0.55} maxScale={1} radius={110}>
+                <Prox baseOpacity={0.7} maxScale={1} radius={110}>
                   <TransitionLink
                     href={l.href}
                     className="text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
@@ -57,7 +59,7 @@ export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
           </span>
 
           {/* right: contextual label, e.g. "- selected works -" or the live index */}
-          <div className="text-right text-[12px] italic text-ink md:min-w-[12ch] md:text-body-lg">
+          <div className="text-right text-label italic text-ink md:min-w-[12ch]">
             {rightSlot}
           </div>
         </div>

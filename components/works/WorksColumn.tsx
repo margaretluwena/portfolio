@@ -75,11 +75,13 @@ export default function WorksColumn({ onIndex }: { onIndex?: (i: number) => void
       aria-label="Selected works"
       className="no-scrollbar md:h-screen md:overflow-y-auto focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ink/40"
     >
-      <motion.div style={{ y }} className="px-[var(--margin-outer)] pt-[16vh]">
+      {/* first card's top edge sits 178px from the viewport top (fixed px — it
+          scrolls under the fixed nav band); width and inset from the layout tokens */}
+      <motion.div style={{ y }} className="px-[var(--inset)] pt-12 md:w-[var(--card-w)] md:px-0 md:pt-[178px]">
         <WorkList />
 
         {/* colophon — the column's sign-off */}
-        <footer className="mt-[7vh] border-t border-ink/15 pb-[8vh] pt-5 text-[13px] leading-relaxed text-ink/40">
+        <footer className="mt-[7vh] border-t border-hairline pb-[8vh] pt-5 text-label tracking-normal leading-relaxed text-ink/40">
           <p>Designed in Figma. Built with Claude Code.</p>
           <p>
             Los Angeles, CA · <LocalTime /> · © {new Date().getFullYear()} Margaret Luwena

@@ -23,17 +23,45 @@
   --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
   --tracking-display: -0.05em;    /* -1.25px @ 25px in Figma */
 
-  /* ---- Layout ----
-     Figma canvas is 1728 wide. Ratios preserved so it scales:
-       outer margin  92 / 1728  = 5.32vw
-       content inset 161 / 1728 = 9.32vw
-       column split  864 / 1728 = 50%
-       nav band      y81..y111  = 30px tall
-  */
+  /* ---- Type scale (MAIN PAGE) ----
+     Fixed px on purpose: type must NOT scale with the viewport.
+     The only size change is the one-notch step-down at the mobile
+     breakpoint below. Five steps cover the whole page. */
+  --type-label: 13px;       /* nav, CONTACT, "selected works" (italic variant) */
+  --type-name: 18px;        /* MARGARET LUWENA — Nohemi, -0.02em */
+  --type-display: 25px;     /* "is a design engineer" — Nohemi italic, -0.05em, accent */
+  --type-body: 16px;        /* bio paragraphs — Inter, lh 1.45 */
+  --type-secondary: 15px;   /* card descriptions — Inter, lh 1.45, ink-50 */
+
+  /* ---- Layout (MAIN PAGE) ----
+     Viewport-relative on purpose: margins and columns scale, type doesn't.
+     Measured off Main_Page.png @1440 (Figma 96:6 disagrees on inset — see
+     tailwind.config.ts note). Card right edge lands at --col-right + --card-w = 89.5vw. */
+  --edge: 5.3vw;                        /* full-height vertical hairlines */
+  --inset: clamp(24px, 11vw, 200px);    /* content start; mirrored on the right */
+  --col-right: 42.5vw;                  /* left edge of the work cards */
+  --card-w: 47vw;                       /* card width */
+  --card-gap: 5.4vw;                    /* vertical gap between stacked cards */
+  --hairline: rgba(0, 0, 0, 0.12);      /* all 1px rules */
+
+  /* ---- Legacy layout vars ----
+     Still used by /contact, /works, /play, /resume, 404, and the case-study
+     overlay. Main-page surfaces use the tokens above; migrate the rest later. */
   --margin-outer: clamp(1.25rem, 5.32vw, 6rem);
   --inset-left: clamp(1.5rem, 9.32vw, 10rem);
   --nav-top: clamp(1.5rem, 4.7vw, 5rem);
   --col-split: 50%;
+}
+
+/* mobile: single column, tighter inset, type steps down one notch */
+@media (max-width: 767px) {
+  :root {
+    --inset: 24px;
+    --type-label: 12px;
+    --type-name: 16px;
+    --type-display: 22px;
+    --type-body: 15px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -57,11 +57,13 @@ export default function Page() {
       className="relative min-h-screen bg-paper"
       onClick={() => !isMain && setPhase("main")} /* click to skip */
     >
-      {/* persistent texture: full screen in intro, collapses to the top band */}
+      {/* persistent texture: full screen in intro, collapses to the top band.
+          Band target ≈ Main_Page.png: strong texture through ~the top fifth of
+          the viewport, fully white by ~28vh. Full-bleed, behind nav + hairlines. */}
       <motion.div
         className="fixed inset-x-0 top-0 z-0 overflow-hidden"
         initial={false}
-        animate={{ height: isMain ? "36vh" : "100vh" }}
+        animate={{ height: isMain ? "28vh" : "100vh" }}
         transition={reduce ? { duration: 0 } : GESTURE}
       >
         <InteractiveTexture className="h-full w-full" />
@@ -69,7 +71,7 @@ export default function Page() {
             too low in the crop at band aspect, so this synced overlay finishes the job */}
         <motion.div
           className="pointer-events-none absolute inset-0"
-          style={{ background: "linear-gradient(to bottom, transparent 35%, hsl(var(--paper)) 96%)" }}
+          style={{ background: "linear-gradient(to bottom, transparent 40%, hsl(var(--paper)) 94%)" }}
           initial={false}
           animate={{ opacity: isMain ? 1 : 0 }}
           transition={reduce ? { duration: 0 } : GESTURE}
@@ -87,8 +89,8 @@ export default function Page() {
           rightSlot={
             isMain ? (
               <span className="tabular-nums">
-                {String(worksIndex + 1).padStart(2, "0")} / {String(featuredWorks.length).padStart(2, "0")}
-                <span className="ml-3 hidden not-italic text-ink/50 sm:inline">&ndash; selected works &ndash;</span>
+                {worksIndex + 1}/{featuredWorks.length}
+                <span className="ml-2 hidden sm:inline"> - SELECTED WORKS</span>
               </span>
             ) : null
           }
