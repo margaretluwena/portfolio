@@ -29,12 +29,11 @@ const config: Config = {
       fontSize: {
         /* MAIN-PAGE type scale — fixed px via the --type-* vars in globals.css.
            Every font-size on the main page resolves to one of these five.
-           NOTE: Figma 96:6 disagrees (uniform 25px text, 40px display) but that
-           node is lo-fi (default text sizes, gray placeholder cards); the px
-           scale below comes from the measured Main_Page.png target. */
+           Source: Figma 128:503 (live frame). Display is INTER italic at
+           tracking 0 (Figma 128:507) — Nohemi is for MARGARET LUWENA only. */
         "label": ["var(--type-label)", { lineHeight: "normal", letterSpacing: "0.06em" }],      // + uppercase at point of use
         "name": ["var(--type-name)", { lineHeight: "normal", letterSpacing: "-0.02em" }],
-        "display": ["var(--type-display)", { lineHeight: "normal", letterSpacing: "-0.05em" }],
+        "display": ["var(--type-display)", { lineHeight: "normal", letterSpacing: "0" }],
         "body": ["var(--type-body)", { lineHeight: "1.45" }],
         "secondary": ["var(--type-secondary)", { lineHeight: "1.45" }],
 

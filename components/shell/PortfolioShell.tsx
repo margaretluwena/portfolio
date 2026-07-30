@@ -9,13 +9,14 @@ import { TransitionLink } from "@/components/providers/PageTransition";
 
 /*
   MAIN PAGE.
-  Asymmetric split, all layout viewport-relative (see globals.css tokens):
-    LEFT  — position:fixed at --inset, text max 300px wide, three groups
-            anchored vertically: identity ~24vh, bio ~50vh, CONTACT ~8vh
-            from the bottom.
-    RIGHT — work cards from --col-right (42.5vw), --card-w (47vw) wide; its
-            own scroll container with rubber-band overscroll (WorksColumn),
-            scrolling under the fixed nav band.
+  Asymmetric split, all layout viewport-relative (see globals.css tokens).
+  Vertical anchors from Figma 128:503 (÷1117), each element pinned separately:
+    LEFT  — position:fixed at --inset: name 24.2vh, tagline 27.3vh, socials
+            33vh, bio 50.1vh (245px cap — "Exploring the intersection of"
+            must sit alone on line one), CONTACT 82.7vh.
+    RIGHT — work cards from --col-right, --card-w wide, first top at 19.7vh;
+            its own scroll container with rubber-band overscroll
+            (WorksColumn), scrolling under the fixed nav band.
   Two full-height vertical hairlines sit at --edge from each viewport edge,
   fixed, above the background texture.
 
@@ -49,63 +50,62 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
 
       <div className="relative z-10">
         {/* LEFT — fixed on desktop, first block in normal flow on mobile */}
-        <aside className="px-[var(--inset)] pt-[30vh] md:fixed md:inset-y-0 md:left-[var(--inset)] md:w-[300px] md:px-0 md:pt-0">
-          {/* identity: name, magenta line, socials */}
-          <div className="md:absolute md:top-[24vh]">
-            {/* the wordmark lands HERE — shared layoutId with the intro; never faded */}
-            {reveal && (
-              <motion.p
-                layoutId="wordmark"
-                className="font-display text-name text-ink w-fit"
-                transition={{ layout: { duration: reduce ? 0 : 1.1, ease: [0.7, 0, 0.2, 1] } }}
-              >
-                MARGARET LUWENA
-              </motion.p>
-            )}
+        <aside className="px-[var(--inset)] pt-[36vh] md:fixed md:inset-y-0 md:left-[var(--inset)] md:w-[300px] md:px-0 md:pt-0">
+          {/* the wordmark lands HERE — shared layoutId with the intro; never faded */}
+          {reveal && (
+            <motion.p
+              layoutId="wordmark"
+              className="font-display text-name text-ink w-fit md:absolute md:top-[24.2vh]"
+              transition={{ layout: { duration: reduce ? 0 : 1.1, ease: [0.7, 0, 0.2, 1] } }}
+            >
+              MARGARET LUWENA
+            </motion.p>
+          )}
 
-            <motion.div {...enter(0.55)}>
-              <p className="font-display text-display italic mt-1">
-                <RotatingTitle active={reveal} />
-              </p>
-            </motion.div>
+          {/* tagline — Inter Italic (Figma 128:507), NOT Nohemi */}
+          <motion.div {...enter(0.55)} className="mt-1 md:absolute md:top-[27.3vh] md:mt-0">
+            <p className="font-body text-display italic whitespace-nowrap">
+              <RotatingTitle active={reveal} />
+            </p>
+          </motion.div>
 
-            <motion.ul {...enter(0.68)} className="mt-[16px] flex items-center gap-[14px]">
-              {socials.map((s) => (
-                <li key={s.label}>
-                  <Prox maxScale={1.12} radius={55}>
-                    <a
-                      href={s.href}
-                      aria-label={s.label}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-                    >
-                      <Image src={s.icon} alt="" width={24} height={24} className="h-[24px] w-auto" />
-                    </a>
-                  </Prox>
-                </li>
-              ))}
-            </motion.ul>
-          </div>
+          <motion.ul {...enter(0.68)} className="mt-[16px] flex items-center gap-[14px] md:absolute md:top-[33vh] md:mt-0">
+            {socials.map((s) => (
+              <li key={s.label}>
+                <Prox maxScale={1.12} radius={55}>
+                  <a
+                    href={s.href}
+                    aria-label={s.label}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                  >
+                    <Image src={s.icon} alt="" width={24} height={24} className="h-[24px] w-auto" />
+                  </a>
+                </Prox>
+              </li>
+            ))}
+          </motion.ul>
 
-          {/* bio: two short paragraphs — 300px cap keeps them at 3-4 lines */}
+          {/* bio — 245px cap preserves the artboard wrap ("Exploring the
+              intersection of" alone on line one) at 16px type */}
           <motion.div
             {...enter(0.8)}
-            className="mt-12 max-w-[300px] space-y-6 text-body text-ink md:absolute md:top-[50vh] md:mt-0 md:w-full"
+            className="mt-12 max-w-[245px] space-y-6 text-body text-ink md:absolute md:top-[50.1vh] md:mt-0"
           >
             <p>Exploring the intersection of design, product, and the things in between.</p>
             <p>From startups to the Fortune 500: currently at USC studying Economics and Business, head of BUILD at TroyLabs, and cofounder of Traeco.</p>
           </motion.div>
 
-          {/* CONTACT — anchored near the bottom */}
-          <motion.div {...enter(0.92)} className="mt-12 md:absolute md:bottom-[8vh] md:mt-0">
+          {/* CONTACT — 82.7vh, viewport-relative like the rest of the column */}
+          <motion.div {...enter(0.92)} className="mt-12 md:absolute md:top-[82.7vh] md:mt-0">
             <Prox baseOpacity={0.7} maxScale={1} radius={160}>
               <TransitionLink
                 href="/contact"
                 className="inline-flex items-center gap-2 text-label uppercase text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
               >
                 CONTACT
-                <Image src="/assets/contact-arrow.svg" alt="" width={16} height={18} />
+                <Image src="/assets/contact-arrow.svg" alt="" width={15} height={19} />
               </TransitionLink>
             </Prox>
           </motion.div>

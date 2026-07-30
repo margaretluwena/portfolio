@@ -1,7 +1,6 @@
-<svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="16" height="14" fill="#1E1E1E"/>
-<g id="Main Page">
-<rect width="1728" height="1117" transform="translate(-290 -993.448)" fill="white"/>
-<path id="Vector 2" d="M1.0002 12.7069C1.4024 11.9573 8.11482 6.00515 13.1567 1.3319C13.7665 0.76673 9.5843 1.09113 8.62723 1.10685C6.4219 1.14307 13.5748 1.29595 14.2852 1.89405C14.3641 2.9165 14.2272 4.79747 14.2021 7.01779C14.1879 7.99167 14.1704 8.6552 14.1693 9.49197" stroke="black" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg width="15" height="19" viewBox="0 0 14.7279 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Figma 139:526 — vector authored horizontal, rotated 90° in the frame → points down -->
+<g transform="translate(14.7279 0) rotate(90)">
+<path d="M18.7071 8.07107C19.0976 7.68054 19.0976 7.04738 18.7071 6.65685L12.3431 0.292893C11.9526 -0.097631 11.3195 -0.097631 10.9289 0.292893C10.5384 0.683418 10.5384 1.31658 10.9289 1.70711L16.5858 7.36396L10.9289 13.0208C10.5384 13.4113 10.5384 14.0445 10.9289 14.435C11.3195 14.8256 11.9526 14.8256 12.3431 14.435L18.7071 8.07107ZM0 7.36396V8.36396H18V7.36396V6.36396H0V7.36396Z" fill="#808080"/>
 </g>
 </svg>

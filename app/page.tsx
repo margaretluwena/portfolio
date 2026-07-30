@@ -58,12 +58,12 @@ export default function Page() {
       onClick={() => !isMain && setPhase("main")} /* click to skip */
     >
       {/* persistent texture: full screen in intro, collapses to the top band.
-          Band target ≈ Main_Page.png: strong texture through ~the top fifth of
-          the viewport, fully white by ~28vh. Full-bleed, behind nav + hairlines. */}
+          Figma 128:503 puts the texture's bottom edge at y=367/1117 → 33vh.
+          Full-bleed, behind nav + hairlines; corners stay denser via the fade. */}
       <motion.div
         className="fixed inset-x-0 top-0 z-0 overflow-hidden"
         initial={false}
-        animate={{ height: isMain ? "28vh" : "100vh" }}
+        animate={{ height: isMain ? "33vh" : "100vh" }}
         transition={reduce ? { duration: 0 } : GESTURE}
       >
         <InteractiveTexture className="h-full w-full" />
@@ -71,7 +71,7 @@ export default function Page() {
             too low in the crop at band aspect, so this synced overlay finishes the job */}
         <motion.div
           className="pointer-events-none absolute inset-0"
-          style={{ background: "linear-gradient(to bottom, transparent 40%, hsl(var(--paper)) 94%)" }}
+          style={{ background: "linear-gradient(to bottom, transparent 58%, hsl(var(--paper)) 96%)" }}
           initial={false}
           animate={{ opacity: isMain ? 1 : 0 }}
           transition={reduce ? { duration: 0 } : GESTURE}

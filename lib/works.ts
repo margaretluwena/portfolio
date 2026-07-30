@@ -34,13 +34,28 @@ export type Study = {
   blocks: Block[];
 };
 
+/*
+  Cover art for the home cards. Placement differs per card, so each layer
+  carries its own geometry as % of the card box (taken from that card's
+  Figma frame on "Portfolio Revamp" — 972 × 678 each), and holds at any
+  card width. Layers render in array order (first = bottom).
+*/
+export type CoverLayer = {
+  src: string;
+  left: string;   // % of card width
+  top: string;    // % of card height
+  width: string;  // % of card width
+  height: string; // % of card height
+};
+
 export type Work = {
   slug: string;
   title: string;
   category: string;
   year: string;
   role?: string;         // works-index meta
-  cover?: string;        // right-column image on the main page + case-study hero
+  cover?: string;        // single-image cover (fills the card) — cases without layered art
+  coverArt?: CoverLayer[]; // layered cover art, per-card placement from Figma
   featured?: boolean;
   protected?: boolean;   // blocks gated behind password
   play?: boolean;        // shown on PLAY, not in the works index
@@ -56,6 +71,11 @@ export const works: Work[] = [
     role: "Designer",
     featured: true,
     protected: true,
+    // Figma "Mark card" 139:544: halftone hand (139:545) under the device (139:546)
+    coverArt: [
+      { src: "/images/covers/mark-hand.png", left: "12.86%", top: "31.6%", width: "68.09%", height: "68.54%" },
+      { src: "/images/covers/mark-device.png", left: "31.38%", top: "6.49%", width: "37.98%", height: "78.3%" },
+    ],
     study: {
       summary: "A reading companion that carries the act of underlining a sentence into your digital life.",
       role: "Designer, TroyLabs BUILD",
@@ -142,6 +162,10 @@ export const works: Work[] = [
     year: "2026",
     role: "Cofounder & CPO",
     featured: true,
+    // Figma "Traeco card" 139:559: MacBook mockup group (140:717), clipped to card width
+    coverArt: [
+      { src: "/images/covers/traeco-mockup.png", left: "0%", top: "9.29%", width: "100%", height: "86.06%" },
+    ],
     study: {
       summary: "Cost visibility and governance for teams shipping AI. One pane of glass for LLM spend.",
       role: "Cofounder & CPO",

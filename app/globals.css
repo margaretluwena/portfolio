@@ -24,24 +24,26 @@
   --tracking-display: -0.05em;    /* -1.25px @ 25px in Figma */
 
   /* ---- Type scale (MAIN PAGE) ----
-     Fixed px on purpose: type must NOT scale with the viewport.
-     The only size change is the one-notch step-down at the mobile
-     breakpoint below. Five steps cover the whole page. */
-  --type-label: 13px;       /* nav, CONTACT, "selected works" (italic variant) */
-  --type-name: 18px;        /* MARGARET LUWENA — Nohemi, -0.02em */
-  --type-display: 25px;     /* "is a design engineer" — Nohemi italic, -0.05em, accent */
-  --type-body: 16px;        /* bio paragraphs — Inter, lh 1.45 */
+     Fixed px on purpose: type must NOT scale with the viewport (20px on the
+     2164 artboard would render 13px at 1440 — unreadable for a bio). The only
+     size change is the one-notch step-down at the mobile breakpoint below. */
+  --type-label: 13px;       /* nav, CONTACT, counter (italic variant) — 20px on artboard */
+  --type-name: 17px;        /* MARGARET LUWENA — Nohemi, -0.02em — 26px on artboard */
+  --type-display: 26px;     /* "is a design engineer" — Inter Italic, tracking 0 — 40px on artboard */
+  --type-body: 16px;        /* bio paragraphs — Inter, lh 1.45 — 20px on artboard */
   --type-secondary: 15px;   /* card descriptions — Inter, lh 1.45, ink-50 */
 
   /* ---- Layout (MAIN PAGE) ----
      Viewport-relative on purpose: margins and columns scale, type doesn't.
-     Measured off Main_Page.png @1440 (Figma 96:6 disagrees on inset — see
-     tailwind.config.ts note). Card right edge lands at --col-right + --card-w = 89.5vw. */
-  --edge: 5.3vw;                        /* full-height vertical hairlines */
-  --inset: clamp(24px, 11vw, 200px);    /* content start; mirrored on the right */
-  --col-right: 42.5vw;                  /* left edge of the work cards */
-  --card-w: 47vw;                       /* card width */
-  --card-gap: 5.4vw;                    /* vertical gap between stacked cards */
+     From Figma frame 128:503 ("Main Page", 2164 × 1117); horizontal values ÷2164.
+     Card right edge and the nav counter share --align-r; it does NOT mirror
+     --inset. Figma's right hairline sits at 5.55vw — normalized to --edge. */
+  --edge: 5.32vw;                       /* 115px — full-height vertical hairlines, both sides */
+  --inset: clamp(24px, 11vw, 200px);    /* 238px — nav text, left column */
+  --col-right: 42.6vw;                  /* 922px — card left edge */
+  --card-w: 44.92vw;                    /* 972px — card width */
+  --card-gap: 5.04vw;                   /* 109px — vertical gap between stacked cards */
+  --align-r: 87.52vw;                   /* 1894px — card right edge + right end of nav counter */
   --hairline: rgba(0, 0, 0, 0.12);      /* all 1px rules */
 
   /* ---- Legacy layout vars ----
