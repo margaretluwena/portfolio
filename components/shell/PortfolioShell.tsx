@@ -5,7 +5,6 @@ import { motion } from "motion/react";
 import WorksColumn from "@/components/works/WorksColumn";
 import RotatingTitle from "@/components/shell/RotatingTitle";
 import Prox from "@/components/ui/Prox";
-import { TransitionLink } from "@/components/providers/PageTransition";
 
 /*
   MAIN PAGE.
@@ -13,7 +12,7 @@ import { TransitionLink } from "@/components/providers/PageTransition";
   Vertical anchors from Figma 128:503 (÷1117), each element pinned separately:
     LEFT  — position:fixed at --inset: name 24.2vh, tagline 27.3vh, socials
             33vh, bio 50.1vh (245px cap — "Exploring the intersection of"
-            must sit alone on line one), CONTACT 82.7vh.
+            must sit alone on line one). Contact moved to the nav (ABOUT).
     RIGHT — work cards from --col-right, --card-w wide, first top at 19.7vh;
             its own scroll container with rubber-band overscroll
             (WorksColumn), scrolling under the fixed nav band.
@@ -97,18 +96,6 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
             <p>From startups to the Fortune 500: currently at USC studying Economics and Business, head of BUILD at TroyLabs, and cofounder of Traeco.</p>
           </motion.div>
 
-          {/* CONTACT — 82.7vh, viewport-relative like the rest of the column */}
-          <motion.div {...enter(0.92)} className="mt-12 md:absolute md:top-[82.7vh] md:mt-0">
-            <Prox baseOpacity={0.7} maxScale={1} radius={160}>
-              <TransitionLink
-                href="/contact"
-                className="inline-flex items-center gap-2 text-label uppercase text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-              >
-                CONTACT
-                <Image src="/assets/contact-arrow.svg" alt="" width={15} height={19} />
-              </TransitionLink>
-            </Prox>
-          </motion.div>
         </aside>
 
         {/* RIGHT — fixed scroll context on desktop (.works-column in

@@ -110,7 +110,16 @@ body {
    The container is a shadow gutter wider than the cards on each side —
    overflow-y:auto also clips horizontally, and at exactly --card-w it
    sheared off the card shadows (blur 33px < 48px gutter). The padding
-   puts the cards back at --col-right, so their geometry is unchanged. */
+   puts the cards back at --col-right, so their geometry is unchanged.
+
+   TODO(parked until after Sunday) — scroll fade, corrected spec:
+   if the dissolve-into-the-band mask returns, the envelope must close
+   ABOVE the first card's resting top (19.7vh) so it lives entirely in
+   the nav-band-to-card gap. The removed 8vh->30vh version left the
+   resting card half-dissolved. Corrected envelope:
+     -webkit-mask-image: linear-gradient(to bottom, transparent 10vh, #000 19vh);
+             mask-image: linear-gradient(to bottom, transparent 10vh, #000 19vh);
+   Do not build without explicit approval. */
 @media (min-width: 768px) {
   .works-column {
     position: fixed;

@@ -17,10 +17,10 @@ import { TransitionLink } from "@/components/providers/PageTransition";
 */
 
 const links = [
-  { label: "ABOUT", href: "/" }, // the main page IS the about
+  { label: "ABOUT", href: "/contact" }, // about = the contact page (bio lives on the main page)
   { label: "WORKS", href: "/works" },
   { label: "PLAY", href: "/play" },
-  { label: "RESUME", href: "/resume" },
+  { label: "RESUME", href: "/resume.pdf", external: true }, // PDF in /public, no page
 ];
 
 export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
@@ -34,12 +34,23 @@ export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
               <span key={l.href}>
                 {i > 0 && <span className="mx-1.5 select-none text-ink/40 md:mx-2">+</span>}
                 <Prox baseOpacity={0.7} maxScale={1} radius={110}>
-                  <TransitionLink
-                    href={l.href}
-                    className="text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-                  >
-                    {l.label}
-                  </TransitionLink>
+                  {l.external ? (
+                    <a
+                      href={l.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+                    >
+                      {l.label}
+                    </a>
+                  ) : (
+                    <TransitionLink
+                      href={l.href}
+                      className="text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+                    >
+                      {l.label}
+                    </TransitionLink>
+                  )}
                 </Prox>
               </span>
             ))}
