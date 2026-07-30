@@ -56,6 +56,8 @@ export type Work = {
   role?: string;         // works-index meta
   cover?: string;        // single-image cover (fills the card) — cases without layered art
   coverArt?: CoverLayer[]; // layered cover art, per-card placement from Figma
+  wordmark?: string;       // SVG lockup for the home card; title text is the alt/SR label
+  wordmarkWidth?: string;  // % of card width (scale by width, natural aspect; default 16%)
   featured?: boolean;
   protected?: boolean;   // blocks gated behind password
   play?: boolean;        // shown on PLAY, not in the works index
@@ -71,6 +73,8 @@ export const works: Work[] = [
     role: "Designer",
     featured: true,
     protected: true,
+    wordmark: "/images/wordmarks/mark.svg",   // Figma 127:3003, 155/972 of card width
+    wordmarkWidth: "15.9%",
     // Figma "Mark card" 139:544: halftone hand (139:545) under the device (139:546)
     coverArt: [
       { src: "/images/covers/mark-hand.png", left: "12.86%", top: "31.6%", width: "68.09%", height: "68.54%" },
@@ -162,6 +166,8 @@ export const works: Work[] = [
     year: "2026",
     role: "Cofounder & CPO",
     featured: true,
+    wordmark: "/images/wordmarks/traeco.svg", // Figma 140:694, 164/972 of card width
+    wordmarkWidth: "16.9%",
     // Figma "Traeco card" 139:559: MacBook mockup group (140:717), clipped to card width
     coverArt: [
       { src: "/images/covers/traeco-mockup.png", left: "0%", top: "9.29%", width: "100%", height: "86.06%" },

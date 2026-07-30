@@ -73,11 +73,11 @@ export default function WorksColumn({ onIndex }: { onIndex?: (i: number) => void
       onScroll={onScroll}
       tabIndex={0}
       aria-label="Selected works"
-      className="no-scrollbar md:h-screen md:overflow-y-auto focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ink/40"
+      className="no-scrollbar works-column focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ink/40"
     >
       {/* first card's top edge at 19.7vh (Figma 128:503: 220/1117 — it scrolls
           under the fixed nav band); width and inset from the layout tokens */}
-      <motion.div style={{ y }} className="px-[var(--inset)] pt-12 md:w-[var(--card-w)] md:px-0 md:pt-[19.7vh]">
+      <motion.div style={{ y }} className="px-[var(--inset)] pt-12 md:px-0 md:pt-[19.7vh]">
         <WorkList />
 
         {/* colophon — the column's sign-off */}

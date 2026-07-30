@@ -104,3 +104,23 @@ body {
 /* internal scroll column without a visible scrollbar (works column) */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Desktop works column: its own fixed scroll context, masked so cards
+   dissolve into the texture band as they rise under the nav. The 8vh/30vh
+   envelope is deliberate: 8vh sits just under the nav hairlines (7.25 to
+   9.6vh) and 30vh just above where the texture finishes fading at 33vh.
+   If the texture fade changes, change this to match. Below 768px the
+   class is inert — normal document flow, no mask, no nested scroll. */
+@media (min-width: 768px) {
+  .works-column {
+    position: fixed;
+    top: 0;
+    left: var(--col-right);
+    width: var(--card-w);
+    height: 100vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 8vh, #000 30vh);
+            mask-image: linear-gradient(to bottom, transparent 8vh, #000 30vh);
+  }
+}

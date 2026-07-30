@@ -15,8 +15,8 @@ import { featuredWorks } from "@/lib/works";
      (layoutId="wordmark"), so no manual measuring.
   3. The rest of the main page reveals (staggered, inside PortfolioShell).
 
-  The intro plays once per session — returning to "/" via ABOUT or the scribble
-  goes straight to the main page (sessionStorage gate, applied pre-paint).
+  The intro plays once per session — returning to "/" via ABOUT goes straight
+  to the main page (sessionStorage gate, applied pre-paint).
 
   Texture collapse and wordmark flight share ONE duration + ease so they read as
   a single gesture. Skip: click anywhere or press any key.

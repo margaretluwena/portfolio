@@ -45,19 +45,6 @@ export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
             ))}
           </nav>
 
-          {/* center: the hand-drawn scribble mark (Figma 99:33), pinned to true center */}
-          <span className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-            <Prox maxScale={1.1} radius={100}>
-              <TransitionLink
-                href="/"
-                aria-label="Home"
-                className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-              >
-                <Image src="/assets/scribble-mark.svg" alt="" width={42} height={33} priority />
-              </TransitionLink>
-            </Prox>
-          </span>
-
           {/* right: contextual label, e.g. "- selected works -" or the live index */}
           <div className="text-right text-label italic text-ink md:min-w-[12ch]">
             {rightSlot}

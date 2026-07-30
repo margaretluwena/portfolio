@@ -63,12 +63,28 @@ export default function WorkList() {
                 </div>
               </motion.div>
 
-              {/* wordmark + description — % of the card box so they hold at any width */}
-              <div className="absolute left-[7%] top-[77.7%]">
-                <Prox baseOpacity={0.9} maxScale={1} radius={120}>
-                  <span className="font-display text-name text-ink">{work.title}</span>
-                </Prox>
-              </div>
+              {/* wordmark + description — % of the card box so they hold at any width.
+                  Real SVG lockups scale by width (natural aspect preserved) and
+                  bottom-align 12px above the description's top edge (84.8%) —
+                  normalized; the Figma frames drift 21px vs 9px, not intent.
+                  Cards without art keep the Nohemi text treatment. */}
+              {work.wordmark ? (
+                <div
+                  className="absolute left-[7%]"
+                  style={{ bottom: "calc(15.2% + 12px)", width: work.wordmarkWidth ?? "16%" }}
+                >
+                  <Prox baseOpacity={0.9} maxScale={1} radius={120}>
+                    {/* eslint-disable-next-line @next/next/no-img-element -- local static SVG, no optimization pass needed */}
+                    <img src={work.wordmark} alt={work.title} className="block h-auto w-full" />
+                  </Prox>
+                </div>
+              ) : (
+                <div className="absolute left-[7%] top-[77.7%]">
+                  <Prox baseOpacity={0.9} maxScale={1} radius={120}>
+                    <span className="font-display text-name text-ink">{work.title}</span>
+                  </Prox>
+                </div>
+              )}
               {work.study?.summary && (
                 <p className="absolute left-[7%] top-[84.8%] w-[46.2%] line-clamp-2 text-secondary text-ink-50">
                   {work.study.summary}
