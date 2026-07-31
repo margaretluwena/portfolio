@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { getWork } from "@/lib/works";
 import CaseStudyContent from "@/components/works/CaseStudyContent";
-import Prox from "@/components/ui/Prox";
 
 /*
   INTERCEPTING OVERLAY.
@@ -53,23 +52,33 @@ export default function WorkOverlay({ params }: { params: Promise<{ slug: string
       />
       {/* panel - static wrapper; content inside animates */}
       <div className="absolute inset-0 overflow-y-auto">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3, delay: 0.3 }}
-          className="fixed right-[var(--margin-outer)] top-[var(--nav-top)] z-10"
-        >
-          <Prox baseOpacity={0.6} maxScale={1} radius={130}>
-            <button
-              onClick={() => router.back()}
-              aria-label="Close"
-              className="text-body-lg tracking-[0.06em] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-            >
-              Close ✕
-            </button>
-          </Prox>
-        </motion.div>
+        {/* Close: 44px solid circle, mounted instantly at full opacity (no
+            fade in - the reader launches the overlay intending to use it).
+            Right edge sits on the mirrored --inset line, top edge on the nav
+            band's top hairline (7.25vh), so it shares the page grid with the
+            nav and the rail. Press = scale 0.985 on a 250/25 spring, no
+            bounce, no hover animation. The ::after extends the hit area to
+            the viewport's top-right corner (corners are infinite targets);
+            visual size unchanged. */}
+        <div className="fixed right-[var(--inset)] top-[7.25vh] z-10">
+          <motion.button
+            onClick={() => router.back()}
+            aria-label="Close"
+            whileTap={{ scale: 0.985 }}
+            transition={{ type: "spring", stiffness: 250, damping: 25 }}
+            className="relative grid h-11 w-11 place-items-center rounded-full bg-ink after:absolute after:bottom-[-8px] after:left-[-8px] after:right-[calc(var(--inset)*-1)] after:top-[calc(7.25vh*-1)] after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+              <path
+                d="M3 3L13 13M13 3L3 13"
+                stroke="#fff"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </motion.button>
+        </div>
         <div className="px-[var(--inset-left)] pt-[18vh]">
           <CaseStudyContent work={work} variant="overlay" />
         </div>
