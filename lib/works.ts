@@ -40,11 +40,17 @@ export type Credit = { label: string; value: string };
   card width. Layers render in array order (first = bottom).
 */
 export type CoverLayer = {
-  src: string;
+  src: string;    // image src; for video layers the MP4 ("NEED" until the export exists)
   left: string;   // % of card width
   top: string;    // % of card height
   width: string;  // % of card width
   height: string; // % of card height
+  /* video cover (the plan for all four cards - adding one is a data edit):
+     autoplaying muted loop, poster always set, plays only in viewport,
+     poster-only on mobile and reduced motion, poster swap during the morph */
+  video?: true;
+  poster?: string;  // required for video layers: frame 1 as a static image
+  srcWebm?: string; // WebM served first, MP4 as fallback
 };
 
 export type Work = {
@@ -251,6 +257,7 @@ export const works: Work[] = [
     slug: "atlix",
     title: "Atlix",
     lede: "Narrative intelligence: what young Californians are actually talking about, surfaced in real time",
+    blurb: "Brand and interface for a narrative intelligence platform",
     credits: [
       { label: "Role", value: "Cofounder, design lead" },
       { label: "Timeline", value: "2026" },
@@ -261,6 +268,27 @@ export const works: Work[] = [
     year: "2026",
     role: "Cofounder",
     featured: true,
+    /* Figma "atlix card" 139:574: navy gradient surface, demo video
+       full-bleed across the top (161:749, 972x561 at y=-4), dark fade,
+       white/50 description. Video files pending Mar's Figma export -
+       drop paths into src / srcWebm below and it goes live (poster
+       renders until then). */
+    wordmark: "/images/wordmarks/atlix.svg", // Figma 161:747, 154.68/972 of card width
+    wordmarkWidth: "15.91%",
+    cardBg: "linear-gradient(to bottom, #000615 34.84%, #00245c 131.76%)",
+    cardFade: "linear-gradient(to bottom, rgba(19,39,72,0), #041022 77.889%)",
+    cardText: "light",
+    coverArt: [
+      {
+        src: "NEED",
+        video: true,
+        poster: "/images/covers/atlix-poster.png",
+        left: "0%",
+        top: "-0.59%",
+        width: "100%",
+        height: "82.74%",
+      },
+    ],
     blocks: [
       {
         type: "context",

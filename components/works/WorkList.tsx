@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import { featuredWorks } from "@/lib/works";
 import Prox from "@/components/ui/Prox";
+import CardVideo from "@/components/works/CardVideo";
 
 /*
   The right-hand scrolling column. Each work is a white card (Figma card
@@ -50,11 +51,15 @@ export default function WorkList() {
                     <div className="absolute inset-x-0 top-0 aspect-[972/678]">
                       {work.coverArt.map((layer) => (
                         <div
-                          key={layer.src}
+                          key={layer.poster ?? layer.src}
                           className="absolute"
                           style={{ left: layer.left, top: layer.top, width: layer.width, height: layer.height }}
                         >
-                          <Image src={layer.src} alt="" fill sizes="45vw" className="object-contain" />
+                          {layer.video ? (
+                            <CardVideo layer={layer} />
+                          ) : (
+                            <Image src={layer.src} alt="" fill sizes="45vw" className="object-contain" />
+                          )}
                         </div>
                       ))}
                     </div>
