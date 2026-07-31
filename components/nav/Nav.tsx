@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { usePathname } from "next/navigation";
 import Prox from "@/components/ui/Prox";
 import { TransitionLink } from "@/components/providers/PageTransition";
 
@@ -17,19 +17,36 @@ import { TransitionLink } from "@/components/providers/PageTransition";
 */
 
 const links = [
-  { label: "ABOUT", href: "/contact" }, // about = the contact page (bio lives on the main page)
+  { label: "ABOUT", href: "/about" }, // the letter page — /contact redirects here
   { label: "WORKS", href: "/works" },
   { label: "PLAY", href: "/play" },
   { label: "RESUME", href: "/resume.pdf", external: true }, // PDF in /public, no page
 ];
 
 export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
+  const pathname = usePathname();
+  const onHome = pathname === "/";
+
   return (
     <header className="pointer-events-none fixed inset-x-0 top-[7.25vh] z-40">
       <div className="h-[26px] border-y border-hairline">
         <div className="pointer-events-auto relative flex h-full items-center justify-between pl-[var(--inset)] pr-[var(--inset)] md:pr-[calc(100vw-var(--align-r))]">
-          {/* left: nav links, joined by + like the design */}
-          <nav className="text-label uppercase">
+          <div className="flex h-full items-center gap-6">
+            {/* home link: the name, subpages only — on "/" the name owns the
+                left column, so the nav stays links + counter and nothing else */}
+            {!onHome && (
+              <Prox baseOpacity={0.7} maxScale={1} radius={110}>
+                <TransitionLink
+                  href="/"
+                  className="font-display text-name text-ink whitespace-nowrap focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+                >
+                  MARGARET LUWENA
+                </TransitionLink>
+              </Prox>
+            )}
+
+            {/* nav links, joined by + like the design */}
+            <nav className="text-label uppercase">
             {links.map((l, i) => (
               <span key={l.href}>
                 {i > 0 && <span className="mx-1.5 select-none text-ink/40 md:mx-2">+</span>}
@@ -54,7 +71,8 @@ export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
                 </Prox>
               </span>
             ))}
-          </nav>
+            </nav>
+          </div>
 
           {/* right: contextual label, e.g. "- selected works -" or the live index */}
           <div className="text-right text-label italic text-ink md:min-w-[12ch]">
