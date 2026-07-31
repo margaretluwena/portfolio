@@ -252,21 +252,26 @@ export const works: Work[] = [
     ],
   },
 
-  /* ---- Atlix - thin until Margaret's dump exists ---- */
+  /* ---- Atlix - canonical content: docs/content/atlix.md. STAYS THIN
+     (context + wip) until Mar fills solution piece 1; do not promote to a
+     full spine with an empty solution. The lede, Timeline, and Disciplines
+     are PRIOR live-site copy surfaced instead of NEED placeholders, pending
+     Mar's confirmation against the file's open questions. ---- */
   {
     slug: "atlix",
     title: "Atlix",
     lede: "Narrative intelligence: what young Californians are actually talking about, surfaced in real time",
     blurb: "Brand and interface for a narrative intelligence platform",
     credits: [
-      { label: "Role", value: "Cofounder, design lead" },
+      { label: "Role", value: "Co-founder, design lead" },
       { label: "Timeline", value: "2026" },
+      { label: "Team", value: "NEED" },
       { label: "Disciplines", value: "Product Design, Design System, Brand Identity, Pitch Deck" },
     ],
     next: "mark", // skips Impeccable Chicken while its study is unreachable
     category: "AI B2B SaaS",
     year: "2026",
-    role: "Cofounder",
+    role: "Co-founder",
     featured: true,
     /* Figma "atlix card" 139:574: navy gradient surface, demo video
        full-bleed across the top (161:749, 972x561 at y=-4), dark fade,
@@ -292,7 +297,11 @@ export const works: Work[] = [
     blocks: [
       {
         type: "context",
-        body: "Polling lags. By the time a report goes out, the conversation has moved. Atlix pulls public discourse from across California's regions and surfaces what's gaining traction, what's losing it, and how people frame the issues that affect them.\n\nBuilt for advocacy groups and policy researchers who need to read demographic discourse without waiting for a quarterly report.\n\nThe dashboard and deck took us to the global finalist round of the Asian Leadership Conference, past hundreds of teams from Stanford, Harvard, Cornell, and UC Berkeley.",
+        // DRAFT from docs/content/atlix.md; replaces the old-site context,
+        // whose outcome line the file's notes explicitly retire
+        body: "Atlix came out of a global student startup competition based in Seoul, where we were the first team to represent USC. The brief was to empower the next generation through social media. We chose youth political engagement, in part because one of our co-founders came from a political science background, and spent the run-up validating the problem with local politicians. The final stretch was a sprint in Korea: the pitch deck, the product, and a set of design partners. We finished as finalists.",
+        // prior live-site asset surfaced instead of a placeholder; veto reverts to NEED
+        media: { src: "/images/atlix/hero.png", alt: "Atlix hero" },
       },
       { type: "wip", email: WIP_EMAIL },
     ],
