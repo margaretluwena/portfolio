@@ -2,6 +2,7 @@
 
 import { use } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getWork } from "@/lib/works";
 import Nav from "@/components/nav/Nav";
 import CaseStudyContent from "@/components/works/CaseStudyContent";
@@ -14,6 +15,10 @@ import CaseStudyContent from "@/components/works/CaseStudyContent";
 export default function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const work = getWork(slug);
+
+  /* comingSoon studies aren't reachable: redirect home instead of 404 so
+     old-site links and muscle memory stay alive (slug parity is deliberate) */
+  if (work?.comingSoon) redirect("/");
 
   if (!work) {
     return (

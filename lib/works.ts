@@ -223,8 +223,8 @@ export const works: Work[] = [
           {
             name: "The dashboard",
             caption: "I scoped the dashboard against user conversations rather than a feature list. Two questions ran in parallel: what has to be here for this to be usable, and what has to be here for someone to pay for it. Those produce different lists, and the second one is shorter. The timing insight above set the constraint: this had to earn attention from people who were not yet in pain.",
-            // prior live-site asset, surfaced per the v2 file rule
-            media: { src: "/images/traeco/dashboard.png", alt: "Traeco dashboard" },
+            // old-site dashboard.png is stale against this copy (the UI moved); current export pending
+            media: { src: "NEED", alt: "dashboard screens" },
           },
           {
             name: "The brand system",
@@ -263,7 +263,7 @@ export const works: Work[] = [
       { label: "Timeline", value: "2026" },
       { label: "Disciplines", value: "Product Design, Design System, Brand Identity, Pitch Deck" },
     ],
-    next: "impeccable-chicken",
+    next: "mark", // skips Impeccable Chicken while its study is unreachable
     category: "AI B2B SaaS",
     year: "2026",
     role: "Cofounder",
@@ -316,6 +316,20 @@ export const works: Work[] = [
     featured: true,
     protected: true,
     comingSoon: true,
+    /* Figma "impeccable chicken card" 163:758: burnt orange surface, product
+       photo full-bleed (163:759, export pre-clipped to the visible region),
+       orange fade, white/50 description. Wordmark 163:763 is a TEXT node in
+       Monstro; the export outlines it to paths, so it ships as SVG like the
+       others (no font file needed). 163:760 skipped (hidden leftover);
+       163:762 lorem not ported. Video cover later, same as the others. */
+    wordmark: "/images/wordmarks/impeccable-chicken.svg", // 168/972 of card width
+    wordmarkWidth: "17.28%",
+    cardBg: "#c94512",
+    cardFade: "linear-gradient(to bottom, rgba(241,95,38,0), #f15f26 77.889%)",
+    cardText: "light",
+    coverArt: [
+      { src: "/images/covers/ic-photo.png", left: "6.48%", top: "0%", width: "93.52%", height: "100%" },
+    ],
     blocks: [
       { type: "context", body: "Case study in progress. Content coming soon." },
       { type: "wip", email: WIP_EMAIL },

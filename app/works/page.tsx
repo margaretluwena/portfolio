@@ -15,14 +15,26 @@ export default function WorksIndex() {
       <PageEnter className="px-[var(--margin-outer)] pt-[22vh] pb-[18vh]">
         <h1 className="wordmark text-title mb-10 text-ink">Works</h1>
         <ul className="divide-y divide-ink/10 border-y border-ink/10">
-          {indexWorks.map((w) => (
-            <li key={w.slug}>
-              <Link href={`/works/${w.slug}`} className="group flex items-baseline justify-between py-5 text-body-lg">
+          {indexWorks.map((w) => {
+            const row = (
+              <>
                 <Prox baseOpacity={0.85} maxScale={1} radius={140}><span className="wordmark text-ink">{w.title}</span></Prox>
                 <Prox baseOpacity={0.45} maxScale={1} radius={140}><span className="text-[13px] tracking-[0.02em] text-ink">{w.role} · {w.category} · {w.year}</span></Prox>
-              </Link>
-            </li>
-          ))}
+              </>
+            );
+            return (
+              <li key={w.slug}>
+                {w.comingSoon ? (
+                  /* unreachable study: same row, not a link */
+                  <div aria-disabled className="flex items-baseline justify-between py-5 text-body-lg">{row}</div>
+                ) : (
+                  <Link href={`/works/${w.slug}`} className="group flex items-baseline justify-between py-5 text-body-lg">
+                    {row}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </PageEnter>
     </main>

@@ -26,30 +26,18 @@ export default function WorkList({ reveal = true }: { reveal?: boolean }) {
   return (
     <ul className="space-y-[var(--card-gap)]">
       {featuredWorks.map((work, i) => {
-        const card = (
-            /* one-time load entrance: the visible cards rise from below in a
-               90ms stagger, joining the left column's assembly gesture after
-               the wordmark lands (same ease, one grammar). This is a single
-               load gesture, not a per-scroll ramp - below-fold cards are
-               fully visible the moment they're scrolled to. */
-            <motion.article
-              className="relative aspect-[972/678] w-full overflow-hidden rounded-[10px] shadow-[0_15px_33px_rgba(0,0,0,0.1)]"
-              style={{ background: work.cardBg ?? "#fff" }}
-              initial={{ opacity: 0, y: 56 }}
-              animate={reveal ? { opacity: 1, y: 0 } : undefined}
-              transition={{
-                opacity: { duration: reduce ? 0 : 0.55, delay: reduce ? 0 : 0.6 + i * 0.09 },
-                y: { duration: reduce ? 0 : 0.7, delay: reduce ? 0 : 0.6 + i * 0.09, ease: [0.22, 1, 0.36, 1] },
-              }}
-            >
-              {/* cover - the shared element that flies to center */}
-              <motion.div
-                layoutId={`work-${work.slug}`}
-                className="absolute inset-0 overflow-hidden"
-              >
-                {/* inner wrapper carries the hover zoom so it never fights the
-                    morph transform on the parent */}
-                <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.025]">
+        /* load entrance: the visible cards rise from below in a stagger
+           (Motion choreography: elements move at different times, not in
+           concert), joining the left column's assembly gesture after the
+           wordmark lands. No scroll-reveal ramp: below-fold cards render
+           fully visible the moment they're scrolled to, so nothing the
+           reader is about to interact with fades in on them. */
+        const coverInner = (
+          <div
+            className={`absolute inset-0 ${
+              work.comingSoon ? "" : "transition-transform duration-700 ease-out group-hover:scale-[1.025]"
+            }`}
+          >
                   {work.coverArt ? (
                     /* art layers ride the surface directly: the overlay hero
                        lands at the card's own 972/678 shape, so the morph
@@ -89,8 +77,31 @@ export default function WorkList({ reveal = true }: { reveal?: boolean }) {
                     className="absolute inset-0"
                     style={{ background: work.cardFade ?? "linear-gradient(to bottom, transparent, #fff 77.9%)" }}
                   />
-                </div>
-              </motion.div>
+          </div>
+        );
+
+        const card = (
+            <motion.article
+              aria-disabled={work.comingSoon || undefined}
+              className="relative aspect-[972/678] w-full overflow-hidden rounded-[10px] shadow-[0_15px_33px_rgba(0,0,0,0.1)]"
+              style={{ background: work.cardBg ?? "#fff" }}
+              initial={{ opacity: 0, y: 56 }}
+              animate={reveal ? { opacity: 1, y: 0 } : undefined}
+              transition={{
+                opacity: { duration: reduce ? 0 : 0.55, delay: reduce ? 0 : 0.6 + i * 0.09 },
+                y: { duration: reduce ? 0 : 0.7, delay: reduce ? 0 : 0.6 + i * 0.09, ease: [0.22, 1, 0.36, 1] },
+              }}
+            >
+              {/* cover - the shared element that flies to center. comingSoon
+                  cards get a plain div: no layoutId, so there is no dangling
+                  shared-layout target for a card that cannot open */}
+              {work.comingSoon ? (
+                <div className="absolute inset-0 overflow-hidden">{coverInner}</div>
+              ) : (
+                <motion.div layoutId={`work-${work.slug}`} className="absolute inset-0 overflow-hidden">
+                  {coverInner}
+                </motion.div>
+              )}
 
               {/* wordmark + description - % of the card box so they hold at any width.
                   Real SVG lockups scale by width (natural aspect preserved) and
@@ -127,9 +138,17 @@ export default function WorkList({ reveal = true }: { reveal?: boolean }) {
                 {work.blurb ?? work.lede}
               </p>
 
-              {/* "Coming soon" hover reveal - opacity only, per the hover rule */}
+              {/* "Coming soon": real DOM text (screen readers announce it, and
+                  aria-disabled marks the card). Desktop reveals on hover
+                  (opacity only); below md it is persistently visible, since
+                  touch has no hover and the card would otherwise be a dead
+                  surface with no explanation. */}
               {work.comingSoon && (
-                <span className="absolute inset-0 grid place-items-center text-label uppercase text-ink/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <span
+                  className={`absolute inset-0 grid place-items-center text-label uppercase ${
+                    work.cardText === "light" ? "text-white/80" : "text-ink/50"
+                  } opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-md:opacity-100`}
+                >
                   Coming soon
                 </span>
               )}

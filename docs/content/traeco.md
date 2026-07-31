@@ -60,7 +60,7 @@ to be usable, and what has to be here for someone to pay for it. Those
 produce different lists, and the second one is shorter. The timing insight
 above set the constraint: this had to earn attention from people who were not
 yet in pain.
-media: [NEED: dashboard screens] (prior asset exists: /images/traeco/dashboard.png)
+media: [NEED: dashboard screens] (old-site dashboard.png is STALE against this copy; current export needed)
 
 piece 2: DRAFT: The brand system
 caption: DRAFT: Built from nothing as the only designer on the team:
