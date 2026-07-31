@@ -49,7 +49,7 @@ export default function WorkOverlay({ params }: { params: Promise<{ slug: string
         exit={{ opacity: 0 }}
         transition={{ duration: 0.35 }}
         onClick={() => router.back()}
-        className="absolute inset-0 bg-paper/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-paper/95 backdrop-blur-md"
       />
       {/* panel — static wrapper; content inside animates */}
       <div className="absolute inset-0 overflow-y-auto">

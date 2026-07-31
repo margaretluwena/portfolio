@@ -26,17 +26,14 @@ export default function WorkList() {
         <li key={work.slug} data-work={work.slug}>
           <Link href={`/works/${work.slug}`} className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink">
             <motion.article
-              data-cursor="view"
-              className="relative aspect-[972/678] w-full cursor-none overflow-hidden rounded-[10px] shadow-[0_15px_33px_rgba(0,0,0,0.1)]"
+              className="relative aspect-[972/678] w-full overflow-hidden rounded-[10px] shadow-[0_15px_33px_rgba(0,0,0,0.1)]"
               style={{ background: work.cardBg ?? "#fff" }}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-15%" }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* cover — the shared element that flies to center. data-cursor
-                  sits on the ARTICLE so the VIEW disc stays on over the
-                  wordmark and description too, not just the art */}
+              {/* cover — the shared element that flies to center */}
               <motion.div
                 layoutId={`work-${work.slug}`}
                 className="absolute inset-0 overflow-hidden"
@@ -67,10 +64,14 @@ export default function WorkList() {
                         </div>
                       ))}
                     </motion.div>
-                  ) : work.cover ? (
-                    <Image src={work.cover} alt="" fill sizes="45vw" className="object-cover" />
+                  ) : work.cover && work.cover.src !== "NEED" ? (
+                    <Image src={work.cover.src} alt={work.cover.alt} fill sizes="45vw" className="object-cover" />
                   ) : (
-                    <div className="absolute inset-0 grid place-items-center bg-placeholder/50 text-secondary text-ink/30">
+                    <div
+                      className={`absolute inset-0 grid place-items-center bg-placeholder/50 text-secondary text-ink/30 ${
+                        work.comingSoon ? "transition-opacity duration-300 group-hover:opacity-0" : ""
+                      }`}
+                    >
                       {work.title}
                     </div>
                   )}
@@ -110,14 +111,19 @@ export default function WorkList() {
                   </Prox>
                 </div>
               )}
-              {work.study?.summary && (
-                <p
-                  className={`absolute left-[7%] top-[84.8%] w-[46.2%] line-clamp-2 text-secondary ${
-                    work.cardText === "light" ? "text-white/50" : "text-ink-50"
-                  }`}
-                >
-                  {work.study.summary}
-                </p>
+              <p
+                className={`absolute left-[7%] top-[84.8%] w-[46.2%] line-clamp-2 text-secondary ${
+                  work.cardText === "light" ? "text-white/50" : "text-ink-50"
+                }`}
+              >
+                {work.blurb ?? work.lede}
+              </p>
+
+              {/* "Coming soon" hover reveal — opacity only, per the hover rule */}
+              {work.comingSoon && (
+                <span className="absolute inset-0 grid place-items-center text-label uppercase text-ink/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  Coming soon
+                </span>
               )}
             </motion.article>
           </Link>

@@ -1,38 +1,37 @@
 /*
-  Works data. Slugs match the CURRENT live site (margaretluwena.net/works/[slug])
-  so existing links, routing, and SEO carry over. Keep the slugs.
+  Works data — case-study spine v2 (argument-led).
+  Slugs match the CURRENT live site (margaretluwena.net/works/[slug]) so
+  existing links, routing, and SEO carry over. Keep the slugs.
 
-  Content ported from the live site (lib/projects.ts on main), edited for the
-  redesign: tightened, no em dashes, first person voice kept.
+  Every case study is: frame -> rail -> context -> problem -> solution ->
+  wip -> next, with optional artifactGrid and gate. The rail derives from
+  the blocks array. Mark's content is canonical in docs/content/mark.md
+  (from Margaret's voice notes); media marked { src: "NEED", ... } renders
+  as a labeled placeholder until the asset exists. NEVER fill NEED strings
+  with generated text — they are Margaret's to write/supply.
 
-  The `study` object drives the case-study template:
-    - left / right → the two columns flanking the centered hero (Figma 97:17)
-    - blocks       → the long-form body that stacks below the fold
-  `protected` works open freely (the morph plays, intro + flanks visible) but
-  the blocks below are gated behind a password (NdaGate + /api/unlock).
-  `play` works feed the PLAY page instead of the works index.
-
-  Covers for the home column are intentionally NOT set yet (new covers coming;
-  square vs rectangle still being decided).
+  All prose here is Margaret's (ported from the live site or her voice
+  notes). The password gate is data-present but rendering is parked behind
+  GATE_ENABLED in the block renderer; NdaGate + /api/unlock stay intact.
 */
 
-export type Block =
-  | { type: "text"; heading?: string; body: string }
-  | { type: "image"; src: string; alt?: string }
-  | { type: "pair"; left: string; right: string }
-  | { type: "video"; src: string; poster?: string }
-  | { type: "link"; href: string; label: string };
-
-export type Study = {
-  summary: string;       // sits under the title in the left column
-  role: string;
-  timeline: string;
-  team?: string;
-  deliverables: string[];
-  left: string[];        // left flank: what it is / the problem
-  right: string[];       // right flank: my role / what shipped
-  blocks: Block[];
+export type Media = {
+  src: string;      // "NEED" renders a labeled placeholder using alt as the label
+  alt: string;
+  video?: true;     // local short excerpt only — full pitches are embedded, never in /public
+  poster?: string;
+  embed?: string;   // unlisted YouTube/Vimeo URL; takes precedence over src
 };
+
+export type Block =
+  | { type: "context"; body: string; media?: Media }
+  | { type: "problem"; headline: string; evidence: string[]; body: string; media?: Media }
+  | { type: "solution"; pieces: { name: string; caption: string; media: Media }[] }
+  | { type: "artifactGrid"; media: Media[] }  // 2-6 images, no captions
+  | { type: "wip"; email: string }
+  | { type: "gate"; hint: string };           // requires `protected`; rendering parked
+
+export type Credit = { label: string; value: string };
 
 /*
   Cover art for the home cards. Placement differs per card, so each layer
@@ -51,27 +50,47 @@ export type CoverLayer = {
 export type Work = {
   slug: string;
   title: string;
+  lede: string;            // one sentence, no second period — the opening line
+  blurb?: string;          // home-card teaser; card falls back to lede (clamped) when absent
+  credits: Credit[];       // Role / Timeline / Team / Disciplines as rows
+  cover?: Media;           // frame visual; hero placeholder until covers exist
+  blocks: Block[];
+  next: string;            // slug — the "next" line renders from this
+
+  /* home column + routing */
   category: string;
   year: string;
-  role?: string;         // works-index meta
-  cover?: string;        // single-image cover (fills the card) — cases without layered art
-  coverArt?: CoverLayer[]; // layered cover art, per-card placement from Figma
-  wordmark?: string;       // SVG lockup for the home card; title text is the alt/SR label
+  role?: string;           // works-index meta
+  featured?: boolean;
+  protected?: boolean;     // gate blocks + /api/unlock passwords
+  play?: boolean;          // shown on PLAY, not in the works index
+  coverArt?: CoverLayer[]; // layered home-card art, per-card placement from Figma
+  wordmark?: string;       // SVG lockup; title text is the alt/SR label
   wordmarkWidth?: string;  // % of card width (scale by width, natural aspect; default 16%)
-  wordmarkGlow?: string;   // css filter under the lockup (Figma text-shadow, applied in CSS not baked in the SVG)
+  wordmarkGlow?: string;   // css filter under the lockup (Figma text-shadow, applied in CSS)
   cardBg?: string;         // card surface — default white (Traeco's frame is #303036)
   cardFade?: string;       // fade-into-text-zone gradient — default transparent -> white 77.9%
-  cardText?: "light";      // description tone on dark cards (white/50 instead of ink-50)
-  featured?: boolean;
-  protected?: boolean;   // blocks gated behind password
-  play?: boolean;        // shown on PLAY, not in the works index
-  study?: Study;
+  cardText?: "light";      // description tone on dark cards
+  comingSoon?: boolean;    // home card reveals "Coming soon" on hover
 };
 
+const WIP_EMAIL = "luwena@usc.edu";
+
 export const works: Work[] = [
+  /* ---- Mark — canonical content: docs/content/mark.md ---- */
   {
     slug: "mark",
     title: "Mark",
+    lede: "A reading companion that turns the act of underlining into something you'd want to share",
+    blurb: "Hardware, app, and brand for a reading companion built at TroyLabs BUILD",
+    credits: [
+      { label: "Role", value: "Designer, TroyLabs BUILD" },
+      { label: "Timeline", value: "2025" },
+      { label: "Team", value: "Founded by Eason Tang" },
+      { label: "Disciplines", value: "UI/UX Design, Brand System, Merchandise, Pitch Deck" },
+    ],
+    cover: { src: "NEED", alt: "device or hero shot" },
+    next: "traeco",
     category: "AI Hardware",
     year: "2025",
     role: "Designer",
@@ -84,68 +103,72 @@ export const works: Work[] = [
       { src: "/images/covers/mark-hand.png", left: "12.86%", top: "31.6%", width: "68.09%", height: "68.54%" },
       { src: "/images/covers/mark-device.png", left: "31.38%", top: "6.49%", width: "37.98%", height: "78.3%" },
     ],
-    study: {
-      summary: "A reading companion that carries the act of underlining a sentence into your digital life.",
-      role: "Designer, TroyLabs BUILD",
-      timeline: "2025",
-      team: "Founded by Eason Tang",
-      deliverables: ["UI/UX Design", "Brand System", "Merchandise", "Pitch Deck"],
-      left: [
-        "Mark is a small hardware device that captures highlights and handwritten notes from whatever you are reading, paired with an app that organizes them by book, by category, and by your own reading habits.",
-        "I joined Eason's team through TroyLabs' BUILD program and led design across the app, the brand identity, the packaging and merchandise, and the pitch deck presented at LAUNCH.",
-      ],
-      right: [
-        "The work below covers the process end to end: the research that shaped the product, the brand foundation, the app itself, and the physical pieces that taught us what the brand really was.",
-        "This project is covered by an NDA, so the full study sits behind a password.",
-      ],
-      blocks: [
-        {
-          type: "text",
-          heading: "Joining the team",
-          body: "When I joined Mark's team, my first instinct was to wait before designing. BUILD moves fast, and the temptation when you come in mid-build is to make your mark early (no pun intended). I sat in on Eason's calls, read everything I could find about what he was building, and asked a lot of questions before I opened Figma.",
-        },
-        {
-          type: "text",
-          heading: "Listening before designing",
-          body: "To design for the people Mark was built for, I spent a couple of weeks listening before producing. I sat in on calls with potential users, watched how people actually mark up the books they read, and tried the adjacent products those readers already knew (Readwise, Notion, Apple Notes) to understand what they expected from a digital surface.\n\nThe biggest thing that surfaced: nobody wanted another inbox. They wanted their highlights to come back to them in moments that felt useful. A flashcard review on a commute, a search across every book while writing, a category they could trust without retagging by hand. That insight shaped almost every screen.",
-        },
-        {
-          type: "text",
-          heading: "Brand foundation",
-          body: "The brand starts with the wordmark: a square and a vertical bar followed by the letters MARK. Simple, modular, square. Everything else falls out from there. The typographic system, the palette of cream with a single warm yellow accent, the paper textures and photographic imagery. The goal was grounded and tactile, not slick.",
-        },
-        { type: "image", src: "/images/mark/stickers.png", alt: "Mark sticker sheet" },
-        {
-          type: "text",
-          heading: "The app",
-          body: "The app organizes everything the hardware captures: a Home that surfaces what's most recent alongside a daily reading session card, a Notes view that flips through highlights like flashcards, and a Scans view that groups notes by book and category.\n\nEarly versions tried to surface too much state at once. I learned to trust empty space and let the user's own content (the quote, the highlight, the photo) be the foreground. The home and notes flows ended up as paired panels with the wordmark anchored in the corner, so the product feels like one continuous object across screens.",
-        },
-        { type: "image", src: "/images/mark/home-thumbnails.png", alt: "Mark app home screens" },
-        { type: "image", src: "/images/mark/home-thumbnails-detail.png", alt: "Mark app home detail" },
-        { type: "image", src: "/images/mark/share-screens.png", alt: "Mark share screens" },
-        {
-          type: "text",
-          heading: "Merch and posters",
-          body: "The poster series runs on a recurring \"Make Your / On Your / My Words\" framing. Each pair has a blank version and a version with imagery, so one template can carry different campaigns. The t-shirts use the logo modularly: tiny and centered, large and offset, or paired with imagery from the brand library. The point was a kit Eason could remix, not a fixed set of one-offs.",
-        },
-        { type: "image", src: "/images/mark/shirts.png", alt: "Mark t-shirt designs" },
-        {
-          type: "text",
-          heading: "Print and packaging",
-          body: "The envelope, postcard, and sticky note pieces were the most fun, and the most useful for figuring out the brand. A physical artifact forces you to commit in ways screen design lets you defer. Once the envelope worked, the digital pieces got easier: the brand had a body in the real world to refer back to.",
-        },
-        { type: "image", src: "/images/mark/packaging.png", alt: "Mark print and packaging" },
-        {
-          type: "text",
-          heading: "What I took away",
-          body: "Two things stuck with me. First, the value of front-loading research even under pressure to produce: the weeks spent listening were the highest-leverage weeks of the project. Second, the value of a brand that lives in physical artifacts as much as on screen. When the envelope and the app share the same logic, people trust both more.",
-        },
-      ],
-    },
+    blocks: [
+      {
+        type: "context",
+        body: "Mark is a capture device and companion app built by Eason Tang through TroyLabs' BUILD program. Eason's thesis was that reading should be social, a Spotify Wrapped for what you read, rather than another place to file highlights. I joined as the designer and worked across four surfaces over the semester: the app and its share system, the brand, the physical packaging, and the deck we presented at LAUNCH.",
+        media: { src: "NEED", alt: "device or hero shot" },
+      },
+      {
+        type: "problem",
+        headline: "Reading is private, and nothing carried it anywhere else",
+        evidence: [
+          "Capture had to happen without interrupting the reading itself",
+          "Nothing connected the device to the app, or the app to a library",
+          "A highlight is only interesting to the person who made it",
+        ],
+        body: "Eason had the thesis before I joined; my problem was making it real. Most of the work was decomposition: the device, the app, and the share layer each answered a different question, and the answers had to add up to one product rather than three.",
+        media: { src: "NEED", alt: "early flow or sketch" },
+      },
+      {
+        type: "solution",
+        pieces: [
+          {
+            name: "Reading, made social",
+            caption: "Wrapped-style cards that turn a stretch of reading into something postable. Deliberately quirky and over-designed: a share screen only works if someone wants to be seen posting it, so this traded restraint for personality.",
+            media: { src: "NEED", alt: "share screens" },
+          },
+          {
+            name: "From page to library",
+            caption: "Logging a highlight on the device without leaving the page, then sorting captures against books, categories, and notes written in the app. Organised by reading habit rather than by file.",
+            media: { src: "NEED", alt: "app screens, capture to library" },
+          },
+          {
+            name: "Twenty, then three, then colour",
+            caption: "Twenty rough packaging concepts narrowed to three, then iterated in depth before any colour went on. Yellow was load-bearing in the early identity, so it came last and on purpose rather than as a starting constraint.",
+            media: { src: "NEED", alt: "one wide progression image, 20 to 3 to coloured" },
+          },
+          {
+            name: "LAUNCH",
+            caption: "The three-minute pitch presented at TroyLabs' end-of-semester LAUNCH summit.",
+            media: { src: "NEED", alt: "pitch video excerpt or unlisted embed" },
+          },
+        ],
+      },
+      {
+        type: "artifactGrid",
+        media: [
+          { src: "NEED", alt: "sticker sheet" },
+          { src: "NEED", alt: "shirt variants" },
+          { src: "NEED", alt: "tote" },
+          { src: "NEED", alt: "Make your mark wordplay" },
+        ],
+      },
+      { type: "gate", hint: "The full study sits behind a password under NDA." },
+    ],
   },
+
+  /* ---- Traeco — thin until Margaret's dump exists ---- */
   {
     slug: "traeco",
     title: "Traeco",
+    lede: "Cost visibility and governance for teams shipping AI: one pane of glass for LLM spend",
+    credits: [
+      { label: "Role", value: "Cofounder & CPO" },
+      { label: "Timeline", value: "2026, ongoing" },
+      { label: "Disciplines", value: "Product Design, Website Design, Design System, Brand Identity, Pitch Deck" },
+    ],
+    next: "impeccable-chicken",
     category: "AI B2B SaaS",
     year: "2026",
     role: "Cofounder & CPO",
@@ -165,238 +188,198 @@ export const works: Work[] = [
       { src: "/images/covers/traeco-laptop.png", left: "0%", top: "9.29%", width: "100%", height: "86.06%" },
       { src: "/images/covers/traeco-dashboard.png", left: "7.92%", top: "11.06%", width: "84.05%", height: "74.42%" },
     ],
-    study: {
-      summary: "Cost visibility and governance for teams shipping AI. One pane of glass for LLM spend.",
-      role: "Cofounder & CPO",
-      timeline: "2026, ongoing",
-      deliverables: ["Product Design", "Website Design", "Design System", "Brand Identity", "Pitch Deck"],
-      left: [
-        "Engineering teams shipping AI products were flying blind on cost. Token spend sat scattered across three or four provider dashboards, none of which tied cost back to the agents, teams, or workflows driving it. Surprise bills were the norm; finance asked questions engineering couldn't answer.",
-        "Traeco makes that legible and prescriptive. Not just \"here's what you spent,\" but \"here's the $4,200 you'd save this month if you swapped these three calls to a smaller model.\"",
-      ],
-      right: [
-        "As cofounder and CPO I own the end-to-end design surface: brand identity, marketing site, product UI, design system, and the pitch deck we took to investors.",
-        "Shipped to production; the marketing site is live at traeco.dev.",
-      ],
-      blocks: [
-        { type: "link", href: "https://traeco.dev", label: "Visit the live site (traeco.dev)" },
-        {
-          type: "text",
-          heading: "Who we designed for",
-          body: "I ran a discovery round of seven user interviews across three personas before sketching a single screen: engineering managers (the buyers), technical PMs (the daily users), and finance leads (the auditors). Each persona holds a different mental model of cost. Engineers think in tokens and latency; finance thinks in dollars per team. The product had to speak both languages at once without picking a side.\n\nThe interviews surfaced three jobs that shaped the IA: real-time and historical cost visibility, prescriptive optimization recommendations, and chargeback-ready attribution per team member.",
-        },
-        {
-          type: "text",
-          heading: "Design principles",
-          body: "Before any screen, I wrote a short set of non-negotiables to anchor every decision:\n\n• Dark-first. Everything lives on one deep neutral surface; depth comes from layered fills, not shadows. Finance-grade clarity, not consumer flash.\n• Money is the hero. Dollar values get the largest type in the scale. Savings render green, prefix and arrow always visible.\n• Yellow is scarce. The accent is reserved for the primary CTA and active nav. Sprinkling it dilutes affordance.\n• Tabular alignment. Numbers right-aligned so columns scan vertically without effort.\n• Motion supports data. Stats count up, bars grow in, status dots pulse. No decorative transitions; every animation has an informational job.",
-        },
-        { type: "image", src: "/images/traeco/dashboard.png", alt: "Traeco dashboard" },
-        {
-          type: "text",
-          heading: "Design system",
-          body: "Four layered surfaces (app, sidebar, card, elevated card), a four-step type scale, and a deliberately narrow palette: white-to-muted text, green for savings, amber for warnings, red only for cost increases. Seven reusable components do 90% of the work.\n\nDocumenting them in Figma with the same token names as the codebase removed an entire class of design-engineering friction. Handoffs became \"build this with the existing components\" instead of \"please match this exactly.\"",
-        },
-        {
-          type: "text",
-          heading: "Iteration and feedback",
-          body: "I ran weekly design crits with engineering and bi-weekly sessions with three pilot users. Two iterations stand out.\n\nThe Recommendations card went through four versions. V1 led with the priority badge; testers fixated on \"high\" without reading the savings. V4 leads with the dollar amount, demotes the badge to a text label, and adds an inline Apply affordance. Conversion to action in usability tests went from 22% to 71%.\n\nThe agent trace table started as a flat list of steps. A finance reviewer in our second pilot couldn't tell where the money went. I added a sticky cost column with a running subtotal and color-coded the latency cell. Same data, completely different read.",
-        },
-        { type: "image", src: "/images/traeco/website.png", alt: "Traeco marketing site" },
-        {
-          type: "text",
-          heading: "Marketing site",
-          body: "The site mirrors the product's voice: quiet, data-dense, trustworthy. The hero leads with the outcome (\"Stop overpaying for AI\") rather than a feature list, and the dashboard mockup below it is the product's own UI rendered at scale. Everything below the fold earns its place by being concrete: real numbers, real agent names, real time-to-value. Same type ramp and surface tokens as the product, so a visitor who clicks into a demo feels zero context switch.",
-        },
-        {
-          type: "text",
-          heading: "Outcome",
-          body: "Shipped the dashboard, marketing site, and full design system to production, and took the pitch deck through seed-stage conversations. The biggest learning was structural: starting from a written principles doc and a token cheat sheet, before any high-fidelity screens, paid back in every subsequent decision and made cross-functional review meaningfully faster.",
-        },
-      ],
-    },
+    blocks: [
+      {
+        type: "context",
+        body: "Engineering teams shipping AI products were flying blind on cost. Token spend sat scattered across three or four provider dashboards, none of which tied cost back to the agents, teams, or workflows driving it. Surprise bills were the norm; finance asked questions engineering couldn't answer.\n\nTraeco makes that legible and prescriptive. Not just \"here's what you spent,\" but \"here's the $4,200 you'd save this month if you swapped these three calls to a smaller model.\"\n\nShipped to production; the marketing site is live at traeco.dev.",
+      },
+      { type: "wip", email: WIP_EMAIL },
+    ],
   },
+
+  /* ---- Impeccable Chicken — thin until content exists ---- */
   {
     slug: "impeccable-chicken",
     title: "Impeccable Chicken",
+    lede: "Pitch deck and brand system",
+    credits: [
+      { label: "Role", value: "Pitch Deck Design" },
+      { label: "Timeline", value: "2025" },
+      { label: "Disciplines", value: "Pitch Deck, Brand System" },
+    ],
+    next: "atlix",
     category: "Brand / Deck",
     year: "2025",
     role: "Pitch Deck Design",
     featured: true,
     protected: true,
-    study: {
-      summary: "Pitch deck and brand system. Case study in progress.",
-      role: "Pitch Deck Design",
-      timeline: "2025",
-      deliverables: ["Pitch Deck", "Brand System"],
-      left: ["Case study in progress. Content coming soon."],
-      right: [],
-      blocks: [
-        { type: "text", body: "Case study in progress. Content coming soon." },
-      ],
-    },
+    comingSoon: true,
+    blocks: [
+      { type: "context", body: "Case study in progress. Content coming soon." },
+      { type: "wip", email: WIP_EMAIL },
+    ],
   },
+
+  /* ---- Atlix — thin until Margaret's dump exists ---- */
   {
     slug: "atlix",
     title: "Atlix",
+    lede: "Narrative intelligence: what young Californians are actually talking about, surfaced in real time",
+    credits: [
+      { label: "Role", value: "Cofounder, design lead" },
+      { label: "Timeline", value: "2026" },
+      { label: "Disciplines", value: "Product Design, Design System, Brand Identity, Pitch Deck" },
+    ],
+    next: "mark",
     category: "AI B2B SaaS",
     year: "2026",
     role: "Cofounder",
     featured: true,
-    study: {
-      summary: "Narrative intelligence: what young Californians are actually talking about, surfaced in real time.",
-      role: "Cofounder, design lead",
-      timeline: "2026",
-      deliverables: ["Product Design", "Design System", "Brand Identity", "Pitch Deck"],
-      left: [
-        "Polling lags. By the time a report goes out, the conversation has moved. Atlix pulls public discourse from across California's regions and surfaces what's gaining traction, what's losing it, and how people frame the issues that affect them.",
-        "Built for advocacy groups and policy researchers who need to read demographic discourse without waiting for a quarterly report.",
-      ],
-      right: [
-        "I led design across product, brand, pitch deck, and design system.",
-        "The dashboard and deck took us to the global finalist round of the Asian Leadership Conference, past hundreds of teams from Stanford, Harvard, Cornell, and UC Berkeley.",
-      ],
-      blocks: [
-        {
-          type: "text",
-          heading: "Early research",
-          body: "Before designing screens, I spent a few weeks reading the reports people in this space already work from, talking to researchers and advocacy folks, and mapping what their day actually looks like. The pattern: nobody wanted yet another data tool. They wanted summaries they could trust, with the source one click away. That shaped the whole product. Cards first, summaries upfront, citations always visible.",
-        },
-        {
-          type: "text",
-          heading: "Designing the dashboard",
-          body: "The first version was much busier. Filters everywhere, charts on charts, every card saying too much at once. After feedback from the researchers I'd interviewed, I cut it back to what matters in the first three seconds: what's the topic, where is it happening, how fast is it growing, who's talking about it. Everything else moved to the detail view.\n\nThe current layout: left-rail filters for region and issue, a tab row for sort order (most pressing, volume, fastest growing), and a card grid where each card commits to a single narrative.",
-        },
-        { type: "image", src: "/images/atlix/dashboard.png", alt: "Atlix dashboard" },
-        {
-          type: "text",
-          heading: "The pitch deck",
-          body: "The deck went through a lot of versions. Early drafts overexplained the technical side and underexplained the why. The version that landed leads with the gap between when people are talking and when researchers find out, then shows the dashboard in a few screenshots. Low slide density throughout: one idea per slide, one image, very few words.",
-        },
-        { type: "video", src: "/videos/atlix-pitch.mp4", poster: "/images/atlix/hero.png" },
-        {
-          type: "text",
-          heading: "Brand",
-          body: "Atlix sits in a category where tools look either academic and beige or aggressively tech. I wanted a third option: dark navy, a single accent, type-forward, quiet. The wordmark is a clean sans because the product should be the loudest thing in any deck or screenshot.",
-        },
-        {
-          type: "text",
-          heading: "Outcome",
-          body: "Global finalist at the Asian Leadership Conference. The bigger lesson: research before design isn't a checkbox. Every time I shortcut it and started designing first, I threw work away. Every conversation before opening Figma made the design work faster, because half the decisions were already made. And restraint compounds: cutting a field off a card felt scary, but it made the whole grid more confident than adding one ever would have.",
-        },
-      ],
-    },
+    blocks: [
+      {
+        type: "context",
+        body: "Polling lags. By the time a report goes out, the conversation has moved. Atlix pulls public discourse from across California's regions and surfaces what's gaining traction, what's losing it, and how people frame the issues that affect them.\n\nBuilt for advocacy groups and policy researchers who need to read demographic discourse without waiting for a quarterly report.\n\nThe dashboard and deck took us to the global finalist round of the Asian Leadership Conference, past hundreds of teams from Stanford, Harvard, Cornell, and UC Berkeley.",
+      },
+      { type: "wip", email: WIP_EMAIL },
+    ],
   },
+
+  /* ---- Works index only ---- */
   {
     slug: "glance",
     title: "Glance",
+    lede: "Website and logo design for a productivity startup in TroyLabs' BUILD program",
+    credits: [
+      { label: "Role", value: "Designer, TroyLabs BUILD" },
+      { label: "Timeline", value: "2025" },
+      { label: "Disciplines", value: "Website Design, Logo Design, UI/UX Design, Framer Development" },
+    ],
+    next: "mountaindew",
     category: "Productivity",
     year: "2025",
     role: "Designer",
-    // not featured: lives in the works index only, not the home column
-    study: {
-      summary: "Website and logo design for a productivity startup in TroyLabs' BUILD program.",
-      role: "Designer, TroyLabs BUILD",
-      timeline: "2025",
-      deliverables: ["Website Design", "Logo Design", "UI/UX Design", "Framer Development"],
-      left: [
-        "I worked with Glance's founders as a designer on their team during TroyLabs' BUILD program. Most of my time went to the website and to rounds of logo exploration.",
-      ],
-      right: [
-        "The site itself is no longer accessible, so what survives here is the logo process: the sketches and iterations that got us to the final mark.",
-      ],
-      blocks: [
-        { type: "image", src: "/images/glance-content.png", alt: "Glance logo iterations" },
-      ],
-    },
+    blocks: [
+      {
+        type: "context",
+        body: "I worked with Glance's founders as a designer on their team during TroyLabs' BUILD program. Most of my time went to the website and to rounds of logo exploration.\n\nThe site itself is no longer accessible, so what survives here is the logo process: the sketches and iterations that got us to the final mark.",
+        media: { src: "/images/glance-content.png", alt: "Glance logo iterations" },
+      },
+    ],
   },
   {
     slug: "mountaindew",
     title: "Mountain Dew",
+    lede: "Bottle redesigns and brand strategy for Mountain Dew with Avenues Consulting Group",
+    credits: [
+      { label: "Role", value: "Design Consultant, Avenues Consulting Group" },
+      { label: "Timeline", value: "2024" },
+      { label: "Disciplines", value: "Product Design, Brand Strategy, Slide Deck" },
+    ],
+    next: "charitablefoundation",
     category: "CPG",
     year: "2024",
     role: "Design Consultant",
-    study: {
-      summary: "Bottle redesigns and brand strategy for Mountain Dew with Avenues Consulting Group.",
-      role: "Design Consultant, Avenues Consulting Group",
-      timeline: "2024",
-      deliverables: ["Product Design", "Brand Strategy", "Slide Deck"],
-      left: [
-        "Mountain Dew came to Avenues Consulting Group as a client. On their team I spearheaded market research and strategy, bottle redesigns built around their new logo, and the final deck presented alongside my team.",
-      ],
-      right: [
-        "Below: previews of the slide deck and the bottle redesigns.",
-      ],
-      blocks: [
-        { type: "pair", left: "/images/mountaindew-1.png", right: "/images/mountaindew-2.png" },
-      ],
-    },
+    blocks: [
+      {
+        type: "context",
+        body: "Mountain Dew came to Avenues Consulting Group as a client. On their team I spearheaded market research and strategy, bottle redesigns built around their new logo, and the final deck presented alongside my team.",
+      },
+      {
+        type: "artifactGrid",
+        media: [
+          { src: "/images/mountaindew-1.png", alt: "Mountain Dew slide deck preview" },
+          { src: "/images/mountaindew-2.png", alt: "Mountain Dew bottle redesigns" },
+        ],
+      },
+    ],
   },
   {
     slug: "charitablefoundation",
     title: "Ichioka and Nakao",
+    lede: "Brand and website redesign for the Ichioka and Nakao Charitable Foundation",
+    credits: [
+      { label: "Role", value: "Design Consultant, Avenues Consulting Group" },
+      { label: "Timeline", value: "2024" },
+      { label: "Disciplines", value: "Logo Design, Website Design, Branding, Slide Deck" },
+    ],
+    next: "mark",
     category: "Nonprofit",
     year: "2024",
     role: "Design Consultant",
-    study: {
-      summary: "Brand and website redesign for the Ichioka and Nakao Charitable Foundation.",
-      role: "Design Consultant, Avenues Consulting Group",
-      timeline: "2024",
-      deliverables: ["Logo Design", "Website Design", "Branding", "Slide Deck"],
-      left: [
-        "The Ichioka and Nakao Charitable Foundation came to Avenues Consulting Group for a refresh. On their team I spearheaded a brand and website redesign, presented in a deck alongside my team.",
-      ],
-      right: [],
-      blocks: [
-        { type: "pair", left: "/images/ichioka-1.png", right: "/images/ichioka-hero.png" },
-        { type: "image", src: "/images/ichioka-2.jpeg", alt: "Ichioka and Nakao website redesign" },
-        { type: "image", src: "/images/ichioka-3.jpeg", alt: "Ichioka and Nakao brand redesign" },
-      ],
-    },
+    blocks: [
+      {
+        type: "context",
+        body: "The Ichioka and Nakao Charitable Foundation came to Avenues Consulting Group for a refresh. On their team I spearheaded a brand and website redesign, presented in a deck alongside my team.",
+      },
+      {
+        type: "artifactGrid",
+        media: [
+          { src: "/images/ichioka-1.png", alt: "Ichioka and Nakao logo redesign" },
+          { src: "/images/ichioka-hero.png", alt: "Ichioka and Nakao brand refresh" },
+          { src: "/images/ichioka-2.jpeg", alt: "Ichioka and Nakao website redesign" },
+          { src: "/images/ichioka-3.jpeg", alt: "Ichioka and Nakao brand redesign" },
+        ],
+      },
+    ],
   },
 
-  /* ---- PLAY collections (not in the works index) ---- */
+  /* ---- PLAY collections (grid page, not the works index) ---- */
   {
     slug: "graphics",
     title: "Graphics",
+    lede: "Miscellaneous graphics from over the years: Instagram posts, flyers, and illustrative work made for fun",
+    credits: [
+      { label: "Role", value: "Designer / Illustrator" },
+      { label: "Timeline", value: "2023–2025" },
+      { label: "Disciplines", value: "Art Direction, Graphic Design, Illustration" },
+    ],
+    next: "smallworks",
     category: "Graphic Design",
     year: "2023–2025",
     role: "Designer / Illustrator",
     play: true,
-    study: {
-      summary: "Miscellaneous graphics from over the years: Instagram posts, flyers, and illustrative work made for fun.",
-      role: "Designer / Illustrator",
-      timeline: "2023–2025",
-      deliverables: ["Art Direction", "Graphic Design", "Illustration"],
-      left: [],
-      right: [],
-      blocks: [
-        { type: "pair", left: "/images/graphics-hero.webp", right: "/images/graphics-2.webp" },
-        { type: "image", src: "/images/graphics-3.webp" },
-        { type: "pair", left: "/images/graphics-4.webp", right: "/images/graphics-5.png" },
-        { type: "image", src: "/images/graphics-6.png" },
-        { type: "image", src: "/images/graphics-7.png" },
-      ],
-    },
+    blocks: [
+      {
+        type: "artifactGrid",
+        media: [
+          { src: "/images/graphics-hero.webp", alt: "" },
+          { src: "/images/graphics-2.webp", alt: "" },
+          { src: "/images/graphics-3.webp", alt: "" },
+          { src: "/images/graphics-4.webp", alt: "" },
+          { src: "/images/graphics-5.png", alt: "" },
+          { src: "/images/graphics-6.png", alt: "" },
+        ],
+      },
+      {
+        type: "artifactGrid",
+        media: [{ src: "/images/graphics-7.png", alt: "" }, { src: "/images/smallworks-hero.png", alt: "" }],
+      },
+    ],
   },
   {
     slug: "smallworks",
     title: "Small Works",
+    lede: "Projects from hackathons, design challenges, and class projects that don't quite warrant their own page",
+    credits: [
+      { label: "Role", value: "Designer" },
+      { label: "Timeline", value: "2023–2025" },
+      { label: "Disciplines", value: "UI/UX Design, Website Design, Branding" },
+    ],
+    next: "graphics",
     category: "Personal",
     year: "2023–2025",
     role: "Designer",
     play: true,
-    study: {
-      summary: "Projects from hackathons, design challenges, and class projects that don't quite warrant their own page.",
-      role: "Designer",
-      timeline: "2023–2025",
-      deliverables: ["UI/UX Design", "Website Design", "Branding"],
-      left: [],
-      right: [],
-      blocks: [
-        { type: "pair", left: "/images/smallworks-1.webp", right: "/images/smallworks-2.webp" },
-        { type: "image", src: "/images/smallworks-3.png" },
-      ],
-    },
+    blocks: [
+      {
+        type: "artifactGrid",
+        media: [
+          { src: "/images/smallworks-1.webp", alt: "" },
+          { src: "/images/smallworks-2.webp", alt: "" },
+          { src: "/images/smallworks-3.png", alt: "" },
+        ],
+      },
+    ],
   },
 ];
 
@@ -405,3 +388,28 @@ export const indexWorks = works.filter((w) => !w.play);
 export const playWorks = works.filter((w) => w.play);
 export const PROTECTED_SLUGS = works.filter((w) => w.protected).map((w) => w.slug);
 export const getWork = (slug: string) => works.find((w) => w.slug === slug);
+
+/* build-time spine checks — warnings, never failures (thin works are
+   sanctioned; the warning is the honest "unfinished" marker) */
+if (process.env.NODE_ENV !== "production" || process.env.npm_lifecycle_event === "build") {
+  for (const w of works) {
+    if (w.play) continue;
+    if (!w.blocks.some((b) => b.type === "problem")) {
+      console.warn(`[works] ${w.slug}: no problem block — case study reads as unfinished`);
+    }
+    if (w.blocks.length > 7) {
+      console.warn(`[works] ${w.slug}: ${w.blocks.length} blocks exceeds the 7-block cap`);
+    }
+    if (w.featured && !w.blurb && w.lede.length > 72) {
+      console.warn(`[works] ${w.slug}: no blurb and lede is ${w.lede.length} chars — will clamp on the home card`);
+    }
+    for (const b of w.blocks) {
+      if (b.type === "artifactGrid" && (b.media.length < 2 || b.media.length > 6)) {
+        console.warn(`[works] ${w.slug}: artifactGrid has ${b.media.length} images (spec is 2–6)`);
+      }
+      if (b.type === "gate" && !w.protected) {
+        console.warn(`[works] ${w.slug}: gate block without protected flag`);
+      }
+    }
+  }
+}

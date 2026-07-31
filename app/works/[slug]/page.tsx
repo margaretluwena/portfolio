@@ -25,7 +25,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
 
   return (
     <main className="min-h-screen bg-paper">
-      <Nav rightSlot={<Link href="/">LOGO</Link>} />
+      <Nav rightSlot={<span>&ndash; {work.title.toLowerCase()} &ndash;</span>} />
       <div className="px-[var(--inset-left)] pt-[22vh]">
         <CaseStudyContent work={work} variant="page" />
         <footer className="pb-[10vh]">

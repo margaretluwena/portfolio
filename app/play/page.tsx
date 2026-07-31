@@ -11,12 +11,10 @@ import { playWorks, type Block } from "@/lib/works";
 */
 
 function flatImages(blocks: Block[] = []): string[] {
-  return blocks.flatMap((b) =>
-    b.type === "image" ? [b.src] : b.type === "pair" ? [b.left, b.right] : []
-  );
+  return blocks.flatMap((b) => (b.type === "artifactGrid" ? b.media.map((m) => m.src) : []));
 }
 
-const snippets = playWorks.flatMap((w) => flatImages(w.study?.blocks));
+const snippets = playWorks.flatMap((w) => flatImages(w.blocks));
 
 export default function PlayPage() {
   return (
