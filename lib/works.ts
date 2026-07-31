@@ -158,20 +158,25 @@ export const works: Work[] = [
     ],
   },
 
-  /* ---- Traeco — thin until Margaret's dump exists ---- */
+  /* ---- Traeco — full spine, canonical content: docs/content/traeco.md.
+     Text values of exactly "NEED" and media src "NEED" render as gray
+     placeholders; bracketed authoring guidance never ships. The evidence
+     lines are verified factual claims and ship exactly as written. ---- */
   {
     slug: "traeco",
     title: "Traeco",
-    lede: "Cost visibility and governance for teams shipping AI: one pane of glass for LLM spend",
+    lede: "NEED",
+    blurb: "Brand, product, and web for an AI cost platform",
     credits: [
-      { label: "Role", value: "Cofounder & CPO" },
-      { label: "Timeline", value: "2026, ongoing" },
-      { label: "Disciplines", value: "Product Design, Website Design, Design System, Brand Identity, Pitch Deck" },
+      { label: "Role", value: "Co-founder & CPO" },
+      { label: "Timeline", value: "NEED" },
+      { label: "Team", value: "NEED" },
+      { label: "Disciplines", value: "Product, Brand System, UI/UX, Web, Pitch" },
     ],
     next: "atlix",
     category: "AI B2B SaaS",
     year: "2026",
-    role: "Cofounder & CPO",
+    role: "Co-founder & CPO",
     featured: true,
     wordmark: "/images/wordmarks/traeco.svg", // Figma 140:694, 164/972 of card width
     wordmarkWidth: "16.9%",
@@ -191,7 +196,35 @@ export const works: Work[] = [
     blocks: [
       {
         type: "context",
-        body: "Engineering teams shipping AI products were flying blind on cost. Token spend sat scattered across three or four provider dashboards, none of which tied cost back to the agents, teams, or workflows driving it. Surprise bills were the norm; finance asked questions engineering couldn't answer.\n\nTraeco makes that legible and prescriptive. Not just \"here's what you spent,\" but \"here's the $4,200 you'd save this month if you swapped these three calls to a smaller model.\"\n\nShipped to production; the marketing site is live at traeco.dev.",
+        body: "Traeco is observability and cost management for AI agents, founded with my co-founders through LavaLab, USC's largest incubator. I'm co-founder and CPO, and was the only designer — the brand, the product, the site, and the decks are all mine. Live at traeco.dev. We won Audience Choice at the closing summit.",
+        media: { src: "NEED", alt: "product or brand hero" },
+      },
+      {
+        type: "problem",
+        headline: "NEED",
+        evidence: [
+          "Alphabet posted its first negative quarterly free cash flow since its 2004 IPO — $5.9B — on $44.9B of AI capex",
+          "Uber exhausted its entire 2026 AI budget by April and now caps engineers at $1,500 a month per tool",
+          "Across 50+ calls in 11 industries, the teams closest to it told us it wasn't urgent yet — and that they knew it would be",
+        ],
+        body: "NEED",
+        media: { src: "NEED", alt: "outreach tracker screenshot, industry column converging to agentic AI" },
+      },
+      {
+        type: "solution",
+        pieces: [
+          { name: "NEED", caption: "NEED", media: { src: "NEED", alt: "dashboard screens" } },
+          { name: "NEED", caption: "NEED", media: { src: "NEED", alt: "brand system sheet" } },
+          { name: "Two decks, two jobs", caption: "NEED", media: { src: "NEED", alt: "spreads from both decks" } },
+        ],
+      },
+      {
+        type: "artifactGrid",
+        media: [
+          { src: "NEED", alt: "traeco.dev screens" },
+          { src: "NEED", alt: "brand applications" },
+          { src: "NEED", alt: "deck spreads" },
+        ],
       },
       { type: "wip", email: WIP_EMAIL },
     ],

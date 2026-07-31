@@ -45,6 +45,24 @@ export function railEntries(work: Work): { id: string; name: string }[] {
     .map(({ b, i }) => ({ id: `block-${i}-${b.type}`, name: RAIL_NAMES[b.type] }));
 }
 
+/* ---------- NEED placeholders ----------
+   Text fields whose value is exactly "NEED" are unwritten content
+   (authoring guidance in docs/content/*.md never ships). They render as
+   gray blocks in the same language as NEED media. */
+
+export const isNeed = (s?: string) => s === "NEED";
+
+export function NeedText({ label, lines = 1, className = "" }: { label: string; lines?: number; className?: string }) {
+  return (
+    <span
+      className={`grid w-full place-items-center bg-placeholder/50 ${className}`}
+      style={{ minHeight: `${lines * 2.5}rem` }}
+    >
+      <span className="px-4 py-2 text-center text-label uppercase text-ink/40">NEED · {label}</span>
+    </span>
+  );
+}
+
 /* ---------- media ---------- */
 
 function MediaView({ media, sizes = "(min-width: 768px) 640px, 100vw" }: { media: Media; sizes?: string }) {
@@ -97,7 +115,11 @@ function ContextBlock({ block }: { block: Extract<Block, { type: "context" }> })
 function ProblemBlock({ block }: { block: Extract<Block, { type: "problem" }> }) {
   return (
     <section className="space-y-8">
-      <h2 className="wordmark text-title text-ink">{block.headline}</h2>
+      {isNeed(block.headline) ? (
+        <NeedText label="problem headline" className="max-w-[440px]" />
+      ) : (
+        <h2 className="wordmark text-title text-ink">{block.headline}</h2>
+      )}
       {/* evidence reads as data, not prose: label treatment, hairline-topped row */}
       <ul className="grid gap-6 md:grid-cols-3">
         {block.evidence.map((fact) => (
@@ -106,7 +128,11 @@ function ProblemBlock({ block }: { block: Extract<Block, { type: "problem" }> })
           </li>
         ))}
       </ul>
-      <p className="whitespace-pre-line text-body-lg leading-relaxed text-ink/80">{block.body}</p>
+      {isNeed(block.body) ? (
+        <NeedText label="problem body" lines={3} />
+      ) : (
+        <p className="whitespace-pre-line text-body-lg leading-relaxed text-ink/80">{block.body}</p>
+      )}
       {block.media && <MediaView media={block.media} />}
     </section>
   );
@@ -115,10 +141,18 @@ function ProblemBlock({ block }: { block: Extract<Block, { type: "problem" }> })
 function SolutionBlock({ block }: { block: Extract<Block, { type: "solution" }> }) {
   return (
     <section className="space-y-16">
-      {block.pieces.map((piece) => (
-        <div key={piece.name} className="space-y-4">
-          <h3 className="text-label uppercase text-ink/50">{piece.name}</h3>
-          <p className="max-w-[62ch] text-body text-ink">{piece.caption}</p>
+      {block.pieces.map((piece, i) => (
+        <div key={`${i}-${piece.name}`} className="space-y-4">
+          {isNeed(piece.name) ? (
+            <NeedText label="piece name" className="max-w-[220px]" />
+          ) : (
+            <h3 className="text-label uppercase text-ink/50">{piece.name}</h3>
+          )}
+          {isNeed(piece.caption) ? (
+            <NeedText label="caption" lines={2} className="max-w-[62ch]" />
+          ) : (
+            <p className="max-w-[62ch] text-body text-ink">{piece.caption}</p>
+          )}
           <MediaView media={piece.media} />
         </div>
       ))}

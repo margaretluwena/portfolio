@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import type { Work } from "@/lib/works";
-import { Blocks, SectionRail, NextWork } from "@/components/works/Blocks";
+import { Blocks, SectionRail, NextWork, NeedText, isNeed } from "@/components/works/Blocks";
 
 /*
   The case-study body — spine v2: frame -> rail -> blocks -> next.
@@ -48,7 +48,11 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
             className="md:max-w-[46%]"
           >
             <h1 className="wordmark text-corner mb-3 text-ink">{work.title}</h1>
-            <p className="text-body-lg text-ink/55">{work.lede}</p>
+            {isNeed(work.lede) ? (
+              <NeedText label="lede" className="max-w-[320px]" />
+            ) : (
+              <p className="text-body-lg text-ink/55">{work.lede}</p>
+            )}
           </motion.div>
 
           <motion.aside
@@ -62,7 +66,13 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
               {work.credits.map((c) => (
                 <div key={c.label} className="flex gap-3 md:justify-end">
                   <dt className="shrink-0 text-ink/40">{c.label}</dt>
-                  <dd className="text-ink md:text-right">{c.value}</dd>
+                  <dd className="text-ink md:text-right">
+                    {isNeed(c.value) ? (
+                      <span className="bg-placeholder/50 px-3 py-0.5 text-label uppercase text-ink/40">NEED</span>
+                    ) : (
+                      c.value
+                    )}
+                  </dd>
                 </div>
               ))}
             </dl>
