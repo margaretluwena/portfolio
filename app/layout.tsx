@@ -4,6 +4,7 @@ import "./globals.css";
 import RouteMotion from "@/components/providers/RouteMotion";
 import { TransitionProvider } from "@/components/providers/PageTransition";
 import Cursor from "@/components/ui/Cursor";
+import DevAgentation from "@/components/providers/DevAgentation";
 
 /*
   Body face: Manrope (variable, 200-800), self-hosted from /public/fonts
@@ -61,6 +62,7 @@ export default function RootLayout({
           <TransitionProvider>{children}</TransitionProvider>
         </RouteMotion>
         <Cursor />
+        <DevAgentation />
       </body>
     </html>
   );
