@@ -25,13 +25,14 @@ export default function WorkList() {
     <ul className="space-y-[var(--card-gap)]">
       {featuredWorks.map((work) => {
         const card = (
+            /* no scroll-reveal ramp: inside the column's own scroll context
+               the whileInView trigger never fired for the card peeking at the
+               fold, leaving everything below invisible. Cards render visible;
+               reduced responsiveness also says don't fade in the primary
+               click target. */
             <motion.article
               className="relative aspect-[972/678] w-full overflow-hidden rounded-[10px] shadow-[0_15px_33px_rgba(0,0,0,0.1)]"
               style={{ background: work.cardBg ?? "#fff" }}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-15%" }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
               {/* cover - the shared element that flies to center */}
               <motion.div
