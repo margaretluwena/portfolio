@@ -7,7 +7,7 @@ import Nav from "@/components/nav/Nav";
 import CaseStudyContent from "@/components/works/CaseStudyContent";
 
 /*
-  Standalone case study — the destination URL (direct links, refresh, SEO).
+  Standalone case study - the destination URL (direct links, refresh, SEO).
   When opened by clicking a work on the home page, the intercepting overlay
   (app/@modal/(.)works/[slug]) shows instead, with the fly-to-center morph.
 */

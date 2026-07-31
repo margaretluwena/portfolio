@@ -1,7 +1,7 @@
 "use client";
 
 /*
-  THE SIGNATURE GRAPHIC — the real Figma texture (assets/hero-texture.png,
+  THE SIGNATURE GRAPHIC - the real Figma texture (assets/hero-texture.png,
   exported from node 116:73), liquid-displaced around the cursor.
 
   One fullscreen quad, one texture read. The vertex shader bypasses the camera
@@ -9,7 +9,7 @@
 
   Mapping: cover-fit, anchored to the BOTTOM of the image. The PNG's baked
   white fade lives at its bottom edge, and the Figma main page shows exactly
-  that bottom slice in the top band — so during the 100vh → 36vh collapse the
+  that bottom slice in the top band - so during the 100vh → 36vh collapse the
   fade stays glued to the band's bottom and the page always melts into white.
 
   Interaction: eased cursor uniform; pixels near the cursor get a swirl + push

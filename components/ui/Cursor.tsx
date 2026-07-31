@@ -5,7 +5,7 @@ import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/reac
 
 /*
   Custom cursor: a small ink dot trailing the pointer, identical everywhere
-  on the page (the VIEW disc mode is gone by request — no growing, no label).
+  on the page (the VIEW disc mode is gone by request - no growing, no label).
 
   Mouse-only: skipped for touch/coarse pointers and for reduced motion.
 */

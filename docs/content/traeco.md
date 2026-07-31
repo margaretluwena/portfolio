@@ -1,4 +1,4 @@
-# traeco — v2, three states
+# traeco - v2, three states
 
 > * `VERBATIM:` Mar's exact words. Ships as written, no edits.
 > * `DRAFT:` written from Mar's voice notes by her assistant, compressed but

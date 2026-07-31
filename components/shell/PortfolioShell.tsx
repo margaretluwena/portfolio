@@ -10,10 +10,10 @@ import Prox from "@/components/ui/Prox";
   MAIN PAGE.
   Asymmetric split, all layout viewport-relative (see globals.css tokens).
   Vertical anchors from Figma 128:503 (÷1117), each element pinned separately:
-    LEFT  — position:fixed at --inset: identity group anchored at 24.2vh
-            (name, tagline +6px, socials +14px — fixed gaps, not vh), bio
+    LEFT  - position:fixed at --inset: identity group anchored at 24.2vh
+            (name, tagline +6px, socials +14px - fixed gaps, not vh), bio
             at 50.1vh with a 245px cap. Contact moved to the nav (ABOUT).
-    RIGHT — work cards from --col-right, --card-w wide, first top at 19.7vh;
+    RIGHT - work cards from --col-right, --card-w wide, first top at 19.7vh;
             its own scroll container with rubber-band overscroll
             (WorksColumn), scrolling under the fixed nav band.
   Two full-height vertical hairlines sit at --edge from each viewport edge,
@@ -21,7 +21,7 @@ import Prox from "@/components/ui/Prox";
 
   The wordmark is NOT inside the fading group: it must stay fully opaque while
   it flies in from the intro (shared layoutId). Everything else enters after it
-  lands — a staggered rise, top to bottom, so the page assembles around the name.
+  lands - a staggered rise, top to bottom, so the page assembles around the name.
 */
 
 const socials = [
@@ -43,18 +43,18 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
 
   return (
     <div className="relative md:h-screen md:overflow-hidden">
-      {/* full-height vertical hairlines at --edge — fixed, above the texture, desktop only */}
+      {/* full-height vertical hairlines at --edge - fixed, above the texture, desktop only */}
       <div aria-hidden className="pointer-events-none fixed inset-y-0 left-[var(--edge)] z-20 hidden w-px bg-hairline md:block" />
       <div aria-hidden className="pointer-events-none fixed inset-y-0 right-[var(--edge)] z-20 hidden w-px bg-hairline md:block" />
 
       <div className="relative z-10">
-        {/* LEFT — fixed on desktop, first block in normal flow on mobile */}
+        {/* LEFT - fixed on desktop, first block in normal flow on mobile */}
         <aside className="px-[var(--inset)] pt-[36vh] md:fixed md:inset-y-0 md:left-[var(--inset)] md:w-[300px] md:px-0 md:pt-0">
-          {/* identity group — anchored once at 24.2vh, then FIXED px gaps so
+          {/* identity group - anchored once at 24.2vh, then FIXED px gaps so
               the name/tagline/icons rhythm doesn't stretch with viewport
               height (separate vh anchors read as uneven spacing) */}
           <div className="md:absolute md:top-[24.2vh]">
-            {/* the wordmark lands HERE — shared layoutId with the intro; never faded */}
+            {/* the wordmark lands HERE - shared layoutId with the intro; never faded */}
             {reveal && (
               <motion.p
                 layoutId="wordmark"
@@ -65,7 +65,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
               </motion.p>
             )}
 
-            {/* tagline — body face italic (Figma 128:507 specs Inter Italic), NOT Nohemi */}
+            {/* tagline - body face italic (Figma 128:507 specs Inter Italic), NOT Nohemi */}
             <motion.div {...enter(0.55)} className="mt-[6px]">
               <p className="font-body text-display italic whitespace-nowrap">
                 <RotatingTitle active={reveal} />
@@ -91,7 +91,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
             </motion.ul>
           </div>
 
-          {/* bio — business-facing copy (2026-07-31); 245px cap keeps both
+          {/* bio - business-facing copy (2026-07-31); 245px cap keeps both
               paragraphs at the artboard's 3-4 short lines */}
           <motion.div
             {...enter(0.8)}
@@ -103,7 +103,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
 
         </aside>
 
-        {/* RIGHT — fixed scroll context on desktop (.works-column in
+        {/* RIGHT - fixed scroll context on desktop (.works-column in
             globals.css); normal flow on mobile. */}
         <motion.section {...enter(0.6)}>
           <WorksColumn onIndex={onWorksIndex} />

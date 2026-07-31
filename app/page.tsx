@@ -11,11 +11,11 @@ import { featuredWorks } from "@/lib/works";
   THE OPENING.
   1. Full-screen interactive texture + "MARGARET LUWENA" centered (Figma frame 96:4).
   2. After a beat, the texture recedes to a top band and the wordmark TRAVELS to its
-     corner slot in the left panel — one element, animated via Framer's shared layout
+     corner slot in the left panel - one element, animated via Framer's shared layout
      (layoutId="wordmark"), so no manual measuring.
   3. The rest of the main page reveals (staggered, inside PortfolioShell).
 
-  The intro plays once per session — returning to "/" via ABOUT goes straight
+  The intro plays once per session - returning to "/" via ABOUT goes straight
   to the main page (sessionStorage gate, applied pre-paint).
 
   Texture collapse and wordmark flight share ONE duration + ease so they read as

@@ -25,7 +25,7 @@ export default function RouteMotion({
 
   return (
     /* reducedMotion="user": every motion component (morphs, reveals, entrances)
-       drops transform/layout animation for prefers-reduced-motion users —
+       drops transform/layout animation for prefers-reduced-motion users -
        the CSS blanket rule alone can't reach framer's JS-driven transforms */
     <MotionConfig reducedMotion="user">
       <LayoutGroup>

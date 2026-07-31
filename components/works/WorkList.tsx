@@ -8,14 +8,14 @@ import Prox from "@/components/ui/Prox";
 
 /*
   The right-hand scrolling column. Each work is a white card (Figma card
-  frames, 972 × 678 — aspect 1.434, radius 10, shadow 0 23px 50px /10%
+  frames, 972 × 678 - aspect 1.434, radius 10, shadow 0 23px 50px /10%
   scaled to render size): layered cover art placed per-card via coverArt
   (geometry from each card's own frame), a white fade into the text zone
   (Figma "Rectangle 814": transparent → white at 77.9%), then the wordmark
   at 77.7% / description at 84.8%, both inset 7% of card width. Clicking a
   work routes to /works/[slug]; the intercepting overlay flies the COVER
-  REGION to center via the shared layoutId — the white shell stays put, so
-  the morph is untouched. (Plain <Link>, NOT TransitionLink — the overlay
+  REGION to center via the shared layoutId - the white shell stays put, so
+  the morph is untouched. (Plain <Link>, NOT TransitionLink - the overlay
   morph replaces the page exit.)
 */
 
@@ -32,7 +32,7 @@ export default function WorkList() {
               viewport={{ once: true, margin: "-15%" }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* cover — the shared element that flies to center */}
+              {/* cover - the shared element that flies to center */}
               <motion.div
                 layoutId={`work-${work.slug}`}
                 className="absolute inset-0 overflow-hidden"
@@ -45,7 +45,7 @@ export default function WorkList() {
                        lands at the card's own 972/678 shape, so the morph
                        never changes aspect and the contents need no separate
                        scale-correction (an inner `layout` child here used to
-                       run its own second animation on close — that was the
+                       run its own second animation on close - that was the
                        "content animates back in by itself" bug) */
                     <div className="absolute inset-x-0 top-0 aspect-[972/678]">
                       {work.coverArt.map((layer) => (
@@ -69,7 +69,7 @@ export default function WorkList() {
                       {work.title}
                     </div>
                   )}
-                  {/* fade into the text zone — per-card color (Figma card frames):
+                  {/* fade into the text zone - per-card color (Figma card frames):
                       white cards melt to white, Traeco's dark frame to #242428 */}
                   <div
                     className="absolute inset-0"
@@ -78,9 +78,9 @@ export default function WorkList() {
                 </div>
               </motion.div>
 
-              {/* wordmark + description — % of the card box so they hold at any width.
+              {/* wordmark + description - % of the card box so they hold at any width.
                   Real SVG lockups scale by width (natural aspect preserved) and
-                  bottom-align 12px above the description's top edge (84.8%) —
+                  bottom-align 12px above the description's top edge (84.8%) -
                   normalized; the Figma frames drift 21px vs 9px, not intent.
                   Cards without art keep the Nohemi text treatment. */}
               {work.wordmark ? (
@@ -113,7 +113,7 @@ export default function WorkList() {
                 {work.blurb ?? work.lede}
               </p>
 
-              {/* "Coming soon" hover reveal — opacity only, per the hover rule */}
+              {/* "Coming soon" hover reveal - opacity only, per the hover rule */}
               {work.comingSoon && (
                 <span className="absolute inset-0 grid place-items-center text-label uppercase text-ink/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   Coming soon

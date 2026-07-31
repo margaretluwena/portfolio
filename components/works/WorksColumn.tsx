@@ -13,7 +13,7 @@ import { featuredWorks } from "@/lib/works";
   reduced motion keeps plain scrolling.
 
   Also reports which work is nearest the viewport center (for the nav's live
-  "01 / 06" index) and ends in a small colophon — something for the rubber
+  "01 / 06" index) and ends in a small colophon - something for the rubber
   band to bounce against.
 */
 
@@ -47,7 +47,7 @@ export default function WorksColumn({ onIndex }: { onIndex?: (i: number) => void
 
     if (settle.current) clearTimeout(settle.current);
     settle.current = setTimeout(() => {
-      animate(y, 0, { type: "spring", stiffness: 200, damping: 15 }); // springs past 0 — the bounce
+      animate(y, 0, { type: "spring", stiffness: 200, damping: 15 }); // springs past 0 - the bounce
     }, 90);
   }
 
@@ -75,12 +75,12 @@ export default function WorksColumn({ onIndex }: { onIndex?: (i: number) => void
       aria-label="Selected works"
       className="no-scrollbar works-column focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ink/40"
     >
-      {/* first card's top edge at 19.7vh (Figma 128:503: 220/1117 — it scrolls
+      {/* first card's top edge at 19.7vh (Figma 128:503: 220/1117 - it scrolls
           under the fixed nav band); width and inset from the layout tokens */}
       <motion.div style={{ y }} className="px-[var(--inset)] pt-12 md:px-0 md:pt-[19.7vh]">
         <WorkList />
 
-        {/* colophon — the column's sign-off */}
+        {/* colophon - the column's sign-off */}
         <footer className="mt-[7vh] border-t border-hairline pb-[8vh] pt-5 text-label tracking-normal leading-relaxed text-ink/40">
           <p>Designed in Figma. Built with Claude Code.</p>
           <p>

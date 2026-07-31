@@ -10,14 +10,14 @@ import Prox from "@/components/ui/Prox";
 /*
   INTERCEPTING OVERLAY.
   The (.)works/[slug] segment intercepts client-side navigation from "/" to
-  "/works/[slug]" and renders this overlay INSTEAD of a full page load — so the
+  "/works/[slug]" and renders this overlay INSTEAD of a full page load - so the
   home page stays mounted underneath and the WorkList image can fly to center
   (shared layoutId). A hard load / direct link skips this and hits the real page.
 
   Close = router.back() (restores the home page). Esc and backdrop click both close.
   Exit animations run because RouteMotion keys this slot inside AnimatePresence.
 
-  IMPORTANT: the scrolling panel has NO opacity/transform animation of its own —
+  IMPORTANT: the scrolling panel has NO opacity/transform animation of its own -
   the shared-layout image inside it must stay fully visible while it flies, and an
   animated ancestor would drag or fade it mid-morph. The flanks fade individually.
 */
@@ -51,7 +51,7 @@ export default function WorkOverlay({ params }: { params: Promise<{ slug: string
         onClick={() => router.back()}
         className="absolute inset-0 bg-paper/95 backdrop-blur-md"
       />
-      {/* panel — static wrapper; content inside animates */}
+      {/* panel - static wrapper; content inside animates */}
       <div className="absolute inset-0 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0 }}

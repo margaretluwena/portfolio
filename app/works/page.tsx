@@ -5,7 +5,7 @@ import Prox from "@/components/ui/Prox";
 import { PageEnter } from "@/components/providers/PageTransition";
 
 /*
-  WORKS index — every project (the home page shows only `featured`; this lists all).
+  WORKS index - every project (the home page shows only `featured`; this lists all).
   Simple, legible list. Add thumbnails per work when assets exist.
 */
 export default function WorksIndex() {

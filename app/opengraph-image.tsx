@@ -3,11 +3,11 @@ import { ImageResponse } from "next/og";
 /*
   OG card: the texture palette as a soft gradient wash, wordmark + tagline.
   (The real texture PNG can't ship into the edge runtime cheaply; this gradient
-  samples its colors — sage, pale yellow-green, soft blue — fading to white,
+  samples its colors - sage, pale yellow-green, soft blue - fading to white,
   matching the intro frame's read at card size.)
 */
 
-export const alt = "Margaret Luwena — design engineer";
+export const alt = "Margaret Luwena, design engineer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

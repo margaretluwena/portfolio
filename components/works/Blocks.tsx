@@ -14,7 +14,7 @@ import Prox from "@/components/ui/Prox";
   by <Blocks/>; adding a work is a data edit only (lib/works.ts).
 
   The password gate is PARKED: gate blocks render nothing while
-  GATE_ENABLED is false. NdaGate and /api/unlock stay intact — flip the
+  GATE_ENABLED is false. NdaGate and /api/unlock stay intact - flip the
   flag to bring the lock back.
 
   Reduced motion: nothing here animates (blocks render static; the rail
@@ -24,7 +24,7 @@ import Prox from "@/components/ui/Prox";
 
 const GATE_ENABLED = false;
 
-/* rail: derived from blocks, context/problem/solution/gate only —
+/* rail: derived from blocks, context/problem/solution/gate only -
    wip and artifactGrid render inline but never appear in the rail */
 const RAIL_TYPES = ["context", "problem", "solution", "gate"] as const;
 const RAIL_NAMES: Record<string, string> = {
@@ -171,7 +171,7 @@ function ArtifactGridBlock({ block }: { block: Extract<Block, { type: "artifactG
 }
 
 function WipBlock({ block }: { block: Extract<Block, { type: "wip" }> }) {
-  /* one quiet line — no box, no icon, no emphasis */
+  /* one quiet line - no box, no icon, no emphasis */
   return (
     <p className="text-secondary text-ink/50">
       This study is being written. For the full story in the meantime,{" "}
@@ -240,7 +240,7 @@ export function SectionRail({ work }: { work: Work }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [work.slug]);
 
-  /* a rail with one entry tells the reader nothing — thin works skip it */
+  /* a rail with one entry tells the reader nothing - thin works skip it */
   if (entries.length < 2) return null;
 
   return (
@@ -268,7 +268,7 @@ export function SectionRail({ work }: { work: Work }) {
                   current ? "text-ink" : "text-ink/40"
                 }`}
               >
-                {/* reserved dash slot — the counter language without the
+                {/* reserved dash slot - the counter language without the
                     layout jump that made the state change feel jarring */}
                 <span className="inline-block w-3">{current ? "-" : ""}</span>
                 {e.name}

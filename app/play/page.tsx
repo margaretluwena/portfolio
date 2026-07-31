@@ -4,7 +4,7 @@ import { PageEnter } from "@/components/providers/PageTransition";
 import { playWorks, type Block } from "@/lib/works";
 
 /*
-  PLAY — grid only, per the A3 Prompt B spec: section header, one line of
+  PLAY - grid only, per the A3 Prompt B spec: section header, one line of
   copy, the snippet images, no titles, no links, no case studies. The
   images are pulled straight from the play collections in lib/works.ts;
   anything needing a write-up doesn't belong here.

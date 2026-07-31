@@ -1,4 +1,4 @@
-# Mark — canonical spine content (supersedes all prior drafts)
+# Mark - canonical spine content (supersedes all prior drafts)
 
 Source: Margaret's voice notes, consolidated 2026-07-31. This is the ONLY
 approved copy for Mark's case study. Strings marked NEED are Margaret's to

@@ -1,7 +1,7 @@
 "use client";
 
 /*
-  CONTACT — the 3D letter → mailbox (react-three-fiber, per docs/CONTACT_LETTER.md).
+  CONTACT - the 3D letter → mailbox (react-three-fiber, per docs/CONTACT_LETTER.md).
 
   State machine (unchanged from the CSS placeholder):
     idle -> folding -> flying -> closing -> sent
@@ -12,7 +12,7 @@
   closing  flap snaps shut with a little overshoot
   sent     copy swaps to "Sent." and the mailto delivery fires
 
-  Quality floor: prefers-reduced-motion mounts NO canvas — a static card with a
+  Quality floor: prefers-reduced-motion mounts NO canvas - a static card with a
   real Send button does the same delivery. Send is a real <button> in both paths.
   The render loop pauses when the canvas is off-screen.
 */
@@ -52,7 +52,7 @@ function Scene({ phase, onSend }: { phase: Phase; onSend: () => void }) {
   const flyStart = useRef(0);
   const tmp = useRef(new THREE.Vector3());
   // fit the scene on narrow canvases: the letter is 2.4 units wide, a phone
-  // viewport shows ~1.7 — scale everything down together (Html follows)
+  // viewport shows ~1.7 - scale everything down together (Html follows)
   const { viewport } = useThree();
   const fit = Math.min(1, viewport.width / 3.4);
 
@@ -132,7 +132,7 @@ function Scene({ phase, onSend }: { phase: Phase; onSend: () => void }) {
         )}
       </group>
 
-      {/* MAILBOX — body + flap hinged at its top edge */}
+      {/* MAILBOX - body + flap hinged at its top edge */}
       <group position={[0, -0.85, 0]}>
         <mesh>
           <boxGeometry args={[1.7, 0.55, 0.7]} />
@@ -170,7 +170,7 @@ export default function LetterCard() {
     deliver();
   }
 
-  /* Reduced motion: no canvas at all — static card, same delivery */
+  /* Reduced motion: no canvas at all - static card, same delivery */
   if (reduce) {
     return (
       <div className="grid min-h-[70vh] place-items-center">

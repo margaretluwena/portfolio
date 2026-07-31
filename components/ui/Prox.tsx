@@ -5,7 +5,7 @@ import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/reac
 
 /*
   Proximity hover: elements near the cursor subtly scale up and darken,
-  strongest at the center and easing off with distance — no hard hover edge.
+  strongest at the center and easing off with distance - no hard hover edge.
 
   Wrap any inline element:
     <Prox baseOpacity={0.7}><Link …>ABOUT</Link></Prox>
@@ -48,7 +48,7 @@ export default function Prox({
       const r = el.getBoundingClientRect();
       const d = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2));
       const p = Math.max(0, 1 - d / radius);
-      const eased = p * p; // quadratic falloff — subtle until you're close
+      const eased = p * p; // quadratic falloff - subtle until you're close
       scaleRaw.set(1 + (maxScale - 1) * eased);
       opacityRaw.set(baseOpacity + (1 - baseOpacity) * eased);
     };

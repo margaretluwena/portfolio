@@ -9,7 +9,7 @@ import DevAgentation from "@/components/providers/DevAgentation";
 /*
   Body face: Manrope (variable, 200-800), self-hosted from /public/fonts
   (license alongside as Manrope-OFL.txt). Replaced Inter 2026-07-31; the
-  type tokens (sizes, tracking, line-height) are unchanged — same weights
+  type tokens (sizes, tracking, line-height) are unchanged - same weights
   requested, so the page keeps its spacing rhythm. NOTE: Manrope ships no
   italic; italics (tagline, nav counter) render as synthetic obliques.
 */
@@ -31,7 +31,7 @@ const nohemi = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://margaretluwena.net"),
-  title: { default: "Margaret Luwena", template: "%s — Margaret Luwena" },
+  title: { default: "Margaret Luwena", template: "%s · Margaret Luwena" },
   description:
     "Margaret Luwena is a design engineer. Design thinking from problem to pixel: research, systems, and interfaces that actually ship.",
   openGraph: {

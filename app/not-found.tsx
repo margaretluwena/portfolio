@@ -2,7 +2,7 @@ import Nav from "@/components/nav/Nav";
 import InteractiveTexture from "@/components/hero/InteractiveTexture";
 import { PageEnter, TransitionLink } from "@/components/providers/PageTransition";
 
-/* 404 — same materials as the front door: the texture band, the type, a way home. */
+/* 404 - same materials as the front door: the texture band, the type, a way home. */
 export default function NotFound() {
   return (
     <main className="relative min-h-screen bg-paper">

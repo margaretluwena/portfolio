@@ -1,5 +1,5 @@
 /*
-  Works data — case-study spine v2 (argument-led).
+  Works data - case-study spine v2 (argument-led).
   Slugs match the CURRENT live site (margaretluwena.net/works/[slug]) so
   existing links, routing, and SEO carry over. Keep the slugs.
 
@@ -8,7 +8,7 @@
   the blocks array. Mark's content is canonical in docs/content/mark.md
   (from Margaret's voice notes); media marked { src: "NEED", ... } renders
   as a labeled placeholder until the asset exists. NEVER fill NEED strings
-  with generated text — they are Margaret's to write/supply.
+  with generated text - they are Margaret's to write/supply.
 
   All prose here is Margaret's (ported from the live site or her voice
   notes). The password gate is data-present but rendering is parked behind
@@ -18,7 +18,7 @@
 export type Media = {
   src: string;      // "NEED" renders a labeled placeholder using alt as the label
   alt: string;
-  video?: true;     // local short excerpt only — full pitches are embedded, never in /public
+  video?: true;     // local short excerpt only - full pitches are embedded, never in /public
   poster?: string;
   embed?: string;   // unlisted YouTube/Vimeo URL; takes precedence over src
 };
@@ -36,7 +36,7 @@ export type Credit = { label: string; value: string };
 /*
   Cover art for the home cards. Placement differs per card, so each layer
   carries its own geometry as % of the card box (taken from that card's
-  Figma frame on "Portfolio Revamp" — 972 × 678 each), and holds at any
+  Figma frame on "Portfolio Revamp" - 972 × 678 each), and holds at any
   card width. Layers render in array order (first = bottom).
 */
 export type CoverLayer = {
@@ -50,12 +50,12 @@ export type CoverLayer = {
 export type Work = {
   slug: string;
   title: string;
-  lede: string;            // one sentence, no second period — the opening line
+  lede: string;            // one sentence, no second period - the opening line
   blurb?: string;          // home-card teaser; card falls back to lede (clamped) when absent
   credits: Credit[];       // Role / Timeline / Team / Disciplines as rows
   cover?: Media;           // frame visual; hero placeholder until covers exist
   blocks: Block[];
-  next: string;            // slug — the "next" line renders from this
+  next: string;            // slug - the "next" line renders from this
 
   /* home column + routing */
   category: string;
@@ -68,8 +68,8 @@ export type Work = {
   wordmark?: string;       // SVG lockup; title text is the alt/SR label
   wordmarkWidth?: string;  // % of card width (scale by width, natural aspect; default 16%)
   wordmarkGlow?: string;   // css filter under the lockup (Figma text-shadow, applied in CSS)
-  cardBg?: string;         // card surface — default white (Traeco's frame is #303036)
-  cardFade?: string;       // fade-into-text-zone gradient — default transparent -> white 77.9%
+  cardBg?: string;         // card surface - default white (Traeco's frame is #303036)
+  cardFade?: string;       // fade-into-text-zone gradient - default transparent -> white 77.9%
   cardText?: "light";      // description tone on dark cards
   comingSoon?: boolean;    // home card reveals "Coming soon" on hover
 };
@@ -77,7 +77,7 @@ export type Work = {
 const WIP_EMAIL = "luwena@usc.edu";
 
 export const works: Work[] = [
-  /* ---- Mark — canonical content: docs/content/mark.md ---- */
+  /* ---- Mark - canonical content: docs/content/mark.md ---- */
   {
     slug: "mark",
     title: "Mark",
@@ -158,7 +158,7 @@ export const works: Work[] = [
     ],
   },
 
-  /* ---- Traeco — full spine, canonical content: docs/content/traeco.md.
+  /* ---- Traeco - full spine, canonical content: docs/content/traeco.md.
      Text values of exactly "NEED" and media src "NEED" render as gray
      placeholders; bracketed authoring guidance never ships. The evidence
      lines are verified factual claims and ship exactly as written. ---- */
@@ -246,7 +246,7 @@ export const works: Work[] = [
     ],
   },
 
-  /* ---- Atlix — thin until Margaret's dump exists ---- */
+  /* ---- Atlix - thin until Margaret's dump exists ---- */
   {
     slug: "atlix",
     title: "Atlix",
@@ -270,7 +270,7 @@ export const works: Work[] = [
     ],
   },
 
-  /* ---- Impeccable Chicken — thin until content exists ---- */
+  /* ---- Impeccable Chicken - thin until content exists ---- */
   {
     slug: "impeccable-chicken",
     title: "Impeccable Chicken",
@@ -439,19 +439,19 @@ export const playWorks = works.filter((w) => w.play);
 export const PROTECTED_SLUGS = works.filter((w) => w.protected).map((w) => w.slug);
 export const getWork = (slug: string) => works.find((w) => w.slug === slug);
 
-/* build-time spine checks — warnings, never failures (thin works are
+/* build-time spine checks - warnings, never failures (thin works are
    sanctioned; the warning is the honest "unfinished" marker) */
 if (process.env.NODE_ENV !== "production" || process.env.npm_lifecycle_event === "build") {
   for (const w of works) {
     if (w.play) continue;
     if (!w.blocks.some((b) => b.type === "problem")) {
-      console.warn(`[works] ${w.slug}: no problem block — case study reads as unfinished`);
+      console.warn(`[works] ${w.slug}: no problem block - case study reads as unfinished`);
     }
     if (w.blocks.length > 7) {
       console.warn(`[works] ${w.slug}: ${w.blocks.length} blocks exceeds the 7-block cap`);
     }
     if (w.featured && !w.blurb && w.lede.length > 72) {
-      console.warn(`[works] ${w.slug}: no blurb and lede is ${w.lede.length} chars — will clamp on the home card`);
+      console.warn(`[works] ${w.slug}: no blurb and lede is ${w.lede.length} chars - will clamp on the home card`);
     }
     for (const b of w.blocks) {
       if (b.type === "artifactGrid" && (b.media.length < 2 || b.media.length > 6)) {

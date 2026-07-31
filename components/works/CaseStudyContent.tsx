@@ -5,13 +5,13 @@ import type { Work } from "@/lib/works";
 import { Blocks, SectionRail, NextWork, NeedText, isNeed } from "@/components/works/Blocks";
 
 /*
-  The case-study body — spine v2: frame -> rail -> blocks -> next.
+  The case-study body - spine v2: frame -> rail -> blocks -> next.
   Rendered in two places:
     - variant="page"    -> the standalone /works/[slug] route
     - variant="overlay" -> the intercepting-route overlay on the home page
 
   FRAME: title + lede left, credits strip right, the SAME centered hero
-  with layoutId={`work-${slug}`} between them — the shared element that
+  with layoutId={`work-${slug}`} between them - the shared element that
   lets the cover fly from the WorkList column when opened as an overlay.
   The layoutId wiring and landing position are deliberately untouched by
   the spine restructure (body only).
@@ -26,7 +26,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
   return (
     <>
       <section>
-        {/* hero — the shared element, landing centered at the card's own
+        {/* hero - the shared element, landing centered at the card's own
             size (same 972/678 box as the home column, so the flight is a
             move, not an expansion) */}
         <motion.div

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 
 /*
-  "is a design engineer" → typed out, held, deleted, replaced — each title in
+  "is a design engineer" → typed out, held, deleted, replaced - each title in
   its own color, all tuned to the same vibrancy family as the Figma magenta
   (hsl 298 62% 41%): saturation ~62-85%, lightness ≤48% so contrast on white
   stays ≥ 4.5:1.
@@ -42,11 +42,11 @@ export default function RotatingTitle({ active, className }: { active: boolean; 
         const full = TITLES[i].text.length;
         if (dir === 1) {
           if (l < full) { setLen(l + 1); tick(i, l + 1, 1, TYPE_MS); }
-          else tick(i, l, -1, HOLD_MS);            // typed out — hold
+          else tick(i, l, -1, HOLD_MS);            // typed out - hold
         } else {
           if (l > 0) { setLen(l - 1); tick(i, l - 1, -1, DELETE_MS); }
           else {
-            const next = (i + 1) % TITLES.length;   // deleted — next title
+            const next = (i + 1) % TITLES.length;   // deleted - next title
             setIdx(next); tick(next, 0, 1, TYPE_MS * 3);
           }
         }

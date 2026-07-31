@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /*
-  DESIGN TOKENS — extracted from Figma "Portfolio Revamp" (node 96:6).
+  DESIGN TOKENS - extracted from Figma "Portfolio Revamp" (node 96:6).
   Every value here is derived from the actual file, not guessed.
   Change tokens here; components read them through Tailwind's theme (see tailwind.config.ts)
   or directly via var(--token).
@@ -11,12 +11,12 @@
 
 :root {
   /* ---- Color ---- */
-  --ink: 0 0% 0%;                 /* #000000 — primary text */
+  --ink: 0 0% 0%;                 /* #000000 - primary text */
   --ink-70: 0 0% 0% / 0.7;        /* nav */
   --ink-50: 0 0% 0% / 0.5;        /* secondary / CONTACT */
-  --accent: 298 62% 41%;          /* #a728ab — "is a design engineer" */
-  --paper: 0 0% 100%;             /* #ffffff — background */
-  --placeholder: 0 0% 85%;        /* #d9d9d9 — work image placeholder */
+  --accent: 298 62% 41%;          /* #a728ab - "is a design engineer" */
+  --paper: 0 0% 100%;             /* #ffffff - background */
+  --placeholder: 0 0% 85%;        /* #d9d9d9 - work image placeholder */
 
   /* ---- Type ---- */
   --font-display: "Nohemi", ui-sans-serif, system-ui, sans-serif;
@@ -25,25 +25,25 @@
 
   /* ---- Type scale (MAIN PAGE) ----
      Fixed px on purpose: type must NOT scale with the viewport (20px on the
-     2164 artboard would render 13px at 1440 — unreadable for a bio). The only
+     2164 artboard would render 13px at 1440 - unreadable for a bio). The only
      size change is the one-notch step-down at the mobile breakpoint below. */
-  --type-label: 13px;       /* nav, CONTACT, counter (italic variant) — 20px on artboard */
-  --type-name: 17px;        /* MARGARET LUWENA — Nohemi, -0.02em — 26px on artboard */
-  --type-display: 26px;     /* "is a design engineer" — body face italic, tracking 0 — 40px on artboard */
-  --type-body: 16px;        /* bio paragraphs — body face, lh 1.45 — 20px on artboard */
-  --type-secondary: 15px;   /* card descriptions — body face, lh 1.45, ink-50 */
+  --type-label: 13px;       /* nav, CONTACT, counter (italic variant) - 20px on artboard */
+  --type-name: 17px;        /* MARGARET LUWENA - Nohemi, -0.02em - 26px on artboard */
+  --type-display: 26px;     /* "is a design engineer" - body face italic, tracking 0 - 40px on artboard */
+  --type-body: 16px;        /* bio paragraphs - body face, lh 1.45 - 20px on artboard */
+  --type-secondary: 15px;   /* card descriptions - body face, lh 1.45, ink-50 */
 
   /* ---- Layout (MAIN PAGE) ----
      Viewport-relative on purpose: margins and columns scale, type doesn't.
      From Figma frame 128:503 ("Main Page", 2164 × 1117); horizontal values ÷2164.
      Card right edge and the nav counter share --align-r; it does NOT mirror
-     --inset. Figma's right hairline sits at 5.55vw — normalized to --edge. */
-  --edge: 5.32vw;                       /* 115px — full-height vertical hairlines, both sides */
-  --inset: clamp(24px, 11vw, 200px);    /* 238px — nav text, left column */
-  --col-right: 42.6vw;                  /* 922px — card left edge */
-  --card-w: 44.92vw;                    /* 972px — card width */
-  --card-gap: 5.04vw;                   /* 109px — vertical gap between stacked cards */
-  --align-r: 87.52vw;                   /* 1894px — card right edge + right end of nav counter */
+     --inset. Figma's right hairline sits at 5.55vw - normalized to --edge. */
+  --edge: 5.32vw;                       /* 115px - full-height vertical hairlines, both sides */
+  --inset: clamp(24px, 11vw, 200px);    /* 238px - nav text, left column */
+  --col-right: 42.6vw;                  /* 922px - card left edge */
+  --card-w: 44.92vw;                    /* 972px - card width */
+  --card-gap: 5.04vw;                   /* 109px - vertical gap between stacked cards */
+  --align-r: 87.52vw;                   /* 1894px - card right edge + right end of nav counter */
   --hairline: rgba(0, 0, 0, 0.12);      /* all 1px rules */
 
   /* ---- Legacy layout vars ----
@@ -83,7 +83,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Wordmark helper — matches Figma "MARGARET LUWENA" treatment */
+/* Wordmark helper - matches Figma "MARGARET LUWENA" treatment */
 .wordmark {
   font-family: var(--font-display);
   letter-spacing: var(--tracking-display);
@@ -106,13 +106,13 @@ body {
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
 /* Desktop works column: its own fixed scroll context. Below 768px the
-   class is inert — normal document flow, no nested scroll.
-   The container is a shadow gutter wider than the cards on each side —
+   class is inert - normal document flow, no nested scroll.
+   The container is a shadow gutter wider than the cards on each side -
    overflow-y:auto also clips horizontally, and at exactly --card-w it
    sheared off the card shadows (blur 33px < 48px gutter). The padding
    puts the cards back at --col-right, so their geometry is unchanged.
 
-   TODO(parked until after Sunday) — scroll fade, corrected spec:
+   TODO(parked until after Sunday) - scroll fade, corrected spec:
    if the dissolve-into-the-band mask returns, the envelope must close
    ABOVE the first card's resting top (19.7vh) so it lives entirely in
    the nav-band-to-card gap. The removed 8vh->30vh version left the

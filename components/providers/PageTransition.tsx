@@ -8,9 +8,9 @@ import Link from "next/link";
 /*
   ONE transition grammar for the whole site: no hard cuts.
 
-  Leaving  — the current page lifts up (~28px) and fades over 380ms,
+  Leaving  - the current page lifts up (~28px) and fades over 380ms,
              THEN the route changes.
-  Arriving — the new page's content rises in via <PageEnter> (each page wraps
+  Arriving - the new page's content rises in via <PageEnter> (each page wraps
              its content once).
 
   Works cards keep plain <Link>: their overlay has its own shared-element
