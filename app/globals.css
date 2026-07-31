@@ -20,7 +20,7 @@
 
   /* ---- Type ---- */
   --font-display: "Nohemi", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --tracking-display: -0.05em;    /* -1.25px @ 25px in Figma */
 
   /* ---- Type scale (MAIN PAGE) ----
@@ -29,9 +29,9 @@
      size change is the one-notch step-down at the mobile breakpoint below. */
   --type-label: 13px;       /* nav, CONTACT, counter (italic variant) — 20px on artboard */
   --type-name: 17px;        /* MARGARET LUWENA — Nohemi, -0.02em — 26px on artboard */
-  --type-display: 26px;     /* "is a design engineer" — Inter Italic, tracking 0 — 40px on artboard */
-  --type-body: 16px;        /* bio paragraphs — Inter, lh 1.45 — 20px on artboard */
-  --type-secondary: 15px;   /* card descriptions — Inter, lh 1.45, ink-50 */
+  --type-display: 26px;     /* "is a design engineer" — body face italic, tracking 0 — 40px on artboard */
+  --type-body: 16px;        /* bio paragraphs — body face, lh 1.45 — 20px on artboard */
+  --type-secondary: 15px;   /* card descriptions — body face, lh 1.45, ink-50 */
 
   /* ---- Layout (MAIN PAGE) ----
      Viewport-relative on purpose: margins and columns scale, type doesn't.

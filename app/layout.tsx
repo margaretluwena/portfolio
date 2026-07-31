@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import RouteMotion from "@/components/providers/RouteMotion";
 import { TransitionProvider } from "@/components/providers/PageTransition";
 import Cursor from "@/components/ui/Cursor";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+/*
+  Body face: Manrope (variable, 200-800), self-hosted from /public/fonts
+  (license alongside as Manrope-OFL.txt). Replaced Inter 2026-07-31; the
+  type tokens (sizes, tracking, line-height) are unchanged — same weights
+  requested, so the page keeps its spacing rhythm. NOTE: Manrope ships no
+  italic; italics (tagline, nav counter) render as synthetic obliques.
+*/
+const manrope = localFont({
+  src: [{ path: "../public/fonts/Manrope-VariableFont_wght.ttf", weight: "200 800", style: "normal" }],
+  variable: "--font-manrope",
+  display: "swap",
+});
 
 /*
   Nohemi is not on Google Fonts. Drop Nohemi-Regular.woff2 into /public/fonts/.
@@ -45,8 +55,8 @@ export default function RootLayout({
   modal: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${nohemi.variable}`}>
-      <body style={{ ["--font-body" as string]: "var(--font-inter)", ["--font-display" as string]: "var(--font-nohemi)" }}>
+    <html lang="en" className={`${manrope.variable} ${nohemi.variable}`}>
+      <body style={{ ["--font-body" as string]: "var(--font-manrope)", ["--font-display" as string]: "var(--font-nohemi)" }}>
         <RouteMotion modal={modal}>
           <TransitionProvider>{children}</TransitionProvider>
         </RouteMotion>

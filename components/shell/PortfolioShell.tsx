@@ -61,7 +61,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
             </motion.p>
           )}
 
-          {/* tagline — Inter Italic (Figma 128:507), NOT Nohemi */}
+          {/* tagline — body face italic (Figma 128:507 specs Inter Italic), NOT Nohemi */}
           <motion.div {...enter(0.55)} className="mt-1 md:absolute md:top-[27.3vh] md:mt-0">
             <p className="font-body text-display italic whitespace-nowrap">
               <RotatingTitle active={reveal} />
