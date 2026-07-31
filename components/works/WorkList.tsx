@@ -26,17 +26,20 @@ export default function WorkList() {
         <li key={work.slug} data-work={work.slug}>
           <Link href={`/works/${work.slug}`} className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink">
             <motion.article
-              className="relative aspect-[972/678] w-full overflow-hidden rounded-[10px] bg-white shadow-[0_15px_33px_rgba(0,0,0,0.1)]"
+              data-cursor="view"
+              className="relative aspect-[972/678] w-full cursor-none overflow-hidden rounded-[10px] shadow-[0_15px_33px_rgba(0,0,0,0.1)]"
+              style={{ background: work.cardBg ?? "#fff" }}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-15%" }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* cover — the shared element that flies to center */}
+              {/* cover — the shared element that flies to center. data-cursor
+                  sits on the ARTICLE so the VIEW disc stays on over the
+                  wordmark and description too, not just the art */}
               <motion.div
                 layoutId={`work-${work.slug}`}
-                data-cursor="view"
-                className="absolute inset-0 cursor-none overflow-hidden"
+                className="absolute inset-0 overflow-hidden"
               >
                 {/* inner wrapper carries the hover zoom so it never fights the
                     morph transform on the parent */}
@@ -71,8 +74,12 @@ export default function WorkList() {
                       {work.title}
                     </div>
                   )}
-                  {/* white fade into the text zone (Figma card frames) */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white to-[77.9%]" />
+                  {/* fade into the text zone — per-card color (Figma card frames):
+                      white cards melt to white, Traeco's dark frame to #242428 */}
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: work.cardFade ?? "linear-gradient(to bottom, transparent, #fff 77.9%)" }}
+                  />
                 </div>
               </motion.div>
 
@@ -88,7 +95,12 @@ export default function WorkList() {
                 >
                   <Prox baseOpacity={0.9} maxScale={1} radius={120}>
                     {/* eslint-disable-next-line @next/next/no-img-element -- local static SVG, no optimization pass needed */}
-                    <img src={work.wordmark} alt={work.title} className="block h-auto w-full" />
+                    <img
+                      src={work.wordmark}
+                      alt={work.title}
+                      className="block h-auto w-full"
+                      style={work.wordmarkGlow ? { filter: work.wordmarkGlow } : undefined}
+                    />
                   </Prox>
                 </div>
               ) : (
@@ -99,7 +111,11 @@ export default function WorkList() {
                 </div>
               )}
               {work.study?.summary && (
-                <p className="absolute left-[7%] top-[84.8%] w-[46.2%] line-clamp-2 text-secondary text-ink-50">
+                <p
+                  className={`absolute left-[7%] top-[84.8%] w-[46.2%] line-clamp-2 text-secondary ${
+                    work.cardText === "light" ? "text-white/50" : "text-ink-50"
+                  }`}
+                >
                   {work.study.summary}
                 </p>
               )}

@@ -58,6 +58,10 @@ export type Work = {
   coverArt?: CoverLayer[]; // layered cover art, per-card placement from Figma
   wordmark?: string;       // SVG lockup for the home card; title text is the alt/SR label
   wordmarkWidth?: string;  // % of card width (scale by width, natural aspect; default 16%)
+  wordmarkGlow?: string;   // css filter under the lockup (Figma text-shadow, applied in CSS not baked in the SVG)
+  cardBg?: string;         // card surface — default white (Traeco's frame is #303036)
+  cardFade?: string;       // fade-into-text-zone gradient — default transparent -> white 77.9%
+  cardText?: "light";      // description tone on dark cards (white/50 instead of ink-50)
   featured?: boolean;
   protected?: boolean;   // blocks gated behind password
   play?: boolean;        // shown on PLAY, not in the works index
@@ -148,9 +152,18 @@ export const works: Work[] = [
     featured: true,
     wordmark: "/images/wordmarks/traeco.svg", // Figma 140:694, 164/972 of card width
     wordmarkWidth: "16.9%",
-    // Figma "Traeco card" 139:559: MacBook mockup group (140:717), clipped to card width
+    wordmarkGlow: "drop-shadow(0 1px 3.5px rgba(27,168,111,0.5))", // Figma 140:692 text-shadow
+    // Figma "Traeco card" 139:559 is the dark variant: #303036 surface,
+    // fade to #242428, white/50 description
+    cardBg: "#303036",
+    cardFade: "linear-gradient(to bottom, rgba(36,36,40,0), rgba(36,36,40,0.03) 37.5%, #242428 77.9%)",
+    cardText: "light",
+    // laptop chrome (140:695) under the floating dashboard (140:715); the
+    // dashboard is sized a hair past the white display area so no white
+    // sliver shows at its sides
     coverArt: [
-      { src: "/images/covers/traeco-mockup.png", left: "0%", top: "9.29%", width: "100%", height: "86.06%" },
+      { src: "/images/covers/traeco-laptop.png", left: "0%", top: "9.29%", width: "100%", height: "86.06%" },
+      { src: "/images/covers/traeco-dashboard.png", left: "7.92%", top: "11.06%", width: "84.05%", height: "74.42%" },
     ],
     study: {
       summary: "Cost visibility and governance for teams shipping AI. One pane of glass for LLM spend.",
