@@ -140,26 +140,6 @@ export const works: Work[] = [
     },
   },
   {
-    slug: "impeccable-chicken",
-    title: "Impeccable Chicken",
-    category: "Brand / Deck",
-    year: "2025",
-    role: "Pitch Deck Design",
-    featured: true,
-    protected: true,
-    study: {
-      summary: "Pitch deck and brand system. Case study in progress.",
-      role: "Pitch Deck Design",
-      timeline: "2025",
-      deliverables: ["Pitch Deck", "Brand System"],
-      left: ["Case study in progress. Content coming soon."],
-      right: [],
-      blocks: [
-        { type: "text", body: "Case study in progress. Content coming soon." },
-      ],
-    },
-  },
-  {
     slug: "traeco",
     title: "Traeco",
     category: "AI B2B SaaS",
@@ -223,6 +203,26 @@ export const works: Work[] = [
     },
   },
   {
+    slug: "impeccable-chicken",
+    title: "Impeccable Chicken",
+    category: "Brand / Deck",
+    year: "2025",
+    role: "Pitch Deck Design",
+    featured: true,
+    protected: true,
+    study: {
+      summary: "Pitch deck and brand system. Case study in progress.",
+      role: "Pitch Deck Design",
+      timeline: "2025",
+      deliverables: ["Pitch Deck", "Brand System"],
+      left: ["Case study in progress. Content coming soon."],
+      right: [],
+      blocks: [
+        { type: "text", body: "Case study in progress. Content coming soon." },
+      ],
+    },
+  },
+  {
     slug: "atlix",
     title: "Atlix",
     category: "AI B2B SaaS",
@@ -279,7 +279,7 @@ export const works: Work[] = [
     category: "Productivity",
     year: "2025",
     role: "Designer",
-    featured: true,
+    // not featured: lives in the works index only, not the home column
     study: {
       summary: "Website and logo design for a productivity startup in TroyLabs' BUILD program.",
       role: "Designer, TroyLabs BUILD",
