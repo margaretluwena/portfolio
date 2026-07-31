@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { featuredWorks } from "@/lib/works";
 import Prox from "@/components/ui/Prox";
 import CardVideo from "@/components/works/CardVideo";
@@ -20,19 +20,27 @@ import CardVideo from "@/components/works/CardVideo";
   morph replaces the page exit.)
 */
 
-export default function WorkList() {
+export default function WorkList({ reveal = true }: { reveal?: boolean }) {
+  const reduce = useReducedMotion();
+
   return (
     <ul className="space-y-[var(--card-gap)]">
-      {featuredWorks.map((work) => {
+      {featuredWorks.map((work, i) => {
         const card = (
-            /* no scroll-reveal ramp: inside the column's own scroll context
-               the whileInView trigger never fired for the card peeking at the
-               fold, leaving everything below invisible. Cards render visible;
-               reduced responsiveness also says don't fade in the primary
-               click target. */
+            /* one-time load entrance: the visible cards rise from below in a
+               90ms stagger, joining the left column's assembly gesture after
+               the wordmark lands (same ease, one grammar). This is a single
+               load gesture, not a per-scroll ramp - below-fold cards are
+               fully visible the moment they're scrolled to. */
             <motion.article
               className="relative aspect-[972/678] w-full overflow-hidden rounded-[10px] shadow-[0_15px_33px_rgba(0,0,0,0.1)]"
               style={{ background: work.cardBg ?? "#fff" }}
+              initial={{ opacity: 0, y: 56 }}
+              animate={reveal ? { opacity: 1, y: 0 } : undefined}
+              transition={{
+                opacity: { duration: reduce ? 0 : 0.55, delay: reduce ? 0 : 0.6 + i * 0.09 },
+                y: { duration: reduce ? 0 : 0.7, delay: reduce ? 0 : 0.6 + i * 0.09, ease: [0.22, 1, 0.36, 1] },
+              }}
             >
               {/* cover - the shared element that flies to center */}
               <motion.div

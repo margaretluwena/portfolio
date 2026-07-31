@@ -19,7 +19,7 @@ import { featuredWorks } from "@/lib/works";
 
 const MAX_STRETCH = 130;
 
-export default function WorksColumn({ onIndex }: { onIndex?: (i: number) => void }) {
+export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: number) => void; reveal?: boolean }) {
   const reduce = useReducedMotion();
   const scroller = useRef<HTMLDivElement>(null);
   const y = useMotionValue(0);
@@ -78,7 +78,7 @@ export default function WorksColumn({ onIndex }: { onIndex?: (i: number) => void
       {/* first card's top edge at 19.7vh (Figma 128:503: 220/1117 - it scrolls
           under the fixed nav band); width and inset from the layout tokens */}
       <motion.div style={{ y }} className="px-[var(--inset)] pt-12 md:px-0 md:pt-[19.7vh]">
-        <WorkList />
+        <WorkList reveal={reveal} />
 
         {/* colophon - the column's sign-off */}
         <footer className="mt-[7vh] border-t border-hairline pb-[8vh] pt-5 text-label tracking-normal leading-relaxed text-ink/40">

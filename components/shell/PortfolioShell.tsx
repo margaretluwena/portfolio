@@ -106,7 +106,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
         {/* RIGHT - fixed scroll context on desktop (.works-column in
             globals.css); normal flow on mobile. */}
         <motion.section {...enter(0.6)}>
-          <WorksColumn onIndex={onWorksIndex} />
+          <WorksColumn onIndex={onWorksIndex} reveal={reveal} />
         </motion.section>
       </div>
     </div>
