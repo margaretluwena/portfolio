@@ -42,18 +42,13 @@ export default function WorkList() {
                     morph transform on the parent */}
                 <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.025]">
                   {work.coverArt ? (
-                    /* aspect-locked inner container: the morph animates the
-                       SURFACE (card 1.434 -> hero 0.727); without this the art
-                       layers stretch with it. The `layout` child keeps its own
-                       972/678 box (motion scale-corrects it per frame), so the
-                       art holds its proportions while the parent resizes around
-                       it — the surface morphs, the contents don't. Transition
-                       matches the overlay hero so both move as one. */
-                    <motion.div
-                      layout
-                      transition={{ layout: { duration: 0.8, ease: [0.7, 0, 0.2, 1] } }}
-                      className="absolute inset-x-0 top-0 aspect-[972/678]"
-                    >
+                    /* art layers ride the surface directly: the overlay hero
+                       lands at the card's own 972/678 shape, so the morph
+                       never changes aspect and the contents need no separate
+                       scale-correction (an inner `layout` child here used to
+                       run its own second animation on close — that was the
+                       "content animates back in by itself" bug) */
+                    <div className="absolute inset-x-0 top-0 aspect-[972/678]">
                       {work.coverArt.map((layer) => (
                         <div
                           key={layer.src}
@@ -63,7 +58,7 @@ export default function WorkList() {
                           <Image src={layer.src} alt="" fill sizes="45vw" className="object-contain" />
                         </div>
                       ))}
-                    </motion.div>
+                    </div>
                   ) : work.cover && work.cover.src !== "NEED" ? (
                     <Image src={work.cover.src} alt={work.cover.alt} fill sizes="45vw" className="object-cover" />
                   ) : (

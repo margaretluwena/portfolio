@@ -168,7 +168,7 @@ export const works: Work[] = [
       { label: "Timeline", value: "2026, ongoing" },
       { label: "Disciplines", value: "Product Design, Website Design, Design System, Brand Identity, Pitch Deck" },
     ],
-    next: "impeccable-chicken",
+    next: "atlix",
     category: "AI B2B SaaS",
     year: "2026",
     role: "Cofounder & CPO",
@@ -197,29 +197,6 @@ export const works: Work[] = [
     ],
   },
 
-  /* ---- Impeccable Chicken — thin until content exists ---- */
-  {
-    slug: "impeccable-chicken",
-    title: "Impeccable Chicken",
-    lede: "Pitch deck and brand system",
-    credits: [
-      { label: "Role", value: "Pitch Deck Design" },
-      { label: "Timeline", value: "2025" },
-      { label: "Disciplines", value: "Pitch Deck, Brand System" },
-    ],
-    next: "atlix",
-    category: "Brand / Deck",
-    year: "2025",
-    role: "Pitch Deck Design",
-    featured: true,
-    protected: true,
-    comingSoon: true,
-    blocks: [
-      { type: "context", body: "Case study in progress. Content coming soon." },
-      { type: "wip", email: WIP_EMAIL },
-    ],
-  },
-
   /* ---- Atlix — thin until Margaret's dump exists ---- */
   {
     slug: "atlix",
@@ -230,7 +207,7 @@ export const works: Work[] = [
       { label: "Timeline", value: "2026" },
       { label: "Disciplines", value: "Product Design, Design System, Brand Identity, Pitch Deck" },
     ],
-    next: "mark",
+    next: "impeccable-chicken",
     category: "AI B2B SaaS",
     year: "2026",
     role: "Cofounder",
@@ -240,6 +217,30 @@ export const works: Work[] = [
         type: "context",
         body: "Polling lags. By the time a report goes out, the conversation has moved. Atlix pulls public discourse from across California's regions and surfaces what's gaining traction, what's losing it, and how people frame the issues that affect them.\n\nBuilt for advocacy groups and policy researchers who need to read demographic discourse without waiting for a quarterly report.\n\nThe dashboard and deck took us to the global finalist round of the Asian Leadership Conference, past hundreds of teams from Stanford, Harvard, Cornell, and UC Berkeley.",
       },
+      { type: "wip", email: WIP_EMAIL },
+    ],
+  },
+
+  /* ---- Impeccable Chicken — thin until content exists ---- */
+  {
+    slug: "impeccable-chicken",
+    title: "Impeccable Chicken",
+    lede: "Brand system and pitch deck for the ready to eat chicken brand that pitched on Shark Tank",
+    blurb: "Brand and deck for the ready to eat chicken CPG seen on Shark Tank",
+    credits: [
+      { label: "Role", value: "Pitch Deck Design" },
+      { label: "Timeline", value: "2025" },
+      { label: "Disciplines", value: "Pitch Deck, Brand System" },
+    ],
+    next: "mark",
+    category: "Brand / Deck",
+    year: "2025",
+    role: "Pitch Deck Design",
+    featured: true,
+    protected: true,
+    comingSoon: true,
+    blocks: [
+      { type: "context", body: "Case study in progress. Content coming soon." },
       { type: "wip", email: WIP_EMAIL },
     ],
   },
