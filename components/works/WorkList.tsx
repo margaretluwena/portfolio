@@ -22,9 +22,8 @@ import Prox from "@/components/ui/Prox";
 export default function WorkList() {
   return (
     <ul className="space-y-[var(--card-gap)]">
-      {featuredWorks.map((work) => (
-        <li key={work.slug} data-work={work.slug}>
-          <Link href={`/works/${work.slug}`} className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink">
+      {featuredWorks.map((work) => {
+        const card = (
             <motion.article
               className="relative aspect-[972/678] w-full overflow-hidden rounded-[10px] shadow-[0_15px_33px_rgba(0,0,0,0.1)]"
               style={{ background: work.cardBg ?? "#fff" }}
@@ -121,9 +120,23 @@ export default function WorkList() {
                 </span>
               )}
             </motion.article>
-          </Link>
-        </li>
-      ))}
+        );
+        return (
+          <li key={work.slug} data-work={work.slug}>
+            {work.comingSoon ? (
+              /* no case study yet (for now): same card, not a link */
+              <div className="group block">{card}</div>
+            ) : (
+              <Link
+                href={`/works/${work.slug}`}
+                className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+              >
+                {card}
+              </Link>
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 }

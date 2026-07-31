@@ -17,7 +17,7 @@ export default function NotFound() {
       <PageEnter className="relative z-10 px-[var(--inset-left)] pt-[42vh]">
         <p className="wordmark text-corner text-ink">MARGARET LUWENA</p>
         <p className="text-title italic font-body mt-2" style={{ color: "hsl(298 62% 41%)" }}>
-          is elsewhere — this page doesn&apos;t exist.
+          is elsewhere. This page doesn&apos;t exist.
         </p>
         <TransitionLink
           href="/"
