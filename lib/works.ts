@@ -165,12 +165,12 @@ export const works: Work[] = [
   {
     slug: "traeco",
     title: "Traeco",
-    lede: "NEED",
+    lede: "Teams are spending more on AI agents than they can see.",
     blurb: "Brand, product, and web for an AI cost platform",
     credits: [
       { label: "Role", value: "Co-founder & CPO" },
       { label: "Timeline", value: "NEED" },
-      { label: "Team", value: "NEED" },
+      { label: "Team", value: "Mehek, Kyna, Sania" },
       { label: "Disciplines", value: "Product, Brand System, UI/UX, Web, Pitch" },
     ],
     next: "atlix",
@@ -196,32 +196,48 @@ export const works: Work[] = [
     blocks: [
       {
         type: "context",
-        body: "Traeco is observability and cost management for AI agents, founded with my co-founders through LavaLab, USC's largest incubator. I'm co-founder and CPO, and was the only designer — the brand, the product, the site, and the decks are all mine. Live at traeco.dev. We won Audience Choice at the closing summit.",
-        media: { src: "NEED", alt: "product or brand hero" },
+        body: "Traeco is observability and cost management for AI agents, founded with my co-founders through LavaLab, USC's largest incubator. I'm co-founder and CPO, and was the only designer: the brand, the product, the site, and the decks are all mine. Live at traeco.dev. We won Audience Choice at the closing summit.",
+        // prior live-site asset, surfaced per the v2 file rule (veto and it reverts to NEED)
+        media: { src: "/images/traeco/hero.png", alt: "Traeco brand hero" },
       },
       {
         type: "problem",
-        headline: "NEED",
+        headline: "AI agents are getting expensive faster than anyone can see them.",
         evidence: [
-          "Alphabet posted its first negative quarterly free cash flow since its 2004 IPO — $5.9B — on $44.9B of AI capex",
+          "Alphabet posted its first negative quarterly free cash flow since its 2004 IPO, $5.9B, on $44.9B of AI capex",
           "Uber exhausted its entire 2026 AI budget by April and now caps engineers at $1,500 a month per tool",
-          "Across 50+ calls in 11 industries, the teams closest to it told us it wasn't urgent yet — and that they knew it would be",
+          "Across 50+ calls in 11 industries, the teams closest to it told us it wasn't urgent yet, and that they knew it would be",
         ],
-        body: "NEED",
+        body: "We spent weeks looking for a problem before we found this one. Fifty plus calls across eleven industries: semiconductors and hardware, aerospace and defense, entertainment, AR/VR, product, architecture, branding, research, finance, data infrastructure. The last stretch of calls was entirely agentic AI, which is where we stopped.\n\nWhat those founders told us was more useful than agreement. Agent cost was not their most pressing problem yet. They could see it coming, and they were certain it would land on everyone. That changed the brief. Building for someone already in pain is easy, because they will tolerate friction when they are desperate. Building for someone who does not feel it yet means the product has to cost almost nothing to adopt, has to show value before there is a crisis, and has to make an invisible cost visible before anyone thinks to ask.",
         media: { src: "NEED", alt: "outreach tracker screenshot, industry column converging to agentic AI" },
       },
       {
         type: "solution",
         pieces: [
-          { name: "NEED", caption: "NEED", media: { src: "NEED", alt: "dashboard screens" } },
-          { name: "NEED", caption: "NEED", media: { src: "NEED", alt: "brand system sheet" } },
-          { name: "Two decks, two jobs", caption: "NEED", media: { src: "NEED", alt: "spreads from both decks" } },
+          {
+            name: "The dashboard",
+            caption: "I scoped the dashboard against user conversations rather than a feature list. Two questions ran in parallel: what has to be here for this to be usable, and what has to be here for someone to pay for it. Those produce different lists, and the second one is shorter. The timing insight above set the constraint: this had to earn attention from people who were not yet in pain.",
+            // prior live-site asset, surfaced per the v2 file rule
+            media: { src: "/images/traeco/dashboard.png", alt: "Traeco dashboard" },
+          },
+          {
+            name: "The brand system",
+            // the v2 file marks one missing line here (the idea the system is built on) as the only real content gap
+            caption: "Built from nothing as the only designer on the team: identity, system, and every application of it.",
+            media: { src: "NEED", alt: "brand system sheet" },
+          },
+          {
+            name: "Two decks, two jobs",
+            caption: "Two decks for two jobs. One built to be presented live, with us speaking over it, sparse enough that the room watches us instead of reading the slide. One built to survive alone in an investor's inbox, carrying the whole argument without a presenter. Different density, different job.",
+            media: { src: "NEED", alt: "spreads from both decks" },
+          },
         ],
       },
       {
         type: "artifactGrid",
         media: [
-          { src: "NEED", alt: "traeco.dev screens" },
+          // prior live-site asset, surfaced per the v2 file rule
+          { src: "/images/traeco/website.png", alt: "traeco.dev marketing site" },
           { src: "NEED", alt: "brand applications" },
           { src: "NEED", alt: "deck spreads" },
         ],
