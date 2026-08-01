@@ -53,13 +53,23 @@ type Phase = "idle" | "envelopeIn" | "cardIn" | "seal" | "windup" | "launch" | "
 
 const ENV_W = 320;
 const ENV_H = 210;
-/* flap must reach past the pocket's V-notch (68% of ENV_H = 143px) or the
-   sealed envelope shows an open band above the notch */
-const FLAP_H = 146;
-/* vellum per Margaret's reference photo: translucent white with a slight
-   blur, the card hazing through */
-const VELLUM = "rgba(255,255,255,0.55)";
-const VELLUM_BLUR = "blur(3px)";
+/* envelope geometry - ONE set of vertices shared by every panel path so
+   edges meet exactly (adjacent CSS clip-paths antialias independently and
+   leave hairline seams; SVG paths on shared coordinates close them). The
+   card must sandwich between back panel and front folds, so the shared
+   geometry renders as three stacked SVGs: back rect / side flaps + pocket
+   (one svg - their mutual seams are the visible ones) / animating flap. */
+const ENV_CX = ENV_W / 2;                          // 160 - all folds meet here
+const ENV_CY = ENV_H / 2;                          // 105
+const FLAP_TIP = Math.round(ENV_CY + ENV_H * 0.02); // 109 - overlaps the notch ~2%
+/* vellum, deliberately: frosted translucent white; pocket a step more
+   opaque than the sides so the folds read as tonal layers; 1px seam
+   strokes slightly darker than fill so edges read as folds */
+const SIDE_FILL = "rgba(255,255,255,0.82)";
+const POCKET_FILL = "rgba(255,255,255,0.90)";
+const SEAM = "rgba(199,208,238,0.95)";
+const VELLUM_BLUR = "blur(6px)";
+const ENV_SHADOW = "0 24px 48px -20px rgba(20,28,180,.30), 0 6px 14px -8px rgba(0,0,0,.12)";
 /* spec: envelope rests ~126px below CARD CENTER - it overlaps the card's
    lower half (back panel behind the card, pocket wrapping it in front),
    which is what makes the descent read as a tuck-in. Rest top offset from
@@ -173,7 +183,7 @@ function CardFace() {
     <>
       {/* paper-grain texture from the Figma fill, color-burn like the mock */}
       <img
-        src="/images/about/card-texture.png"
+        src="/images/about/card-texture.jpg"
         alt=""
         aria-hidden
         className="pointer-events-none absolute inset-0 h-full w-full rounded-[5px] object-cover mix-blend-color-burn"
@@ -311,7 +321,7 @@ export default function AboutCard() {
   if (reduce) {
     return (
       <div className="flex flex-col items-center">
-        <div className="relative w-[min(620px,86vw)] overflow-hidden rounded-[5px] bg-[#0f28e0] px-[6.3%] py-[4.5%] shadow-[0_23px_50px_rgba(0,0,0,0.18)]">
+        <div className="relative w-[min(620px,86vw)] overflow-hidden rounded-[5px] bg-[#0f28e0] px-[6.3%] py-[4.5%]">
           <CardFace />
         </div>
         <div className="mt-[22px] flex w-[min(620px,86vw)] flex-col items-end gap-3">
@@ -332,7 +342,9 @@ export default function AboutCard() {
         {/* launch wrapper - windup dip + throw carry card and envelope
             together; `gone` kills every child transition for the teleport */}
         <div className={`relative ${noTrans}`} style={wrapperStyle}>
-          {/* z1/z5 flap: open behind, sealing flips it shut and in front */}
+          {/* z1/z5 top flap: open behind, sealing flips it shut and in
+              front; tip overlaps the pocket notch so no light shows through
+              the center seam */}
           <div
             aria-hidden
             className={`absolute left-1/2 ${noTrans}`}
@@ -341,34 +353,53 @@ export default function AboutCard() {
               top: ENV_TOP,
               width: ENV_W,
               marginLeft: -ENV_W / 2,
-              height: FLAP_H,
+              height: FLAP_TIP,
             }}
           >
-            <div
-              className="h-full w-full"
+            <svg
+              viewBox={`0 0 ${ENV_W} ${FLAP_TIP}`}
+              width="100%"
+              height="100%"
               style={{
-                background: VELLUM,
-                backdropFilter: VELLUM_BLUR,
-                WebkitBackdropFilter: VELLUM_BLUR,
-                clipPath: "polygon(0 0, 100% 0, 50% 100%)",
+                display: "block",
+                /* vellum blur only once the card is genuinely inside -
+                   backdrop-filter during the descent catches card content
+                   that has not been tucked yet (diagnosed 2026-08-01: the
+                   blur, not raster caching, was softening the card) */
+                backdropFilter: sealed ? VELLUM_BLUR : "none",
+                WebkitBackdropFilter: sealed ? VELLUM_BLUR : "none",
                 transformOrigin: "top center",
                 transform: sealed ? "rotateX(0deg)" : "rotateX(180deg)",
-                transition: `transform ${T.seal}ms ease`,
+                transition: `transform ${T.seal}ms ease, backdrop-filter 300ms ease, -webkit-backdrop-filter 300ms ease`,
+                filter: sealed ? "drop-shadow(0 3px 6px rgba(0,0,0,0.12))" : "none",
               }}
-            />
+            >
+              <path
+                d={`M0 0 H${ENV_W} L${ENV_CX} ${FLAP_TIP} Z`}
+                fill={SIDE_FILL}
+                stroke={SEAM}
+                strokeWidth="1"
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
           </div>
-          {/* z2 envelope back panel */}
+          {/* z2 envelope back panel - carries the envelope's cast shadow */}
           <div
             aria-hidden
-            className={`absolute left-1/2 rounded-[4px] bg-white/60 ${noTrans}`}
+            className={`absolute left-1/2 overflow-hidden rounded-[6px] ${noTrans}`}
             style={{
               ...envPiece(2),
               top: ENV_TOP,
               width: ENV_W,
               marginLeft: -ENV_W / 2,
               height: ENV_H,
+              boxShadow: ENV_SHADOW,
             }}
-          />
+          >
+            <svg viewBox={`0 0 ${ENV_W} ${ENV_H}`} width="100%" height="100%" style={{ display: "block" }}>
+              <rect x="0" y="0" width={ENV_W} height={ENV_H} rx="6" fill={SIDE_FILL} />
+            </svg>
+          </div>
           {/* z3 the card */}
           <div className={noTrans} style={{ ...cardSeqStyle, position: "relative", zIndex: 3 }}>
             <motion.div
@@ -381,9 +412,10 @@ export default function AboutCard() {
                 rotateX: tilting ? rx : 0,
                 rotateY: tilting ? ry : 0,
                 translateZ: hovered && tilting ? 18 : 0,
-                boxShadow: hovered && tilting
-                  ? "0 36px 70px rgba(0,0,0,0.28)"
-                  : "0 23px 50px rgba(0,0,0,0.18)",
+                /* flat on the page at rest and through the whole send
+                   sequence; the shadow exists only paired with the hover
+                   lift - that pairing is what makes the tilt physical */
+                boxShadow: hovered && tilting ? "0 36px 70px rgba(0,0,0,0.28)" : "none",
                 transformStyle: "preserve-3d",
                 transition: `box-shadow ${T.sheenFade}ms ease`,
               }}
@@ -401,10 +433,13 @@ export default function AboutCard() {
               />
             </motion.div>
           </div>
-          {/* z4 envelope front pocket - the V-notch tucks the card in */}
+          {/* z4 front folds - side flaps + bottom pocket in ONE svg so every
+              shared edge sits on identical vertex coordinates (no seams);
+              1px strokes read as the fold lines, pocket a tonal step more
+              opaque than the sides */}
           <div
             aria-hidden
-            className={`absolute left-1/2 ${noTrans}`}
+            className={`absolute left-1/2 overflow-hidden rounded-[6px] ${noTrans}`}
             style={{
               ...envPiece(4),
               top: ENV_TOP,
@@ -413,15 +448,42 @@ export default function AboutCard() {
               height: ENV_H,
             }}
           >
-            <div
-              className="h-full w-full rounded-b-[4px]"
+            <svg
+              viewBox={`0 0 ${ENV_W} ${ENV_H}`}
+              width="100%"
+              height="100%"
               style={{
-                background: VELLUM,
-                backdropFilter: VELLUM_BLUR,
-                WebkitBackdropFilter: VELLUM_BLUR,
-                clipPath: "polygon(0 34%, 50% 68%, 100% 34%, 100% 100%, 0 100%)",
+                display: "block",
+                backdropFilter: sealed ? VELLUM_BLUR : "none",
+                WebkitBackdropFilter: sealed ? VELLUM_BLUR : "none",
+                transition: "backdrop-filter 300ms ease, -webkit-backdrop-filter 300ms ease",
               }}
-            />
+            >
+              {/* left side flap: left edge to center */}
+              <path
+                d={`M0 0 L${ENV_CX} ${ENV_CY} L0 ${ENV_H} Z`}
+                fill={SIDE_FILL}
+                stroke={SEAM}
+                strokeWidth="1"
+                vectorEffect="non-scaling-stroke"
+              />
+              {/* right side flap: right edge to center */}
+              <path
+                d={`M${ENV_W} 0 L${ENV_CX} ${ENV_CY} L${ENV_W} ${ENV_H} Z`}
+                fill={SIDE_FILL}
+                stroke={SEAM}
+                strokeWidth="1"
+                vectorEffect="non-scaling-stroke"
+              />
+              {/* bottom/front pocket: lower corners up to the center V */}
+              <path
+                d={`M0 ${ENV_H} L${ENV_CX} ${ENV_CY} L${ENV_W} ${ENV_H} Z`}
+                fill={POCKET_FILL}
+                stroke={SEAM}
+                strokeWidth="1"
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
           </div>
         </div>
       </div>

@@ -16,7 +16,7 @@ import { TransitionLink } from "@/components/providers/PageTransition";
   wordmark's tight display tracking. All links: proximity hover + transition.
 */
 
-const links = [
+const links: { label: string; href: string; external?: boolean }[] = [
   { label: "ABOUT", href: "/about" }, // the letter page - /contact redirects here
   { label: "WORKS", href: "/works" },
   { label: "PLAY", href: "/play" },
