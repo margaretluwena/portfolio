@@ -1,6 +1,4 @@
-"use client";
-
-import { use } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getWork } from "@/lib/works";
@@ -11,9 +9,18 @@ import CaseStudyContent from "@/components/works/CaseStudyContent";
   Standalone case study - the destination URL (direct links, refresh, SEO).
   When opened by clicking a work on the home page, the intercepting overlay
   (app/@modal/(.)works/[slug]) shows instead, with the fly-to-center morph.
+  Server component so pasted links carry the work's own title.
 */
-export default function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params);
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const work = getWork(slug);
+  if (!work || work.comingSoon || work.indexOnly) return {};
+  return { title: work.title, description: work.lede === "NEED" ? undefined : work.lede };
+}
+
+export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const work = getWork(slug);
 
   /* comingSoon + indexOnly studies aren't reachable: redirect home instead
