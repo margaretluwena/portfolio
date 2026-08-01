@@ -96,7 +96,8 @@ export const works: Work[] = [
       { label: "Team", value: "Founded by Eason Tang" },
       { label: "Disciplines", value: "UI/UX Design, Brand System, Merchandise, Pitch Deck" },
     ],
-    cover: { src: "NEED", alt: "device or hero shot" },
+    /* poster stand-in until the real export lands */
+    cover: { src: "/images/covers/mark-device.png", alt: "Mark device" },
     next: "traeco",
     category: "AI Hardware",
     year: "2025",
@@ -174,6 +175,8 @@ export const works: Work[] = [
     title: "Traeco",
     lede: "Teams are spending more on AI agents than they can see.",
     blurb: "Brand, product, and web for an AI cost platform",
+    /* poster stand-in until the real export lands */
+    cover: { src: "/images/covers/traeco-dashboard.png", alt: "Traeco dashboard" },
     credits: [
       { label: "Role", value: "Co-founder & CPO" },
       { label: "Timeline", value: "NEED" },
@@ -263,6 +266,8 @@ export const works: Work[] = [
     title: "Atlix",
     lede: "Narrative intelligence: what young Californians are actually talking about, surfaced in real time",
     blurb: "Brand and interface for a narrative intelligence platform",
+    /* poster stand-in until the real export lands */
+    cover: { src: "/images/covers/atlix-poster.png", alt: "Atlix cover" },
     credits: [
       { label: "Role", value: "Co-founder, design lead" },
       { label: "Timeline", value: "2026" },
@@ -314,6 +319,8 @@ export const works: Work[] = [
     title: "Impeccable Chicken",
     lede: "Brand system and pitch deck for the ready to eat chicken brand that pitched on Shark Tank",
     blurb: "Brand and deck for the ready to eat chicken CPG seen on Shark Tank",
+    /* poster stand-in until the real export lands */
+    cover: { src: "/images/covers/ic-photo.png", alt: "Impeccable Chicken photo" },
     credits: [
       { label: "Role", value: "Pitch Deck Design" },
       { label: "Timeline", value: "2025" },

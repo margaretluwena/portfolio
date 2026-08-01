@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "motion/react";
 import type { Work } from "@/lib/works";
 import { Blocks, SectionRail, NextWork, NeedText, isNeed } from "@/components/works/Blocks";
@@ -32,9 +33,20 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
         <motion.div
           layoutId={`work-${work.slug}`}
           transition={{ layout: { duration: 0.8, ease: [0.7, 0, 0.2, 1] } }}
-          className="mx-auto aspect-[972/678] w-[min(var(--card-w),86vw)] bg-placeholder"
+          className="relative mx-auto aspect-[972/678] w-[min(var(--card-w),86vw)] overflow-hidden bg-placeholder"
         >
-          {/* work.cover lands here once the export exists (NEED for now) */}
+          {/* work.cover - poster stand-ins until the real exports land;
+              NEED keeps the gray placeholder */}
+          {work.cover && work.cover.src !== "NEED" && (
+            <Image
+              src={work.cover.src}
+              alt={work.cover.alt}
+              fill
+              sizes="(max-width: 768px) 86vw, 45vw"
+              className="object-cover"
+              priority
+            />
+          )}
         </motion.div>
 
         {/* below the card, aligned to its edges: title + lede left,
