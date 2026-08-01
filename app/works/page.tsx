@@ -19,7 +19,18 @@ export default function WorksIndex() {
             const row = (
               <>
                 <Prox baseOpacity={0.85} maxScale={1} radius={140}><span className="wordmark text-ink">{w.title}</span></Prox>
-                <Prox baseOpacity={0.45} maxScale={1} radius={140}><span className="text-[13px] tracking-[0.02em] text-ink">{w.role} · {w.category} · {w.year}</span></Prox>
+                <Prox baseOpacity={0.45} maxScale={1} radius={140}>
+                  <span className="text-[13px] tracking-[0.02em] text-ink">
+                    {w.role} ·{" "}
+                    {w.category === "NEED" ? (
+                      <span className="bg-placeholder/50 px-1.5 uppercase text-ink/40">NEED</span>
+                    ) : (
+                      w.category
+                    )}{" "}
+                    · {w.year}
+                    {w.comingSoon && <> · Coming soon</>}
+                  </span>
+                </Prox>
               </>
             );
             return (

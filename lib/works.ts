@@ -424,6 +424,44 @@ export const works: Work[] = [
     ],
   },
 
+  /* ---- index-only, coming soon: no featured flag (home column and the
+     1/4 counter unaffected); comingSoon reuses the shipped non-link +
+     redirect-home treatment ---- */
+  {
+    slug: "foundher-house",
+    title: "FoundHer House",
+    lede: "NEED",
+    credits: [
+      { label: "Role", value: "Designer" },
+      { label: "Timeline", value: "July 2026" },
+      { label: "Disciplines", value: "Merchandise (in progress)" },
+    ],
+    cover: { src: "NEED", alt: "cover image" },
+    next: "mark",
+    category: "Community",
+    year: "2026",
+    role: "Designer",
+    comingSoon: true,
+    blocks: [],
+  },
+  {
+    slug: "nano-in-green",
+    title: "NanoInGreen",
+    lede: "NEED",
+    credits: [
+      { label: "Role", value: "Design Consultant" },
+      { label: "Timeline", value: "May 2026" },
+      { label: "Disciplines", value: "Go-to-Market Strategy, Product Design, Branding" },
+    ],
+    cover: { src: "NEED", alt: "cover image" },
+    next: "mark",
+    category: "NEED", // industry word pending from Margaret
+    year: "2026",
+    role: "Design Consultant",
+    comingSoon: true,
+    blocks: [],
+  },
+
   /* ---- PLAY collections (grid page, not the works index) ---- */
   {
     slug: "graphics",
