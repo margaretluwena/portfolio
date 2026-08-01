@@ -9,7 +9,7 @@ SLUG:   mark
 TITLE:  Mark
 LEDE:   A reading companion that turns the act of underlining into something
         you'd want to share
-BLURB:  Hardware, app, and brand for a reading companion built at TroyLabs BUILD
+BLURB:  Hardware, UI/UX software, and brand for a reading companion built at TroyLabs BUILD
 
 CREDITS
   Role:         Designer, TroyLabs BUILD

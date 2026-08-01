@@ -89,7 +89,7 @@ export const works: Work[] = [
     slug: "mark",
     title: "Mark",
     lede: "A reading companion that turns the act of underlining into something you'd want to share",
-    blurb: "Packaging, app, and brand for a reading companion",
+    blurb: "Packaging, UI/UX software, and brand for a reading companion",
     credits: [
       { label: "Role", value: "Designer, TroyLabs BUILD" },
       { label: "Timeline", value: "2025" },
