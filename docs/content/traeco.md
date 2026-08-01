@@ -17,7 +17,7 @@ LEDE: DRAFT: Teams are spending more on AI agents than they can see.
 
 CREDITS
 Role: VERBATIM: Co-founder & CPO
-Timeline: [NEED: start date to present]
+Timeline: 2026
 Team: DRAFT: Mehek, Kyna, Sania [NEED: confirm roles]
 Disciplines: VERBATIM: Product, Brand System, UI/UX, Web, Pitch
 

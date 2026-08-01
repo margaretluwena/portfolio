@@ -179,7 +179,7 @@ export const works: Work[] = [
     cover: { src: "/images/covers/traeco-dashboard.png", alt: "Traeco dashboard" },
     credits: [
       { label: "Role", value: "Co-founder & CPO" },
-      { label: "Timeline", value: "NEED" },
+      { label: "Timeline", value: "2026" },
       { label: "Team", value: "Mehek, Kyna, Sania" },
       { label: "Disciplines", value: "Product, Brand System, UI/UX, Web, Pitch" },
     ],
