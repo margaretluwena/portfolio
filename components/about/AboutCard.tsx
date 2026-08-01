@@ -53,6 +53,13 @@ type Phase = "idle" | "envelopeIn" | "cardIn" | "seal" | "windup" | "launch" | "
 
 const ENV_W = 320;
 const ENV_H = 210;
+/* flap must reach past the pocket's V-notch (68% of ENV_H = 143px) or the
+   sealed envelope shows an open band above the notch */
+const FLAP_H = 146;
+/* vellum per Margaret's reference photo: translucent white with a slight
+   blur, the card hazing through */
+const VELLUM = "rgba(255,255,255,0.55)";
+const VELLUM_BLUR = "blur(3px)";
 /* spec: envelope rests ~126px below CARD CENTER - it overlaps the card's
    lower half (back panel behind the card, pocket wrapping it in front),
    which is what makes the descent read as a tuck-in. Rest top offset from
@@ -178,7 +185,7 @@ function CardFace() {
         aria-hidden
         className="pointer-events-none absolute bottom-[4%] right-[2%] w-[48%] opacity-60"
       />
-      <div className="relative space-y-[1em] text-[15px] leading-normal text-white">
+      <div className="relative space-y-[1em] text-[14px] leading-normal text-white">
         {CARD_COPY.map((p) => (
           <p key={p.slice(0, 24)}>{p}</p>
         ))}
@@ -304,10 +311,10 @@ export default function AboutCard() {
   if (reduce) {
     return (
       <div className="flex flex-col items-center">
-        <div className="relative w-[min(749px,86vw)] overflow-hidden rounded-[5px] bg-[#0f28e0] px-[6.3%] py-[4.5%] shadow-[0_23px_50px_rgba(0,0,0,0.18)]">
+        <div className="relative w-[min(620px,86vw)] overflow-hidden rounded-[5px] bg-[#0f28e0] px-[6.3%] py-[4.5%] shadow-[0_23px_50px_rgba(0,0,0,0.18)]">
           <CardFace />
         </div>
-        <div className="mt-[22px] flex w-[min(749px,86vw)] flex-col items-end gap-3">
+        <div className="mt-[22px] flex w-[min(620px,86vw)] flex-col items-end gap-3">
           <SendButton copied={copied} disabled={copied} onActivate={send} />
           {copiedEver && (
             <p className="text-[13px] tracking-[0.02em] text-ink/50">{EMAIL} &middot; copied</p>
@@ -334,12 +341,15 @@ export default function AboutCard() {
               top: ENV_TOP,
               width: ENV_W,
               marginLeft: -ENV_W / 2,
-              height: ENV_H / 2,
+              height: FLAP_H,
             }}
           >
             <div
-              className="h-full w-full bg-[#ede3cf]"
+              className="h-full w-full"
               style={{
+                background: VELLUM,
+                backdropFilter: VELLUM_BLUR,
+                WebkitBackdropFilter: VELLUM_BLUR,
                 clipPath: "polygon(0 0, 100% 0, 50% 100%)",
                 transformOrigin: "top center",
                 transform: sealed ? "rotateX(0deg)" : "rotateX(180deg)",
@@ -350,7 +360,7 @@ export default function AboutCard() {
           {/* z2 envelope back panel */}
           <div
             aria-hidden
-            className={`absolute left-1/2 rounded-[4px] bg-[#f2ece0] ${noTrans}`}
+            className={`absolute left-1/2 rounded-[4px] bg-white/60 ${noTrans}`}
             style={{
               ...envPiece(2),
               top: ENV_TOP,
@@ -366,7 +376,7 @@ export default function AboutCard() {
               onMouseMove={onMove}
               onMouseEnter={() => tilting && setHovered(true)}
               onMouseLeave={onLeave}
-              className="relative w-[min(749px,86vw)] overflow-hidden rounded-[5px] bg-[#0f28e0] px-[6.3%] py-[4.5%]"
+              className="relative w-[min(620px,86vw)] overflow-hidden rounded-[5px] bg-[#0f28e0] px-[6.3%] py-[4.5%]"
               style={{
                 rotateX: tilting ? rx : 0,
                 rotateY: tilting ? ry : 0,
@@ -404,15 +414,20 @@ export default function AboutCard() {
             }}
           >
             <div
-              className="h-full w-full rounded-b-[4px] bg-[#e6ddca]"
-              style={{ clipPath: "polygon(0 34%, 50% 68%, 100% 34%, 100% 100%, 0 100%)" }}
+              className="h-full w-full rounded-b-[4px]"
+              style={{
+                background: VELLUM,
+                backdropFilter: VELLUM_BLUR,
+                WebkitBackdropFilter: VELLUM_BLUR,
+                clipPath: "polygon(0 34%, 50% 68%, 100% 34%, 100% 100%, 0 100%)",
+              }}
             />
           </div>
         </div>
       </div>
       {/* trigger, right-aligned to the card edge like the mock; stays put
           through the flight */}
-      <div className="mt-[22px] flex w-[min(749px,86vw)] justify-end">
+      <div className="mt-[22px] flex w-[min(620px,86vw)] justify-end">
         <SendButton copied={copied} disabled={busy || copied} onActivate={send} />
       </div>
     </div>
