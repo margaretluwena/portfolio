@@ -427,7 +427,7 @@ export function AboutMarquee() {
   return (
     <div
       aria-hidden
-      className="w-full overflow-hidden"
+      className="pointer-events-none w-full select-none overflow-hidden"
       style={{
         maskImage: "linear-gradient(to right, transparent, #000 13%, #000 87%, transparent)",
         WebkitMaskImage: "linear-gradient(to right, transparent, #000 13%, #000 87%, transparent)",
@@ -447,7 +447,7 @@ export function AboutMarquee() {
             className="relative h-[136px] w-[212px] shrink-0 overflow-hidden rounded-[4px] bg-placeholder"
           >
             {t.src && (
-              <Image src={t.src} alt="" fill sizes="212px" className="object-cover" />
+              <Image src={t.src} alt="" fill sizes="212px" draggable={false} className="object-cover" />
             )}
           </div>
         ))}
