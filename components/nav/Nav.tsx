@@ -20,7 +20,9 @@ const links = [
   { label: "ABOUT", href: "/about" }, // the letter page - /contact redirects here
   { label: "WORKS", href: "/works" },
   { label: "PLAY", href: "/play" },
-  { label: "RESUME", href: "/resume.pdf", external: true }, // PDF in /public, no page
+  /* RESUME hidden for the application weekend (Margaret, 2026-08-01) -
+     restore by uncommenting; the /resume.pdf slot and data stay as-is */
+  // { label: "RESUME", href: "/resume.pdf", external: true }, // PDF in /public, no page
 ];
 
 export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
