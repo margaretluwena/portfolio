@@ -25,8 +25,75 @@ import * as THREE from "three";
 
 type Phase = "idle" | "folding" | "flying" | "closing" | "sent";
 
-const MAILTO = "mailto:luwena@usc.edu?subject=Hello%20Margaret";
-const deliver = () => { window.location.href = MAILTO; };
+const EMAIL = "luwena@usc.edu";
+const MAILTO = `mailto:${EMAIL}?subject=Hello%20Margaret`; // noscript fallback only
+
+/* clipboard delivery - the sequence plays through with no mail client
+   stealing focus; hidden-textarea path covers non-secure contexts */
+async function copyEmail() {
+  try {
+    await navigator.clipboard.writeText(EMAIL);
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = EMAIL;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "absolute";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+  }
+}
+
+/* two-face trigger: label and copied state are absolutely-positioned faces
+   so the swap never resizes the pill; the checkmark draws itself in */
+function CopySendButton({ copied, onActivate }: { copied: boolean; onActivate: () => void }) {
+  return (
+    <div aria-live="polite">
+      <button
+        onClick={onActivate}
+        disabled={copied}
+        className="relative overflow-hidden rounded-full border border-ink px-5 py-2 text-[15px] transition-colors hover:bg-ink hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink disabled:hover:bg-transparent disabled:hover:text-ink"
+      >
+        {/* invisible widest face reserves the pill's size */}
+        <span className="invisible flex items-center gap-2" aria-hidden>
+          <span className="h-[14px] w-[14px]" />Email copied
+        </span>
+        <span
+          aria-hidden={copied}
+          className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ${
+            copied ? "-translate-y-[118%] opacity-0" : "translate-y-0 opacity-100"
+          }`}
+        >
+          Send &#8599;
+        </span>
+        <span
+          aria-hidden={!copied}
+          className={`absolute inset-0 flex items-center justify-center gap-2 transition-all duration-300 ${
+            copied ? "translate-y-0 opacity-100" : "translate-y-[118%] opacity-0"
+          }`}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path
+              d="M4 12.5 9.5 18 20 6.5"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{
+                strokeDasharray: 32,
+                strokeDashoffset: copied ? 0 : 32,
+                transition: copied ? "stroke-dashoffset 420ms ease 120ms" : "none",
+              }}
+            />
+          </svg>
+          Email copied
+        </span>
+      </button>
+    </div>
+  );
+}
 
 /* framerate-independent exponential approach */
 const damp = (current: number, target: number, lambda: number, dt: number) =>
@@ -46,7 +113,7 @@ function bezier(a: THREE.Vector3, b: THREE.Vector3, c: THREE.Vector3, t: number,
 }
 const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
-function Scene({ phase, onSend }: { phase: Phase; onSend: () => void }) {
+function Scene({ phase, copied, onSend }: { phase: Phase; copied: boolean; onSend: () => void }) {
   const letter = useRef<THREE.Group>(null!);
   const flap = useRef<THREE.Group>(null!);
   const flyStart = useRef(0);
@@ -121,12 +188,9 @@ function Scene({ phase, onSend }: { phase: Phase; onSend: () => void }) {
                 <p>a designer, engineer, and builder.</p>
                 <p>Say hello: luwena@usc.edu</p>
               </div>
-              <button
-                onClick={onSend}
-                className="mt-6 rounded-full border border-ink px-5 py-2 text-[15px] transition-colors hover:bg-ink hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-              >
-                Send ↗
-              </button>
+              <div className="mt-6">
+                <CopySendButton copied={copied} onActivate={onSend} />
+              </div>
             </div>
           </Html>
         )}
@@ -156,10 +220,17 @@ function Scene({ phase, onSend }: { phase: Phase; onSend: () => void }) {
 export default function LetterCard() {
   const reduce = useReducedMotion();
   const [phase, setPhase] = useState<Phase>("idle");
+  const [copied, setCopied] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const inView = useInView(wrapRef);
+  const timers = useRef<number[]>([]);
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
   async function send() {
+    if (phase !== "idle" || copied) return;
+    copyEmail();
+    setCopied(true);
+    await wait(800); // let "Email copied" land and the checkmark draw before the fold
     setPhase("folding");
     await wait(450);
     setPhase("flying");
@@ -167,7 +238,14 @@ export default function LetterCard() {
     setPhase("closing");
     await wait(500);
     setPhase("sent");
-    deliver();
+  }
+
+  /* reduced-motion trigger: copy + copied state, revert to idle at ~3.2s */
+  function copyOnly() {
+    if (copied) return;
+    copyEmail();
+    setCopied(true);
+    timers.current.push(window.setTimeout(() => setCopied(false), 3200));
   }
 
   /* Reduced motion: no canvas at all - static card, same delivery */
@@ -180,16 +258,9 @@ export default function LetterCard() {
             <p>a designer, engineer, and builder.</p>
             <p>Say hello: luwena@usc.edu</p>
           </div>
-          {phase !== "sent" ? (
-            <button
-              onClick={() => { setPhase("sent"); deliver(); }}
-              className="absolute bottom-6 right-6 rounded-full border border-ink px-5 py-2 text-body-lg transition-colors hover:bg-ink hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-            >
-              Send ↗
-            </button>
-          ) : (
-            <p className="absolute bottom-6 right-6 wordmark text-body-lg text-ink">Sent.</p>
-          )}
+          <div className="absolute bottom-6 right-6">
+            <CopySendButton copied={copied} onActivate={copyOnly} />
+          </div>
         </div>
       </div>
     );
@@ -202,7 +273,7 @@ export default function LetterCard() {
         dpr={[1, 2]}
         frameloop={inView ? "always" : "demand"}
       >
-        <Scene phase={phase} onSend={send} />
+        <Scene phase={phase} copied={copied} onSend={send} />
       </Canvas>
 
       {phase === "sent" && (
