@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "motion/react";
 import type { Work } from "@/lib/works";
-import { Blocks, SectionRail, NextWork, NeedText, isNeed } from "@/components/works/Blocks";
+import { Blocks, SectionRail, NextWork, NeedText, isNeed, HIDE_NEEDS } from "@/components/works/Blocks";
 
 /*
   The case-study body - spine v2: frame -> rail -> blocks -> next.
@@ -75,7 +75,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
             className="text-body-lg text-ink/80"
           >
             <dl className="space-y-2">
-              {work.credits.map((c) => (
+              {(HIDE_NEEDS ? work.credits.filter((c) => !isNeed(c.value)) : work.credits).map((c) => (
                 <div key={c.label} className="flex gap-3 md:justify-end">
                   <dt className="shrink-0 text-ink/40">{c.label}</dt>
                   <dd className="text-ink md:text-right">

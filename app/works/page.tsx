@@ -27,13 +27,8 @@ export default function WorksIndex() {
                 </div>
                 <Prox baseOpacity={0.45} maxScale={1} radius={140}>
                   <span className="text-[13px] tracking-[0.02em] text-ink">
-                    {w.role} ·{" "}
-                    {w.category === "NEED" ? (
-                      <span className="bg-placeholder/50 px-1.5 uppercase text-ink/40">NEED</span>
-                    ) : (
-                      w.category
-                    )}{" "}
-                    · {w.year}
+                    {w.role}
+                    {w.category !== "NEED" && <> · {w.category}</>} · {w.year}
                     {w.comingSoon && <> · Coming soon</>}
                   </span>
                 </Prox>

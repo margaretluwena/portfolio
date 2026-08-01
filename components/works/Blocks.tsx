@@ -52,7 +52,14 @@ export function railEntries(work: Work): { id: string; name: string }[] {
 
 export const isNeed = (s?: string) => s === "NEED";
 
+/* Ship floor for the application weekend (Margaret, 2026-08-01): nothing
+   gray ships - NEED text, NEED media, and NEED credit rows render as
+   nothing instead of placeholders. Flip to false to see the authoring
+   placeholders again. Real assets still replace hidden slots on top. */
+export const HIDE_NEEDS = true;
+
 export function NeedText({ label, lines = 1, className = "" }: { label: string; lines?: number; className?: string }) {
+  if (HIDE_NEEDS) return null;
   return (
     <span
       className={`grid w-full place-items-center bg-placeholder/50 ${className}`}
@@ -80,6 +87,7 @@ function MediaView({ media, sizes = "(min-width: 768px) 640px, 100vw" }: { media
     );
   }
   if (media.src === "NEED") {
+    if (HIDE_NEEDS) return null;
     return (
       <div className="grid aspect-[3/2] w-full place-items-center bg-placeholder/50">
         <span className="px-4 text-center text-label uppercase text-ink/40">NEED · {media.alt}</span>
@@ -139,9 +147,13 @@ function ProblemBlock({ block }: { block: Extract<Block, { type: "problem" }> })
 }
 
 function SolutionBlock({ block }: { block: Extract<Block, { type: "solution" }> }) {
+  /* under the ship floor, a piece that is all NEED leaves no empty shell */
+  const pieces = HIDE_NEEDS
+    ? block.pieces.filter((p) => !(isNeed(p.name) && isNeed(p.caption) && p.media.src === "NEED"))
+    : block.pieces;
   return (
     <section className="space-y-16">
-      {block.pieces.map((piece, i) => (
+      {pieces.map((piece, i) => (
         <div key={`${i}-${piece.name}`} className="space-y-4">
           {isNeed(piece.name) ? (
             <NeedText label="piece name" className="max-w-[220px]" />
