@@ -16,9 +16,15 @@ export default function WorksIndex() {
         <h1 className="wordmark text-title mb-10 text-ink">Works</h1>
         <ul className="divide-y divide-ink/10 border-y border-ink/10">
           {indexWorks.map((w) => {
+            /* one-line row description: the lede, non-featured rows only
+               (text pending Margaret's edit - see cuts in session) */
+            const desc = !w.featured && w.lede !== "NEED" ? w.lede : null;
             const row = (
               <>
-                <Prox baseOpacity={0.85} maxScale={1} radius={140}><span className="wordmark text-ink">{w.title}</span></Prox>
+                <div>
+                  <Prox baseOpacity={0.85} maxScale={1} radius={140}><span className="wordmark text-ink">{w.title}</span></Prox>
+                  {desc && <p className="mt-1 max-w-[52ch] text-[15px] leading-snug text-ink/50">{desc}</p>}
+                </div>
                 <Prox baseOpacity={0.45} maxScale={1} radius={140}>
                   <span className="text-[13px] tracking-[0.02em] text-ink">
                     {w.role} ·{" "}
@@ -35,7 +41,7 @@ export default function WorksIndex() {
             );
             return (
               <li key={w.slug}>
-                {w.comingSoon ? (
+                {w.comingSoon || w.indexOnly ? (
                   /* unreachable study: same row, not a link */
                   <div aria-disabled className="flex items-baseline justify-between py-5 text-body-lg">{row}</div>
                 ) : (

@@ -78,6 +78,7 @@ export type Work = {
   cardFade?: string;       // fade-into-text-zone gradient - default transparent -> white 77.9%
   cardText?: "light";      // description tone on dark cards
   comingSoon?: boolean;    // home card reveals "Coming soon" on hover
+  indexOnly?: boolean;     // non-link index row; parked study redirects home, no Coming soon label
 };
 
 const WIP_EMAIL = "luwena@usc.edu";
@@ -349,7 +350,7 @@ export const works: Work[] = [
   {
     slug: "glance",
     title: "Glance",
-    lede: "Website and logo design for a productivity startup in TroyLabs' BUILD program",
+    lede: "Website and logo design for a productivity startup",
     credits: [
       { label: "Role", value: "Designer, TroyLabs BUILD" },
       { label: "Timeline", value: "2025" },
@@ -359,6 +360,7 @@ export const works: Work[] = [
     category: "Productivity",
     year: "2025",
     role: "Designer",
+    indexOnly: true,
     blocks: [
       {
         type: "context",
@@ -370,7 +372,7 @@ export const works: Work[] = [
   {
     slug: "mountaindew",
     title: "Mountain Dew",
-    lede: "Bottle redesigns and brand strategy for Mountain Dew with Avenues Consulting Group",
+    lede: "Bottle redesigns and brand strategy for Mountain Dew",
     credits: [
       { label: "Role", value: "Design Consultant, Avenues Consulting Group" },
       { label: "Timeline", value: "2024" },
@@ -380,6 +382,7 @@ export const works: Work[] = [
     category: "CPG",
     year: "2024",
     role: "Design Consultant",
+    indexOnly: true,
     blocks: [
       {
         type: "context",
@@ -397,7 +400,7 @@ export const works: Work[] = [
   {
     slug: "charitablefoundation",
     title: "Ichioka and Nakao",
-    lede: "Brand and website redesign for the Ichioka and Nakao Charitable Foundation",
+    lede: "Brand and website redesign for the Ichioka and Nakao Foundation",
     credits: [
       { label: "Role", value: "Design Consultant, Avenues Consulting Group" },
       { label: "Timeline", value: "2024" },
@@ -407,6 +410,7 @@ export const works: Work[] = [
     category: "Nonprofit",
     year: "2024",
     role: "Design Consultant",
+    indexOnly: true,
     blocks: [
       {
         type: "context",
@@ -466,7 +470,7 @@ export const works: Work[] = [
   {
     slug: "graphics",
     title: "Graphics",
-    lede: "Miscellaneous graphics from over the years: Instagram posts, flyers, and illustrative work made for fun",
+    lede: "Instagram posts, flyers, and illustration made over the years",
     credits: [
       { label: "Role", value: "Designer / Illustrator" },
       { label: "Timeline", value: "2023–2025" },
@@ -498,7 +502,7 @@ export const works: Work[] = [
   {
     slug: "smallworks",
     title: "Small Works",
-    lede: "Projects from hackathons, design challenges, and class projects that don't quite warrant their own page",
+    lede: "Projects from hackathons, design challenges, and class projects",
     credits: [
       { label: "Role", value: "Designer" },
       { label: "Timeline", value: "2023–2025" },

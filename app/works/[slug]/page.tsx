@@ -16,9 +16,10 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
   const { slug } = use(params);
   const work = getWork(slug);
 
-  /* comingSoon studies aren't reachable: redirect home instead of 404 so
-     old-site links and muscle memory stay alive (slug parity is deliberate) */
-  if (work?.comingSoon) redirect("/");
+  /* comingSoon + indexOnly studies aren't reachable: redirect home instead
+     of 404 so old-site links and muscle memory stay alive (slug parity is
+     deliberate; indexOnly pages stay parked in code) */
+  if (work?.comingSoon || work?.indexOnly) redirect("/");
 
   if (!work) {
     return (
