@@ -1,6 +1,12 @@
 "use client";
 
 /*
+  PARKED (2026-08-01): superseded by components/about/AboutCard.tsx (the
+  Figma "About page" card + envelope build, docs/ABOUT_CARD.md). Kept in
+  code unimported, same convention as the thin case-study pages. The
+  clipboard + two-face button mechanics born here (eed01d6) live on in
+  AboutCard.
+
   CONTACT - the 3D letter → mailbox (react-three-fiber, per docs/CONTACT_LETTER.md).
 
   State machine (unchanged from the CSS placeholder):
