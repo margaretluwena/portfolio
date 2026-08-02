@@ -97,10 +97,50 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
             {...enter(0.8)}
             className="mt-12 max-w-[245px] space-y-6 text-body text-ink md:absolute md:top-[50.1vh] md:mt-0"
           >
-            {/* DRAFT register (2026-08-01): recomposed from Margaret's prior
-                bio facts in the cadence of her old-site blurb - her edit wins */}
-            <p>I take ideas from problem to pixel: research, systems, and interfaces that actually ship.</p>
-            <p>Currently studying Economics and Business at USC, running BUILD at TroyLabs, and building Traeco as cofounder and CPO. Fluent in the deck and the design file alike.</p>
+            {/* Margaret's copy verbatim (2026-08-01); first line reads one
+                step larger than body, still a <p> */}
+            <p className="text-[17px] leading-snug">
+              I’m a designer and operator who builds the product and the story that sells it.
+            </p>
+            <p>
+              Currently at the University of Southern California studying{" "}
+              <a
+                href="https://dornsife.usc.edu/econ/undergraduate/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
+              >
+                economics and business administration
+              </a>{" "}
+              and{" "}
+              <a
+                href="https://www.marshall.usc.edu/programs/graduate-programs/specialized-masters/ms-entrepreneurship-innovation"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
+              >
+                entrepreneurship and innovation
+              </a>
+              . Cofounding{" "}
+              <a
+                href="https://traeco.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
+              >
+                Traeco
+              </a>{" "}
+              and running{" "}
+              <a
+                href="https://www.troylabs.vc"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
+              >
+                BUILD
+              </a>{" "}
+              at TroyLabs.
+            </p>
           </motion.div>
 
         </aside>
