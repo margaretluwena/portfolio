@@ -76,8 +76,10 @@ export default function Nav({ rightSlot }: { rightSlot?: React.ReactNode }) {
             </nav>
           </div>
 
-          {/* right: contextual label, e.g. "- selected works -" or the live index */}
-          <div className="text-right text-label italic text-ink md:min-w-[12ch]">
+          {/* right: contextual label, e.g. "- selected works -" or the live
+              index; uppercase to match the home page treatment (Margaret,
+              2026-08-01) */}
+          <div className="text-right text-label uppercase italic text-ink md:min-w-[12ch]">
             {rightSlot}
           </div>
         </div>
