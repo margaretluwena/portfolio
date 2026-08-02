@@ -99,6 +99,11 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
           >
             <p>Design thinking from problem to pixel: research, systems, and interfaces that actually ship.</p>
             <p>Economics and Business at USC, head of BUILD at TroyLabs, cofounder and CPO at Traeco. Fluent in the deck and the design file alike.</p>
+            {/* availability - moved verbatim from the About card copy
+                (Margaret, 2026-08-01); not authored here */}
+            <p className="text-[13px] tracking-[0.02em] text-ink/50">
+              Currently seeking Fall, Spring, and Summer internships.
+            </p>
           </motion.div>
 
         </aside>

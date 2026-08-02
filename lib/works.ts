@@ -216,7 +216,9 @@ export const works: Work[] = [
     blocks: [
       {
         type: "context",
-        body: "Traeco is observability and cost management for AI agents, founded with my co-founders through LavaLab, USC's largest incubator. I'm co-founder and CPO, and was the only designer: the brand, the product, the site, and the decks are all mine. Live at traeco.dev. We won Audience Choice at the closing summit.",
+        // outcomes sentences appended 2026-08-01, verbatim from the old
+        // live-site Traeco copy (main:lib/projects.ts) per Margaret's order
+        body: "Traeco is observability and cost management for AI agents, founded with my co-founders through LavaLab, USC's largest incubator. I'm co-founder and CPO, and was the only designer: the brand, the product, the site, and the decks are all mine. Live at traeco.dev. We won Audience Choice at the closing summit. Shipped the dashboard, marketing site, and full design system to production. Conversion to action in usability tests went from 22% to 71%.",
         // prior live-site asset, surfaced per the v2 file rule (veto and it reverts to NEED)
         media: { src: "/images/traeco/hero.png", alt: "Traeco brand hero" },
       },
@@ -266,11 +268,13 @@ export const works: Work[] = [
     ],
   },
 
-  /* ---- Atlix - canonical content: docs/content/atlix.md. STAYS THIN
-     (context + wip) until Mar fills solution piece 1; do not promote to a
-     full spine with an empty solution. The lede, Timeline, and Disciplines
-     are PRIOR live-site copy surfaced instead of NEED placeholders, pending
-     Mar's confirmation against the file's open questions. ---- */
+  /* ---- Atlix - canonical content: docs/content/atlix.md. Built out
+     2026-08-01 on Margaret's order from OLD live-site copy (main:lib/
+     projects.ts) - compressions and deletions only, nothing invented.
+     California framing deleted from the problem copy (the lede still
+     carries it - her call). Competition name, Team, and the pitch-deck
+     section stay NEED/absent (mp4 does not ship). Retired outcome line
+     ("hundreds of teams from Stanford...") must not return. ---- */
   {
     slug: "atlix",
     title: "Atlix",
@@ -318,6 +322,48 @@ export const works: Work[] = [
         body: "Atlix came out of a global student startup competition based in Seoul, where we were the first team to represent USC. The brief was to empower the next generation through social media. We chose youth political engagement, in part because one of our co-founders came from a political science background, and spent the run-up validating the problem with local politicians. The final stretch was a sprint in Korea: the pitch deck, the product, and a set of design partners. We finished as finalists.",
         // prior live-site asset surfaced instead of a placeholder; veto reverts to NEED
         media: { src: "/images/atlix/hero.png", alt: "Atlix hero" },
+      },
+      {
+        type: "problem",
+        // old-site "Where the idea came from", California framing deleted
+        headline: "Polling and survey data lag behind",
+        evidence: [
+          "Nobody wanted yet another data tool",
+          "Summaries they could trust, with the source still one click away",
+          "Cards first, summaries upfront, citations always visible",
+        ],
+        body: "By the time a report goes out, the conversation has already shifted. I wanted to build something that listened to what young people were actually saying in real time. The product had to be useful for advocacy groups, policy researchers, and anyone who needs to read demographic discourse without waiting for a quarterly report.",
+      },
+      {
+        type: "solution",
+        pieces: [
+          {
+            // old-site "Designing the dashboard", compressed
+            name: "The dashboard",
+            caption: "The first version was much busier: filters everywhere, charts on charts, every card trying to say too much at once. Feedback from the researchers cut it back to what actually matters in the first three seconds: what's the topic, where is it happening, how much is it growing, and who's talking about it. Left rail filters for region and issue, a tab row for sort order, and a card grid where each card commits to a single narrative.",
+            media: { src: "/images/atlix/dashboard.png", alt: "Atlix dashboard" },
+          },
+          {
+            // old-site "Early research and interviews", compressed
+            name: "Research before screens",
+            caption: "A few weeks reading the kinds of reports people in this space already work from, talking to researchers and advocacy folks, and mapping out what their day actually looks like. The biggest pattern: nobody wanted yet another data tool. They wanted summaries they could trust, with the source still one click away.",
+            media: { src: "NEED", alt: "research notes or report excerpts" },
+          },
+          {
+            // old-site "Brand", compressed
+            name: "Brand",
+            caption: "Most tools in the category look either academic and beige or aggressively tech. Atlix is a third option: dark navy with a single accent, type forward, and quiet. The wordmark is a clean sans-serif because the product itself should be the loudest thing in any deck or screenshot.",
+            media: { src: "NEED", alt: "brand sheet or wordmark lockup" },
+          },
+          {
+            // old-site "Outcome" heading + learnings; the competition-name
+            // sentence removed whole (carries the retired line and the
+            // unconfirmed name)
+            name: "Outcome",
+            caption: "The biggest thing I learned was that research before design isn't a checkbox. Every time I shortcut it and started designing first, I had to throw work away. The reverse was also true: every conversation I had before opening Figma made the actual design work go faster, because half the decisions were already made. I also learned a lot about restraint. Cutting a field off a card felt scary at first, but it ended up making the whole grid feel more confident than adding one ever would have.",
+            media: { src: "NEED", alt: "competition or team photo" },
+          },
+        ],
       },
       { type: "wip", email: WIP_EMAIL },
     ],
