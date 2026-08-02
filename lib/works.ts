@@ -134,17 +134,17 @@ export const works: Work[] = [
           {
             name: "Reading, made social",
             caption: "Wrapped-style cards that turn a stretch of reading into something postable. Deliberately quirky and over-designed: a share screen only works if someone wants to be seen posting it, so this traded restraint for personality.",
-            media: { src: "NEED", alt: "share screens" },
+            media: { src: "/images/mark/app-share.png", alt: "Mark share screens" },
           },
           {
             name: "From page to library",
             caption: "Logging a highlight on the device without leaving the page, then sorting captures against books, categories, and notes written in the app. Organised by reading habit rather than by file.",
-            media: { src: "NEED", alt: "app screens, capture to library" },
+            media: { src: "/images/mark/app-notes.png", alt: "Mark notes library screens" },
           },
           {
             name: "Twenty, then three, then colour",
             caption: "Twenty rough packaging concepts narrowed to three, then iterated in depth before any colour went on. Yellow was load-bearing in the early identity, so it came last and on purpose rather than as a starting constraint.",
-            media: { src: "NEED", alt: "one wide progression image, 20 to 3 to coloured" },
+            media: { src: "/images/mark/packaging-sleeves-2.jpg", alt: "Mark packaging sleeves, second round" },
           },
           {
             name: "LAUNCH",
@@ -156,10 +156,20 @@ export const works: Work[] = [
       {
         type: "artifactGrid",
         media: [
-          { src: "NEED", alt: "sticker sheet" },
-          { src: "NEED", alt: "shirt variants" },
-          { src: "NEED", alt: "tote" },
+          { src: "/images/mark/merch-stickers.jpg", alt: "Mark sticker sheet" },
+          { src: "/images/mark/merch-shirts.png", alt: "Mark shirt variants" },
+          { src: "/images/mark/merch-tote.jpg", alt: "Mark tote bags" },
+          { src: "/images/mark/packaging-sleeves-1.jpg", alt: "Mark packaging sleeves, first round" },
+          { src: "/images/mark/packaging-unitbox-1.jpg", alt: "Mark unit box explorations, first round" },
           { src: "NEED", alt: "Make your mark wordplay" },
+        ],
+      },
+      {
+        type: "artifactGrid",
+        media: [
+          { src: "/images/mark/app-home.png", alt: "Mark app home screen" },
+          { src: "/images/mark/app-notes-inside.png", alt: "Mark note detail screen" },
+          { src: "/images/mark/app-share-funky.png", alt: "Mark share card variants" },
         ],
       },
       { type: "gate", hint: "The full study sits behind a password under NDA." },
