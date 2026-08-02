@@ -97,8 +97,10 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
             {...enter(0.8)}
             className="mt-12 max-w-[245px] space-y-6 text-body text-ink md:absolute md:top-[50.1vh] md:mt-0"
           >
-            <p>Design thinking from problem to pixel: research, systems, and interfaces that actually ship.</p>
-            <p>Economics and Business at USC, head of BUILD at TroyLabs, cofounder and CPO at Traeco. Fluent in the deck and the design file alike.</p>
+            {/* DRAFT register (2026-08-01): recomposed from Margaret's prior
+                bio facts in the cadence of her old-site blurb - her edit wins */}
+            <p>I take ideas from problem to pixel: research, systems, and interfaces that actually ship.</p>
+            <p>Currently studying Economics and Business at USC, running BUILD at TroyLabs, and building Traeco as cofounder and CPO. Fluent in the deck and the design file alike.</p>
           </motion.div>
 
         </aside>
