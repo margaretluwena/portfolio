@@ -210,8 +210,11 @@ export const works: Work[] = [
     // dashboard is sized a hair past the white display area so no white
     // sliver shows at its sides
     coverArt: [
-      { src: "/images/covers/traeco-laptop.png", left: "0%", top: "9.29%", width: "100%", height: "86.06%" },
-      { src: "/images/covers/traeco-dashboard.png", left: "7.92%", top: "11.06%", width: "84.05%", height: "74.42%" },
+      /* Figma-exact 2026-08-01: the Mockup bleeds 1.95% past both card
+         edges (x=-19 on the 972 frame); clipping it to 0/100% shifted the
+         dashboard off the laptop screen */
+      { src: "/images/covers/traeco-laptop.png", left: "-1.95%", top: "9.29%", width: "103.81%", height: "86%" },
+      { src: "/images/covers/traeco-dashboard.png", left: "8.96%", top: "12.17%", width: "81.55%", height: "72.22%" },
     ],
     blocks: [
       {
