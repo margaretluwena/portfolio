@@ -100,7 +100,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
             {/* Margaret's copy verbatim (2026-08-01); first line reads one
                 step larger than body, still a <p> */}
             <p className="text-[17px] leading-snug">
-              I’m a designer and operator who builds the product and the story that sells it.
+              Building for fun, work, and life.
             </p>
             <p>
               Currently at the University of Southern California studying{" "}
