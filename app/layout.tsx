@@ -3,7 +3,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import RouteMotion from "@/components/providers/RouteMotion";
 import { TransitionProvider } from "@/components/providers/PageTransition";
-import Cursor from "@/components/ui/Cursor";
 import DevAgentation from "@/components/providers/DevAgentation";
 
 /*
@@ -61,7 +60,8 @@ export default function RootLayout({
         <RouteMotion modal={modal}>
           <TransitionProvider>{children}</TransitionProvider>
         </RouteMotion>
-        <Cursor />
+        {/* custom cursor dot removed (Margaret, 2026-09-10); Cursor.tsx
+            stays parked unimported - remount here to bring it back */}
         <DevAgentation />
       </body>
     </html>

@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/react";
 
 /*
+  PARKED (2026-09-10): unmounted from app/layout.tsx on Margaret's order -
+  no cursor dot anywhere. Kept unimported, same convention as the thin
+  case-study pages; remount <Cursor /> in the root layout to restore.
+
   Custom cursor: a small ink dot trailing the pointer, identical everywhere
   on the page (the VIEW disc mode is gone by request - no growing, no label).
 
