@@ -453,11 +453,17 @@ export const works: Work[] = [
     // original (impeccable-chicken.svg) is for the orange-fade card
     wordmark: "/images/wordmarks/impeccable-chicken-orange.svg", // 168/972 of card width
     wordmarkWidth: "17.28%",
-    cardBg: "#c94512",
-    // white fade like Glance and Mountain Dew for now (Margaret, 2026-10-09);
-    // the Figma orange fade was: linear-gradient(to bottom, rgba(241,95,38,0), #f15f26 77.889%) with cardText "light"
+    // white surface + white fade like Glance and Mountain Dew for now (Margaret,
+    // 2026-10-09; the orange cardBg read as a harsh ring at the border). The Figma
+    // version was cardBg #c94512, fade linear-gradient(to bottom, rgba(241,95,38,0),
+    // #f15f26 77.889%), cardText "light", photo at left 6.48% / width 93.52%.
     coverArt: [
-      { src: "/images/covers/ic-photo.png", left: "6.48%", top: "0%", width: "93.52%", height: "100%" },
+      /* the photo (pre-clipped to 93.52% of the card) drawn 6.9% larger as a crop
+         fill so it reaches the left edge - no white strip beside it */
+      {
+        src: "/images/covers/ic-photo.png", left: "0%", top: "0%", width: "100%", height: "100%",
+        crop: { left: "0%", top: "-3.46%", width: "106.93%", height: "106.93%" },
+      },
     ],
     blocks: [
       { type: "context", body: "Case study in progress. Content coming soon." },
@@ -483,7 +489,6 @@ export const works: Work[] = [
     comingSoon: true, // parked for now (Margaret, 2026-10-09)
     /* the hero art drawn larger and started above the card, so the logo
        centres ~38% down instead of halfway (Margaret: "shift the logo up") */
-    cardBg: "#0f1116",
     coverArt: [
       { src: "/images/glance-hero.png", left: "-18.11%", top: "-24%", width: "136.22%", height: "124%" },
     ],
@@ -510,7 +515,6 @@ export const works: Work[] = [
     year: "2024",
     role: "Design Consultant",
     comingSoon: true, // parked for now (Margaret, 2026-10-09)
-    cardBg: "#0a8a3a",
     coverArt: [
       { src: "/images/mountaindew-hero.png", left: "-7.95%", top: "-24%", width: "115.90%", height: "124%" },
     ],

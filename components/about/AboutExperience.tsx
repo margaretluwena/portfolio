@@ -44,6 +44,8 @@ const EXPERIENCES: Experience[] = [
 
 const WINDOW_VH = 58; // the visible slice of the list while pinned
 const TOP_VH = 22;    // where the pinned block starts - clear of the nav pill (14 sat too close to it, Margaret 2026-10-09)
+const TOP_FADE = 7;     // % of the window: the fade over rows leaving through the top (once scrolled)
+const BOTTOM_FADE = 18; // % of the window: the fade over rows waiting below
 const BLOCK_VH = TOP_VH + WINDOW_VH + 3; // the pinned block is only as tall as its content, so the
                                           // page releases right under the last row (no empty tail)
 
@@ -97,10 +99,20 @@ export default function AboutExperience() {
   useEffect(() => {
     const sec = outer.current, el = list.current;
     if (!sec || !el || !travel) return;
+    const win = el.parentElement as HTMLElement | null;
     const onScroll = () => {
       const start = sec.getBoundingClientRect().top + window.scrollY;
       const p = Math.min(1, Math.max(0, (window.scrollY - start) / travel));
       el.style.transform = `translate3d(0, ${-p * travel}px, 0)`;
+      /* a top fade appears as rows leave through the top (Margaret, 2026-10-09):
+         none at rest, grown to 7% of the window over the first ~60px of travel -
+         well short of the 18% bottom fade */
+      if (win) {
+        const top = Math.min(TOP_FADE, (p * travel) / 60 * TOP_FADE);
+        const mask = `linear-gradient(to bottom, transparent, #000 ${top.toFixed(2)}%, #000 ${100 - BOTTOM_FADE}%, transparent)`;
+        win.style.maskImage = mask;
+        win.style.webkitMaskImage = mask;
+      }
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -141,9 +153,10 @@ export default function AboutExperience() {
               height: `${WINDOW_VH}vh`,
               /* the first row sits on the heading's baseline: pad by the two line-heights' difference */
               paddingTop: "calc(1.15 * clamp(22px, 2.2vw, 44px) - 1.35 * clamp(1rem, 1.45vw, 1.5625rem))",
-              /* rows fade out only at the bottom, where they wait to scroll in - never at the top */
-              maskImage: "linear-gradient(to bottom, #000 82%, transparent)",
-              WebkitMaskImage: "linear-gradient(to bottom, #000 82%, transparent)",
+              /* at rest, rows fade out only at the bottom, where they wait to scroll in;
+                 the scroll handler adds the shorter top fade once they move */
+              maskImage: `linear-gradient(to bottom, #000 ${100 - BOTTOM_FADE}%, transparent)`,
+              WebkitMaskImage: `linear-gradient(to bottom, #000 ${100 - BOTTOM_FADE}%, transparent)`,
             }}
           >
             <div ref={list} className="pb-[8vh] will-change-transform">

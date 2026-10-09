@@ -28,7 +28,8 @@ import Prox from "@/components/ui/Prox";
    rendered height is divided by it so all three glyphs read the same size */
 export const socials = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/margaretluwena/", icon: "/assets/icon-linkedin.png", ink: 0.993 },
-  { label: "X", href: "https://x.com/marluwena", icon: "/assets/icon-x.png", ink: 0.844 },
+  // X at nominal size: its dense glyph read too big at equal ink height (Margaret, 2026-10-09; was 0.844)
+  { label: "X", href: "https://x.com/marluwena", icon: "/assets/icon-x.png", ink: 1 },
   { label: "Instagram", href: "https://www.instagram.com/margaret.luwena/", icon: "/assets/icon-instagram.png", ink: 0.813 },
 ];
 
