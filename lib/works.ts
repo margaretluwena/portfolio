@@ -490,7 +490,9 @@ export const works: Work[] = [
     /* the hero art drawn larger and started above the card, so the logo
        centres ~38% down instead of halfway (Margaret: "shift the logo up") */
     coverArt: [
-      { src: "/images/glance-hero.png", left: "-18.11%", top: "-24%", width: "136.22%", height: "124%" },
+      /* 0.8x of the Mountain Dew-sized layer, scaled about its centre so the
+         logo keeps its height (Margaret, 2026-10-09: "smaller, height is good") */
+      { src: "/images/glance-hero.png", left: "-4.49%", top: "-11.60%", width: "108.98%", height: "99.20%" },
     ],
     blocks: [
       {
