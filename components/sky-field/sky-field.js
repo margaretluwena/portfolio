@@ -287,14 +287,13 @@ export function createSkyField(canvas, options = {}) {
     if (b.st === 'carried') { b.x = mouthX(d) + d.face * cw; b.y = groundAt(d.x) - ch * (DOGH - MOUTH) + d.jump; }
   }
   const gameActive = () => P.game && (G.dog.st !== 'away' || G.ball.st !== 'rest' || !G.met);
-  // the player line: `count` is this visitor's player number, or a promise of it (from P.onThrow /
-  // P.onCount - the host assigns it once per visitor and remembers it)
-  const ord = (n) => { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
+  // the player line: `count` is the running total of people who've played, or a promise of it
+  // (from P.onThrow / P.onCount - the host counts each visitor once and reads the total)
   function announce(count) {
     const d = G.dog;
     Promise.resolve(count).then((n) => {
       if (destroyed || typeof n !== 'number' || !isFinite(n)) return;
-      d.say = n === 1 ? "you're the first person who's played with me!" : `you're the ${ord(n)} person who's played with me!`;
+      d.say = n === 1 ? "you're the first person who's played with me!" : `you're one of ${n.toLocaleString()} people who've played with me!`;
       d.sayT = 4.5;
     }).catch(() => {});
   }
@@ -352,14 +351,16 @@ export function createSkyField(canvas, options = {}) {
     const b = G.ball, R = ballR(), bx = b.x + (G.ballWig || 0);
     if (P.game) {
       // a tennis ball: felt-green sphere lit from the upper left, with the two curved seams -
-      // circles centred just outside the ball on either side, clipped to it
+      // circles centred outside the ball on either side, clipped to it. Centres at 1.65R put
+      // the seams 0.4R either side of the middle (1.35R had them 0.1R apart: "too close",
+      // Margaret 2026-10-09)
       ctx.save(); ctx.beginPath(); ctx.arc(bx, b.y, R, 0, Math.PI * 2); ctx.clip();
       const g = ctx.createRadialGradient(bx - R * 0.4, b.y - R * 0.45, R * 0.1, bx, b.y, R * 1.05);
       g.addColorStop(0, '#e6f55a'); g.addColorStop(0.55, C.ballRim); g.addColorStop(1, '#8fa31c');
       ctx.fillStyle = g; ctx.fillRect(bx - R, b.y - R, R * 2, R * 2);
       ctx.strokeStyle = C.ballSeam; ctx.lineWidth = Math.max(1.2, R * 0.2);
-      ctx.beginPath(); ctx.arc(bx - R * 1.35, b.y, R * 1.25, 0, Math.PI * 2); ctx.stroke();
-      ctx.beginPath(); ctx.arc(bx + R * 1.35, b.y, R * 1.25, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(bx - R * 1.65, b.y, R * 1.25, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(bx + R * 1.65, b.y, R * 1.25, 0, Math.PI * 2); ctx.stroke();
       ctx.restore();
       ctx.beginPath(); ctx.arc(bx, b.y, R, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(0,0,0,0.22)'; ctx.lineWidth = 1; ctx.stroke();
       for (const e of G.eyes) {

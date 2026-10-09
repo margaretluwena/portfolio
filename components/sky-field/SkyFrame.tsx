@@ -40,26 +40,30 @@ import { setCursorBubble } from "@/components/providers/CursorBubble";
   2026-10-08).
 */
 
-/* every visitor who throws the ball gets a player number, once, from the
-   global counter (app/api/throws) and keeps it in localStorage - so the
-   dog greets the same person with the same number on later visits */
+/* every visitor who throws the ball is counted once in the global counter
+   (app/api/throws); localStorage remembers that this browser has been
+   counted so a return visit doesn't count again. What the dog SAYS is the
+   running total of players, not this visitor's own number (Margaret,
+   2026-10-09: her own number never changed, which read as broken). */
 const PLAYER_KEY = "sky:player";
 const stored = () => {
   try { const v = Number(localStorage.getItem(PLAYER_KEY)); return v > 0 ? v : null; } catch { return null; }
 };
-async function countThrow(): Promise<number> {
-  const have = stored();
-  if (have) return have;
-  const r = await fetch("/api/throws", { method: "POST" });
+const total = async (method: "GET" | "POST"): Promise<number> => {
+  const r = await fetch("/api/throws", { method, cache: "no-store" });
   const j = (await r.json()) as { throws: number | null };
   if (typeof j.throws !== "number") throw new Error("no count");
-  try { localStorage.setItem(PLAYER_KEY, String(j.throws)); } catch {}
   return j.throws;
+};
+async function countThrow(): Promise<number> {
+  if (stored()) return total("GET");          // already counted: just read the total
+  const n = await total("POST");               // first throw from this browser: count it
+  try { localStorage.setItem(PLAYER_KEY, String(n)); } catch {}
+  return n;
 }
 async function readCount(): Promise<number> {
-  const have = stored();
-  if (!have) throw new Error("not a player yet");
-  return have;
+  if (!stored()) throw new Error("not a player yet");
+  return total("GET");
 }
 
 /* the cursor bubble's lines for the game (Margaret, 2026-10-09). Each is a
