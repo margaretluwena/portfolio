@@ -81,7 +81,7 @@ export function createSkyField(canvas, options = {}) {
   const ctx = canvas.getContext('2d');
   const P = {
     cellSize: 9, wind: 1, cover: 0.55, depth: 0.85, flowers: 1, hills: 1, bumps: 1, hillTexture: 1, ramp: 'dither',
-    onThrow: null, onCount: null,
+    onThrow: null, onCount: null, onHover: null,
     seed: (Math.random() * 1e6) | 0, game: true, hint: 'shake me', ballX: 0.62, maxFps: 30,
     fontFamily: '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
     ...options,
@@ -480,6 +480,9 @@ export function createSkyField(canvas, options = {}) {
     return Math.abs(p.x - d.x) < (DOGW / 2) * cw && p.y < gy && p.y > gy - DOGH * ch; };
   const canGrab = (e) => P.game && G.ball.st !== 'carried' && !(e.target instanceof Element && e.target.closest(INTERACTIVE)) && nearBall(pt(e));
   let prevSelect = '', prevCursor = '';
+  // what the mouse is over - 'ball' | 'dog' | null - reported to the host on change (the cursor bubble)
+  let hoverKind = null;
+  const setHover = (k) => { if (k === hoverKind) return; hoverKind = k; if (P.onHover) { try { P.onHover(k); } catch {} } };
   function onDown(e) {
     if (e.button > 0) return;
     if (P.game && !(e.target instanceof Element && e.target.closest(INTERACTIVE)) && !nearBall(pt(e)) && nearDog(pt(e))) {
@@ -488,7 +491,7 @@ export function createSkyField(canvas, options = {}) {
     if (!canGrab(e)) return;
     e.preventDefault();
     const p = pt(e), b = G.ball;
-    G.grab = { id: e.pointerId, ox: b.x - p.x, oy: b.y - p.y }; b.st = 'held';
+    G.grab = { id: e.pointerId, ox: b.x - p.x, oy: b.y - p.y }; b.st = 'held'; setHover(null);
     G.hist = [{ x: b.x, y: b.y, t: performance.now() }]; G.shakes = []; G.lastDir = 0;
     prevSelect = document.body.style.userSelect; document.body.style.userSelect = 'none';
     prevCursor = document.documentElement.style.cursor; document.documentElement.style.cursor = 'grabbing';
@@ -498,7 +501,9 @@ export function createSkyField(canvas, options = {}) {
       if (e.pointerType === 'mouse' && P.game) {
         const clear = !(e.target instanceof Element && e.target.closest(INTERACTIVE)), p = pt(e);
         const over = G.ball.st !== 'carried' && nearBall(p) && clear;
-        document.documentElement.style.cursor = over ? 'grab' : clear && nearDog(p) ? 'pointer' : prevCursor;
+        const dog = !over && clear && nearDog(p);
+        document.documentElement.style.cursor = over ? 'grab' : dog ? 'pointer' : prevCursor;
+        setHover(over ? 'ball' : dog ? 'dog' : null);
       }
       return;
     }

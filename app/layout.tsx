@@ -9,6 +9,7 @@ import Nav from "@/components/nav/Nav";
 import FooterSwitch from "@/components/shell/FooterSwitch";
 import DevAgentation from "@/components/providers/DevAgentation";
 import SkyFrame from "@/components/sky-field/SkyFrame";
+import CursorBubble from "@/components/providers/CursorBubble";
 
 /*
   Body face: Manrope (variable, 200-800), self-hosted from /public/fonts
@@ -102,6 +103,8 @@ export default function RootLayout({
         </NavProvider>
         {/* custom cursor dot removed (Margaret, 2026-09-10); Cursor.tsx
             stays parked unimported - remount here to bring it back */}
+        {/* the pointer's white bubble (data-bubble / setCursorBubble), pointer-only */}
+        <CursorBubble />
         <DevAgentation />
       </body>
     </html>

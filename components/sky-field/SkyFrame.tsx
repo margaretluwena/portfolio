@@ -1,8 +1,10 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useCallback, useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import SkyFieldBackground from "@/components/sky-field/SkyFieldBackground";
+import { setCursorBubble } from "@/components/providers/CursorBubble";
 
 /*
   Route-aware frame around Margaret's Sky Field (components/sky-field, her
@@ -60,12 +62,22 @@ async function readCount(): Promise<number> {
   return have;
 }
 
+/* the cursor bubble's lines for the game (Margaret, 2026-10-09) */
+const HOVER_LINES = { ball: "Pick it up and shake", dog: "Pet me" } as const;
+
 export default function SkyFrame() {
   const pathname = usePathname();
   const reduce = useReducedMotion();
   const study = /^\/works\/[^/]+/.test(pathname);
   const home = pathname === "/";
   const strength = study ? 0 : home ? 0.75 : 0.35;
+  // the engine keeps hit-testing while the sky is faded out on a study; the
+  // bubble must not name a ball nobody can see
+  const visible = useRef(strength > 0);
+  visible.current = strength > 0;
+  const onHover = useCallback((k: "ball" | "dog" | null) => {
+    setCursorBubble(k && visible.current ? HOVER_LINES[k] : null);
+  }, []);
 
   return (
     <motion.div
@@ -88,6 +100,7 @@ export default function SkyFrame() {
         ballX={0.17}
         onThrow={countThrow}
         onCount={readCount}
+        onHover={onHover}
       />
     </motion.div>
   );

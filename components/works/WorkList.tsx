@@ -187,7 +187,8 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
             </motion.article>
         );
         return inert ? (
-          <div className="group block">{card}</div>
+          /* the cursor bubble names the dead surface (Margaret, 2026-10-09) */
+          <div className="group block" data-bubble="Coming soon!">{card}</div>
         ) : (
           <Link
             href={`/works/${work.slug}`}
