@@ -170,16 +170,17 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
                 {work.blurb ?? (work.lede === "NEED" ? "" : work.lede)}
               </p>
 
-              {/* "Coming soon": real DOM text (screen readers announce it, and
-                  aria-disabled marks the card). Desktop reveals on hover
-                  (opacity only); below md it is persistently visible, since
-                  touch has no hover and the card would otherwise be a dead
-                  surface with no explanation. */}
+              {/* "Coming soon": on pointer devices the cursor bubble says it, so
+                  the card itself stays clean (Margaret, 2026-10-09). Below md it
+                  is still printed on the card, since touch has no hover and no
+                  bubble, and the card would otherwise be a dead surface with no
+                  explanation. Screen readers get it either way, and
+                  aria-disabled marks the card. */}
               {work.comingSoon && (
                 <span
                   className={`absolute inset-0 grid place-items-center text-label uppercase ${
                     work.cardText === "light" ? "text-white/80" : "text-ink/50"
-                  } opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-md:opacity-100`}
+                  } md:sr-only`}
                 >
                   Coming soon
                 </span>

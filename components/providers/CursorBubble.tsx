@@ -88,7 +88,9 @@ export default function CursorBubble() {
   if (!fine) return null;
 
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-[70] overflow-hidden">
+    /* data-text mirrors the live text so tests can read the state without
+       waiting on the exit animation */
+    <div aria-hidden data-cursor-bubble={text ?? ""} className="pointer-events-none fixed inset-0 z-[70] overflow-hidden">
       <motion.div style={{ x: sx, y: sy }} className="absolute left-0 top-0">
         <AnimatePresence>
           {text && (

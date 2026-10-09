@@ -62,8 +62,14 @@ async function readCount(): Promise<number> {
   return have;
 }
 
-/* the cursor bubble's lines for the game (Margaret, 2026-10-09) */
+/* the cursor bubble's lines for the game (Margaret, 2026-10-09). Each is a
+   hint, shown until the visitor has done the thing once - shaken the ball
+   hard enough to call the dog, petted the dog - and then never again on
+   this device (localStorage, like the player number). */
 const HOVER_LINES = { ball: "Pick it up and shake", dog: "Pet me" } as const;
+const DONE_KEY = { ball: "sky:hint:ball", dog: "sky:hint:dog" } as const;
+const isDone = (k: keyof typeof DONE_KEY) => { try { return localStorage.getItem(DONE_KEY[k]) === "1"; } catch { return false; } };
+const markDone = (k: keyof typeof DONE_KEY) => { try { localStorage.setItem(DONE_KEY[k], "1"); } catch {} };
 
 export default function SkyFrame() {
   const pathname = usePathname();
@@ -76,7 +82,11 @@ export default function SkyFrame() {
   const visible = useRef(strength > 0);
   visible.current = strength > 0;
   const onHover = useCallback((k: "ball" | "dog" | null) => {
-    setCursorBubble(k && visible.current ? HOVER_LINES[k] : null);
+    setCursorBubble(k && visible.current && !isDone(k) ? HOVER_LINES[k] : null);
+  }, []);
+  const onAction = useCallback((what: "shake" | "pet") => {
+    markDone(what === "shake" ? "ball" : "dog");
+    setCursorBubble(null);
   }, []);
 
   return (
@@ -101,6 +111,7 @@ export default function SkyFrame() {
         onThrow={countThrow}
         onCount={readCount}
         onHover={onHover}
+        onAction={onAction}
       />
     </motion.div>
   );

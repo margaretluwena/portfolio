@@ -81,7 +81,7 @@ export function createSkyField(canvas, options = {}) {
   const ctx = canvas.getContext('2d');
   const P = {
     cellSize: 9, wind: 1, cover: 0.55, depth: 0.85, flowers: 1, hills: 1, bumps: 1, hillTexture: 1, ramp: 'dither',
-    onThrow: null, onCount: null, onHover: null,
+    onThrow: null, onCount: null, onHover: null, onAction: null,
     seed: (Math.random() * 1e6) | 0, game: true, hint: 'shake me', ballX: 0.62, maxFps: 30,
     fontFamily: '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
     ...options,
@@ -483,10 +483,12 @@ export function createSkyField(canvas, options = {}) {
   // what the mouse is over - 'ball' | 'dog' | null - reported to the host on change (the cursor bubble)
   let hoverKind = null;
   const setHover = (k) => { if (k === hoverKind) return; hoverKind = k; if (P.onHover) { try { P.onHover(k); } catch {} } };
+  // 'shake' (the ball shaken hard enough to call the dog) and 'pet' - the host retires its hints on these
+  const action = (what) => { if (P.onAction) { try { P.onAction(what); } catch {} } };
   function onDown(e) {
     if (e.button > 0) return;
     if (P.game && !(e.target instanceof Element && e.target.closest(INTERACTIVE)) && !nearBall(pt(e)) && nearDog(pt(e))) {
-      const d = G.dog; if (!d.jv) d.jv = -240; d.woof = 1; return; // pet the dog: it hops and barks
+      const d = G.dog; if (!d.jv) d.jv = -240; d.woof = 1; action('pet'); return; // pet the dog: it hops and barks
     }
     if (!canGrab(e)) return;
     e.preventDefault();
@@ -513,7 +515,7 @@ export function createSkyField(canvas, options = {}) {
     const now = performance.now(), mdx = nx - G.hist[G.hist.length - 1].x;
     if (Math.abs(mdx) > 4) { const dir = Math.sign(mdx);
       if (G.lastDir && dir !== G.lastDir) { G.shakes.push(now); G.shakes = G.shakes.filter((t) => now - t < 1000);
-        if (G.shakes.length >= 4) { G.shakes = []; summon(); } }
+        if (G.shakes.length >= 4) { G.shakes = []; summon(); action('shake'); } }
       G.lastDir = dir; }
     b.x = nx; b.y = ny; G.hist.push({ x: nx, y: ny, t: now }); if (G.hist.length > 8) G.hist.shift();
   }

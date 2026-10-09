@@ -516,22 +516,78 @@ export const works: Work[] = [
       },
     ],
   },
-  /* ---- index-only, listed by Margaret 2026-10-08, content pending ----
-     Prosaic's one line is her own README ("A public index of consumer AI
-     safety evaluations"); everything else is NEED until she supplies it.
-     Both render as the non-link placeholder card (title on the tile). */
+  /* ---- Prosaic Intelligence - drafted 2026-10-09 from three screenshots
+     Margaret sent (the home page, the AI Safety Index header, the General
+     use chart) and her README line; she edits in her pass. The site is
+     NEVER linked from here (her instruction). Media slots carry the path
+     each screenshot will take once she drops the files in; until then
+     they render as labelled placeholders. Role / timeline / disciplines
+     are inferred - confirm. ---- */
   {
     slug: "prosaic-intelligence",
     title: "Prosaic Intelligence",
     lede: "A public index of consumer AI safety evaluations",
-    cover: { src: "NEED", alt: "Prosaic Intelligence" },
-    credits: [],
+    blurb: "Brand, site, and data design for a consumer AI safety index",
+    /* the home page screenshot, once on disk: /images/covers/prosaic-site.jpg */
+    cover: { src: "NEED", alt: "Prosaic Intelligence home" },
+    credits: [
+      { label: "Role", value: "Design and build" },
+      { label: "Timeline", value: "2026" },
+      { label: "Disciplines", value: "Brand, Web, Data Visualization" },
+    ],
     next: "aanc",
-    category: "NEED",
-    year: "NEED",
-    indexOnly: true,
-    blocks: [{ type: "wip", email: WIP_EMAIL }],
+    category: "AI Safety",
+    year: "2026",
+    role: "Designer",
+    accent: "#2d6fd1", // the index's pill blue
+    blocks: [
+      {
+        type: "context",
+        body: "Prosaic Intelligence is a public index of consumer AI safety evaluations: sixteen consumer AI products, from ChatGPT and Gemini to Snap AI and Character AI, scored on how safely they behave, and published for the people who use them rather than the people who build them. The site is two things. A front door that says what it is for, building a safer future for consumers, and the index itself, with the methodology beside it.",
+        /* /images/prosaic/home.jpg */
+        media: { src: "NEED", alt: "Prosaic Intelligence home: the serif lockup on a dark card over the dot-screen artwork" },
+      },
+      {
+        type: "problem",
+        headline: "There is no single safest model, only the one that is safest for what you care about.",
+        evidence: [
+          "Sixteen consumer AI products scored on one index",
+          "For general use, three of the sixteen cluster within five points of each other",
+          "A composite is a weighted average, and a model can hold a respectable overall score while failing one category badly",
+        ],
+        body: "Safety rankings flatten. A single leaderboard number invites the wrong question, which model is safest, when the honest answer depends on what you are using it for: a long conversation, a hard night, a quick lookup. The index had to show that without turning into a spreadsheet, and it had to make the gap between a composite score and the risks underneath it impossible to miss.",
+        /* /images/prosaic/index-header.jpg */
+        media: { src: "NEED", alt: "AI Safety Index: which AI is safest for, with the use-case pills" },
+      },
+      {
+        type: "solution",
+        pieces: [
+          {
+            name: "Safest for what",
+            caption: "The question comes first, as a sentence you finish: WHICH AI IS SAFEST FOR, then a row of use cases, general use, someone having a hard time, looking things up, everyday. Pick one and the index re-ranks around it. The pills and the dotted strands behind them are the brand's whole vocabulary: one blue, a serif for the headlines, a mono for the numbers.",
+            /* /images/prosaic/index-header.jpg */
+            media: { src: "NEED", alt: "The use-case pills under the AI Safety Index headline" },
+          },
+          {
+            name: "Sixteen bars, one honest line",
+            caption: "Each product is a bar in its own colour with its logo at the base, the score inside, and the headroom to 100 in a paler tint of the same colour. A dotted line marks the index average, so a glance separates the pack from the rest. Under the chart sits the footnote that matters: the composite tells you who leads for this use case, not where the one you are considering gives way.",
+            /* /images/prosaic/general-use.jpg */
+            media: { src: "NEED", alt: "General use: sixteen models as bars against the index average" },
+          },
+          {
+            name: "A front door",
+            caption: "The home page is a dark card over a dot-screen painting: the lockup, one line of purpose, and three pills, the index, the methodology, X. Everything the site has to say fits above the fold, and the artwork does the rest.",
+            /* /images/prosaic/home.jpg */
+            media: { src: "NEED", alt: "Prosaic Intelligence home page" },
+          },
+        ],
+      },
+      { type: "wip", email: WIP_EMAIL },
+    ],
   },
+
+  /* ---- index-only, listed by Margaret 2026-10-08, content pending (AANC
+     renders as the non-link placeholder card, title on the tile) ---- */
   {
     slug: "aanc",
     title: "AANC",

@@ -50,6 +50,8 @@ export interface SkyFieldOptions {
   onCount?: () => number | Promise<number>;
   /** Mouse moved onto / off the ball or the dog (null = neither). Not fired while the ball is held. */
   onHover?: (over: 'ball' | 'dog' | null) => void;
+  /** The ball was shaken hard enough to call the dog, or the dog was petted. */
+  onAction?: (what: 'shake' | 'pet') => void;
   /** Characters used for the sky. Default "dither" */
   ramp?: 'dither' | 'ascii' | 'stars' | 'binary';
   /** Fix the landscape instead of a random one on each load */

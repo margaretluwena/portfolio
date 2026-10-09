@@ -43,7 +43,7 @@ const EXPERIENCES: Experience[] = [
 ];
 
 const WINDOW_VH = 58; // the visible slice of the list while pinned
-const TOP_VH = 14;    // where the pinned block starts (tightened from 21, 2026-10-08)
+const TOP_VH = 22;    // where the pinned block starts - clear of the nav pill (14 sat too close to it, Margaret 2026-10-09)
 const BLOCK_VH = TOP_VH + WINDOW_VH + 3; // the pinned block is only as tall as its content, so the
                                           // page releases right under the last row (no empty tail)
 
