@@ -45,7 +45,15 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
   });
 
   return (
-    <div className="relative md:h-screen md:overflow-hidden">
+    /* the whole shell rides up by --sky-lift (the height of the reveal
+       footer currently in view, published by SiteFooter) so the bio, the
+       column, and the sky are all pushed up ahead of the footer instead of
+       being covered by it (Margaret, 2026-10-09). The fixed children resolve
+       against this transformed box, which is the viewport anyway. */
+    <div
+      className="relative md:h-screen md:overflow-hidden"
+      style={{ transform: "translateY(calc(var(--sky-lift, 0px) * -1))", willChange: "transform" }}
+    >
       <div className="relative z-10">
         {/* LEFT - fixed on desktop, first block in normal flow on mobile */}
         {/* the column runs to the works gutter (not a fixed 300px) so the

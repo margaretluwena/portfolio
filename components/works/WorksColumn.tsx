@@ -78,7 +78,10 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     >
       {/* first card's top edge at 19.7vh (Figma 128:503: 220/1117 - it scrolls
           under the fixed nav band); width and inset from the layout tokens */}
-      <motion.div style={{ y }} className="px-[var(--inset)] pb-[calc(var(--footer-h,clamp(300px,36vh,420px))+4vh)] pt-12 md:px-0 md:pt-[19.7vh]">
+      {/* end padding was a full footer height while the footer overlaid the
+          column; since the whole shell now lifts with the footer (--sky-lift),
+          a short breath is enough (Margaret, 2026-10-09) */}
+      <motion.div style={{ y }} className="px-[var(--inset)] pb-[8vh] pt-12 md:px-0 md:pt-[19.7vh]">
         <WorkList reveal={reveal} />
       </motion.div>
     </div>
