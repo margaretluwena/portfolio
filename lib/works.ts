@@ -449,11 +449,13 @@ export const works: Work[] = [
        others (no font file needed). 163:760 skipped (hidden leftover);
        163:762 lorem not ported. Video cover later, same as the others. */
     accent: "#e2531d",                                    // Impeccable Chicken orange
-    wordmark: "/images/wordmarks/impeccable-chicken.svg", // 168/972 of card width
+    // the orange copy of the lockup reads on the white fade; the cream
+    // original (impeccable-chicken.svg) is for the orange-fade card
+    wordmark: "/images/wordmarks/impeccable-chicken-orange.svg", // 168/972 of card width
     wordmarkWidth: "17.28%",
     cardBg: "#c94512",
-    cardFade: "linear-gradient(to bottom, rgba(241,95,38,0), #f15f26 77.889%)",
-    cardText: "light",
+    // white fade like Glance and Mountain Dew for now (Margaret, 2026-10-09);
+    // the Figma orange fade was: linear-gradient(to bottom, rgba(241,95,38,0), #f15f26 77.889%) with cardText "light"
     coverArt: [
       { src: "/images/covers/ic-photo.png", left: "6.48%", top: "0%", width: "93.52%", height: "100%" },
     ],
@@ -478,7 +480,13 @@ export const works: Work[] = [
     category: "Productivity",
     year: "2025",
     role: "Designer",
-    indexOnly: true,
+    comingSoon: true, // parked for now (Margaret, 2026-10-09)
+    /* the hero art drawn larger and started above the card, so the logo
+       centres ~38% down instead of halfway (Margaret: "shift the logo up") */
+    cardBg: "#0f1116",
+    coverArt: [
+      { src: "/images/glance-hero.png", left: "-18.11%", top: "-24%", width: "136.22%", height: "124%" },
+    ],
     blocks: [
       {
         type: "context",
@@ -501,7 +509,11 @@ export const works: Work[] = [
     category: "CPG",
     year: "2024",
     role: "Design Consultant",
-    indexOnly: true,
+    comingSoon: true, // parked for now (Margaret, 2026-10-09)
+    cardBg: "#0a8a3a",
+    coverArt: [
+      { src: "/images/mountaindew-hero.png", left: "-7.95%", top: "-24%", width: "115.90%", height: "124%" },
+    ],
     blocks: [
       {
         type: "context",
@@ -519,33 +531,30 @@ export const works: Work[] = [
   /* ---- Prosaic Intelligence - drafted 2026-10-09 from three screenshots
      Margaret sent (the home page, the AI Safety Index header, the General
      use chart) and her README line; she edits in her pass. The site is
-     NEVER linked from here (her instruction). Media slots carry the path
-     each screenshot will take once she drops the files in; until then
-     they render as labelled placeholders. Role / timeline / disciplines
+     NEVER linked from here (her instruction). Role / timeline / disciplines
      are inferred - confirm. ---- */
   {
     slug: "prosaic-intelligence",
     title: "Prosaic Intelligence",
     lede: "A public index of consumer AI safety evaluations",
     blurb: "Brand, site, and data design for a consumer AI safety index",
-    /* the home page screenshot, once on disk: /images/covers/prosaic-site.jpg */
-    cover: { src: "NEED", alt: "Prosaic Intelligence home" },
+    cover: { src: "/images/covers/prosaic-site.jpg", alt: "Prosaic Intelligence home" },
     credits: [
       { label: "Role", value: "Design and build" },
       { label: "Timeline", value: "2026" },
       { label: "Disciplines", value: "Brand, Web, Data Visualization" },
     ],
-    next: "aanc",
+    next: "mark", // AANC parked 2026-10-09 (Margaret fills it in later)
     category: "AI Safety",
     year: "2026",
     role: "Designer",
+    comingSoon: true, // parked until the images land (Margaret, 2026-10-09); the study below is ready
     accent: "#2d6fd1", // the index's pill blue
     blocks: [
       {
         type: "context",
         body: "Prosaic Intelligence is a public index of consumer AI safety evaluations: sixteen consumer AI products, from ChatGPT and Gemini to Snap AI and Character AI, scored on how safely they behave, and published for the people who use them rather than the people who build them. The site is two things. A front door that says what it is for, building a safer future for consumers, and the index itself, with the methodology beside it.",
-        /* /images/prosaic/home.jpg */
-        media: { src: "NEED", alt: "Prosaic Intelligence home: the serif lockup on a dark card over the dot-screen artwork" },
+        media: { src: "/images/prosaic/home.jpg", alt: "Prosaic Intelligence home: the serif lockup on a dark card over the dot-screen artwork" },
       },
       {
         type: "problem",
@@ -556,8 +565,7 @@ export const works: Work[] = [
           "A composite is a weighted average, and a model can hold a respectable overall score while failing one category badly",
         ],
         body: "Safety rankings flatten. A single leaderboard number invites the wrong question, which model is safest, when the honest answer depends on what you are using it for: a long conversation, a hard night, a quick lookup. The index had to show that without turning into a spreadsheet, and it had to make the gap between a composite score and the risks underneath it impossible to miss.",
-        /* /images/prosaic/index-header.jpg */
-        media: { src: "NEED", alt: "AI Safety Index: which AI is safest for, with the use-case pills" },
+        media: { src: "/images/prosaic/index-header.jpg", alt: "AI Safety Index: which AI is safest for, with the use-case pills" },
       },
       {
         type: "solution",
@@ -565,20 +573,17 @@ export const works: Work[] = [
           {
             name: "Safest for what",
             caption: "The question comes first, as a sentence you finish: WHICH AI IS SAFEST FOR, then a row of use cases, general use, someone having a hard time, looking things up, everyday. Pick one and the index re-ranks around it. The pills and the dotted strands behind them are the brand's whole vocabulary: one blue, a serif for the headlines, a mono for the numbers.",
-            /* /images/prosaic/index-header.jpg */
-            media: { src: "NEED", alt: "The use-case pills under the AI Safety Index headline" },
+            media: { src: "/images/prosaic/index-header.jpg", alt: "The use-case pills under the AI Safety Index headline" },
           },
           {
             name: "Sixteen bars, one honest line",
             caption: "Each product is a bar in its own colour with its logo at the base, the score inside, and the headroom to 100 in a paler tint of the same colour. A dotted line marks the index average, so a glance separates the pack from the rest. Under the chart sits the footnote that matters: the composite tells you who leads for this use case, not where the one you are considering gives way.",
-            /* /images/prosaic/general-use.jpg */
-            media: { src: "NEED", alt: "General use: sixteen models as bars against the index average" },
+            media: { src: "/images/prosaic/general-use.jpg", alt: "General use: sixteen models as bars against the index average" },
           },
           {
             name: "A front door",
             caption: "The home page is a dark card over a dot-screen painting: the lockup, one line of purpose, and three pills, the index, the methodology, X. Everything the site has to say fits above the fold, and the artwork does the rest.",
-            /* /images/prosaic/home.jpg */
-            media: { src: "NEED", alt: "Prosaic Intelligence home page" },
+            media: { src: "/images/prosaic/home.jpg", alt: "Prosaic Intelligence home page" },
           },
         ],
       },
@@ -586,41 +591,6 @@ export const works: Work[] = [
     ],
   },
 
-  /* ---- index-only, listed by Margaret 2026-10-08, content pending (AANC
-     renders as the non-link placeholder card, title on the tile) ---- */
-  {
-    slug: "aanc",
-    title: "AANC",
-    lede: "NEED",
-    cover: { src: "NEED", alt: "AANC" },
-    credits: [],
-    next: "mark",
-    category: "NEED",
-    year: "NEED",
-    indexOnly: true,
-    blocks: [{ type: "wip", email: WIP_EMAIL }],
-  },
-
-  /* ---- index-only, coming soon: no featured flag (home column and the
-     1/4 counter unaffected); comingSoon reuses the shipped non-link +
-     redirect-home treatment ---- */
-  {
-    slug: "foundher-house",
-    title: "FoundHer House",
-    lede: "NEED",
-    credits: [
-      { label: "Role", value: "Designer" },
-      { label: "Timeline", value: "July 2026" },
-      { label: "Disciplines", value: "Merchandise (in progress)" },
-    ],
-    cover: { src: "NEED", alt: "cover image" },
-    next: "mark",
-    category: "Community",
-    year: "2026",
-    role: "Designer",
-    comingSoon: true,
-    blocks: [],
-  },
   /* ---- PLAY collections (grid page, not the works index) ---- */
   {
     slug: "graphics",

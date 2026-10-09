@@ -115,6 +115,10 @@
     1324,
     930
   ],
+  "/images/covers/prosaic-site.jpg": [
+    1600,
+    807
+  ],
   "/images/covers/traeco-dashboard.png": [
     1586,
     980
@@ -270,6 +274,18 @@
   "/images/mountaindew-hero.png": [
     867,
     647
+  ],
+  "/images/prosaic/general-use.jpg": [
+    2000,
+    1099
+  ],
+  "/images/prosaic/home.jpg": [
+    2000,
+    1009
+  ],
+  "/images/prosaic/index-header.jpg": [
+    2000,
+    1021
   ],
   "/images/smallworks-1.webp": [
     1973,
