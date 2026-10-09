@@ -313,24 +313,28 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
   return (
     /* fixed to the far-left gutter (the --inset line the nav shares) so the
        case-study column stays centered on the page independent of the
-       rail. "Return" first (mockup: at 43vh, the sections 5vh below) -
-       back to the home column, or, in the overlay, closes it. A rail with
-       one entry tells the reader nothing, so thin works keep Return only. */
+       rail. The section links sit centred on the viewport's middle, and
+       "Return" hangs above them (Margaret, 2026-10-09; it used to lead
+       from 43vh with the sections below) - back to the home column, or,
+       in the overlay, closes it. A rail with one entry tells the reader
+       nothing, so thin works keep Return only, itself at the middle. */
     <nav
       aria-label="Case study sections"
-      className="fixed left-[var(--inset)] top-[43vh] z-10 hidden md:block"
+      className="fixed left-[var(--inset)] top-1/2 z-10 hidden -translate-y-1/2 md:block"
     >
-      {onReturn ? (
-        <button type="button" onClick={onReturn} className={linkClass}>
-          {returnLabel}
-        </button>
-      ) : (
-        <TransitionLink href="/" className={linkClass}>
-          {returnLabel}
-        </TransitionLink>
-      )}
+      <div className={entries.length >= 2 ? "absolute bottom-full left-0 mb-[5vh] whitespace-nowrap" : undefined}>
+        {onReturn ? (
+          <button type="button" onClick={onReturn} className={linkClass}>
+            {returnLabel}
+          </button>
+        ) : (
+          <TransitionLink href="/" className={linkClass}>
+            {returnLabel}
+          </TransitionLink>
+        )}
+      </div>
       {entries.length >= 2 && (
-        <ol className="mt-[5vh] space-y-[3.2vh]">
+        <ol className="space-y-[3.2vh]">
           {entries.map((e) => {
             const current = e.id === active;
             return (

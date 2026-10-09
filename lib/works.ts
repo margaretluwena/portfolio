@@ -216,7 +216,7 @@ export const works: Work[] = [
     credits: [
       { label: "Role", value: "Co-founder & CPO" },
       { label: "Timeline", value: "2026" },
-      { label: "Team", value: "Mehek, Kyna, Sania" },
+      { label: "Team", value: "Mehek Mandal, Kyna Rochlani, Sania Gupta" }, // roles confirmed by traeco.dev/about (2026-10-09)
       { label: "Disciplines", value: "Product, Brand System, UI/UX, Web, Pitch" },
     ],
     next: "atlix",
@@ -273,9 +273,17 @@ export const works: Work[] = [
           },
           {
             name: "The brand system",
-            // the v2 file marks one missing line here (the idea the system is built on) as the only real content gap
-            caption: "Built from nothing as the only designer on the team: identity, system, and every application of it.",
-            media: { src: "NEED", alt: "brand system sheet" },
+            // the "one idea" line and the site piece below are DRAFTS read off
+            // traeco.dev on 2026-10-09 (Margaret's order: build the study from the
+            // live site); she edits in her pass. The brand sheet itself is still
+            // hers to supply - the About page stands in for it meanwhile.
+            caption: "Built from nothing as the only designer on the team: identity, system, and every application of it. The system runs on one rule: near-black everywhere and a single green, so the only colour on any screen is the thing that matters, whether that is a saving, a verdict, or the second line of a headline. The mark is four lobes off one stem, drawn to hold at favicon size and, on the site, to scale up until it fills a whole hero.",
+            media: { src: "/images/traeco/site-about.jpg", alt: "traeco.dev About page: the display face, the one green, the mark in the nav" },
+          },
+          {
+            name: "traeco.dev",
+            caption: "The site carries the argument in the order a buyer meets it. The bill first: your AI agents are bleeding money. Then the gap the product fills: observability tells you what happened, nobody tells you what it should cost. Then the four steps from traces to savings, connect, visualize, optimize, monitor, and three pricing tiers. Integrates in two lines is the promise repeated on every screen.",
+            media: { src: "/images/traeco/site-hero.jpg", alt: "traeco.dev hero: the mark scaled to full bleed behind the headline" },
           },
           {
             name: "Two decks, two jobs",
@@ -302,9 +310,10 @@ export const works: Work[] = [
       {
         type: "artifactGrid",
         media: [
-          // prior live-site asset, surfaced per the v2 file rule
-          { src: "/images/traeco/website.png", alt: "traeco.dev marketing site" },
-          { src: "NEED", alt: "brand applications" },
+          // prior live-site asset, surfaced per the v2 file rule: an earlier
+          // round of the hero ("wasting tokens", before "bleeding money")
+          { src: "/images/traeco/website.png", alt: "traeco.dev, an earlier round of the hero" },
+          { src: "/images/traeco/site-pricing.jpg", alt: "traeco.dev pricing: Starter, Growth, Enterprise" },
           { src: "NEED", alt: "deck spreads" },
         ],
       },
@@ -488,7 +497,7 @@ export const works: Work[] = [
       { label: "Timeline", value: "2024" },
       { label: "Disciplines", value: "Product Design, Brand Strategy, Slide Deck" },
     ],
-    next: "charitablefoundation",
+    next: "prosaic-intelligence", // Ichioka and Nakao removed 2026-10-09
     category: "CPG",
     year: "2024",
     role: "Design Consultant",
@@ -507,38 +516,6 @@ export const works: Work[] = [
       },
     ],
   },
-  {
-    slug: "charitablefoundation",
-    title: "Ichioka and Nakao",
-    lede: "Brand and website redesign for the Ichioka and Nakao Foundation",
-    cover: { src: "/images/ichioka-hero.png", alt: "Ichioka and Nakao" },
-    credits: [
-      { label: "Role", value: "Design Consultant, Avenues Consulting Group" },
-      { label: "Timeline", value: "2024" },
-      { label: "Disciplines", value: "Logo Design, Website Design, Branding, Slide Deck" },
-    ],
-    next: "prosaic-intelligence",
-    category: "Nonprofit",
-    year: "2024",
-    role: "Design Consultant",
-    indexOnly: true,
-    blocks: [
-      {
-        type: "context",
-        body: "The Ichioka and Nakao Charitable Foundation came to Avenues Consulting Group for a refresh. On their team I spearheaded a brand and website redesign, presented in a deck alongside my team.",
-      },
-      {
-        type: "artifactGrid",
-        media: [
-          { src: "/images/ichioka-1.png", alt: "Ichioka and Nakao logo redesign" },
-          { src: "/images/ichioka-hero.png", alt: "Ichioka and Nakao brand refresh" },
-          { src: "/images/ichioka-2.jpeg", alt: "Ichioka and Nakao website redesign" },
-          { src: "/images/ichioka-3.jpeg", alt: "Ichioka and Nakao brand redesign" },
-        ],
-      },
-    ],
-  },
-
   /* ---- index-only, listed by Margaret 2026-10-08, content pending ----
      Prosaic's one line is her own README ("A public index of consumer AI
      safety evaluations"); everything else is NEED until she supplies it.
@@ -588,24 +565,6 @@ export const works: Work[] = [
     comingSoon: true,
     blocks: [],
   },
-  {
-    slug: "nano-in-green",
-    title: "NanoInGreen",
-    lede: "NEED",
-    credits: [
-      { label: "Role", value: "Design Consultant" },
-      { label: "Timeline", value: "May 2026" },
-      { label: "Disciplines", value: "Go-to-Market Strategy, Product Design, Branding" },
-    ],
-    cover: { src: "NEED", alt: "cover image" },
-    next: "mark",
-    category: "NEED", // industry word pending from Margaret
-    year: "2026",
-    role: "Design Consultant",
-    comingSoon: true,
-    blocks: [],
-  },
-
   /* ---- PLAY collections (grid page, not the works index) ---- */
   {
     slug: "graphics",

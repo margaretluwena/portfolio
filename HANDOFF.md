@@ -6,8 +6,12 @@ to pick up where the 2026-10-08 session left off.
 ## The repo in one paragraph
 
 Next.js 15 / React 19 portfolio for Margaret Luwena, branch `redesign`
-(production = margaretluwena.net; **going live is Margaret's call via
-merge, never push or deploy production**). Design source of truth is the
+(production = margaretluwena.net). Git remote: github.com/margaretluwena/
+portfolio; Vercel builds `main` on push as production and other branches
+as previews, so **pushing `main` IS deploying - only on Margaret's say-so**.
+Commits must be authored as luwena@usc.edu (set per-repo) or Vercel
+silently skips the build. Upstash Redis ("sky-throws", free plan) is
+attached for the player counter. Design source of truth is the
 Figma file `zsUcjQVncy8OinX0VJl8EB` ("Portfolio Revamp" page). Dev server:
 `npm run dev -- --port 3001` (`.claude/launch.json` has it as
 `portfolio-redesign`). Typecheck with `npx tsc --noEmit`; ESLint is not
@@ -47,16 +51,16 @@ dashes anywhere in copy or code comments**, the build fails on them.
 
 ## Content still marked NEED (Margaret's to supply)
 
-- `AANC` work: lede, category, year, cover. `Prosaic Intelligence`: everything but the lede.
-- Traeco: problem media (outreach tracker), brand system sheet, deck spreads.
+- `AANC` work: lede, category, year, cover. `Prosaic Intelligence`: everything but the lede. Her test build (mar-test-prosaic-intelligence.vercel.app) is behind Vercel login on a team the connector can't reach; the study is to be written from that site once she grants access or shares a bypass link. Never link the site from the study.
+- Traeco: the brand "one rule" line, the traeco.dev piece, and the team roles were drafted from the live site 2026-10-09 for her to edit; brand sheet and deck spreads still hers.
+- Traeco: problem media (outreach tracker).
 - Mark: context/problem media, "Make your mark" artifact.
 - Visitor counter in the footer (needs the same Upstash store as the player counter).
 
 ## Open decisions (asked, not yet answered)
 
 1. Subpage pill: name on the LEFT (built to the Figma frames) vs. right (what Margaret first wrote).
-2. Attach Upstash Redis in Vercel so the dog's player number is global (currently resets per deploy).
-3. Committed on `redesign` 2026-10-08 (not merged - going live is Margaret's call).
+2. (done 2026-10-09) Upstash attached, `main` merged and live.
 
 ## Commit message suggestion (when she's ready)
 
