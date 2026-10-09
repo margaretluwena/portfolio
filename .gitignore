@@ -5,3 +5,4 @@ out
 .DS_Store
 .gstack/
 docs/reference/
+*.sb-*

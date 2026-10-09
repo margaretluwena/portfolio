@@ -2,24 +2,26 @@
 
 import { useEffect, useLayoutEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import InteractiveTexture from "@/components/hero/InteractiveTexture";
 import PortfolioShell from "@/components/shell/PortfolioShell";
-import Nav from "@/components/nav/Nav";
+import SiteFooter from "@/components/shell/SiteFooter";
+import { useNav } from "@/components/nav/NavContext";
 import { featuredWorks } from "@/lib/works";
 
 /*
   THE OPENING.
-  1. Full-screen interactive texture + "MARGARET LUWENA" centered (Figma frame 96:4).
-  2. After a beat, the texture recedes to a top band and the wordmark TRAVELS to its
-     corner slot in the left panel - one element, animated via Framer's shared layout
-     (layoutId="wordmark"), so no manual measuring.
+  1. "MARGARET LUWENA" centered over the full-page sky (Figma frame 96:4;
+     the sky itself is SkyFieldBackground in the root layout, always behind).
+  2. After a beat the wordmark TRAVELS to its corner slot in the left panel -
+     one element, animated via Framer's shared layout (layoutId="wordmark"),
+     so no manual measuring.
   3. The rest of the main page reveals (staggered, inside PortfolioShell).
 
   The intro plays once per session - returning to "/" via ABOUT goes straight
   to the main page (sessionStorage gate, applied pre-paint).
 
-  Texture collapse and wordmark flight share ONE duration + ease so they read as
-  a single gesture. Skip: click anywhere or press any key.
+  The old hero texture (InteractiveTexture, which collapsed to a 33vh band
+  in step with the flight) is retired by the sky (2026-10-08); the component
+  stays parked in components/hero. Skip: click anywhere or press any key.
 */
 
 const HOLD_MS = 1900;
@@ -28,6 +30,7 @@ const SEEN_KEY = "ml-intro-seen";
 
 export default function Page() {
   const reduce = useReducedMotion();
+  const { setNav } = useNav();
   const [phase, setPhase] = useState<"intro" | "main">("intro");
   const [worksIndex, setWorksIndex] = useState(0);
 
@@ -52,51 +55,27 @@ export default function Page() {
 
   const isMain = phase === "main";
 
+  // the nav pill lives in the root layout: hide it through the intro, then
+  // hand it the live works index; release both when this page unmounts
+  useEffect(() => {
+    setNav({
+      home: true,
+      hidden: !isMain,
+      counter: (
+        <span className="tabular-nums">
+          {worksIndex + 1}/{featuredWorks.length}
+          <span className="ml-2 hidden sm:inline"> - SELECTED WORKS</span>
+        </span>
+      ),
+    });
+  }, [isMain, worksIndex, setNav]);
+  useEffect(() => () => setNav({ home: false, hidden: false, counter: null }), [setNav]);
+
   return (
     <main
-      className="relative min-h-screen bg-paper"
+      className="relative min-h-screen"
       onClick={() => !isMain && setPhase("main")} /* click to skip */
     >
-      {/* persistent texture: full screen in intro, collapses to the top band.
-          Figma 128:503 puts the texture's bottom edge at y=367/1117 → 33vh.
-          Full-bleed, behind nav + hairlines; corners stay denser via the fade. */}
-      <motion.div
-        className="fixed inset-x-0 top-0 z-0 overflow-hidden"
-        initial={false}
-        animate={{ height: isMain ? "33vh" : "100vh" }}
-        transition={reduce ? { duration: 0 } : GESTURE}
-      >
-        <InteractiveTexture className="h-full w-full" />
-        {/* extra melt-to-white for the collapsed band: the PNG's baked fade sits
-            too low in the crop at band aspect, so this synced overlay finishes the job */}
-        <motion.div
-          className="pointer-events-none absolute inset-0"
-          style={{ background: "linear-gradient(to bottom, transparent 58%, hsl(var(--paper)) 96%)" }}
-          initial={false}
-          animate={{ opacity: isMain ? 1 : 0 }}
-          transition={reduce ? { duration: 0 } : GESTURE}
-        />
-      </motion.div>
-
-      {/* nav fades in with the main page; right slot = live works index */}
-      <motion.div
-        initial={false}
-        animate={{ opacity: isMain ? 1 : 0 }}
-        transition={{ duration: 0.6, delay: isMain && !reduce ? 0.5 : 0 }}
-        style={{ pointerEvents: isMain ? "auto" : "none" }}
-      >
-        <Nav
-          rightSlot={
-            isMain ? (
-              <span className="tabular-nums">
-                {worksIndex + 1}/{featuredWorks.length}
-                <span className="ml-2 hidden sm:inline"> - SELECTED WORKS</span>
-              </span>
-            ) : null
-          }
-        />
-      </motion.div>
-
       {/* intro-position wordmark: present only during intro; layoutId hands it to the corner */}
       {!isMain && (
         <div className="fixed inset-0 z-20 grid place-items-center">
@@ -112,6 +91,9 @@ export default function Page() {
 
       {/* main page underneath; renders the corner wordmark when revealed */}
       <PortfolioShell reveal={isMain} reduce={!!reduce} onWorksIndex={setWorksIndex} />
+
+      {/* the footer band rises in once the works column is scrolled to its end */}
+      {isMain && <SiteFooter mode="reveal" />}
     </main>
   );
 }

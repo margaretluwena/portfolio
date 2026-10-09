@@ -1,91 +1,35 @@
 "use client";
 
 /*
-  ABOUT - blue bio card + envelope send + photo marquee.
+  ABOUT - blue bio card + photo marquee.
   Source of truth: Figma "About page" 163:765 (page "Portfolio Revamp").
-  Supersedes the r3f letter (components/contact/LetterCard.tsx, parked).
   Spec doc: docs/ABOUT_CARD.md.
 
-  One `phase` variable drives every derived style; timeouts live in a ref
-  and clear on unmount. Tilt = motion springs (a CSS transition restarts
-  toward each new cursor target and reads as stepping; a spring damps a
-  moving target and gives the slight overshoot for free). Everything else
-  is hand-rolled CSS transitions off the phase state.
+  The card tilts toward the cursor (motion springs - a CSS transition
+  restarts toward each new target and reads as stepping; a spring damps a
+  moving target and gives the slight overshoot for free) with a sheen that
+  follows it. Below the card: the ways to reach Margaret - LinkedIn, X,
+  Instagram, and a mail icon for her address - the same icons as the home
+  column. The "Send me a message" button and the envelope-send sequence it
+  triggered were retired 2026-10-08 (Margaret: "a bit much"); the old
+  build is in git history (components/about/AboutCard.tsx before that
+  date) if it is ever wanted back.
 */
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import {
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "motion/react";
+import { motion, useMotionTemplate, useMotionValue, useReducedMotion, useSpring } from "motion/react";
+import { socials } from "@/components/shell/PortfolioShell";
 
 const EMAIL = "luwena@usc.edu";
 
-/* every duration in one place (ms) */
-const T = {
-  envelopeIn: 620, // envelope rises; doubles as the copied-state legibility hold
-  cardIn: 680,     // card descends into the pocket
-  seal: 420,       // flap flips closed (z-bump the moment this starts)
-  windup: 180,     // anticipation dip - not optional, sells the throw
-  launch: 820,     // ease-in fling off the top
-  emptyBeat: 620,  // stage empty; also covers the one-frame teleport rule
-  cardReturn: 760, // card rises back to center
-  buttonRevert: 3200,
-  sheenFade: 260,
-  checkDelay: 120,
-  checkDraw: 420,
-};
-const SEQ = {
-  cardIn: T.envelopeIn,
-  seal: T.envelopeIn + T.cardIn,
-  windup: T.envelopeIn + T.cardIn + T.seal,
-  launch: T.envelopeIn + T.cardIn + T.seal + T.windup,
-  gone: T.envelopeIn + T.cardIn + T.seal + T.windup + T.launch,
-  ret: T.envelopeIn + T.cardIn + T.seal + T.windup + T.launch + T.emptyBeat,
-  idle: T.envelopeIn + T.cardIn + T.seal + T.windup + T.launch + T.emptyBeat + T.cardReturn,
-};
-
-type Phase = "idle" | "envelopeIn" | "cardIn" | "seal" | "windup" | "launch" | "gone" | "return";
-
-const ENV_W = 320;
-const ENV_H = 210;
-/* envelope geometry - ONE set of vertices shared by every panel path so
-   edges meet exactly (adjacent CSS clip-paths antialias independently and
-   leave hairline seams; SVG paths on shared coordinates close them). The
-   card must sandwich between back panel and front folds, so the shared
-   geometry renders as three stacked SVGs: back rect / side flaps + pocket
-   (one svg - their mutual seams are the visible ones) / animating flap. */
-const ENV_CX = ENV_W / 2;                          // 160 - all folds meet here
-const ENV_CY = ENV_H / 2;                          // 105
-const FLAP_TIP = Math.round(ENV_CY + ENV_H * 0.02); // 109 - overlaps the notch ~2%
-/* vellum, deliberately: frosted translucent white; pocket a step more
-   opaque than the sides so the folds read as tonal layers; 1px seam
-   strokes slightly darker than fill so edges read as folds */
-const SIDE_FILL = "rgba(255,255,255,0.82)";
-const POCKET_FILL = "rgba(255,255,255,0.90)";
-const SEAM = "rgba(199,208,238,0.95)";
-const VELLUM_BLUR = "blur(6px)";
-const ENV_SHADOW = "0 24px 48px -20px rgba(20,28,180,.30), 0 6px 14px -8px rgba(0,0,0,.12)";
-/* spec: envelope rests ~126px below CARD CENTER - it overlaps the card's
-   lower half (back panel behind the card, pocket wrapping it in front),
-   which is what makes the descent read as a tuck-in. Rest top offset from
-   card center = DROP - ENV_H/2 = +21px. */
-const DROP = 126;
-const ENV_TOP = `calc(50% + ${DROP - ENV_H / 2}px)`;
-
-/* card copy - verbatim from Figma text node 163:816; straight apostrophes
-   normalized to curly per the sitewide rule. Never rewrite here. */
 const CARD_COPY = [
   "Hi! I’m Margaret, thanks for taking the time to poke around!",
-  "Currently I’m co-founder and CPO at Traeco, where we’re building cost observability for AI systems: figuring out what it looks like for a team to actually see where their model spend goes before the invoice tells them. I also run BUILD at TroyLabs, USC’s first accelerator, teaching a 12-week curriculum to first-time founders.",
+  "Currently I’m co-founder and CPO at Traeco, where we’re building cost observability for AI systems: figuring out what it looks like for a team to actually see where their model spend goes before the invoice tells them. I also run BUILD at TroyLabs, USC’s first accelerator, teaching an 8-week curriculum to first-time founders.",
   "Before that I was in ops at Sirka (YC S21), and before design took over, investment banking at BNI Sekuritas in Jakarta. In between I’ve done design and product work for everything from pre-seed teams to Fortune 500 clients.",
   "I love design, development, product, and exploring the seam between them. Recently I’ve been deep in AI-native tooling, shipping real work through Claude Code and Figma MCP, and seeing how far a designer can get without ever opening a blank file.",
   "Please feel free to reach out, I love hearing about cool projects and ideas and love working with others too :)",
-  "Currently seeking Fall, Spring, and Summer internships.",
+  "Currently seeking Summer 2027 internships.",
 ];
 
 /* marquee - Figma frame 1739326210 exports; add/replace srcs freely,
@@ -99,89 +43,11 @@ const MARQUEE: { src?: string }[] = [
   { src: "/images/about/marquee-6.jpg" },
 ];
 
-/* clipboard delivery, carried from the letter build (eed01d6):
-   hidden-textarea path covers non-secure contexts */
-async function copyEmail() {
-  try {
-    await navigator.clipboard.writeText(EMAIL);
-  } catch {
-    const ta = document.createElement("textarea");
-    ta.value = EMAIL;
-    ta.setAttribute("readonly", "");
-    ta.style.position = "absolute";
-    ta.style.left = "-9999px";
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    document.body.removeChild(ta);
-  }
-}
-
-/* two-face pill, mechanics carried from eed01d6: invisible widest face
-   reserves the size, faces slide at +-118%, checkmark draws itself in */
-function SendButton({
-  copied,
-  disabled,
-  onActivate,
-}: {
-  copied: boolean;
-  disabled: boolean;
-  onActivate: () => void;
-}) {
-  return (
-    <div aria-live="polite">
-      <button
-        onClick={onActivate}
-        disabled={disabled}
-        className="relative h-[58px] overflow-hidden rounded-full bg-[#1c1c1c] px-8 text-[15px] text-paper transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink disabled:hover:opacity-100"
-      >
-        <span className="invisible flex items-center gap-2.5" aria-hidden>
-          <span className="h-[16px] w-[16px]" />
-          Send me a message
-        </span>
-        <span
-          aria-hidden={copied}
-          className={`absolute inset-0 flex items-center justify-center gap-2.5 transition-all duration-300 ${
-            copied ? "-translate-y-[118%] opacity-0" : "translate-y-0 opacity-100"
-          }`}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-            <path d="m21.4 2.6-19 7.6c-.8.3-.8 1.5.1 1.7l7.6 2.2 2.2 7.6c.2.9 1.4.9 1.7.1l7.6-19c.3-.7-.5-1.5-1.2-1.2Z" />
-          </svg>
-          Send me a message
-        </span>
-        <span
-          aria-hidden={!copied}
-          className={`absolute inset-0 flex items-center justify-center gap-2.5 transition-all duration-300 ${
-            copied ? "translate-y-0 opacity-100" : "translate-y-[118%] opacity-0"
-          }`}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-            <path
-              d="M4 12.5 9.5 18 20 6.5"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{
-                strokeDasharray: 32,
-                strokeDashoffset: copied ? 0 : 32,
-                transition: copied ? `stroke-dashoffset ${T.checkDraw}ms ease ${T.checkDelay}ms` : "none",
-              }}
-            />
-          </svg>
-          Email copied
-        </span>
-      </button>
-    </div>
-  );
-}
-
-/* the bio card face - shared by the interactive and reduced-motion paths */
 function CardFace() {
   return (
     <>
       {/* paper-grain texture from the Figma fill, color-burn like the mock */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/images/about/card-texture.jpg"
         alt=""
@@ -189,6 +55,7 @@ function CardFace() {
         className="pointer-events-none absolute inset-0 h-full w-full rounded-[5px] object-cover mix-blend-color-burn"
       />
       {/* watermark vector (163:765 > Vector 19): low-right, behind the copy */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/images/about/card-mark.svg"
         alt=""
@@ -204,18 +71,38 @@ function CardFace() {
   );
 }
 
+/* the ways to reach her: mail on the card's left edge, the home column's
+   three icons on its right edge, all sized to equal visible height (see
+   `ink` in PortfolioShell) (Margaret, 2026-10-08) */
+function ContactRow() {
+  const link =
+    "block opacity-45 transition-opacity duration-200 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink";
+  return (
+    <ul className="mt-[22px] flex w-[min(620px,86vw)] items-center gap-5">
+      <li className="mr-auto">
+        <a href={`mailto:${EMAIL}`} aria-label={`Email ${EMAIL}`} title={EMAIL} className={link}>
+          <svg width="26" height="24" viewBox="0 0 26 24" fill="none" aria-hidden>
+            <rect x="1.5" y="4" width="23" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
+            <path d="M2.5 6.5 13 13.5 23.5 6.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
+      </li>
+      {socials.map((s) => (
+        <li key={s.label}>
+          <a href={s.href} aria-label={s.label} target="_blank" rel="noreferrer" className={link}>
+            <Image src={s.icon} alt="" width={24} height={24} className="w-auto" style={{ height: 24 / s.ink }} />
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function AboutCard() {
   const reduce = useReducedMotion();
-  const [phase, setPhase] = useState<Phase>("idle");
-  const [copied, setCopied] = useState(false);
-  const [copiedEver, setCopiedEver] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [scale, setScale] = useState(0.4); // capped so a tall card still fits the pocket
   const [canTilt, setCanTilt] = useState(false);
   const [hovered, setHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  const timers = useRef<number[]>([]);
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
   useEffect(() => {
     const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
     const sync = () => setCanTilt(mq.matches);
@@ -224,23 +111,24 @@ export default function AboutCard() {
     return () => mq.removeEventListener("change", sync);
   }, []);
 
-  /* tilt springs: rotateX +-11 (inverted so the card tips toward the
-     cursor), rotateY +-14; ~680ms settle with slight overshoot */
-  const rx = useSpring(0, { stiffness: 130, damping: 13, mass: 1 });
-  const ry = useSpring(0, { stiffness: 130, damping: 13, mass: 1 });
+  /* tilt springs: rotateX +-5 (inverted so the card tips toward the
+     cursor), rotateY +-6 - halved from +-11/+-14, which read as twitchy
+     between corners (Margaret, 2026-10-08); a little more damping so it
+     settles without the wobble */
+  const rx = useSpring(0, { stiffness: 130, damping: 16, mass: 1 });
+  const ry = useSpring(0, { stiffness: 130, damping: 16, mass: 1 });
   const mx = useMotionValue(50);
   const my = useMotionValue(50);
   const sheen = useMotionTemplate`radial-gradient(520px circle at ${mx}% ${my}%, rgba(255,255,255,0.20), transparent 55%)`;
-
-  const tilting = canTilt && phase === "idle";
+  const tilting = canTilt && !reduce;
 
   function onMove(e: React.MouseEvent) {
     if (!tilting || !cardRef.current) return;
     const r = cardRef.current.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width;
     const py = (e.clientY - r.top) / r.height;
-    rx.set((0.5 - py) * 22);
-    ry.set((px - 0.5) * 28);
+    rx.set((0.5 - py) * 10);
+    ry.set((px - 0.5) * 12);
     mx.set(px * 100);
     my.set(py * 100);
   }
@@ -250,254 +138,41 @@ export default function AboutCard() {
     ry.set(0);
   }
 
-  const at = (ms: number, fn: () => void) => timers.current.push(window.setTimeout(fn, ms));
-
-  function send() {
-    if (busy) return;
-    copyEmail();
-    setCopied(true);
-    setCopiedEver(true);
-    if (reduce) {
-      /* no envelope at all - copy + morph + revert; the persistent line
-         below is the terminal state */
-      timers.current.push(window.setTimeout(() => setCopied(false), T.buttonRevert));
-      return;
-    }
-    setBusy(true);
-    setHovered(false);
-    rx.set(0);
-    ry.set(0);
-    if (cardRef.current) {
-      /* spec scale is 0.4 (exact at the mock's 452px card); taller rendered
-         cards cap to the pocket's inner height so the tuck never overflows */
-      const h = cardRef.current.getBoundingClientRect().height;
-      setScale(Math.min(0.4, (ENV_H - 24) / h));
-    }
-    setPhase("envelopeIn"); // t=0; morph + checkmark land before the card moves at 620ms
-    at(SEQ.cardIn, () => setPhase("cardIn"));
-    at(SEQ.seal, () => setPhase("seal"));
-    at(SEQ.windup, () => setPhase("windup"));
-    at(SEQ.launch, () => setPhase("launch"));
-    at(SEQ.gone, () => setPhase("gone")); // instant teleport, transitions off
-    at(T.buttonRevert, () => setCopied(false));
-    at(SEQ.ret, () => setPhase("return"));
-    at(SEQ.idle, () => {
-      setPhase("idle");
-      setBusy(false);
-    });
-  }
-
-  /* ---- derived styles, all from `phase` ---- */
-  const inFlight = phase === "cardIn" || phase === "seal" || phase === "windup" || phase === "launch";
-  const sealed = phase === "seal" || phase === "windup" || phase === "launch";
-  const envIn = phase !== "idle" && phase !== "gone" && phase !== "return";
-  const noTrans = phase === "gone" ? "!transition-none" : "";
-
-  const wrapperStyle: React.CSSProperties =
-    phase === "windup"
-      ? { transform: "translateY(14px)", transition: `transform ${T.windup}ms ease-out` }
-      : phase === "launch"
-        ? {
-            transform: "translateY(-150vh) rotate(-7deg)",
-            transition: `transform ${T.launch}ms cubic-bezier(.5,0,1,.42)`,
-          }
-        : { transform: "none", transition: "none" };
-
-  const cardSeqStyle: React.CSSProperties = inFlight
-    ? { transform: `translateY(${DROP}px) scale(${scale})`, transition: `transform ${T.cardIn}ms cubic-bezier(.6,0,.3,1)` }
-    : phase === "gone"
-      ? { transform: "translateY(120vh) scale(1)", transition: "none" }
-      : phase === "return"
-        ? { transform: "translateY(0) scale(1)", transition: `transform ${T.cardReturn}ms cubic-bezier(.2,.7,.2,1)` }
-        : { transform: "translateY(0) scale(1)" };
-
-  const envPiece = (z: number): React.CSSProperties => ({
-    zIndex: z,
-    transform: envIn ? "translateY(0)" : "translateY(120vh)",
-    transition: envIn ? `transform ${T.envelopeIn}ms cubic-bezier(.2,.7,.3,1)` : "none",
-  });
-
-  /* ---- reduced motion: static card, same delivery, persistent line ---- */
-  if (reduce) {
-    return (
-      <div className="flex flex-col items-center">
-        <div className="relative w-[min(620px,86vw)] overflow-hidden rounded-[5px] bg-[#0f28e0] px-[6.3%] py-[4.5%]">
-          <CardFace />
-        </div>
-        <div className="mt-[22px] flex w-[min(620px,86vw)] flex-col items-end gap-3">
-          <SendButton copied={copied} disabled={copied} onActivate={send} />
-          {copiedEver && (
-            <p className="text-[13px] tracking-[0.02em] text-ink/50">{EMAIL} &middot; copied</p>
-          )}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col items-center overflow-hidden pb-6 pt-2">
-      {/* stage: perspective parent (never on the card itself); clips the
-          envelope's below-viewport entry and the launch exit */}
+    <div className="flex flex-col items-center pb-6 pt-2">
+      {/* perspective parent (never on the card itself) */}
       <div style={{ perspective: "1500px" }}>
-        {/* launch wrapper - windup dip + throw carry card and envelope
-            together; `gone` kills every child transition for the teleport */}
-        <div className={`relative ${noTrans}`} style={wrapperStyle}>
-          {/* z1/z5 top flap: open behind, sealing flips it shut and in
-              front; tip overlaps the pocket notch so no light shows through
-              the center seam */}
-          <div
+        <motion.div
+          ref={cardRef}
+          onMouseMove={onMove}
+          onMouseEnter={() => tilting && setHovered(true)}
+          onMouseLeave={onLeave}
+          className="relative w-[min(620px,86vw)] overflow-hidden rounded-[5px] bg-[#0f28e0] px-[6.3%] py-[4.5%]"
+          style={{
+            rotateX: tilting ? rx : 0,
+            rotateY: tilting ? ry : 0,
+            translateZ: hovered && tilting ? 18 : 0,
+            /* flat on the page at rest; the shadow exists only paired with
+               the hover lift - that pairing is what makes the tilt physical */
+            boxShadow: hovered && tilting ? "0 36px 70px rgba(0,0,0,0.28)" : "none",
+            transformStyle: "preserve-3d",
+            transition: "box-shadow 300ms ease",
+          }}
+        >
+          <CardFace />
+          {/* the sheen follows the cursor; only while hovering */}
+          <motion.div
             aria-hidden
-            className={`absolute left-1/2 ${noTrans}`}
-            style={{
-              ...envPiece(sealed ? 5 : 1),
-              top: ENV_TOP,
-              width: ENV_W,
-              marginLeft: -ENV_W / 2,
-              height: FLAP_TIP,
-            }}
-          >
-            <svg
-              viewBox={`0 0 ${ENV_W} ${FLAP_TIP}`}
-              width="100%"
-              height="100%"
-              style={{
-                display: "block",
-                /* vellum blur only once the card is genuinely inside -
-                   backdrop-filter during the descent catches card content
-                   that has not been tucked yet (diagnosed 2026-08-01: the
-                   blur, not raster caching, was softening the card) */
-                backdropFilter: sealed ? VELLUM_BLUR : "none",
-                WebkitBackdropFilter: sealed ? VELLUM_BLUR : "none",
-                transformOrigin: "top center",
-                transform: sealed ? "rotateX(0deg)" : "rotateX(180deg)",
-                transition: `transform ${T.seal}ms ease, backdrop-filter 300ms ease, -webkit-backdrop-filter 300ms ease`,
-                filter: sealed ? "drop-shadow(0 3px 6px rgba(0,0,0,0.12))" : "none",
-              }}
-            >
-              <path
-                d={`M0 0 H${ENV_W} L${ENV_CX} ${FLAP_TIP} Z`}
-                fill={SIDE_FILL}
-                stroke={SEAM}
-                strokeWidth="1"
-                vectorEffect="non-scaling-stroke"
-              />
-            </svg>
-          </div>
-          {/* z2 envelope back panel - carries the envelope's cast shadow */}
-          <div
-            aria-hidden
-            className={`absolute left-1/2 overflow-hidden rounded-[6px] ${noTrans}`}
-            style={{
-              ...envPiece(2),
-              top: ENV_TOP,
-              width: ENV_W,
-              marginLeft: -ENV_W / 2,
-              height: ENV_H,
-              boxShadow: ENV_SHADOW,
-            }}
-          >
-            <svg viewBox={`0 0 ${ENV_W} ${ENV_H}`} width="100%" height="100%" style={{ display: "block" }}>
-              <rect x="0" y="0" width={ENV_W} height={ENV_H} rx="6" fill={SIDE_FILL} />
-            </svg>
-          </div>
-          {/* z3 the card */}
-          <div className={noTrans} style={{ ...cardSeqStyle, position: "relative", zIndex: 3 }}>
-            <motion.div
-              ref={cardRef}
-              onMouseMove={onMove}
-              onMouseEnter={() => tilting && setHovered(true)}
-              onMouseLeave={onLeave}
-              className="relative w-[min(620px,86vw)] overflow-hidden rounded-[5px] bg-[#0f28e0] px-[6.3%] py-[4.5%]"
-              style={{
-                rotateX: tilting ? rx : 0,
-                rotateY: tilting ? ry : 0,
-                translateZ: hovered && tilting ? 18 : 0,
-                /* flat on the page at rest and through the whole send
-                   sequence; the shadow exists only paired with the hover
-                   lift - that pairing is what makes the tilt physical */
-                boxShadow: hovered && tilting ? "0 36px 70px rgba(0,0,0,0.28)" : "none",
-                transformStyle: "preserve-3d",
-                transition: `box-shadow ${T.sheenFade}ms ease`,
-              }}
-            >
-              <CardFace />
-              {/* specular sheen - follows the cursor; what makes it a surface */}
-              <motion.div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 rounded-[5px]"
-                style={{
-                  background: sheen,
-                  opacity: hovered && tilting ? 1 : 0,
-                  transition: `opacity ${T.sheenFade}ms ease`,
-                }}
-              />
-            </motion.div>
-          </div>
-          {/* z4 front folds - side flaps + bottom pocket in ONE svg so every
-              shared edge sits on identical vertex coordinates (no seams);
-              1px strokes read as the fold lines, pocket a tonal step more
-              opaque than the sides */}
-          <div
-            aria-hidden
-            className={`absolute left-1/2 overflow-hidden rounded-[6px] ${noTrans}`}
-            style={{
-              ...envPiece(4),
-              top: ENV_TOP,
-              width: ENV_W,
-              marginLeft: -ENV_W / 2,
-              height: ENV_H,
-            }}
-          >
-            <svg
-              viewBox={`0 0 ${ENV_W} ${ENV_H}`}
-              width="100%"
-              height="100%"
-              style={{
-                display: "block",
-                backdropFilter: sealed ? VELLUM_BLUR : "none",
-                WebkitBackdropFilter: sealed ? VELLUM_BLUR : "none",
-                transition: "backdrop-filter 300ms ease, -webkit-backdrop-filter 300ms ease",
-              }}
-            >
-              {/* left side flap: left edge to center */}
-              <path
-                d={`M0 0 L${ENV_CX} ${ENV_CY} L0 ${ENV_H} Z`}
-                fill={SIDE_FILL}
-                stroke={SEAM}
-                strokeWidth="1"
-                vectorEffect="non-scaling-stroke"
-              />
-              {/* right side flap: right edge to center */}
-              <path
-                d={`M${ENV_W} 0 L${ENV_CX} ${ENV_CY} L${ENV_W} ${ENV_H} Z`}
-                fill={SIDE_FILL}
-                stroke={SEAM}
-                strokeWidth="1"
-                vectorEffect="non-scaling-stroke"
-              />
-              {/* bottom/front pocket: lower corners up to the center V */}
-              <path
-                d={`M0 ${ENV_H} L${ENV_CX} ${ENV_CY} L${ENV_W} ${ENV_H} Z`}
-                fill={POCKET_FILL}
-                stroke={SEAM}
-                strokeWidth="1"
-                vectorEffect="non-scaling-stroke"
-              />
-            </svg>
-          </div>
-        </div>
+            className="pointer-events-none absolute inset-0 rounded-[5px]"
+            style={{ background: sheen, opacity: hovered && tilting ? 1 : 0, transition: "opacity 300ms ease" }}
+          />
+        </motion.div>
       </div>
-      {/* trigger, right-aligned to the card edge like the mock; stays put
-          through the flight */}
-      <div className="mt-[22px] flex w-[min(620px,86vw)] justify-end">
-        <SendButton copied={copied} disabled={busy || copied} onActivate={send} />
-      </div>
+      <ContactRow />
     </div>
   );
 }
 
-/* full-bleed photo strip; the duplicated set is aria-hidden and the track
-   animation lives in globals.css (@keyframes about-marquee) */
 export function AboutMarquee() {
   const reduce = useReducedMotion();
   const tiles = [...MARQUEE, ...MARQUEE];

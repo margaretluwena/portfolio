@@ -51,6 +51,15 @@ export type CoverLayer = {
   video?: true;
   poster?: string;  // required for video layers: frame 1 as a static image
   srcWebm?: string; // WebM served first, MP4 as fallback
+  /* Figma places some layers rotated. The box above is then the UNROTATED
+     box (Figma's own width/height, centered on the rotated node's center)
+     and `rotate` turns it about that center - same as the canvas does.
+     Never export a rotated node as a PNG: Figma flattens the page's white
+     under it and the opaque corners cover whatever sits beneath. */
+  rotate?: number;  // degrees, clockwise positive (Figma's sign)
+  /* Figma "crop" image fills: the FULL image is drawn at this box (% of
+     the layer) and the layer clips it. Omit for plain fit-inside layers. */
+  crop?: { left: string; top: string; width: string; height: string };
 };
 
 export type Work = {
@@ -60,6 +69,7 @@ export type Work = {
   blurb?: string;          // home-card teaser; card falls back to lede (clamped) when absent
   credits: Credit[];       // Role / Timeline / Team / Disciplines as rows
   cover?: Media;           // frame visual; hero placeholder until covers exist
+  hero?: Media;            // case-study hero when it should differ from the card art (Traeco: the brand hero, 2026-10-08)
   blocks: Block[];
   next: string;            // slug - the "next" line renders from this
 
@@ -77,6 +87,7 @@ export type Work = {
   cardBg?: string;         // card surface - default white (Traeco's frame is #303036)
   cardFade?: string;       // fade-into-text-zone gradient - default transparent -> white 77.9%
   cardText?: "light";      // description tone on dark cards
+  accent?: string;         // case-study label colour (Context / Problem / Solution, credits) - the project's own; default --study-blue
   comingSoon?: boolean;    // home card reveals "Coming soon" on hover
   indexOnly?: boolean;     // non-link index row; parked study redirects home, no Coming soon label
 };
@@ -104,12 +115,23 @@ export const works: Work[] = [
     role: "Designer",
     featured: true,
     protected: true,
+    accent: "#0b1215",                        // Mark's near-black (the lockup)
     wordmark: "/images/wordmarks/mark.svg",   // Figma 127:3003, 155/972 of card width
     wordmarkWidth: "15.9%",
-    // Figma "Mark card" 139:544: halftone hand (139:545) under the device (139:546)
+    /* Figma "Mark card" 255:586 (2026-10-08): three layers, the ORIGINAL
+       source images (transparent) placed and rotated exactly as the canvas
+       does. Bottom to top: the halftone hand (255:588, -3.82°), a second
+       device fading off the lower edge (255:589, -12.18°, bleeds past the
+       card - the article clips), and the device close-up riding the top
+       (255:590, +2.82°, a crop fill - see CoverLayer.crop). */
     coverArt: [
-      { src: "/images/covers/mark-hand.png", left: "12.86%", top: "31.6%", width: "68.09%", height: "68.54%" },
-      { src: "/images/covers/mark-device.png", left: "31.38%", top: "6.49%", width: "37.98%", height: "78.3%" },
+      { src: "/images/covers/mark-hand-tilt.png",    left: "10.02%", top: "27.08%", width: "74.63%", height: "71.33%", rotate: -3.82 },
+      { src: "/images/covers/mark-device-lower.png", left: "6.63%",  top: "37.82%", width: "97.28%", height: "78.45%", rotate: -12.18 },
+      {
+        src: "/images/covers/mark-device-top.png",
+        left: "30.35%", top: "4.43%", width: "42.48%", height: "30.79%", rotate: 2.82,
+        crop: { left: "-39.56%", top: "-78.8%", width: "139.57%", height: "345.11%" },
+      },
     ],
     blocks: [
       {
@@ -149,7 +171,9 @@ export const works: Work[] = [
           {
             name: "LAUNCH",
             caption: "The three-minute pitch presented at TroyLabs' end-of-semester LAUNCH summit.",
-            media: { src: "NEED", alt: "pitch video excerpt or unlisted embed" },
+            /* Margaret's screen recording of the deck (2026-10-08), last 3s
+               trimmed, re-encoded 1280 wide for the web; poster is frame 2s in */
+            media: { src: "/videos/mark-pitch.mp4", alt: "Mark pitch deck, as presented at LAUNCH", video: true, poster: "/images/mark/pitch-poster.jpg" },
           },
         ],
       },
@@ -187,6 +211,8 @@ export const works: Work[] = [
     blurb: "Brand, product, and web for an AI cost platform",
     /* poster stand-in until the real export lands */
     cover: { src: "/images/covers/traeco-dashboard.png", alt: "Traeco dashboard" },
+    /* the study opens on the brand hero (moved up from the context block) */
+    hero: { src: "/images/traeco/hero.png", alt: "Traeco brand hero" },
     credits: [
       { label: "Role", value: "Co-founder & CPO" },
       { label: "Timeline", value: "2026" },
@@ -198,6 +224,7 @@ export const works: Work[] = [
     year: "2026",
     role: "Co-founder & CPO",
     featured: true,
+    accent: "#1ba86f",                        // Traeco green (the lockup)
     wordmark: "/images/wordmarks/traeco.svg", // Figma 140:694, 164/972 of card width
     wordmarkWidth: "16.9%",
     wordmarkGlow: "drop-shadow(0 1px 3.5px rgba(27,168,111,0.5))", // Figma 140:692 text-shadow
@@ -223,7 +250,6 @@ export const works: Work[] = [
         // live-site Traeco copy (main:lib/projects.ts) per Margaret's order
         body: "Traeco is observability and cost management for AI agents, founded with my co-founders through LavaLab, USC's largest incubator. I'm co-founder and CPO, and was the only designer: the brand, the product, the site, and the decks are all mine. Live at traeco.dev. We won Audience Choice at the closing summit. Shipped the dashboard, marketing site, and full design system to production. Conversion to action in usability tests went from 22% to 71%.",
         // prior live-site asset, surfaced per the v2 file rule (veto and it reverts to NEED)
-        media: { src: "/images/traeco/hero.png", alt: "Traeco brand hero" },
       },
       {
         type: "problem",
@@ -242,8 +268,8 @@ export const works: Work[] = [
           {
             name: "The dashboard",
             caption: "I scoped the dashboard against user conversations rather than a feature list. Two questions ran in parallel: what has to be here for this to be usable, and what has to be here for someone to pay for it. Those produce different lists, and the second one is shorter. The timing insight above set the constraint: this had to earn attention from people who were not yet in pain.",
-            // old-site dashboard.png is stale against this copy (the UI moved); current export pending
-            media: { src: "NEED", alt: "dashboard screens" },
+            // the 2026-10-08 revamp (Figma Traeco-Revamp 48:6630): the home screen leads
+            media: { src: "/images/traeco/dashboard-home.png", alt: "Traeco dashboard: savings available, top recommendations, spend breakdown" },
           },
           {
             name: "The brand system",
@@ -254,8 +280,23 @@ export const works: Work[] = [
           {
             name: "Two decks, two jobs",
             caption: "Two decks for two jobs. One built to be presented live, with us speaking over it, sparse enough that the room watches us instead of reading the slide. One built to survive alone in an investor's inbox, carrying the whole argument without a presenter. Different density, different job.",
-            media: { src: "NEED", alt: "spreads from both decks" },
+            /* Margaret's screen recording of the pitch deck (2026-10-08),
+               re-encoded 1280 wide for the web; poster is frame 2s in */
+            media: { src: "/videos/traeco-pitch.mp4", alt: "Traeco pitch deck", video: true, poster: "/images/traeco/pitch-poster.jpg" },
           },
+        ],
+      },
+      {
+        /* the rest of the revamp, the three screens that carry the product's
+           argument (Margaret: "pick maybe the most important ones"): the
+           recommendation queue, an agent's quality drift + verdict, and the
+           quality budgets that gate every verdict. The agents list, team,
+           member, and onboarding screens were left out on purpose. */
+        type: "artifactGrid",
+        media: [
+          { src: "/images/traeco/recommendations.png", alt: "Recommendations: cost, quality, and confidence side by side, with accept / canary / reject / defer" },
+          { src: "/images/traeco/agent-detail.png", alt: "Support Agent: six-week quality drift and the recommendation for this agent" },
+          { src: "/images/traeco/quality-budgets.png", alt: "Settings: quality budgets and the budget.yaml they ship as" },
         ],
       },
       {
@@ -398,6 +439,7 @@ export const works: Work[] = [
        Monstro; the export outlines it to paths, so it ships as SVG like the
        others (no font file needed). 163:760 skipped (hidden leftover);
        163:762 lorem not ported. Video cover later, same as the others. */
+    accent: "#e2531d",                                    // Impeccable Chicken orange
     wordmark: "/images/wordmarks/impeccable-chicken.svg", // 168/972 of card width
     wordmarkWidth: "17.28%",
     cardBg: "#c94512",
@@ -417,6 +459,7 @@ export const works: Work[] = [
     slug: "glance",
     title: "Glance",
     lede: "Website and logo design for a productivity startup",
+    cover: { src: "/images/glance-hero.png", alt: "Glance" },
     credits: [
       { label: "Role", value: "Designer, TroyLabs BUILD" },
       { label: "Timeline", value: "2025" },
@@ -439,6 +482,7 @@ export const works: Work[] = [
     slug: "mountaindew",
     title: "Mountain Dew",
     lede: "Bottle redesigns and brand strategy for Mountain Dew",
+    cover: { src: "/images/mountaindew-hero.png", alt: "Mountain Dew" },
     credits: [
       { label: "Role", value: "Design Consultant, Avenues Consulting Group" },
       { label: "Timeline", value: "2024" },
@@ -467,12 +511,13 @@ export const works: Work[] = [
     slug: "charitablefoundation",
     title: "Ichioka and Nakao",
     lede: "Brand and website redesign for the Ichioka and Nakao Foundation",
+    cover: { src: "/images/ichioka-hero.png", alt: "Ichioka and Nakao" },
     credits: [
       { label: "Role", value: "Design Consultant, Avenues Consulting Group" },
       { label: "Timeline", value: "2024" },
       { label: "Disciplines", value: "Logo Design, Website Design, Branding, Slide Deck" },
     ],
-    next: "mark",
+    next: "prosaic-intelligence",
     category: "Nonprofit",
     year: "2024",
     role: "Design Consultant",
@@ -492,6 +537,35 @@ export const works: Work[] = [
         ],
       },
     ],
+  },
+
+  /* ---- index-only, listed by Margaret 2026-10-08, content pending ----
+     Prosaic's one line is her own README ("A public index of consumer AI
+     safety evaluations"); everything else is NEED until she supplies it.
+     Both render as the non-link placeholder card (title on the tile). */
+  {
+    slug: "prosaic-intelligence",
+    title: "Prosaic Intelligence",
+    lede: "A public index of consumer AI safety evaluations",
+    cover: { src: "NEED", alt: "Prosaic Intelligence" },
+    credits: [],
+    next: "aanc",
+    category: "NEED",
+    year: "NEED",
+    indexOnly: true,
+    blocks: [{ type: "wip", email: WIP_EMAIL }],
+  },
+  {
+    slug: "aanc",
+    title: "AANC",
+    lede: "NEED",
+    cover: { src: "NEED", alt: "AANC" },
+    credits: [],
+    next: "mark",
+    category: "NEED",
+    year: "NEED",
+    indexOnly: true,
+    blocks: [{ type: "wip", email: WIP_EMAIL }],
   },
 
   /* ---- index-only, coming soon: no featured flag (home column and the

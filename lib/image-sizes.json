@@ -1,0 +1,322 @@
+{
+  "/images/about/card-texture.jpg": [
+    337,
+    500
+  ],
+  "/images/about/lavalab/audience-choice.jpg": [
+    1400,
+    933
+  ],
+  "/images/about/lavalab/class.jpg": [
+    1400,
+    1050
+  ],
+  "/images/about/lavalab/claude-meetup.jpg": [
+    1400,
+    1050
+  ],
+  "/images/about/lavalab/demo-day.jpg": [
+    1400,
+    1050
+  ],
+  "/images/about/lavalab/retreat-s26.jpg": [
+    1400,
+    1060
+  ],
+  "/images/about/marquee-1.jpg": [
+    900,
+    506
+  ],
+  "/images/about/marquee-2.jpg": [
+    400,
+    267
+  ],
+  "/images/about/marquee-3.jpg": [
+    395,
+    264
+  ],
+  "/images/about/marquee-4.jpg": [
+    391,
+    261
+  ],
+  "/images/about/marquee-5.jpg": [
+    396,
+    264
+  ],
+  "/images/about/marquee-6.jpg": [
+    359,
+    269
+  ],
+  "/images/about/troylabs/agt.jpg": [
+    1400,
+    1050
+  ],
+  "/images/about/troylabs/designers.jpg": [
+    1400,
+    1060
+  ],
+  "/images/about/troylabs/launch-f25.jpg": [
+    1400,
+    1060
+  ],
+  "/images/about/troylabs/retreat.jpg": [
+    1400,
+    933
+  ],
+  "/images/about/troylabs/spiegel-keynote.jpg": [
+    1400,
+    1050
+  ],
+  "/images/about/verci/board.jpg": [
+    1400,
+    1050
+  ],
+  "/images/about/verci/dinner.jpg": [
+    1400,
+    1050
+  ],
+  "/images/about/verci/founding-haul.jpg": [
+    1400,
+    1050
+  ],
+  "/images/atlix/dashboard.png": [
+    2936,
+    1510
+  ],
+  "/images/atlix/hero.png": [
+    1920,
+    1080
+  ],
+  "/images/covers/atlix-poster.png": [
+    1944,
+    1114
+  ],
+  "/images/covers/ic-photo.png": [
+    1818,
+    1356
+  ],
+  "/images/covers/mark-device-lower.png": [
+    1920,
+    1080
+  ],
+  "/images/covers/mark-device-top.png": [
+    1638,
+    2048
+  ],
+  "/images/covers/mark-device.png": [
+    739,
+    1062
+  ],
+  "/images/covers/mark-hand-tilt.png": [
+    1200,
+    800
+  ],
+  "/images/covers/mark-hand.png": [
+    1324,
+    930
+  ],
+  "/images/covers/traeco-dashboard.png": [
+    1586,
+    980
+  ],
+  "/images/covers/traeco-laptop.png": [
+    1944,
+    1167
+  ],
+  "/images/glance-content.png": [
+    4105,
+    2213
+  ],
+  "/images/glance-hero.png": [
+    1019,
+    647
+  ],
+  "/images/graphics-2.webp": [
+    2048,
+    2048
+  ],
+  "/images/graphics-3.webp": [
+    1104,
+    1367
+  ],
+  "/images/graphics-4.webp": [
+    2500,
+    1655
+  ],
+  "/images/graphics-5.png": [
+    1091,
+    1350
+  ],
+  "/images/graphics-6.png": [
+    1338,
+    858
+  ],
+  "/images/graphics-7.png": [
+    1664,
+    312
+  ],
+  "/images/graphics-hero.webp": [
+    2048,
+    2130
+  ],
+  "/images/ichioka-1.png": [
+    1630,
+    1118
+  ],
+  "/images/ichioka-2.jpeg": [
+    3068,
+    3068
+  ],
+  "/images/ichioka-3.jpeg": [
+    3068,
+    3068
+  ],
+  "/images/ichioka-hero.png": [
+    694,
+    407
+  ],
+  "/images/margaret-chibi.png": [
+    1180,
+    1668
+  ],
+  "/images/margaret-photo.jpg": [
+    2233,
+    2428
+  ],
+  "/images/mark-hero.png": [
+    3318,
+    2378
+  ],
+  "/images/mark/app-home.png": [
+    566,
+    745
+  ],
+  "/images/mark/app-notes-inside.png": [
+    644,
+    1400
+  ],
+  "/images/mark/app-notes.png": [
+    644,
+    1400
+  ],
+  "/images/mark/app-share-funky.png": [
+    644,
+    1400
+  ],
+  "/images/mark/app-share.png": [
+    644,
+    1400
+  ],
+  "/images/mark/home-thumbnails-detail.png": [
+    944,
+    650
+  ],
+  "/images/mark/home-thumbnails.png": [
+    1290,
+    1310
+  ],
+  "/images/mark/merch-shirts.png": [
+    1375,
+    1400
+  ],
+  "/images/mark/merch-stickers.jpg": [
+    1600,
+    1373
+  ],
+  "/images/mark/merch-tote.jpg": [
+    1600,
+    1058
+  ],
+  "/images/mark/packaging-sleeves-1.jpg": [
+    678,
+    1600
+  ],
+  "/images/mark/packaging-sleeves-2.jpg": [
+    1600,
+    1151
+  ],
+  "/images/mark/packaging-unitbox-1.jpg": [
+    1600,
+    1535
+  ],
+  "/images/mark/packaging.png": [
+    1068,
+    966
+  ],
+  "/images/mark/pitch-poster.jpg": [
+    1280,
+    720
+  ],
+  "/images/mark/share-screens.png": [
+    1144,
+    752
+  ],
+  "/images/mark/shirts.png": [
+    992,
+    1002
+  ],
+  "/images/mark/stickers.png": [
+    670,
+    870
+  ],
+  "/images/mountaindew-1.png": [
+    1724,
+    976
+  ],
+  "/images/mountaindew-2.png": [
+    1726,
+    970
+  ],
+  "/images/mountaindew-hero.png": [
+    867,
+    647
+  ],
+  "/images/smallworks-1.webp": [
+    1973,
+    1057
+  ],
+  "/images/smallworks-2.webp": [
+    754,
+    1270
+  ],
+  "/images/smallworks-3.png": [
+    1482,
+    1140
+  ],
+  "/images/smallworks-hero.png": [
+    1280,
+    832
+  ],
+  "/images/traeco/agent-detail.png": [
+    1440,
+    1598
+  ],
+  "/images/traeco/dashboard-home.png": [
+    1440,
+    1559
+  ],
+  "/images/traeco/dashboard.png": [
+    2880,
+    1800
+  ],
+  "/images/traeco/hero.png": [
+    1194,
+    810
+  ],
+  "/images/traeco/pitch-poster.jpg": [
+    1280,
+    718
+  ],
+  "/images/traeco/quality-budgets.png": [
+    1440,
+    900
+  ],
+  "/images/traeco/recommendations.png": [
+    1440,
+    1943
+  ],
+  "/images/traeco/website.png": [
+    2940,
+    1486
+  ]
+}

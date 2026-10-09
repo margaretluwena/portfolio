@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getWork } from "@/lib/works";
-import Nav from "@/components/nav/Nav";
 import CaseStudyContent from "@/components/works/CaseStudyContent";
 
 /*
@@ -30,20 +29,17 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
 
   if (!work) {
     return (
-      <main className="grid min-h-screen place-items-center bg-paper text-body-lg">
+      <main className="grid min-h-screen place-items-center text-body-lg">
         <p>Not found. <Link href="/" className="underline">Back home</Link></p>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-paper">
-      <Nav rightSlot={<span>&ndash; {work.title.toLowerCase()} &ndash;</span>} />
-      <div className="px-[var(--inset-left)] pt-[22vh]">
+    <main className="min-h-screen">
+      {/* the template's column centers itself; the rail's "Return" is the way back */}
+      <div className="pt-[calc(6.36vh+70px)]">
         <CaseStudyContent work={work} variant="page" />
-        <footer className="pb-[10vh]">
-          <Link href="/" className="text-body-lg text-ink/50 hover:text-ink">&#8592; All works</Link>
-        </footer>
       </div>
     </main>
   );

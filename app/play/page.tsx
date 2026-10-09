@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Nav from "@/components/nav/Nav";
 import { PageEnter } from "@/components/providers/PageTransition";
 import { playWorks, type Block } from "@/lib/works";
 
@@ -18,8 +17,7 @@ const snippets = playWorks.flatMap((w) => flatImages(w.blocks));
 
 export default function PlayPage() {
   return (
-    <main className="min-h-screen bg-paper">
-      <Nav rightSlot={<span>&ndash; play &ndash;</span>} />
+    <main className="min-h-screen">
       <PageEnter className="px-[var(--margin-outer)] pt-[22vh] pb-[18vh]">
         <h1 className="wordmark text-title mb-3 text-ink">Play</h1>
         <p className="mb-14 max-w-[52ch] text-body-lg text-ink/60">

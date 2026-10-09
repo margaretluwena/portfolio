@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import WorksColumn from "@/components/works/WorksColumn";
 import RotatingTitle from "@/components/shell/RotatingTitle";
+import StickerWord from "@/components/shell/StickerWord";
 import Prox from "@/components/ui/Prox";
 
 /*
@@ -16,18 +17,19 @@ import Prox from "@/components/ui/Prox";
     RIGHT - work cards from --col-right, --card-w wide, first top at 19.7vh;
             its own scroll container with rubber-band overscroll
             (WorksColumn), scrolling under the fixed nav band.
-  Two full-height vertical hairlines sit at --edge from each viewport edge,
-  fixed, above the background texture.
 
   The wordmark is NOT inside the fading group: it must stay fully opaque while
   it flies in from the intro (shared layoutId). Everything else enters after it
   lands - a staggered rise, top to bottom, so the page assembles around the name.
 */
 
-const socials = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/margaretluwena/", icon: "/assets/icon-linkedin.png" },
-  { label: "X", href: "https://x.com/marluwena", icon: "/assets/icon-x.png" },
-  { label: "Instagram", href: "https://www.instagram.com/margaret.luwena/", icon: "/assets/icon-instagram.png" },
+/* `ink` = how much of each PNG's height the glyph actually fills (LinkedIn
+   is edge to edge, X and Instagram carry transparent padding) - the
+   rendered height is divided by it so all three glyphs read the same size */
+export const socials = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/margaretluwena/", icon: "/assets/icon-linkedin.png", ink: 0.993 },
+  { label: "X", href: "https://x.com/marluwena", icon: "/assets/icon-x.png", ink: 0.844 },
+  { label: "Instagram", href: "https://www.instagram.com/margaret.luwena/", icon: "/assets/icon-instagram.png", ink: 0.813 },
 ];
 
 export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { reveal: boolean; reduce: boolean; onWorksIndex?: (i: number) => void }) {
@@ -43,13 +45,11 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
 
   return (
     <div className="relative md:h-screen md:overflow-hidden">
-      {/* full-height vertical hairlines at --edge - fixed, above the texture, desktop only */}
-      <div aria-hidden className="pointer-events-none fixed inset-y-0 left-[var(--edge)] z-20 hidden w-px bg-hairline md:block" />
-      <div aria-hidden className="pointer-events-none fixed inset-y-0 right-[var(--edge)] z-20 hidden w-px bg-hairline md:block" />
-
       <div className="relative z-10">
         {/* LEFT - fixed on desktop, first block in normal flow on mobile */}
-        <aside className="px-[var(--inset)] pt-[36vh] md:fixed md:inset-y-0 md:left-[var(--inset)] md:w-[300px] md:px-0 md:pt-0">
+        {/* the column runs to the works gutter (not a fixed 300px) so the
+            longest tagline has room before it wraps; the bio keeps its own cap */}
+        <aside className="px-[var(--inset)] pt-[36vh] md:fixed md:inset-y-0 md:left-[var(--inset)] md:w-[calc(var(--col-right)-var(--inset)-56px)] md:px-0 md:pt-0">
           {/* identity group - anchored once at 24.2vh, then FIXED px gaps so
               the name/tagline/icons rhythm doesn't stretch with viewport
               height (separate vh anchors read as uneven spacing) */}
@@ -67,7 +67,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
 
             {/* tagline - body face italic (Figma 128:507 specs Inter Italic), NOT Nohemi */}
             <motion.div {...enter(0.55)} className="mt-[6px]">
-              <p className="font-body text-display italic whitespace-nowrap">
+              <p className="font-body text-display italic leading-tight">
                 <RotatingTitle active={reveal} />
               </p>
             </motion.div>
@@ -83,7 +83,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
                       rel="noreferrer"
                       className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
                     >
-                      <Image src={s.icon} alt="" width={24} height={24} className="h-[24px] w-auto" />
+                      <Image src={s.icon} alt="" width={24} height={24} className="w-auto" style={{ height: 24 / s.ink }} />
                     </a>
                   </Prox>
                 </li>
@@ -92,44 +92,39 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
           </div>
 
           {/* bio - business-facing copy (2026-07-31); 245px cap keeps both
-              paragraphs at the artboard's 3-4 short lines */}
+              paragraphs at the artboard's 3-4 short lines. 46vh, up from the
+              artboard's 50.1vh (Margaret, 2026-10-08: "a little bit") */}
           <motion.div
             {...enter(0.8)}
-            className="mt-12 max-w-[245px] space-y-6 text-body text-ink md:absolute md:top-[50.1vh] md:mt-0"
+            data-bio
+            className="mt-12 max-w-[245px] space-y-6 text-body text-ink md:absolute md:top-[46vh] md:mt-0"
           >
-            {/* Margaret's copy verbatim (2026-08-01); first line reads one
+            {/* Margaret's copy verbatim (Figma 190:653, 2026-10-08): "USC"
+                in place of the full name, with the three hover stickers
+                (fight on / Traeco / TroyLabs) that pop out after their
+                word. Program links dropped (Margaret, 2026-10-08) - only the
+                venture links (Traeco, BUILD) remain; first line reads one
                 step larger than body, still a <p> */}
             <p className="text-[17px] leading-snug">
               Building for fun, work, and life.
             </p>
             <p>
-              Currently at the University of Southern California studying{" "}
-              <a
-                href="https://dornsife.usc.edu/econ/undergraduate/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
-              >
-                economics and business administration
-              </a>{" "}
-              and{" "}
-              <a
-                href="https://www.marshall.usc.edu/programs/graduate-programs/specialized-masters/ms-entrepreneurship-innovation"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
-              >
-                entrepreneurship and innovation
-              </a>
-              . Cofounding{" "}
-              <a
-                href="https://traeco.dev"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
-              >
-                Traeco
-              </a>{" "}
+              Currently at{" "}
+              <StickerWord src="/assets/stickers/fight-on.svg" height="1.35em" tilt={-18}>
+                USC
+              </StickerWord>{" "}
+              studying economics and business administration and entrepreneurship and
+              innovation. Cofounding{" "}
+              <StickerWord src="/assets/stickers/traeco.svg" height="1.15em" tilt={14}>
+                <a
+                  href="https://traeco.dev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
+                >
+                  Traeco
+                </a>
+              </StickerWord>{" "}
               and running{" "}
               <a
                 href="https://www.troylabs.vc"
@@ -139,7 +134,10 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
               >
                 BUILD
               </a>{" "}
-              at TroyLabs.
+              at{" "}
+              <StickerWord src="/assets/stickers/troylabs.svg" height="1.15em" tilt={-12}>
+                TroyLabs.
+              </StickerWord>
             </p>
           </motion.div>
 

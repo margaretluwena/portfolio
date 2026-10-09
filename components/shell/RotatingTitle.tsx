@@ -4,22 +4,24 @@ import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 
 /*
-  "is a design engineer" → typed out, held, deleted, replaced - each title in
-  its own color, all tuned to the same vibrancy family as the Figma magenta
-  (hsl 298 62% 41%): saturation ~62-85%, lightness ≤48% so contrast on white
-  stays ≥ 4.5:1.
+  "is a product designer" → typed out, held, deleted, replaced. Set in ink,
+  no colour (Margaret, 2026-10-08 - the per-title colours came out).
 
   Screen readers get one static sentence (aria-hidden on the animation);
   prefers-reduced-motion renders the first title with no animation at all.
 */
 
+/* Margaret's list, 2026-10-08: "margaret luwena is... a product designer,
+   a design engineer, obsessed with details, designing interactions, an
+   illustrator, a builder" + a founder - each line completes the name above */
 const TITLES = [
-  { text: "is a design engineer",   color: "hsl(298 62% 41%)" }, // Figma magenta
-  { text: "is a founder",           color: "hsl(217 75% 45%)" }, // electric blue
-  { text: "is a builder",           color: "hsl(24 85% 42%)"  }, // orange
-  { text: "is an illustrator",      color: "hsl(152 65% 34%)" }, // green
-  { text: "is a creative director", color: "hsl(354 72% 44%)" }, // red
-  { text: "is a storyteller",       color: "hsl(262 70% 48%)" }, // violet
+  "is a product designer",
+  "is a design engineer",
+  "is a founder",
+  "is obsessed with details",
+  "is designing interactions",
+  "is an illustrator",
+  "is a builder",
 ];
 
 const TYPE_MS = 46;
@@ -39,7 +41,7 @@ export default function RotatingTitle({ active, className }: { active: boolean; 
     const tick = (i: number, l: number, dir: 1 | -1, delay: number) => {
       timer.current = setTimeout(() => {
         if (cancelled) return;
-        const full = TITLES[i].text.length;
+        const full = TITLES[i].length;
         if (dir === 1) {
           if (l < full) { setLen(l + 1); tick(i, l + 1, 1, TYPE_MS); }
           else tick(i, l, -1, HOLD_MS);            // typed out - hold
@@ -61,14 +63,14 @@ export default function RotatingTitle({ active, className }: { active: boolean; 
   return (
     <span className={className}>
       {/* one stable sentence for assistive tech */}
-      <span className="sr-only">is a design engineer, founder, builder, illustrator, creative director, and storyteller</span>
+      <span className="sr-only">is a product designer, a design engineer, a founder, obsessed with details, designing interactions, an illustrator, and a builder</span>
 
       {reduce ? (
-        <span aria-hidden style={{ color: TITLES[0].color }}>{TITLES[0].text}</span>
+        <span aria-hidden className="text-ink">{TITLES[0]}</span>
       ) : (
-        <span aria-hidden style={{ color: t.color }}>
-          {t.text.slice(0, len)}
-          <span className="tagline-caret" style={{ background: t.color }} />
+        <span aria-hidden className="text-ink">
+          {t.slice(0, len)}
+          <span className="tagline-caret bg-ink" />
         </span>
       )}
     </span>

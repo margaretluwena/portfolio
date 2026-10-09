@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useMotionValue, animate, useReducedMotion } from "motion/react";
 import WorkList from "@/components/works/WorkList";
 import { featuredWorks } from "@/lib/works";
@@ -13,8 +13,9 @@ import { featuredWorks } from "@/lib/works";
   reduced motion keeps plain scrolling.
 
   Also reports which work is nearest the viewport center (for the nav's live
-  "01 / 06" index) and ends in a small colophon - something for the rubber
-  band to bounce against.
+  "01 / 06" index). The colophon that used to close the column is now the
+  page-wide SiteFooter (reveal mode), rising when this column reaches its end; the
+  bottom padding here keeps the last card clear of that band.
 */
 
 const MAX_STRETCH = 130;
@@ -77,31 +78,11 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     >
       {/* first card's top edge at 19.7vh (Figma 128:503: 220/1117 - it scrolls
           under the fixed nav band); width and inset from the layout tokens */}
-      <motion.div style={{ y }} className="px-[var(--inset)] pt-12 md:px-0 md:pt-[19.7vh]">
+      <motion.div style={{ y }} className="px-[var(--inset)] pb-[calc(var(--footer-h,clamp(300px,36vh,420px))+4vh)] pt-12 md:px-0 md:pt-[19.7vh]">
         <WorkList reveal={reveal} />
-
-        {/* colophon - the column's sign-off */}
-        <footer className="mt-[7vh] border-t border-hairline pb-[8vh] pt-5 text-label tracking-normal leading-relaxed text-ink/40">
-          <p>Designed in Figma. Built with Claude Code.</p>
-          <p>
-            Los Angeles, CA · <LocalTime /> · © {new Date().getFullYear()} Margaret Luwena
-          </p>
-        </footer>
       </motion.div>
     </div>
   );
-}
-
-function LocalTime() {
-  const [now, setNow] = useState<string | null>(null);
-  useEffect(() => {
-    const fmt = () =>
-      setNow(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/Los_Angeles" }));
-    fmt();
-    const t = setInterval(fmt, 30_000);
-    return () => clearInterval(t);
-  }, []);
-  return <span suppressHydrationWarning>{now ?? "…"}</span>;
 }
 
 export { featuredWorks as worksForIndex };
