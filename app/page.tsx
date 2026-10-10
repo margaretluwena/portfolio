@@ -3,7 +3,6 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import PortfolioShell from "@/components/shell/PortfolioShell";
-import SiteFooter from "@/components/shell/SiteFooter";
 import { useNav } from "@/components/nav/NavContext";
 import { featuredWorks } from "@/lib/works";
 
@@ -92,8 +91,9 @@ export default function Page() {
       {/* main page underneath; renders the corner wordmark when revealed */}
       <PortfolioShell reveal={isMain} reduce={!!reduce} onWorksIndex={setWorksIndex} />
 
-      {/* the footer band rises in once the works column is scrolled to its end */}
-      {isMain && <SiteFooter mode="reveal" />}
+      {/* no footer on the home page: the works column just ends at Impeccable
+          Chicken (Margaret, 2026-10-09). SiteFooter's reveal mode is kept for
+          the day it comes back: `{isMain && <SiteFooter mode="reveal" />}` */}
     </main>
   );
 }
