@@ -1,5 +1,7 @@
 "use client";
 
+import { TransitionLink } from "@/components/providers/PageTransition";
+
 import { useRef } from "react";
 import { motion, useMotionValue, animate, useReducedMotion } from "motion/react";
 import WorkList from "@/components/works/WorkList";
@@ -83,6 +85,18 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
           a short breath is enough (Margaret, 2026-10-09) */}
       <motion.div style={{ y }} className="px-[var(--inset)] pb-[8vh] pt-12 md:px-0 md:pt-[19.7vh]">
         <WorkList reveal={reveal} />
+        {/* the way onward once the four are seen (Shub's feedback, 2026-10-13) */}
+        <p className="mt-[6vh] text-body">
+          <TransitionLink
+            href="/works"
+            className="inline-flex items-center gap-2 text-ink/45 transition-colors duration-300 hover:text-ink focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+          >
+            See more work
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden className="shrink-0">
+              <path d="M3 11 11 3M5 3h6v6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </TransitionLink>
+        </p>
       </motion.div>
     </div>
   );

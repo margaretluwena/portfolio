@@ -60,10 +60,16 @@ export default function Page() {
     setNav({
       home: true,
       hidden: !isMain,
+      /* dot indicators in place of "4/4 - SELECTED WORKS" (Shub's feedback,
+         2026-10-13): one dot per featured work, the current one filled */
       counter: (
-        <span className="tabular-nums">
-          {worksIndex + 1}/{featuredWorks.length}
-          <span className="ml-2 hidden sm:inline"> - SELECTED WORKS</span>
+        <span className="flex items-center gap-[7px] py-[6px]" role="img" aria-label={`Work ${worksIndex + 1} of ${featuredWorks.length}`}>
+          {featuredWorks.map((w, k) => (
+            <span
+              key={w.slug}
+              className={`block h-[6px] w-[6px] rounded-full transition-colors duration-300 ${k === worksIndex ? "bg-ink" : "bg-ink/25"}`}
+            />
+          ))}
         </span>
       ),
     });

@@ -26,6 +26,8 @@ import Prox from "@/components/ui/Prox";
 /* `ink` = how much of each PNG's height the glyph actually fills (LinkedIn
    is edge to edge, X and Instagram carry transparent padding) - the
    rendered height is divided by it so all three glyphs read the same size */
+export const EMAIL = "luwena@usc.edu";
+
 export const socials = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/margaretluwena/", icon: "/assets/icon-linkedin.png", ink: 0.993 },
   // X at nominal size: its dense glyph read too big at equal ink height (Margaret, 2026-10-09; was 0.844)
@@ -97,6 +99,23 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
                   </Prox>
                 </li>
               ))}
+              {/* mail, so the address is reachable from the home page itself
+                  (Shub's feedback, 2026-10-13); same glyph as the About row */}
+              <li>
+                <Prox maxScale={1.12} radius={55}>
+                  <a
+                    href={`mailto:${EMAIL}`}
+                    aria-label={`Email ${EMAIL}`}
+                    title={EMAIL}
+                    className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                  >
+                    <svg width="26" height="24" viewBox="0 0 26 24" fill="none" aria-hidden>
+                      <rect x="1.5" y="4" width="23" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
+                      <path d="M2.5 6.5 13 13.5 23.5 6.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </a>
+                </Prox>
+              </li>
             </motion.ul>
           </div>
 
