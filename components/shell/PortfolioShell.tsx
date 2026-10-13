@@ -32,7 +32,8 @@ export const socials = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/margaretluwena/", icon: "/assets/icon-linkedin.png", ink: 0.993 },
   // X at nominal size: its dense glyph read too big at equal ink height (Margaret, 2026-10-09; was 0.844)
   { label: "X", href: "https://x.com/marluwena", icon: "/assets/icon-x.png", ink: 1 },
-  { label: "Instagram", href: "https://www.instagram.com/margaret.luwena/", icon: "/assets/icon-instagram.png", ink: 0.813 },
+  // Instagram dropped 2026-10-13 (Shub's feedback); the mail glyph takes its place.
+  // Was: { label: "Instagram", href: "https://www.instagram.com/margaret.luwena/", icon: "/assets/icon-instagram.png", ink: 0.813 },
 ];
 
 export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { reveal: boolean; reduce: boolean; onWorksIndex?: (i: number) => void }) {

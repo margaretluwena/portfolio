@@ -18,7 +18,7 @@ only she can supply) / HERS (offline, not a site change).
 | # | Item | Status | Notes |
 | --- | --- | --- | --- |
 | C1 | Email always visible on the homepage | DONE | Mail icon added to the home icon row (the bio column is fixed on desktop). |
-| C2 | Remove Instagram unless it's curated | NEEDS MARGARET | One line in the shared socials list; it removes it from home, footer, About together. |
+| C2 | Remove Instagram unless it's curated | DONE | Removed from the shared socials list (home, footer, About); mail stands in its place. |
 | C3 | Rewrite X bio, add margaretluwena.net | HERS | |
 
 ## Project cards
