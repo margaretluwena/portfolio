@@ -2,7 +2,7 @@
 
 import { TransitionLink } from "@/components/providers/PageTransition";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useMotionValue, animate, useReducedMotion } from "motion/react";
 import WorkList from "@/components/works/WorkList";
 import { featuredWorks } from "@/lib/works";
@@ -21,6 +21,10 @@ import { featuredWorks } from "@/lib/works";
 */
 
 const MAX_STRETCH = 130;
+/* auto-cycle (Margaret, 2026-10-13): the column advances one card every
+   CYCLE_MS until the visitor touches it - a wheel, a press, a key - after
+   which it is theirs for good. Hovering pauses it. Reduced motion: off. */
+const CYCLE_MS = 4000;
 
 export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: number) => void; reveal?: boolean }) {
   const reduce = useReducedMotion();
@@ -53,6 +57,48 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
       animate(y, 0, { type: "spring", stiffness: 200, damping: 15 }); // springs past 0 - the bounce
     }, 90);
   }
+
+  // auto-cycle until the visitor takes over
+  const taken = useRef(false);
+  const hovering = useRef(false);
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el || !reveal || reduce) return;
+    let stop: (() => void) | null = null;
+    const takeOver = () => { taken.current = true; stop?.(); };
+    const over = () => { hovering.current = true; };
+    const out = () => { hovering.current = false; };
+    el.addEventListener("wheel", takeOver, { passive: true });
+    el.addEventListener("pointerdown", takeOver, { passive: true });
+    el.addEventListener("touchstart", takeOver, { passive: true });
+    el.addEventListener("keydown", takeOver);
+    el.addEventListener("pointerenter", over);
+    el.addEventListener("pointerleave", out);
+    const tick = () => {
+      if (taken.current || hovering.current || document.hidden) return;
+      const items = Array.from(el.querySelectorAll("li[data-work]")) as HTMLElement[];
+      if (items.length < 2) return;
+      const probe = el.scrollTop + el.clientHeight * 0.4;
+      let cur = 0, bestD = Infinity;
+      items.forEach((li, i) => { const d = Math.abs(li.offsetTop + li.offsetHeight / 2 - probe); if (d < bestD) { bestD = d; cur = i; } });
+      const next = (cur + 1) % items.length;
+      // each card lands where the first one rests (its top at the column's top padding)
+      const target = next === 0 ? 0 : items[next].offsetTop - items[0].offsetTop;
+      const ctrl = animate(el.scrollTop, target, { duration: 0.9, ease: [0.22, 1, 0.36, 1], onUpdate: (v) => { el.scrollTop = v; } });
+      stop = () => ctrl.stop();
+    };
+    const id = setInterval(tick, CYCLE_MS);
+    return () => {
+      clearInterval(id);
+      stop?.();
+      el.removeEventListener("wheel", takeOver);
+      el.removeEventListener("pointerdown", takeOver);
+      el.removeEventListener("touchstart", takeOver);
+      el.removeEventListener("keydown", takeOver);
+      el.removeEventListener("pointerenter", over);
+      el.removeEventListener("pointerleave", out);
+    };
+  }, [reveal, reduce]);
 
   // live index: the work whose card is nearest 40% down the viewport
   function onScroll() {

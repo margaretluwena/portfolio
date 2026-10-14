@@ -62,6 +62,12 @@ dashes anywhere in copy or code comments**, the build fails on them.
 1. Subpage pill: name on the LEFT (built to the Figma frames) vs. right (what Margaret first wrote).
 2. (done 2026-10-09) Upstash attached, `main` merged and live.
 
+## Parked ideas (Margaret's, not started)
+
+- Sky field easter egg (2026-10-13): throw the ball off the edge of the
+  screen and the dog chases it out of frame, then comes back carrying a
+  different item instead of the ball.
+
 ## Commit message suggestion (when she's ready)
 
 "Redesign pass 2026-10-08: nav pill, sky field, case-study template, About
