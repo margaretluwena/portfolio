@@ -58,6 +58,39 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     }, 90);
   }
 
+  /* card tops in scroll coordinates, from the live layout (offsetTop would
+     depend on which ancestor counts as offsetParent under the transform) */
+  const inner = useRef<HTMLDivElement>(null);
+  const cardTops = (el: HTMLElement) => {
+    const base = el.getBoundingClientRect().top - el.scrollTop;
+    return (Array.from(el.querySelectorAll("li[data-work]")) as HTMLElement[]).map((li) => {
+      const r = li.getBoundingClientRect();
+      return { top: r.top - base, height: r.height };
+    });
+  };
+
+  /* end padding sized so the LAST card can land exactly where the first
+     rests (the column needs that much scroll room past it); recomputed on
+     resize. Before this, the last card stopped short and the auto-cycle
+     landed it lower than the others (Margaret, 2026-10-13). */
+  useEffect(() => {
+    const el = scroller.current, box = inner.current;
+    if (!el || !box) return;
+    const fit = () => {
+      const tops = cardTops(el);
+      if (tops.length < 2) return;
+      const first = tops[0], last = tops[tops.length - 1];
+      const tail = box.querySelector<HTMLElement>(".works-tail");
+      const tailH = tail ? tail.getBoundingClientRect().height + parseFloat(getComputedStyle(tail).marginTop) : 0;
+      const need = el.clientHeight - first.top - last.height - tailH; // room so last.top can reach first.top
+      box.style.paddingBottom = `${Math.max(need, 0) + window.innerHeight * 0.08}px`;
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   // auto-cycle until the visitor takes over
   const taken = useRef(false);
   const hovering = useRef(false);
@@ -76,14 +109,14 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     el.addEventListener("pointerleave", out);
     const tick = () => {
       if (taken.current || hovering.current || document.hidden) return;
-      const items = Array.from(el.querySelectorAll("li[data-work]")) as HTMLElement[];
-      if (items.length < 2) return;
+      const tops = cardTops(el);
+      if (tops.length < 2) return;
       const probe = el.scrollTop + el.clientHeight * 0.4;
       let cur = 0, bestD = Infinity;
-      items.forEach((li, i) => { const d = Math.abs(li.offsetTop + li.offsetHeight / 2 - probe); if (d < bestD) { bestD = d; cur = i; } });
-      const next = (cur + 1) % items.length;
-      // each card lands where the first one rests (its top at the column's top padding)
-      const target = next === 0 ? 0 : items[next].offsetTop - items[0].offsetTop;
+      tops.forEach((t, i) => { const d = Math.abs(t.top + t.height / 2 - probe); if (d < bestD) { bestD = d; cur = i; } });
+      const next = (cur + 1) % tops.length;
+      // each card lands where the first one rests: its top at the column's top padding
+      const target = Math.min(tops[next].top - tops[0].top, el.scrollHeight - el.clientHeight);
       const ctrl = animate(el.scrollTop, target, { duration: 0.9, ease: [0.22, 1, 0.36, 1], onUpdate: (v) => { el.scrollTop = v; } });
       stop = () => ctrl.stop();
     };
@@ -126,13 +159,12 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     >
       {/* first card's top edge at 19.7vh (Figma 128:503: 220/1117 - it scrolls
           under the fixed nav band); width and inset from the layout tokens */}
-      {/* end padding was a full footer height while the footer overlaid the
-          column; since the whole shell now lifts with the footer (--sky-lift),
-          a short breath is enough (Margaret, 2026-10-09) */}
-      <motion.div style={{ y }} className="px-[var(--inset)] pb-[8vh] pt-12 md:px-0 md:pt-[19.7vh]">
+      {/* pb-[8vh] is only the pre-JS fallback: the fit effect above sets the
+          real end padding from the card geometry */}
+      <motion.div ref={inner} style={{ y }} className="px-[var(--inset)] pb-[8vh] pt-12 md:px-0 md:pt-[19.7vh]">
         <WorkList reveal={reveal} />
         {/* the way onward once the four are seen (Shub's feedback, 2026-10-13) */}
-        <p className="mt-[6vh] text-body">
+        <p className="works-tail mt-[6vh] text-body">
           <TransitionLink
             href="/works"
             className="inline-flex items-center gap-2 text-ink/45 transition-colors duration-300 hover:text-ink focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
