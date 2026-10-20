@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     "Margaret Luwena. Building for fun, work, and life.",
   openGraph: {
     title: "Margaret Luwena",
-    description: "Building for fun, work, and life. USC. Cofounding Traeco. Running BUILD at TroyLabs.",
+    description: "Building for fun, work, and life. Cofounding Traeco, where teams track and govern what their AI agents spend. Running BUILD, USC's premier student-run startup accelerator.",
     url: "https://margaretluwena.net",
     siteName: "Margaret Luwena",
     type: "website",

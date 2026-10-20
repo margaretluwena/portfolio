@@ -128,22 +128,16 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
             data-bio
             className="mt-12 max-w-[245px] space-y-6 text-body text-ink md:absolute md:top-[46vh] md:mt-0"
           >
-            {/* Margaret's copy verbatim (Figma 190:653, 2026-10-08): "USC"
-                in place of the full name, with the three hover stickers
-                (fight on / Traeco / TroyLabs) that pop out after their
-                word. Program links dropped (Margaret, 2026-10-08) - only the
-                venture links (Traeco, BUILD) remain; first line reads one
-                step larger than body, still a <p> */}
+            {/* Margaret's copy (2026-10-20), verbatim but for "a design" ->
+                "a designer" (a dictation slip, flagged to her). The three
+                hover stickers stay: fight on after USC, Traeco after Traeco,
+                TroyLabs after BUILD (its program). Venture links on Traeco
+                and BUILD; first line reads one step larger than body. */}
             <p className="text-[17px] leading-snug">
               Building for fun, work, and life.
             </p>
             <p>
-              Currently at{" "}
-              <StickerWord src="/assets/stickers/fight-on.svg" height="1.35em" tilt={-18}>
-                USC
-              </StickerWord>{" "}
-              studying economics and business administration and entrepreneurship and
-              innovation. Cofounding{" "}
+              Currently a designer cofounding{" "}
               <StickerWord src="/assets/stickers/traeco.svg" height="1.15em" tilt={14}>
                 <a
                   href="https://traeco.dev"
@@ -153,20 +147,26 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
                 >
                   Traeco
                 </a>
-              </StickerWord>{" "}
-              and running{" "}
-              <a
-                href="https://www.troylabs.vc"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
-              >
-                BUILD
-              </a>{" "}
-              at{" "}
-              <StickerWord src="/assets/stickers/troylabs.svg" height="1.15em" tilt={-12}>
-                TroyLabs.
               </StickerWord>
+              , where I lead product and design for a platform that helps teams track and
+              govern what their AI agents spend. I also run{" "}
+              <StickerWord src="/assets/stickers/troylabs.svg" height="1.15em" tilt={-12}>
+                <a
+                  href="https://www.troylabs.vc"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
+                >
+                  BUILD
+                </a>
+              </StickerWord>
+              ,{" "}
+              <StickerWord src="/assets/stickers/fight-on.svg" height="1.35em" tilt={-18}>
+                USC’s
+              </StickerWord>{" "}
+              premier student-run startup accelerator, where I’ve worked with founders who
+              have raised millions in pre-seed and brought in operators and investors to
+              teach them.
             </p>
           </motion.div>
 
