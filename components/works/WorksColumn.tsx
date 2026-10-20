@@ -60,7 +60,6 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
 
   /* card tops in scroll coordinates, from the live layout (offsetTop would
      depend on which ancestor counts as offsetParent under the transform) */
-  const inner = useRef<HTMLDivElement>(null);
   const cardTops = (el: HTMLElement) => {
     const base = el.getBoundingClientRect().top - el.scrollTop;
     return (Array.from(el.querySelectorAll("li[data-work]")) as HTMLElement[]).map((li) => {
@@ -69,28 +68,9 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     });
   };
 
-  /* end padding sized so the LAST card can land exactly where the first
-     rests (the column needs that much scroll room past it); recomputed on
-     resize. Before this, the last card stopped short and the auto-cycle
-     landed it lower than the others (Margaret, 2026-10-13). */
-  useEffect(() => {
-    const el = scroller.current, box = inner.current;
-    if (!el || !box) return;
-    const fit = () => {
-      const tops = cardTops(el);
-      if (tops.length < 2) return;
-      const first = tops[0], last = tops[tops.length - 1];
-      const tail = box.querySelector<HTMLElement>(".works-tail");
-      const tailH = tail ? tail.getBoundingClientRect().height + parseFloat(getComputedStyle(tail).marginTop) : 0;
-      const need = el.clientHeight - first.top - last.height - tailH; // room so last.top can reach first.top
-      box.style.paddingBottom = `${Math.max(need, 0) + window.innerHeight * 0.08}px`;
-    };
-    fit();
-    const ro = new ResizeObserver(fit);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
+  /* the column ends at the last card: no extra scroll room past it (Margaret,
+     2026-10-20 - the room added for the auto-cycle read as a loose bound), so
+     the cycle's last stop is simply the column's end */
   // auto-cycle until the visitor takes over
   const taken = useRef(false);
   const hovering = useRef(false);
@@ -159,12 +139,11 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     >
       {/* first card's top edge at 19.7vh (Figma 128:503: 220/1117 - it scrolls
           under the fixed nav band); width and inset from the layout tokens */}
-      {/* pb-[8vh] is only the pre-JS fallback: the fit effect above sets the
-          real end padding from the card geometry */}
-      <motion.div ref={inner} style={{ y }} className="px-[var(--inset)] pb-[8vh] pt-12 md:px-0 md:pt-[19.7vh]">
+      <motion.div style={{ y }} className="px-[var(--inset)] pb-[3vh] pt-12 md:px-0 md:pt-[19.7vh]">
         <WorkList reveal={reveal} />
-        {/* the way onward once the four are seen (Shub's feedback, 2026-10-13) */}
-        <p className="works-tail mt-[6vh] text-body">
+        {/* the way onward once the four are seen (Shub's feedback, 2026-10-13):
+            close under the last card, flush with its right edge */}
+        <p className="mt-[2.5vh] text-right text-body">
           <TransitionLink
             href="/works"
             className="inline-flex items-center gap-2 text-ink/45 transition-colors duration-300 hover:text-ink focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"

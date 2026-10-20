@@ -16,7 +16,7 @@ import { useReducedMotion } from "motion/react";
    illustrator, a builder" + a founder - each line completes the name above */
 const TITLES = [
   "is a product designer",
-  "is a design engineer",
+  "is a designer that engineers", // was "is a design engineer" (Margaret, 2026-10-20)
   "is a founder",
   "is obsessed with details",
   "is designing interactions",
