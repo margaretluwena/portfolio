@@ -122,13 +122,13 @@ export default function Nav() {
       className="pointer-events-none fixed inset-x-0 top-0 z-30 h-[18vh]"
       style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.42) 45%, rgba(255,255,255,0) 100%)" }}
       initial={false}
-      animate={{ opacity: scroll.scrolled && !hidden ? 1 : 0 }}
+      animate={{ opacity: scroll.scrolled && !hidden && !away ? 1 : 0 }} /* the veil leaves with the pill */
       transition={{ duration: reduce ? 0 : 0.45, ease: "easeOut" }}
     />
     <motion.header
       className="fixed left-[var(--inset)] right-[var(--inset)] top-[6.36vh] z-40 md:right-[calc(100vw-var(--align-r))]"
       initial={false}
-      animate={{ opacity: hidden ? 0 : 1, y: away ? "-160%" : "0%" }}
+      animate={{ opacity: hidden ? 0 : 1, y: away ? "-320%" : "0%" }} /* -320%: clear of the top edge from 6.36vh down, with margin */
       transition={{
         opacity: { duration: 0.6, delay: hidden || reduce ? 0 : 0.5 },
         y: reduce ? { duration: 0 } : { duration: 0.45, ease: [0.7, 0, 0.2, 1] },
