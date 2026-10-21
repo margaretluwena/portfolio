@@ -12,7 +12,7 @@ const DEFAULT_COLORS = {
   petals: ['#e0558d', '#e2603f', '#4d82c9', '#d9a521'], flowerCenter: '#b07c22',
   poodle: '#1b1b1b', poodleFace: '#1b1b1b', poodleLegs: '#1b1b1b',
   ballRim: '#cde23a', ballSeam: '#fbfdf0', hint: '#1b1b1b',
-  rain: '#8aa0c4', ray: '#efd37c', lit: '#b4e27a', // pointer weather (2026-10-20)
+  rain: '#5b7cc4', // pointer weather (2026-10-20): the raindrops
   trail: '#8d8d8d',
 };
 
@@ -94,10 +94,10 @@ export function createSkyField(canvas, options = {}) {
     COLORS = [null, C.sky, C.skyDense, C.cloudShade, C.cloudShadeDeep, C.farRidge, C.farTexture,
       C.domeRidge, C.domeRidge, C.domeShadow, C.domeLit, C.frontRidge, C.frontRidge, C.grass, C.ground,
       ...C.petals.slice(0, 4), C.flowerCenter, C.poodle, C.poodleFace, C.poodleLegs, C.ballRim, C.ballSeam, C.hint, C.trail,
-      C.rain, C.ray, C.lit];
+      C.rain];
   }
   buildPalette();
-  const PETAL = 15, CENTER = 19, STEM = 13, TRAIL = 26, RAIN = 27, RAY = 28, LIT = 29;
+  const PETAL = 15, CENTER = 19, STEM = 13, TRAIL = 26, RAIN = 27;
 
   const reduceMotion = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   let W = 0, H = 0, cols = 0, rows = 0, cw = 6, ch = 11;
@@ -112,7 +112,7 @@ export function createSkyField(canvas, options = {}) {
      dog leaves behind while they blow away. Reduced motion renders solid. */
   let smalls = [];
   /* pointer weather: where the mouse is (canvas px), the eased strength of each effect, live raindrops */
-  let M = { x: 0, y: 0, on: false }, fx = { rain: 0, shine: 0 }, drops = [], frameDt = 0;
+  let M = { x: 0, y: 0, on: false }, fx = { rain: 0 }, drops = [], frameDt = 0;
   const SMALL = 0.68; // small-glyph scale
 
   function hash(x, y) {
@@ -449,49 +449,36 @@ export function createSkyField(canvas, options = {}) {
       for (let j = f.t.h.length - 1; j >= 0; j--, r--) { const line = f.t.h[j], x0 = f.c - (line.length >> 1) + shift;
         for (let q = 0; q < line.length; q++) { const g = line[q]; if (g !== ' ') put(r, x0 + q, g, CENTERS.includes(g) ? CENTER : f.petal); } }
     }
-    /* ---------- pointer weather (Margaret, 2026-10-20): a radius around the mouse while it
-       is in the sky. Over a cloud, rain leaves the cloud's underside inside that radius and
-       falls to the field. Over open sky, a cone of light falls from the pointer and lights the
-       hills where it lands. Both ease in and out so moving across a cloud edge never flickers. */
+    /* ---------- pointer weather (Margaret, 2026-10-20): while the mouse rests on a cloud,
+       rain leaves the cloud's underside inside a radius of it and falls to the field at 45
+       degrees. Eases in and out so crossing a cloud edge never flickers. Off a cloud there is
+       nothing (the ray-of-light cone tried here was cut the same day). ---------- */
     if (P.pointerFx && !reduceMotion) {
       const pc = Math.floor(M.x / cw), pr = Math.floor(M.y / ch), dt = frameDt;
       const profAt = (r) => { const gy = r / skyH; return (1 - smooth(-0.15, 0.2, gy)) * 0.1 + smooth(0.55, 1.05, gy) * 0.22; };
       const covAt = (r, c) => smooth(-0.025, 0.06, field(r, c) - th - profAt(r));
       let want = null;
       if (M.on && pc >= 0 && pc < cols && pr >= 0 && pr < skyLimit[pc]) {
-        const cv = covAt(pr, pc); want = cv > 0.3 ? 'rain' : cv < 0.08 ? 'shine' : null;
+        want = covAt(pr, pc) > 0.45 ? 'rain' : null; // rain only on real cloud
       }
-      const ease = (k, on) => { fx[k] += ((on ? 1 : 0) - fx[k]) * Math.min(1, dt * (on ? 4 : 2.5)); };
-      ease('rain', want === 'rain'); ease('shine', want === 'shine');
-      const RX = Math.max(4, Math.round(110 / cw)), RY = Math.max(3, Math.round(110 / ch));
-      if (fx.rain > 0.03 && drops.length < 160) {
+      fx.rain += ((want === 'rain' ? 1 : 0) - fx.rain) * Math.min(1, dt * (want ? 4 : 2.5));
+      // the rain's catchment is wide (200px around the pointer) so a whole stretch of cloud lets go
+      const RX = Math.max(6, Math.round(200 / cw)), RY = Math.max(4, Math.round(200 / ch));
+      if (fx.rain > 0.03 && drops.length < 420) {
         for (let r = Math.max(0, pr - RY); r <= Math.min(rows - 2, pr + RY); r++) {
           for (let c = Math.max(0, pc - RX); c <= Math.min(cols - 1, pc + RX); c++) {
             if (r + 1 >= skyLimit[c]) continue;
             const dx = (c - pc) / RX, dy = (r - pr) / RY; if (dx * dx + dy * dy > 1) continue;
             // a cloud cell with open air under it is an underside: drops start there
-            if (covAt(r, c) > 0.35 && covAt(r + 1, c) < 0.2 && Math.random() < 2.4 * fx.rain * dt) drops.push({ c, y: r + 1, v: 16 + Math.random() * 10 });
+            if (covAt(r, c) > 0.35 && covAt(r + 1, c) < 0.2 && Math.random() < 7 * fx.rain * dt) drops.push({ c: c + Math.random(), y: r + 1, v: 18 + Math.random() * 10 });
           }
         }
       }
-      for (let i = drops.length - 1; i >= 0; i--) { const d = drops[i]; d.y += d.v * dt;
-        if (d.y >= skyLimit[d.c]) { put(skyLimit[d.c] - 1, d.c, ',', RAIN); drops.splice(i, 1); continue; }
-        put(Math.floor(d.y), d.c, Math.random() < 0.12 ? "'" : '|', RAIN); }
-      if (fx.shine > 0.03 && M.on && pc >= 0 && pc < cols && pr >= 0) {
-        for (let r = pr + 1; r < rows; r++) {
-          const hw = 1 + (r - pr) * 0.32;
-          for (let c = Math.max(0, Math.floor(pc - hw)); c <= Math.min(cols - 1, Math.ceil(pc + hw)); c++) {
-            const edge = 1 - Math.abs(c - pc) / (hw + 0.001), n = hash(c * 7 + 11, r * 3 + 5), i = r * cols + c;
-            if (r < skyLimit[c]) {
-              if (col[i] > 2) continue; // light never passes through a cloud
-              if (n < fx.shine * (0.16 + edge * 0.5)) { chars[i] = n < 0.05 ? ':' : (c & 1) ? '|' : '.'; col[i] = RAY; }
-            } else if (r < skyLimit[c] + 7) {
-              const k = col[i];
-              if ((k === 13 || k === 14 || k === 11 || k === 12) && n < fx.shine * (0.5 + edge * 0.5)) col[i] = LIT;
-            }
-          }
-        }
-      }
+      // drops fall at 45 degrees (down and to the right: the same distance across as down, in px)
+      for (let i = drops.length - 1; i >= 0; i--) { const d = drops[i]; d.y += d.v * dt; d.c += d.v * dt * (ch / cw);
+        const c = Math.floor(d.c); if (c >= cols) { drops.splice(i, 1); continue; }
+        if (d.y >= skyLimit[c]) { put(skyLimit[c] - 1, c, ',', RAIN); drops.splice(i, 1); continue; }
+        put(Math.floor(d.y), c, '\\', RAIN); }
     }
     G.labels = []; G.eyes = [];
     if (P.game) drawGame(put);

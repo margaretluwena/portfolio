@@ -18,7 +18,7 @@ export function GET() {
   const lines: string[] = [
     "# Margaret Luwena",
     "",
-    "> Building for fun, work, and life. Product designer and design engineer at USC, cofounding Traeco (cost intelligence for AI agents) and running BUILD, TroyLabs' accelerator program.",
+    "> Designer at USC, cofounding Traeco (cost intelligence for AI agents) and running BUILD, USC's premier student-run startup accelerator at TroyLabs.",
     "",
     "## Pages",
     "",

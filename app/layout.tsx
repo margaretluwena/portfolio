@@ -50,10 +50,10 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://margaretluwena.net"),
   title: { default: "Margaret Luwena", template: "%s · Margaret Luwena" },
   description:
-    "Margaret Luwena. Building for fun, work, and life.",
+    "Margaret Luwena, designer. Cofounding Traeco, where teams track and govern what their AI agents spend. Running BUILD, USC's premier student-run startup accelerator.",
   openGraph: {
     title: "Margaret Luwena",
-    description: "Building for fun, work, and life. Cofounding Traeco, where teams track and govern what their AI agents spend. Running BUILD, USC's premier student-run startup accelerator.",
+    description: "Designer. Cofounding Traeco, where teams track and govern what their AI agents spend. Running BUILD, USC's premier student-run startup accelerator.",
     url: "https://margaretluwena.net",
     siteName: "Margaret Luwena",
     type: "website",

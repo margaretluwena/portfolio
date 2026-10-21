@@ -127,48 +127,40 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
           <motion.div
             {...enter(0.8)}
             data-bio
-            className="mt-12 max-w-[min(380px,100%)] space-y-6 text-body text-ink md:absolute md:top-[42vh] md:mt-0"
+            className="mt-12 max-w-[min(340px,100%)] space-y-6 text-body text-ink md:absolute md:top-[42vh] md:mt-0"
           >
             {/* Margaret's copy (2026-10-20), verbatim but for "a design" ->
-                "a designer" (a dictation slip, flagged to her). The three
-                hover stickers stay: fight on after USC, Traeco after Traeco,
-                TroyLabs after BUILD (its program). Venture links on Traeco
-                and BUILD; first line reads one step larger than body. */}
-            <p className="text-[17px] leading-snug">
-              Building for fun, work, and life.
-            </p>
+                "a designer" (a dictation slip, flagged to her). Venture links
+                on Traeco and BUILD; first line reads one step larger than
+                body. The hover stickers (StickerWord: fight on after USC,
+                Traeco, TroyLabs) are PARKED for now (Margaret, 2026-10-20) -
+                wrap the words again to bring them back. */}
+            {/* "Building for fun, work, and life." dropped 2026-10-20 (Margaret);
+                the paragraphs start where that line sat */}
             <p>
               Currently a designer cofounding{" "}
-              <StickerWord src="/assets/stickers/traeco.svg" height="1.15em" tilt={14}>
-                <a
-                  href="https://traeco.dev"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
-                >
-                  Traeco
-                </a>
-              </StickerWord>
+              <a
+                href="https://traeco.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
+              >
+                Traeco
+              </a>
               , where I lead product and design for a platform that helps teams track and
               govern what their AI agents spend.
             </p>
             <p>
               I also run{" "}
-              <StickerWord src="/assets/stickers/troylabs.svg" height="1.15em" tilt={-12}>
-                <a
-                  href="https://www.troylabs.vc"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
-                >
-                  BUILD
-                </a>
-              </StickerWord>
-              ,{" "}
-              <StickerWord src="/assets/stickers/fight-on.svg" height="1.35em" tilt={-18}>
-                USC’s
-              </StickerWord>{" "}
-              premier student-run startup accelerator, where I’ve worked with founders who
+              <a
+                href="https://www.troylabs.vc"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
+              >
+                BUILD
+              </a>
+              , USC’s premier student-run startup accelerator, where I’ve worked with founders who
               have raised millions in pre-seed and brought in operators and investors to
               teach them.
             </p>
