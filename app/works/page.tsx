@@ -1,6 +1,9 @@
 import { indexWorks } from "@/lib/works";
 import { WorkCard } from "@/components/works/WorkList";
 import { PageEnter } from "@/components/providers/PageTransition";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Works", description: "Every project: brand, product, and web work, with case studies where they exist." };
 
 /*
   WORKS index - every project (the home column shows only `featured`).
@@ -14,6 +17,7 @@ export default function WorksIndex() {
   return (
     <main className="min-h-screen">
       <PageEnter className="px-[max(24px,4.16vw)] pt-[17.5vh] pb-[12vh]">
+        <h1 className="sr-only">Works</h1>
         <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-[0.9vw]">
           {indexWorks.map((w, i) => (
             <li key={w.slug} data-work={w.slug}>

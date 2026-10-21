@@ -6,15 +6,14 @@ import CaseStudyContent from "@/components/works/CaseStudyContent";
 
 /*
   Standalone case study - the destination URL (direct links, refresh, SEO).
-  When opened by clicking a work on the home page, the intercepting overlay
-  (app/@modal/(.)works/[slug]) shows instead, with the fly-to-center morph.
-  Server component so pasted links carry the work's own title.
+  Cards link straight here (the overlay morph is gone, 2026-10-20). Server
+  component so pasted links carry the work's own title.
 */
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const work = getWork(slug);
-  if (!work || work.comingSoon || work.indexOnly) return {};
+  if (!work || work.comingSoon) return {};
   return { title: work.title, description: work.lede === "NEED" ? undefined : work.lede };
 }
 
@@ -22,10 +21,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   const { slug } = await params;
   const work = getWork(slug);
 
-  /* comingSoon + indexOnly studies aren't reachable: redirect home instead
-     of 404 so old-site links and muscle memory stay alive (slug parity is
-     deliberate; indexOnly pages stay parked in code) */
-  if (work?.comingSoon || work?.indexOnly) redirect("/");
+  /* comingSoon studies aren't reachable: redirect home instead of 404 so
+     old-site links and muscle memory stay alive (slug parity is deliberate) */
+  if (work?.comingSoon) redirect("/");
 
   if (!work) {
     return (

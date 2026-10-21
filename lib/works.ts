@@ -11,8 +11,7 @@
   with generated text - they are Margaret's to write/supply.
 
   All prose here is Margaret's (ported from the live site or her voice
-  notes). The password gate is data-present but rendering is parked behind
-  GATE_ENABLED in the block renderer; NdaGate + /api/unlock stay intact.
+  notes), with the 2026-10-20 brief / takeaways drafts marked as such.
 */
 
 export type Media = {
@@ -33,8 +32,7 @@ export type Block =
   | { type: "problem"; headline: string; evidence: string[]; body: string; media?: Media }
   | { type: "solution"; pieces: { name: string; caption: string; media: Media }[] }
   | { type: "artifactGrid"; media: Media[] }  // 2-6 images, no captions
-  | { type: "wip"; email: string }
-  | { type: "gate"; hint: string };           // requires `protected`; rendering parked
+  | { type: "wip"; email: string };
 
 export type Credit = { label: string; value: string };
 
@@ -87,7 +85,6 @@ export type Work = {
   year: string;
   role?: string;           // works-index meta
   featured?: boolean;
-  protected?: boolean;     // gate blocks + /api/unlock passwords
   play?: boolean;          // shown on PLAY, not in the works index
   coverArt?: CoverLayer[]; // layered home-card art, per-card placement from Figma
   wordmark?: string;       // SVG lockup; title text is the alt/SR label
@@ -98,7 +95,6 @@ export type Work = {
   cardText?: "light";      // description tone on dark cards
   accent?: string;         // case-study label colour (Context / Problem / Solution, credits) - the project's own; default --study-blue
   comingSoon?: boolean;    // home card reveals "Coming soon" on hover
-  indexOnly?: boolean;     // non-link index row; parked study redirects home, no Coming soon label
 };
 
 const WIP_EMAIL = "luwena@usc.edu";
@@ -124,7 +120,6 @@ export const works: Work[] = [
     year: "2025",
     role: "Designer",
     featured: true,
-    protected: true,
     accent: "#2f55d6",                        // royal blue for the labels (the near-black lockup colour read as plain black - Margaret, 2026-10-20)
     wordmark: "/images/wordmarks/mark.svg",   // Figma 127:3003, 155/972 of card width
     wordmarkWidth: "15.9%",
@@ -232,7 +227,6 @@ export const works: Work[] = [
           { title: "Decide colour last", body: "Yellow was doing so much work in the early identity that choosing it first would have locked everything else in. Shapes, then structure, then colour." },
         ],
       },
-      { type: "gate", hint: "The full study sits behind a password under NDA." },
     ],
   },
 
@@ -521,7 +515,6 @@ export const works: Work[] = [
     year: "2025",
     role: "Pitch Deck Design",
     featured: true,
-    protected: true,
     comingSoon: true,
     /* Figma "impeccable chicken card" 163:758: burnt orange surface, product
        photo full-bleed (163:759, export pre-clipped to the visible region),
@@ -744,7 +737,6 @@ export const works: Work[] = [
 export const featuredWorks = works.filter((w) => w.featured);
 export const indexWorks = works.filter((w) => !w.play);
 export const playWorks = works.filter((w) => w.play);
-export const PROTECTED_SLUGS = works.filter((w) => w.protected).map((w) => w.slug);
 export const getWork = (slug: string) => works.find((w) => w.slug === slug);
 
 /* build-time spine checks - warnings, never failures (thin works are
@@ -755,8 +747,8 @@ if (process.env.NODE_ENV !== "production" || process.env.npm_lifecycle_event ===
     if (!w.blocks.some((b) => b.type === "problem")) {
       console.warn(`[works] ${w.slug}: no problem block - case study reads as unfinished`);
     }
-    if (w.blocks.length > 7) {
-      console.warn(`[works] ${w.slug}: ${w.blocks.length} blocks exceeds the 7-block cap`);
+    if (w.blocks.length > 9) {
+      console.warn(`[works] ${w.slug}: ${w.blocks.length} blocks exceeds the 9-block cap`);
     }
     if (w.featured && !w.blurb && w.lede.length > 72) {
       console.warn(`[works] ${w.slug}: no blurb and lede is ${w.lede.length} chars - will clamp on the home card`);
@@ -764,9 +756,6 @@ if (process.env.NODE_ENV !== "production" || process.env.npm_lifecycle_event ===
     for (const b of w.blocks) {
       if (b.type === "artifactGrid" && (b.media.length < 2 || b.media.length > 6)) {
         console.warn(`[works] ${w.slug}: artifactGrid has ${b.media.length} images (spec is 2–6)`);
-      }
-      if (b.type === "gate" && !w.protected) {
-        console.warn(`[works] ${w.slug}: gate block without protected flag`);
       }
     }
   }

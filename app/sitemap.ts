@@ -3,11 +3,11 @@ import { works } from "@/lib/works";
 
 const BASE = "https://margaretluwena.net";
 
-/* reachable routes only - comingSoon/indexOnly slugs redirect home and
+/* reachable routes only - comingSoon slugs redirect home and
    PLAY collections have no pages */
 export default function sitemap(): MetadataRoute.Sitemap {
   const studies = works
-    .filter((w) => !w.comingSoon && !w.indexOnly && !w.play)
+    .filter((w) => !w.comingSoon && !w.play)
     .map((w) => ({ url: `${BASE}/works/${w.slug}`, priority: 0.8 }));
   return [
     { url: BASE, priority: 1 },

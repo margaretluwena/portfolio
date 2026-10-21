@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useReducedMotion } from "motion/react";
 import type { Block, Media, Work } from "@/lib/works";
 import { getWork } from "@/lib/works";
-import NdaGate from "@/components/works/NdaGate";
 import Prox from "@/components/ui/Prox";
 import { TransitionLink } from "@/components/providers/PageTransition";
 import imageSizes from "@/lib/image-sizes.json";
@@ -19,31 +18,24 @@ import imageSizes from "@/lib/image-sizes.json";
   .study-label and sets its prose in .study-body (see globals.css). The
   rail sits in the left gutter with "Return" above the section links.
 
-  The password gate is PARKED: gate blocks render nothing while
-  GATE_ENABLED is false. NdaGate and /api/unlock stay intact - flip the
-  flag to bring the lock back.
-
   Reduced motion: nothing here animates (blocks render static; the rail
   jump falls back from smooth to instant scrolling). Embeds never
   autoplay; video uses native keyboard-operable controls.
 */
 
-const GATE_ENABLED = false;
-
 /* rail: derived from blocks, context/problem/solution/gate only -
    wip and artifactGrid render inline but never appear in the rail */
-const RAIL_TYPES = ["context", "brief", "problem", "solution", "lessons", "gate"] as const;
+const RAIL_TYPES = ["context", "brief", "problem", "solution", "lessons"] as const;
 const RAIL_NAMES: Record<string, string> = {
   context: "Context",
   brief: "Brief",
   problem: "Problem",
   solution: "Solution",
   lessons: "Takeaways",
-  gate: "Full study",
 };
 
 export function visibleBlocks(work: Work): Block[] {
-  return GATE_ENABLED ? work.blocks : work.blocks.filter((b) => b.type !== "gate");
+  return work.blocks;
 }
 
 export function railEntries(work: Work): { id: string; name: string }[] {
@@ -316,15 +308,6 @@ function WipBlock({ block }: { block: Extract<Block, { type: "wip" }> }) {
   );
 }
 
-function GateBlock({ block, slug, title }: { block: Extract<Block, { type: "gate" }>; slug: string; title: string }) {
-  if (!GATE_ENABLED) return null;
-  return (
-    <NdaGate slug={slug} title={title}>
-      <p className="text-body-lg text-ink/60">{block.hint}</p>
-    </NdaGate>
-  );
-}
-
 export function Blocks({ work }: { work: Work }) {
   return (
     <div className="space-y-[10vh]">
@@ -345,8 +328,6 @@ export function Blocks({ work }: { work: Work }) {
             return <div key={id} id={id}><ArtifactGridBlock block={b} /></div>;
           case "wip":
             return <div key={id} id={id}><WipBlock block={b} /></div>;
-          case "gate":
-            return <div key={id} id={id}><GateBlock block={b} slug={work.slug} title={work.title} /></div>;
         }
       })}
     </div>
@@ -397,6 +378,20 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
        from 43vh with the sections below) - back to the home column, or,
        in the overlay, closes it. A rail with one entry tells the reader
        nothing, so thin works keep Return only, itself at the middle. */
+    <>
+    {/* phones: the rail is hidden and the nav pill leaves on scroll, so a
+        small Return pill stays pinned at the bottom-left (audit, 2026-10-20) */}
+    <div className="fixed bottom-[max(16px,env(safe-area-inset-bottom))] left-[var(--inset)] z-40 md:hidden">
+      {onReturn ? (
+        <button type="button" onClick={onReturn} className="rounded-full border border-black/[0.12] bg-white/90 px-4 py-2 text-body text-ink shadow-[0_8px_19px_rgba(0,0,0,0.08)] backdrop-blur">
+          {returnLabel}
+        </button>
+      ) : (
+        <TransitionLink href="/" className="inline-block rounded-full border border-black/[0.12] bg-white/90 px-4 py-2 text-body text-ink shadow-[0_8px_19px_rgba(0,0,0,0.08)] backdrop-blur">
+          {returnLabel}
+        </TransitionLink>
+      )}
+    </div>
     <nav
       aria-label="Case study sections"
       className="fixed left-[var(--inset)] top-1/2 z-10 hidden -translate-y-1/2 md:block"
@@ -437,6 +432,7 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
         </ol>
       )}
     </nav>
+    </>
   );
 }
 

@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { PageEnter } from "@/components/providers/PageTransition";
 import { playWorks, type Block } from "@/lib/works";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Play", description: "Graphics, flyers, illustrations, and small projects, made for fun." };
 
 /*
   PLAY - grid only, per the A3 Prompt B spec: section header, one line of
@@ -19,12 +22,8 @@ export default function PlayPage() {
   return (
     <main className="min-h-screen">
       <PageEnter className="px-[var(--margin-outer)] pt-[22vh] pb-[18vh]">
-        {/* no page header (Margaret, 2026-10-20); the pill already says PLAY */}
+        {/* no header and no intro line (Margaret, 2026-10-20); the pill already says PLAY */}
         <h1 className="sr-only">Play</h1>
-        <p className="mb-14 max-w-[52ch] text-body-lg text-ink">
-          The things I make when nothing is due: graphics, flyers, illustrations, and the small
-          projects from hackathons, design challenges, and class. Made for fun, kept for the record.
-        </p>
 
         <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 [&>img]:mb-6">
           {snippets.map((src) => (

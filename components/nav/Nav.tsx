@@ -128,10 +128,12 @@ export default function Nav() {
     <motion.header
       className="fixed left-[var(--inset)] right-[var(--inset)] top-[6.36vh] z-40 md:right-[calc(100vw-var(--align-r))]"
       initial={false}
-      animate={{ opacity: hidden ? 0 : 1, y: away ? "-320%" : "0%" }} /* -320%: clear of the top edge from 6.36vh down, with margin */
+      animate={{ opacity: hidden || away ? 0 : 1, y: away ? "-320%" : "0%" }} /* -320%: clear of the top edge from 6.36vh down, with margin */
       transition={{
-        opacity: { duration: 0.6, delay: hidden || reduce ? 0 : 0.5 },
-        y: reduce ? { duration: 0 } : { duration: 0.45, ease: [0.7, 0, 0.2, 1] },
+        /* the exit fades as it slides, on a slow ease-in-out, so leaving reads as a
+           drift rather than a snap (Margaret, 2026-10-20) */
+        opacity: { duration: away ? 0.55 : 0.6, delay: hidden || reduce || away ? 0 : 0.5, ease: "easeInOut" },
+        y: reduce ? { duration: 0 } : { duration: 0.85, ease: [0.45, 0, 0.15, 1] },
       }}
       style={{ pointerEvents: hidden || away ? "none" : "auto" }}
     >

@@ -7,7 +7,7 @@ import { ImageResponse } from "next/og";
   matching the intro frame's read at card size.)
 */
 
-export const alt = "Margaret Luwena, design engineer";
+export const alt = "Margaret Luwena, a designer that engineers";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -30,7 +30,7 @@ export default function OG() {
           MARGARET LUWENA
         </div>
         <div style={{ display: "flex", marginTop: 18, fontSize: 34, fontStyle: "italic", color: "#a728ab" }}>
-          is a design engineer
+          is a designer that engineers
         </div>
       </div>
     ),

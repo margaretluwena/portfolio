@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
@@ -92,8 +92,24 @@ const DIM = "brightness(1.1) saturate(0.7) contrast(0.9)";           // photos s
 const DIM_STICKER = "brightness(1.03) saturate(0.9) contrast(0.98)";  // stickers only a touch softer
 const FULL = "brightness(1) saturate(1) contrast(1)";
 
+/* the fan and the sticker cluster are absolute layouts sized for a wide
+   row; below lg the stickers sit in a row and the photos in a two-up grid
+   (audit, 2026-10-20: five tilted polaroids collided at phone and tablet widths) */
+function useMd() {
+  const [md, setMd] = useState(true);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const sync = () => setMd(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  return md;
+}
+
 export default function AboutInvolvement() {
   const reduce = useReducedMotion();
+  const md = useMd();
   const [active, setActive] = useState(INVOLVEMENTS[0].id);
   const [front, setFront] = useState(lead(INVOLVEMENTS[0].photos.length));
   const current = INVOLVEMENTS.find((i) => i.id === active) ?? INVOLVEMENTS[0];
@@ -105,9 +121,9 @@ export default function AboutInvolvement() {
 
       {/* minmax(0,1fr) + self-start: the photo frame sizes from its width; if the row's
           height (the stickers column) reached it, aspect-ratio would blow its width out */}
-      <div className="mt-[5vh] grid gap-12 md:grid-cols-[140px_minmax(0,1fr)] md:gap-[4vw]">
+      <div className="mt-[5vh] grid gap-12 lg:grid-cols-[140px_minmax(0,1fr)] lg:gap-[4vw]">
         {/* stickers */}
-        <div role="tablist" aria-label="Involvements" className="relative aspect-[150/478] w-full max-w-[140px]">
+        <div role="tablist" aria-label="Involvements" className="relative flex items-center gap-7 lg:block lg:aspect-[150/478] lg:w-full lg:max-w-[140px]">
           {INVOLVEMENTS.map((i) => {
             const on = i.id === active;
             return (
@@ -121,8 +137,8 @@ export default function AboutInvolvement() {
                   setActive(i.id);
                   setFront(lead(i.photos.length));
                 }}
-                className="absolute block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-                style={i.style}
+                className="block lg:absolute focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                style={md ? i.style : { width: 72 }}
                 animate={{ filter: on ? FULL : DIM_STICKER, scale: on ? 1 : 0.94, rotate: on ? 0 : -3 }}
                 whileHover={reduce ? undefined : { scale: on ? 1.03 : 0.98, filter: FULL }}
                 whileTap={reduce ? undefined : { scale: 0.96 }}
@@ -142,9 +158,30 @@ export default function AboutInvolvement() {
           })}
         </div>
 
-        {/* the fan of photos */}
+        {/* phones and tablets: the current set two-up, same polaroids, no fan */}
+        <div key={current.id} className="grid grid-cols-2 gap-4 lg:hidden" role="tabpanel" aria-label={`${current.name} photos`}>
+          {current.photos.map((photo, k) => (
+            <button
+              key={k}
+              type="button"
+              aria-pressed={k === front}
+              onClick={() => setFront(k)}
+              className="block text-left"
+              style={{ rotate: `${SLOTS[k % SLOTS.length].rot}deg` }}
+            >
+              <div className="w-full rounded-[3px] bg-white px-[5%] pb-[5%] pt-[5%] shadow-[0_12px_32px_rgba(0,0,0,0.12)]">
+                <div className="relative aspect-[400/424] w-full overflow-hidden bg-[#d9d9d9]">
+                  {photo.src && <Image src={photo.src} alt="" fill sizes="45vw" className="object-cover" />}
+                </div>
+                {photo.caption && <p className="pb-[2%] pt-[6%] text-center text-body text-ink">{photo.caption}</p>}
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* the fan of photos (lg+) */}
         {/* centred on the Verci sticker (the cluster's middle, ~54% down it) */}
-        <div className="relative aspect-[1370/500] w-full self-center md:translate-y-[5%]">
+        <div className="relative hidden aspect-[1370/500] w-full self-center lg:block lg:translate-y-[5%]">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={current.id}

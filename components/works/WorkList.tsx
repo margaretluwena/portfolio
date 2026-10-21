@@ -35,7 +35,7 @@ import CardVideo from "@/components/works/CardVideo";
 
 /* the layered art (or cover image, or title tile) plus the fade into the
    text zone; fills a positioned parent of the card's 972/678 shape */
-export function CoverArt({ work, hover = true, sizes = "45vw" }: { work: Work; hover?: boolean; sizes?: string }) {
+export function CoverArt({ work, hover = true, sizes = "45vw", priority = false }: { work: Work; hover?: boolean; sizes?: string; priority?: boolean }) {
   return (
           <div
             className={`absolute inset-0 ${
@@ -69,16 +69,16 @@ export function CoverArt({ work, hover = true, sizes = "45vw" }: { work: Work; h
                           ) : layer.crop ? (
                             /* Figma crop fill: the whole image drawn at the crop box, clipped by the layer */
                             <div className="absolute" style={layer.crop}>
-                              <Image src={layer.src} alt="" fill sizes={sizes} className="object-fill" />
+                              <Image src={layer.src} alt="" fill sizes={sizes} className="object-fill" priority={priority} />
                             </div>
                           ) : (
-                            <Image src={layer.src} alt="" fill sizes={sizes} className="object-contain" />
+                            <Image src={layer.src} alt="" fill sizes={sizes} className="object-contain" priority={priority} />
                           )}
                         </div>
                       ))}
                     </div>
                   ) : work.cover && work.cover.src !== "NEED" ? (
-                    <Image src={work.cover.src} alt={work.cover.alt} fill sizes={sizes} className="object-cover" />
+                    <Image src={work.cover.src} alt={work.cover.alt} fill sizes={sizes} className="object-cover" priority={priority} />
                   ) : (
                     <div
                       className={`absolute inset-0 grid place-items-center bg-placeholder/50 text-secondary text-ink/30 ${
@@ -103,7 +103,7 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
   const i = index;
   /* unreachable studies (no case study yet, or parked) render the same
      card as a plain surface: no link, no shared-layout target */
-  const inert = !!(work.comingSoon || work.indexOnly);
+  const inert = !!work.comingSoon;
   {
         /* load entrance: the visible cards rise from below in a stagger
            (Motion choreography: elements move at different times, not in
@@ -111,7 +111,8 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
            wordmark lands. No scroll-reveal ramp: below-fold cards render
            fully visible the moment they're scrolled to, so nothing the
            reader is about to interact with fades in on them. */
-        const coverInner = <CoverArt work={work} hover={!work.comingSoon} />;
+        /* the first card is the largest thing above the fold: its art loads eagerly */
+        const coverInner = <CoverArt work={work} hover={!work.comingSoon} priority={i === 0} />;
 
         const card = (
             <motion.article
@@ -140,31 +141,17 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
                   shows (lockup left, signal pill right) sitting 5.9% above the
                   bottom edge; on hover the row rises and the one-line
                   description slides in under it. Below md there is no hover,
-                  so the description is always out. Real SVG lockups scale by
-                  width (natural aspect preserved); the row is inset 4.6% a
-                  side, so the lockup's card-relative width is divided by
-                  0.908 to come out the same. */}
+                  so the description is always out. */}
               <div
                 className="absolute inset-x-0 bottom-[5.9%] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:translate-y-[28px] md:group-hover:translate-y-0"
               >
                 <div className="flex items-end justify-between gap-4 px-[4.6%]">
-                  {work.wordmark ? (
-                    <div className="shrink-0" style={{ width: `calc(${work.wordmarkWidth ?? "16%"} / 0.908)` }}>
-                      <Prox baseOpacity={0.9} maxScale={1} radius={120}>
-                        {/* eslint-disable-next-line @next/next/no-img-element -- local static SVG, no optimization pass needed */}
-                        <img
-                          src={work.wordmark}
-                          alt={work.title}
-                          className="block h-auto w-full"
-                          style={work.wordmarkGlow ? { filter: work.wordmarkGlow } : undefined}
-                        />
-                      </Prox>
-                    </div>
-                  ) : (
-                    <Prox baseOpacity={0.9} maxScale={1} radius={120}>
-                      <span className="font-display text-name text-ink">{work.title}</span>
-                    </Prox>
-                  )}
+                  {/* every card titles itself in text now - the SVG lockups made
+                      the set read as four brands and three names (Shub, Margaret
+                      2026-10-20). The lockups still head the case studies. */}
+                  <Prox baseOpacity={0.9} maxScale={1} radius={120}>
+                    <span className={`font-display text-name ${work.cardText === "light" ? "text-white" : "text-ink"}`}>{work.title}</span>
+                  </Prox>
                   {/* the signal pill: one fact about the team or the scale (Shub's feedback, 2026-10-09) */}
                   {work.signal && (
                     <span

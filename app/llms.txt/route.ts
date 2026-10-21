@@ -30,7 +30,7 @@ export function GET() {
     "## Works",
     "",
     ...studies.map((w) => {
-      const open = !w.comingSoon && !w.indexOnly;
+      const open = !w.comingSoon;
       const where = open ? `[${w.title}](${SITE}/works/${w.slug})` : `${w.title} (case study coming soon)`;
       const meta = [w.category, w.year, w.role].filter((v) => v && v !== "NEED").join(", ");
       const lede = w.lede && w.lede !== "NEED" ? ` ${w.lede.replace(/\.$/, "")}.` : "";

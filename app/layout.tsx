@@ -101,8 +101,6 @@ export default function RootLayout({
             </RouteMotion>
           </TransitionProvider>
         </NavProvider>
-        {/* custom cursor dot removed (Margaret, 2026-09-10); Cursor.tsx
-            stays parked unimported - remount here to bring it back */}
         {/* the pointer's white bubble (data-bubble / setCursorBubble), pointer-only */}
         <CursorBubble />
         <DevAgentation />
