@@ -121,12 +121,12 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
 
           {/* bio - 380px cap (was 245px for the artboard's 3-4 short lines; the
               2026-10-20 paragraph ran eleven lines into the ball - Margaret:
-              push the right bound out). 46vh, up from the artboard's 50.1vh
-              (Margaret, 2026-10-08: "a little bit") */}
+              push the right bound out). 46vh: back down from 42vh (Margaret,
+              2026-10-20: "a little bit lower") */}
           <motion.div
             {...enter(0.8)}
             data-bio
-            className="mt-12 max-w-[min(340px,100%)] space-y-6 text-body text-ink md:absolute md:top-[42vh] md:mt-0"
+            className="mt-12 max-w-[min(340px,100%)] space-y-6 text-body text-ink md:absolute md:top-[46vh] md:mt-0"
           >
             {/* Margaret's copy (2026-10-20), verbatim but for "a design" ->
                 "a designer" (a dictation slip, flagged to her). Venture links
