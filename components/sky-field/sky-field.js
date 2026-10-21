@@ -12,6 +12,7 @@ const DEFAULT_COLORS = {
   petals: ['#e0558d', '#e2603f', '#4d82c9', '#d9a521'], flowerCenter: '#b07c22',
   poodle: '#1b1b1b', poodleFace: '#1b1b1b', poodleLegs: '#1b1b1b',
   ballRim: '#cde23a', ballSeam: '#fbfdf0', hint: '#1b1b1b',
+  rain: '#8aa0c4', ray: '#efd37c', lit: '#b4e27a', // pointer weather (2026-10-20)
   trail: '#8d8d8d',
 };
 
@@ -81,7 +82,7 @@ export function createSkyField(canvas, options = {}) {
   const ctx = canvas.getContext('2d');
   const P = {
     cellSize: 9, wind: 1, cover: 0.55, depth: 0.85, flowers: 1, hills: 1, bumps: 1, hillTexture: 1, ramp: 'dither',
-    onThrow: null, onCount: null, onHover: null, onAction: null,
+    onThrow: null, onCount: null, onHover: null, onAction: null, pointerFx: true,
     seed: (Math.random() * 1e6) | 0, game: true, hint: 'shake me', ballX: 0.62, maxFps: 30,
     fontFamily: '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
     ...options,
@@ -92,10 +93,11 @@ export function createSkyField(canvas, options = {}) {
   function buildPalette() {
     COLORS = [null, C.sky, C.skyDense, C.cloudShade, C.cloudShadeDeep, C.farRidge, C.farTexture,
       C.domeRidge, C.domeRidge, C.domeShadow, C.domeLit, C.frontRidge, C.frontRidge, C.grass, C.ground,
-      ...C.petals.slice(0, 4), C.flowerCenter, C.poodle, C.poodleFace, C.poodleLegs, C.ballRim, C.ballSeam, C.hint, C.trail];
+      ...C.petals.slice(0, 4), C.flowerCenter, C.poodle, C.poodleFace, C.poodleLegs, C.ballRim, C.ballSeam, C.hint, C.trail,
+      C.rain, C.ray, C.lit];
   }
   buildPalette();
-  const PETAL = 15, CENTER = 19, STEM = 13, TRAIL = 26;
+  const PETAL = 15, CENTER = 19, STEM = 13, TRAIL = 26, RAIN = 27, RAY = 28, LIT = 29;
 
   const reduceMotion = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   let W = 0, H = 0, cols = 0, rows = 0, cw = 6, ch = 11;
@@ -109,6 +111,8 @@ export function createSkyField(canvas, options = {}) {
      at the reduced size in a second pass; `G.trail` holds the pixels the
      dog leaves behind while they blow away. Reduced motion renders solid. */
   let smalls = [];
+  /* pointer weather: where the mouse is (canvas px), the eased strength of each effect, live raindrops */
+  let M = { x: 0, y: 0, on: false }, fx = { rain: 0, shine: 0 }, drops = [], frameDt = 0;
   const SMALL = 0.68; // small-glyph scale
 
   function hash(x, y) {
@@ -445,6 +449,50 @@ export function createSkyField(canvas, options = {}) {
       for (let j = f.t.h.length - 1; j >= 0; j--, r--) { const line = f.t.h[j], x0 = f.c - (line.length >> 1) + shift;
         for (let q = 0; q < line.length; q++) { const g = line[q]; if (g !== ' ') put(r, x0 + q, g, CENTERS.includes(g) ? CENTER : f.petal); } }
     }
+    /* ---------- pointer weather (Margaret, 2026-10-20): a radius around the mouse while it
+       is in the sky. Over a cloud, rain leaves the cloud's underside inside that radius and
+       falls to the field. Over open sky, a cone of light falls from the pointer and lights the
+       hills where it lands. Both ease in and out so moving across a cloud edge never flickers. */
+    if (P.pointerFx && !reduceMotion) {
+      const pc = Math.floor(M.x / cw), pr = Math.floor(M.y / ch), dt = frameDt;
+      const profAt = (r) => { const gy = r / skyH; return (1 - smooth(-0.15, 0.2, gy)) * 0.1 + smooth(0.55, 1.05, gy) * 0.22; };
+      const covAt = (r, c) => smooth(-0.025, 0.06, field(r, c) - th - profAt(r));
+      let want = null;
+      if (M.on && pc >= 0 && pc < cols && pr >= 0 && pr < skyLimit[pc]) {
+        const cv = covAt(pr, pc); want = cv > 0.3 ? 'rain' : cv < 0.08 ? 'shine' : null;
+      }
+      const ease = (k, on) => { fx[k] += ((on ? 1 : 0) - fx[k]) * Math.min(1, dt * (on ? 4 : 2.5)); };
+      ease('rain', want === 'rain'); ease('shine', want === 'shine');
+      const RX = Math.max(4, Math.round(110 / cw)), RY = Math.max(3, Math.round(110 / ch));
+      if (fx.rain > 0.03 && drops.length < 160) {
+        for (let r = Math.max(0, pr - RY); r <= Math.min(rows - 2, pr + RY); r++) {
+          for (let c = Math.max(0, pc - RX); c <= Math.min(cols - 1, pc + RX); c++) {
+            if (r + 1 >= skyLimit[c]) continue;
+            const dx = (c - pc) / RX, dy = (r - pr) / RY; if (dx * dx + dy * dy > 1) continue;
+            // a cloud cell with open air under it is an underside: drops start there
+            if (covAt(r, c) > 0.35 && covAt(r + 1, c) < 0.2 && Math.random() < 2.4 * fx.rain * dt) drops.push({ c, y: r + 1, v: 16 + Math.random() * 10 });
+          }
+        }
+      }
+      for (let i = drops.length - 1; i >= 0; i--) { const d = drops[i]; d.y += d.v * dt;
+        if (d.y >= skyLimit[d.c]) { put(skyLimit[d.c] - 1, d.c, ',', RAIN); drops.splice(i, 1); continue; }
+        put(Math.floor(d.y), d.c, Math.random() < 0.12 ? "'" : '|', RAIN); }
+      if (fx.shine > 0.03 && M.on && pc >= 0 && pc < cols && pr >= 0) {
+        for (let r = pr + 1; r < rows; r++) {
+          const hw = 1 + (r - pr) * 0.32;
+          for (let c = Math.max(0, Math.floor(pc - hw)); c <= Math.min(cols - 1, Math.ceil(pc + hw)); c++) {
+            const edge = 1 - Math.abs(c - pc) / (hw + 0.001), n = hash(c * 7 + 11, r * 3 + 5), i = r * cols + c;
+            if (r < skyLimit[c]) {
+              if (col[i] > 2) continue; // light never passes through a cloud
+              if (n < fx.shine * (0.16 + edge * 0.5)) { chars[i] = n < 0.05 ? ':' : (c & 1) ? '|' : '.'; col[i] = RAY; }
+            } else if (r < skyLimit[c] + 7) {
+              const k = col[i];
+              if ((k === 13 || k === 14 || k === 11 || k === 12) && n < fx.shine * (0.5 + edge * 0.5)) col[i] = LIT;
+            }
+          }
+        }
+      }
+    }
     G.labels = []; G.eyes = [];
     if (P.game) drawGame(put);
     // draw: merge same-coloured runs (spaces included) into single fillText calls
@@ -470,6 +518,7 @@ export function createSkyField(canvas, options = {}) {
     if (now - last < 1000 / P.maxFps) return;
     const dt = Math.min(0.1, (now - last) / 1000); last = now;
     if (!reduceMotion) T += dt;
+    frameDt = dt;
     if (P.game) updateGame(dt);
     if (!reduceMotion || dirty || gameActive()) { render(); dirty = false; }
   }
@@ -500,6 +549,7 @@ export function createSkyField(canvas, options = {}) {
     prevCursor = document.documentElement.style.cursor; document.documentElement.style.cursor = 'grabbing';
   }
   function onMove(e) {
+    { const p = pt(e); M.x = p.x; M.y = p.y; M.on = e.pointerType !== 'touch'; }
     if (!G.grab) {
       if (e.pointerType === 'mouse' && P.game) {
         const clear = !(e.target instanceof Element && e.target.closest(INTERACTIVE)), p = pt(e);
@@ -540,6 +590,8 @@ export function createSkyField(canvas, options = {}) {
 
   window.addEventListener('pointerdown', onDown);
   window.addEventListener('pointermove', onMove);
+  const onOut = (e) => { if (!e.relatedTarget) M.on = false; };
+  window.addEventListener('pointerout', onOut);
   window.addEventListener('pointerup', onUp);
   window.addEventListener('pointercancel', onUp);
   window.addEventListener('touchstart', onTouchStart, { passive: false });
@@ -563,7 +615,7 @@ export function createSkyField(canvas, options = {}) {
     /** Stop the animation and remove every listener */
     destroy() {
       destroyed = true; cancelAnimationFrame(raf); ro.disconnect();
-      window.removeEventListener('pointerdown', onDown); window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerdown', onDown); window.removeEventListener('pointermove', onMove); window.removeEventListener('pointerout', onOut);
       window.removeEventListener('pointerup', onUp); window.removeEventListener('pointercancel', onUp);
       window.removeEventListener('touchstart', onTouchStart); window.removeEventListener('touchmove', onTouchMove);
       if (G.grab) { document.body.style.userSelect = prevSelect; }

@@ -32,11 +32,13 @@ const GATE_ENABLED = false;
 
 /* rail: derived from blocks, context/problem/solution/gate only -
    wip and artifactGrid render inline but never appear in the rail */
-const RAIL_TYPES = ["context", "problem", "solution", "gate"] as const;
+const RAIL_TYPES = ["context", "brief", "problem", "solution", "lessons", "gate"] as const;
 const RAIL_NAMES: Record<string, string> = {
   context: "Context",
+  brief: "Brief",
   problem: "Problem",
   solution: "Solution",
+  lessons: "Takeaways",
   gate: "Full study",
 };
 
@@ -121,7 +123,10 @@ function MediaView({ media, sizes = "(max-width: 768px) 92vw, 56vw" }: { media: 
     );
   }
   const [w, h] = SIZES[media.src] ?? [1280, 853];
-  const portrait = h > w * 1.15;
+  const portrait = isPortrait(media);
+  /* portrait images (phone screens, tall packaging shots) are capped at 58vh
+     and scale by height, so a 644x1400 screen never towers over its caption
+     (Margaret, 2026-10-20: "really long and awkwardly placed") */
   return (
     <Image
       src={media.src}
@@ -129,11 +134,21 @@ function MediaView({ media, sizes = "(max-width: 768px) 92vw, 56vw" }: { media: 
       width={w}
       height={h}
       sizes={portrait ? "(max-width: 768px) 60vw, 25vw" : sizes}
-      className="mx-auto block h-auto rounded-[4px]"
-      style={{ width: "100%", maxWidth: `min(${portrait ? "44%" : "100%"}, ${Math.round(w / 2)}px)` }}
+      className="mx-auto block rounded-[4px]"
+      style={
+        portrait
+          ? { width: "auto", height: "auto", maxHeight: "58vh", maxWidth: `min(100%, ${Math.round(w / 2)}px)` }
+          : { width: "100%", height: "auto", maxWidth: `min(100%, ${Math.round(w / 2)}px)` }
+      }
     />
   );
 }
+
+const isPortrait = (media: Media) => {
+  if (media.src === "NEED" || media.video || media.embed) return false;
+  const [w, h] = SIZES[media.src] ?? [1280, 853];
+  return h > w * 1.15;
+};
 
 /* ---------- blocks ---------- */
 
@@ -186,21 +201,81 @@ function SolutionBlock({ block }: { block: Extract<Block, { type: "solution" }> 
   return (
     <section className="space-y-10">
       <SectionLabel>{RAIL_NAMES.solution}</SectionLabel>
-      {pieces.map((piece, i) => (
-        <div key={`${i}-${piece.name}`} className="space-y-4">
-          {isNeed(piece.name) ? (
-            <NeedText label="piece name" className="max-w-[220px]" />
-          ) : (
-            <h3 className="text-label uppercase text-ink/50">{piece.name}</h3>
-          )}
-          {isNeed(piece.caption) ? (
-            <NeedText label="caption" lines={2} className="max-w-[62ch]" />
-          ) : (
-            <p className="study-body max-w-[40ch] text-ink">{piece.caption}</p>
-          )}
-          <MediaView media={piece.media} />
+      {pieces.map((piece, i) => {
+        const tall = isPortrait(piece.media);
+        const text = (
+          <div className="space-y-4">
+            {isNeed(piece.name) ? (
+              <NeedText label="piece name" className="max-w-[220px]" />
+            ) : (
+              <h3 className="study-body font-medium text-ink">{piece.name}</h3>
+            )}
+            {isNeed(piece.caption) ? (
+              <NeedText label="caption" lines={2} className="max-w-[62ch]" />
+            ) : (
+              <p className="max-w-[44ch] text-body-lg text-ink/75">{piece.caption}</p>
+            )}
+          </div>
+        );
+        /* a tall image sits beside its text instead of under it, so the
+           column never carries a phone screen with nothing to its sides
+           (Margaret, 2026-10-20) */
+        return tall ? (
+          <div key={`${i}-${piece.name}`} className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,42%)] md:items-center md:gap-10">
+            {text}
+            <MediaView media={piece.media} />
+          </div>
+        ) : (
+          <div key={`${i}-${piece.name}`} className="space-y-5">
+            {text}
+            <MediaView media={piece.media} />
+          </div>
+        );
+      })}
+    </section>
+  );
+}
+
+function BriefBlock({ block }: { block: Extract<Block, { type: "brief" }> }) {
+  return (
+    <section className="space-y-6">
+      <SectionLabel>{RAIL_NAMES.brief}</SectionLabel>
+      <h3 className="study-body font-medium text-ink">{block.objective}</h3>
+      <div className="grid gap-8 md:grid-cols-2 md:gap-12">
+        <div>
+          <h4 className="text-label uppercase text-ink/50">Goals</h4>
+          <ul className="mt-3 space-y-2">
+            {block.goals.map((g) => (
+              <li key={g} className="border-t border-hairline pt-2 text-body text-ink">{g}</li>
+            ))}
+          </ul>
         </div>
-      ))}
+        <div>
+          <h4 className="text-label uppercase text-ink/50">What I did</h4>
+          <ul className="mt-3 space-y-2">
+            {block.did.map((d) => (
+              <li key={d} className="border-t border-hairline pt-2 text-body text-ink">{d}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LessonsBlock({ block }: { block: Extract<Block, { type: "lessons" }> }) {
+  return (
+    <section className="space-y-6">
+      <SectionLabel>{RAIL_NAMES.lessons}</SectionLabel>
+      <ol className="grid gap-8 md:grid-cols-[repeat(auto-fit,minmax(220px,1fr))] md:gap-10">
+        {block.items.map((it, i) => (
+          <li key={it.title} className="space-y-2 border-t border-hairline pt-4">
+            <span className="text-label uppercase text-ink/40">{String(i + 1).padStart(2, "0")}</span>
+            <h3 className="study-body font-medium text-ink">{it.title}</h3>
+            <p className="text-body text-ink/70">{it.body}</p>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }
@@ -258,8 +333,12 @@ export function Blocks({ work }: { work: Work }) {
         switch (b.type) {
           case "context":
             return <div key={id} id={id}><ContextBlock block={b} /></div>;
+          case "brief":
+            return <div key={id} id={id}><BriefBlock block={b} /></div>;
           case "problem":
             return <div key={id} id={id}><ProblemBlock block={b} /></div>;
+          case "lessons":
+            return <div key={id} id={id}><LessonsBlock block={b} /></div>;
           case "solution":
             return <div key={id} id={id}><SolutionBlock block={b} /></div>;
           case "artifactGrid":

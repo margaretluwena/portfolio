@@ -23,10 +23,10 @@ import { CoverArt } from "@/components/works/WorkList";
     - variant="page"    -> the standalone /works/[slug] route
     - variant="overlay" -> the intercepting-route overlay on the home page
 
-  The hero keeps layoutId={`work-${slug}`} - the shared element that lets
-  the cover fly from the WorkList column when opened as an overlay. Its box
-  changed shape with the template (wider, 1128:623), so the flight is now a
-  move + grow rather than a pure move; motion handles both.
+  The study enters on its own (hero rises in, then the rows fade in turn);
+  the shared-element flight from the card is gone (Margaret, 2026-10-20),
+  and with it the overlay route - variant "overlay" is kept for the type
+  but nothing renders it now.
 
   Type: .study-title / .study-label / .study-body in globals.css, all body
   face (the mockup sets the headline in Manrope, not Nohemi). The label
@@ -61,8 +61,9 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
           and cropped to the template's wider 1128:623); else the cover
           image; NEED keeps the mockup's grey block. */}
       <motion.div
-        layoutId={`work-${work.slug}`}
-        transition={{ layout: { duration: 0.8, ease: [0.7, 0, 0.2, 1] } }}
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="relative aspect-[1128/623] w-full overflow-hidden rounded-[4px] bg-placeholder"
         style={work.coverArt && !work.hero ? { background: work.cardBg ?? "#fff" } : undefined}
       >

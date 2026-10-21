@@ -68,9 +68,26 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     });
   };
 
-  /* the column ends at the last card: no extra scroll room past it (Margaret,
-     2026-10-20 - the room added for the auto-cycle read as a loose bound), so
-     the cycle's last stop is simply the column's end */
+  /* the column's end: scroll room past the last card sized so its top can
+     reach exactly the line the first card rests on, and no further (Margaret,
+     2026-10-20). Recomputed on resize. */
+  const inner = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = scroller.current, box = inner.current;
+    if (!el || !box) return;
+    const fit = () => {
+      const tops = cardTops(el);
+      if (tops.length < 2) return;
+      const first = tops[0], last = tops[tops.length - 1];
+      const tail = box.querySelector<HTMLElement>(".works-tail");
+      const tailH = tail ? tail.getBoundingClientRect().height + parseFloat(getComputedStyle(tail).marginTop) : 0;
+      box.style.paddingBottom = `${Math.max(el.clientHeight - first.top - last.height - tailH, 0)}px`;
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   // auto-cycle until the visitor takes over
   const taken = useRef(false);
   const hovering = useRef(false);
@@ -139,11 +156,11 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     >
       {/* first card's top edge at 19.7vh (Figma 128:503: 220/1117 - it scrolls
           under the fixed nav band); width and inset from the layout tokens */}
-      <motion.div style={{ y }} className="px-[var(--inset)] pb-[3vh] pt-12 md:px-0 md:pt-[19.7vh]">
+      <motion.div ref={inner} style={{ y }} className="px-[var(--inset)] pb-0 pt-12 md:px-0 md:pt-[19.7vh]">
         <WorkList reveal={reveal} />
         {/* the way onward once the four are seen (Shub's feedback, 2026-10-13):
             close under the last card, flush with its right edge */}
-        <p className="mt-[2.5vh] text-right text-body">
+        <p className="works-tail mt-[2.5vh] text-right text-body">
           <TransitionLink
             href="/works"
             className="inline-flex items-center gap-2 text-ink/45 transition-colors duration-300 hover:text-ink focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"

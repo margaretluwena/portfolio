@@ -21,6 +21,10 @@ export interface SkyFieldColors {
   ballRim: string;
   ballSeam: string;
   hint: string;
+  /** pointer weather: raindrops, light rays, lit ground */
+  rain?: string;
+  ray?: string;
+  lit?: string;
 }
 
 export interface SkyFieldOptions {
@@ -48,6 +52,8 @@ export interface SkyFieldOptions {
   onThrow?: () => number | Promise<number>;
   /** The same number without claiming a new one (the idle line). */
   onCount?: () => number | Promise<number>;
+  /** Rain from clouds and rays of light in open sky around the pointer. Default true */
+  pointerFx?: boolean;
   /** Mouse moved onto / off the ball or the dog (null = neither). Not fired while the ball is held. */
   onHover?: (over: 'ball' | 'dog' | null) => void;
   /** The ball was shaken hard enough to call the dog, or the dog was petted. */

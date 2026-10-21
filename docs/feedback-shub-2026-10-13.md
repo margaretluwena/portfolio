@@ -7,11 +7,11 @@ only she can supply) / HERS (offline, not a site change).
 
 | # | Item | Status | Notes |
 | --- | --- | --- | --- |
-| H1 | Cut or remove the major/school line | NEEDS MARGARET | Copy is hers. Draft options in the chat. |
-| H2 | Concrete metric or scale for Traeco | NEEDS MARGARET | Needs a real number (users, revenue, stage) or a what-it-does line. |
-| H3 | Reframe BUILD: "running USC's premier student-run startup accelerator", link to TroyLabs | NEEDS MARGARET | Copy is hers; the TroyLabs link already exists on BUILD. |
-| H4 | Replace or sharpen "Building for fun, work, and life." | NEEDS MARGARET | Draft options in the chat. |
-| H5 | Keep or drop the animated changing text | NEEDS MARGARET | One flag to unmount RotatingTitle. |
+| H1 | Cut or remove the major/school line | DONE | Margaret's 2026-10-20 paragraph drops it. |
+| H2 | Concrete metric or scale for Traeco | DONE (what-it-does) | "helps teams track and govern what their AI agents spend"; a number can still be added. |
+| H3 | Reframe BUILD: "running USC's premier student-run startup accelerator", link to TroyLabs | DONE | In her 2026-10-20 paragraph; BUILD links to troylabs.vc. |
+| H4 | Replace or sharpen "Building for fun, work, and life." | KEPT | Margaret kept the line (2026-10-20). |
+| H5 | Keep or drop the animated changing text | KEPT | Kept; one line now reads "is a designer that engineers". |
 
 ## Contact and socials
 

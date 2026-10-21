@@ -120,13 +120,14 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
             </motion.ul>
           </div>
 
-          {/* bio - business-facing copy (2026-07-31); 245px cap keeps both
-              paragraphs at the artboard's 3-4 short lines. 46vh, up from the
-              artboard's 50.1vh (Margaret, 2026-10-08: "a little bit") */}
+          {/* bio - 380px cap (was 245px for the artboard's 3-4 short lines; the
+              2026-10-20 paragraph ran eleven lines into the ball - Margaret:
+              push the right bound out). 46vh, up from the artboard's 50.1vh
+              (Margaret, 2026-10-08: "a little bit") */}
           <motion.div
             {...enter(0.8)}
             data-bio
-            className="mt-12 max-w-[245px] space-y-6 text-body text-ink md:absolute md:top-[46vh] md:mt-0"
+            className="mt-12 max-w-[min(380px,100%)] space-y-6 text-body text-ink md:absolute md:top-[42vh] md:mt-0"
           >
             {/* Margaret's copy (2026-10-20), verbatim but for "a design" ->
                 "a designer" (a dictation slip, flagged to her). The three
@@ -149,7 +150,10 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
                 </a>
               </StickerWord>
               , where I lead product and design for a platform that helps teams track and
-              govern what their AI agents spend. I also run{" "}
+              govern what their AI agents spend.
+            </p>
+            <p>
+              I also run{" "}
               <StickerWord src="/assets/stickers/troylabs.svg" height="1.15em" tilt={-12}>
                 <a
                   href="https://www.troylabs.vc"

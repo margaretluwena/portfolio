@@ -27,10 +27,10 @@ dashes anywhere in copy or code comments**, the build fails on them.
 | Rotating tagline (plain ink, 7 lines) | `components/shell/RotatingTitle.tsx` |
 | Bio stickers (USC / Traeco / TroyLabs, pop on hover and stay) | `components/shell/StickerWord.tsx` |
 | Work cards (home column + /works 3-col grid share `WorkCard` and `CoverArt`) | `components/works/WorkList.tsx`, `WorksColumn.tsx`, `app/works/page.tsx` |
-| Case-study template (56.4vw column, hero, lede headline + lockup, 4 credits, blue/accent labels, left rail with Return) | `components/works/CaseStudyContent.tsx`, `Blocks.tsx`, `app/works/[slug]/page.tsx`, `app/@modal/(.)works/[slug]/page.tsx` |
+| Case-study template (56.4vw column, hero, lede headline + lockup, 4 credits, accent labels, rail centred with Return above; blocks: context, brief, problem, solution, artifactGrid, lessons) | `components/works/CaseStudyContent.tsx`, `Blocks.tsx`, `app/works/[slug]/page.tsx` - the card-to-study morph and the overlay route are gone (2026-10-20); a card is a plain route change |
 | Works data (slugs, credits, blocks, cover art geometry incl. `rotate`/`crop`, `hero`, `accent`) | `lib/works.ts` |
 | Image pixel sizes for true-aspect rendering | `lib/image-sizes.json` - regenerate with `npm run images` after adding images (macOS `sips`) |
-| Sky Field background (Margaret's ASCII sky + fetch game) | `components/sky-field/sky-field.js` (her engine, with added options: `hills`, `bumps`, `hillTexture`, `ballX`, `onThrow`, `onCount`), `SkyFrame.tsx` (route-aware opacity + all the dials), `SkyFieldBackground.tsx` |
+| Sky Field background (Margaret's ASCII sky + fetch game + pointer weather: rain under clouds, light cone in open sky, `pointerFx`) | `components/sky-field/sky-field.js` (her engine, with added options: `hills`, `bumps`, `hillTexture`, `ballX`, `onThrow`, `onCount`), `SkyFrame.tsx` (route-aware opacity + all the dials), `SkyFieldBackground.tsx` |
 | Player counter API (one number per visitor's first throw) | `app/api/throws/route.ts` - uses Upstash/KV REST when `KV_REST_API_URL`/`KV_REST_API_TOKEN` exist, else an in-memory counter |
 | About page: blue card + contact icons, pinned Work Experiences, sticker-driven photo fan | `components/about/AboutCard.tsx`, `AboutExperience.tsx`, `AboutInvolvement.tsx`, `app/about/page.tsx` |
 | Footer (reveal mode on home sized under the bio; static at the bottom of every other page) | `components/shell/SiteFooter.tsx`, `FooterSwitch.tsx` |

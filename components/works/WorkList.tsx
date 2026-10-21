@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { TransitionLink } from "@/components/providers/PageTransition";
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { featuredWorks, type Work } from "@/lib/works";
@@ -130,9 +131,9 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
               {inert ? (
                 <div className="absolute inset-0 overflow-hidden">{coverInner}</div>
               ) : (
-                <motion.div layoutId={`work-${work.slug}`} className="absolute inset-0 overflow-hidden">
+                <div className="absolute inset-0 overflow-hidden">
                   {coverInner}
-                </motion.div>
+                </div>
               )}
 
               {/* wordmark + description. Real SVG lockups scale by width
@@ -191,12 +192,14 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
           /* the cursor bubble names the dead surface (Margaret, 2026-10-09) */
           <div className="group block" data-bubble="Coming soon!">{card}</div>
         ) : (
-          <Link
+          /* a plain route change: the page fades out and the study enters on its
+             own (the fly-to-centre morph is gone - Margaret, 2026-10-20) */
+          <TransitionLink
             href={`/works/${work.slug}`}
             className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
           >
             {card}
-          </Link>
+          </TransitionLink>
         );
   }
 }

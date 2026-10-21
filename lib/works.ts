@@ -25,6 +25,11 @@ export type Media = {
 
 export type Block =
   | { type: "context"; body: string; media?: Media }
+  /* the brief (2026-10-20, after the reference studies Margaret sent): one
+     line on the objective, the goals it broke into, and what she did */
+  | { type: "brief"; objective: string; goals: string[]; did: string[] }
+  /* takeaways: what she is taking with her, each a claim and a line under it */
+  | { type: "lessons"; items: { title: string; body: string }[] }
   | { type: "problem"; headline: string; evidence: string[]; body: string; media?: Media }
   | { type: "solution"; pieces: { name: string; caption: string; media: Media }[] }
   | { type: "artifactGrid"; media: Media[] }  // 2-6 images, no captions
@@ -115,7 +120,7 @@ export const works: Work[] = [
     role: "Designer",
     featured: true,
     protected: true,
-    accent: "#0b1215",                        // Mark's near-black (the lockup)
+    accent: "#2f55d6",                        // royal blue for the labels (the near-black lockup colour read as plain black - Margaret, 2026-10-20)
     wordmark: "/images/wordmarks/mark.svg",   // Figma 127:3003, 155/972 of card width
     wordmarkWidth: "15.9%",
     /* Figma "Mark card" 255:586 (2026-10-08): three layers, the ORIGINAL
@@ -138,6 +143,24 @@ export const works: Work[] = [
         type: "context",
         body: "Mark is a capture device and companion app built by Eason Tang through TroyLabs' BUILD program. Eason's thesis was that reading should be social, a Spotify Wrapped for what you read, rather than another place to file highlights. I joined as the designer and worked across four surfaces over the semester: the app and its share system, the brand, the physical packaging, and the deck we presented at LAUNCH.",
         media: { src: "NEED", alt: "device or hero shot" },
+      },
+      /* brief + takeaways drafted 2026-10-20 from Margaret's own prose above
+         (her order: objective, goals, what I did, lessons - after the Sam
+         Cheng / Emmi Wu / Karen Lou studies); she edits in her pass */
+      {
+        type: "brief",
+        objective: "Make reading social: turn what someone underlines into something they'd want to share.",
+        goals: [
+          "Capture a highlight without interrupting the page",
+          "Device, app, and share layer that add up to one product",
+          "A brand and a box that earn a place on a desk",
+        ],
+        did: [
+          "The app and its share system",
+          "The brand system and merchandise",
+          "Physical packaging, twenty concepts narrowed to three",
+          "The three-minute pitch for LAUNCH",
+        ],
       },
       {
         type: "problem",
@@ -196,6 +219,14 @@ export const works: Work[] = [
           { src: "/images/mark/app-share-funky.png", alt: "Mark share card variants" },
         ],
       },
+      {
+        type: "lessons",
+        items: [
+          { title: "Decomposition was the design", body: "The device, the app, and the share layer each answered a different question. The work was making the three answers read as one product, not three." },
+          { title: "A share screen has to be worth being seen with", body: "Restraint lost to personality on purpose: nobody posts a card that looks like a settings page." },
+          { title: "Colour last, on purpose", body: "Yellow was load-bearing in the early identity, so it was the final decision rather than the first constraint. Twenty concepts, then three, then colour." },
+        ],
+      },
       { type: "gate", hint: "The full study sits behind a password under NDA." },
     ],
   },
@@ -250,6 +281,22 @@ export const works: Work[] = [
         // live-site Traeco copy (main:lib/projects.ts) per Margaret's order
         body: "Traeco is observability and cost management for AI agents, founded with my co-founders through LavaLab, USC's largest incubator. I'm co-founder and CPO, and was the only designer: the brand, the product, the site, and the decks are all mine. Live at traeco.dev. We won Audience Choice at the closing summit. Shipped the dashboard, marketing site, and full design system to production. Conversion to action in usability tests went from 22% to 71%.",
         // prior live-site asset, surfaced per the v2 file rule (veto and it reverts to NEED)
+      },
+      /* brief + takeaways drafted 2026-10-20 from Margaret's prose below; she edits in her pass */
+      {
+        type: "brief",
+        objective: "Make an invisible cost visible before anyone thinks to ask.",
+        goals: [
+          "Cost almost nothing to adopt: two lines, no code changes",
+          "Show value before there is a crisis",
+          "Scope to what makes it usable, then to what makes it worth paying for",
+        ],
+        did: [
+          "Product: scoped and designed the dashboard from 50+ customer calls",
+          "The brand system, from nothing",
+          "traeco.dev, the marketing site",
+          "Two pitch decks, one to present and one to send",
+        ],
       },
       {
         type: "problem",
@@ -317,6 +364,14 @@ export const works: Work[] = [
           { src: "NEED", alt: "deck spreads" },
         ],
       },
+      {
+        type: "lessons",
+        items: [
+          { title: "Build for the person who doesn't feel it yet", body: "Someone already in pain tolerates friction. Someone who can only see it coming needs the product to cost nothing to try and to prove itself before the bill does." },
+          { title: "The paying list is shorter than the usable list", body: "Two questions ran in parallel through every screen: what has to be here for this to be usable, and what has to be here for someone to pay for it. The second list is the product." },
+          { title: "Two decks, two jobs", body: "A deck you speak over and a deck that has to survive alone in an inbox are different objects. Same argument, different density." },
+        ],
+      },
       { type: "wip", email: WIP_EMAIL },
     ],
   },
@@ -376,6 +431,23 @@ export const works: Work[] = [
         // prior live-site asset surfaced instead of a placeholder; veto reverts to NEED
         media: { src: "/images/atlix/hero.png", alt: "Atlix hero" },
       },
+      /* brief drafted 2026-10-20 from Margaret's prose; the former "Outcome"
+         solution piece now lives as the takeaways */
+      {
+        type: "brief",
+        objective: "Read what young Californians are actually saying, in real time, without waiting for a quarterly report.",
+        goals: [
+          "Trustworthy summaries with the source one click away",
+          "Useful to advocacy groups and policy researchers on day one",
+          "A brand that is neither academic beige nor aggressively tech",
+        ],
+        did: [
+          "Research: weeks of reports, researchers, and advocacy people before screens",
+          "The dashboard, cut back to what matters in the first three seconds",
+          "Brand identity and the design system",
+          "The pitch deck for the Seoul final",
+        ],
+      },
       {
         type: "problem",
         // old-site "Where the idea came from", California framing deleted
@@ -408,14 +480,15 @@ export const works: Work[] = [
             caption: "Most tools in the category look either academic and beige or aggressively tech. Atlix is a third option: dark navy with a single accent, type forward, and quiet. The wordmark is a clean sans-serif because the product itself should be the loudest thing in any deck or screenshot.",
             media: { src: "NEED", alt: "brand sheet or wordmark lockup" },
           },
-          {
-            // old-site "Outcome" heading + learnings; the competition-name
-            // sentence removed whole (carries the retired line and the
-            // unconfirmed name)
-            name: "Outcome",
-            caption: "The biggest thing I learned was that research before design isn't a checkbox. Every time I shortcut it and started designing first, I had to throw work away. The reverse was also true: every conversation I had before opening Figma made the actual design work go faster, because half the decisions were already made. I also learned a lot about restraint. Cutting a field off a card felt scary at first, but it ended up making the whole grid feel more confident than adding one ever would have.",
-            media: { src: "NEED", alt: "competition or team photo" },
-          },
+        ],
+      },
+      {
+        // the old-site "Outcome" learnings, as takeaways (the competition-name
+        // sentence stays out: retired line, unconfirmed name)
+        type: "lessons",
+        items: [
+          { title: "Research before design isn't a checkbox", body: "Every time I shortcut it and started designing first, I had to throw work away. Every conversation before opening Figma made the design go faster, because half the decisions were already made." },
+          { title: "Restraint reads as confidence", body: "Cutting a field off a card felt scary at first. It made the whole grid feel more confident than adding one ever would have." },
         ],
       },
       { type: "wip", email: WIP_EMAIL },
