@@ -40,6 +40,8 @@ const EXPERIENCES: Experience[] = [
     ],
   },
   { org: "Glance", roles: [{ title: "Founding Designer", dates: "February 2025 - May 2025" }] },
+  { org: "Sirka (YC S21)", roles: [{ title: "Operations Intern", dates: "May 2024 - August 2024" }] },
+  { org: "Indonesia Defence Services", roles: [{ title: "Business Analyst Intern", dates: "May 2023 - August 2023" }] },
 ];
 
 const WINDOW_VH = 58; // the visible slice of the list while pinned

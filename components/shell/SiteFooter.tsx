@@ -173,11 +173,9 @@ export default function SiteFooter({ mode = "static" }: { mode?: "reveal" | "sta
       </div>
 
       {/* colophon */}
+      {/* colophon: the one line ("Designed in Figma. Built with Claude Code." dropped, Margaret 2026-10-20) */}
       <div className="pt-3 text-center leading-relaxed">
-        <p className="text-ink/60">
-          Designed in Figma. Built with <span className="text-ink">Claude Code</span>.
-        </p>
-        <p className="mt-1 text-label uppercase tracking-[0.08em] text-ink/40">
+        <p className="text-label uppercase tracking-[0.08em] text-ink/40">
           © {new Date().getFullYear()} Margaret Luwena{BUILT && <> · Last updated {BUILT}</>}
         </p>
       </div>

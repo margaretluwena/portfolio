@@ -392,7 +392,7 @@ export const works: Work[] = [
   {
     slug: "atlix",
     title: "Atlix",
-    signal: "Finalist, Seoul",
+    signal: "Finalist, GSSC",
     lede: "Narrative intelligence: what young Californians are actually talking about, surfaced in real time",
     blurb: "Brand and interface for a narrative intelligence platform",
     /* poster stand-in until the real export lands */
@@ -625,7 +625,7 @@ export const works: Work[] = [
   {
     slug: "prosaic-intelligence",
     title: "Prosaic Intelligence",
-    signal: "16 products indexed",
+    signal: "AI Safety Index",
     lede: "A public index of consumer AI safety evaluations",
     blurb: "Brand, site, and data design for a consumer AI safety index",
     cover: { src: "/images/covers/prosaic-site.jpg", alt: "Prosaic Intelligence home" },
