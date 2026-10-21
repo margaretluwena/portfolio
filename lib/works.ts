@@ -154,17 +154,17 @@ export const works: Work[] = [
          Cheng / Emmi Wu / Karen Lou studies); she edits in her pass */
       {
         type: "brief",
-        objective: "Make reading social: turn what someone underlines into something they'd want to share.",
+        objective: "Make reading something you'd want to share, starting with the line you underline.",
         goals: [
-          "Capture a highlight without interrupting the page",
-          "Device, app, and share layer that add up to one product",
-          "A brand and a box that earn a place on a desk",
+          "Capture a line without pulling you out of the book",
+          "Make the device, the app, and the share cards feel like one thing",
+          "A brand and a box people actually want on their desk",
         ],
         did: [
-          "The app and its share system",
-          "The brand system and merchandise",
-          "Physical packaging, twenty concepts narrowed to three",
-          "The three-minute pitch for LAUNCH",
+          "Designed the app and its share cards",
+          "Built the brand and the merch",
+          "Packaging: twenty rough boxes down to three, then one",
+          "Made the deck for LAUNCH and helped pitch it",
         ],
       },
       {
@@ -183,22 +183,22 @@ export const works: Work[] = [
         pieces: [
           {
             name: "Reading, made social",
-            caption: "Wrapped-style cards that turn a stretch of reading into something postable. Deliberately quirky and over-designed: a share screen only works if someone wants to be seen posting it, so this traded restraint for personality.",
+            caption: "Wrapped-style cards that turn a stretch of reading into something you'd post. They're deliberately a bit much. A share screen only works if someone wants to be seen posting it, so I traded restraint for personality.",
             media: { src: "/images/mark/app-share.png", alt: "Mark share screens" },
           },
           {
             name: "From page to library",
-            caption: "Logging a highlight on the device without leaving the page, then sorting captures against books, categories, and notes written in the app. Organised by reading habit rather than by file.",
+            caption: "Log a highlight on the device without leaving the page, then sort it in the app by book, by category, or by a note you wrote. It's organised the way people actually read, not the way files are stored.",
             media: { src: "/images/mark/app-notes.png", alt: "Mark notes library screens" },
           },
           {
             name: "Twenty, then three, then colour",
-            caption: "Twenty rough packaging concepts narrowed to three, then iterated in depth before any colour went on. Yellow was load-bearing in the early identity, so it came last and on purpose rather than as a starting constraint.",
+            caption: "Twenty rough packaging concepts, narrowed to three, then worked properly before any colour went on. Yellow carried so much of the early identity that I made it the last decision on purpose, not the first constraint.",
             media: { src: "/images/mark/packaging-sleeves-2.jpg", alt: "Mark packaging sleeves, second round" },
           },
           {
             name: "LAUNCH",
-            caption: "The three-minute pitch presented at TroyLabs' end-of-semester LAUNCH summit.",
+            caption: "The three-minute pitch, as we gave it at TroyLabs' end-of-semester LAUNCH summit.",
             /* Margaret's screen recording of the deck (2026-10-08), last 3s
                trimmed, re-encoded 1280 wide for the web; poster is frame 2s in */
             media: { src: "/videos/mark-pitch.mp4", alt: "Mark pitch deck, as presented at LAUNCH", video: true, poster: "/images/mark/pitch-poster.jpg" },
@@ -227,9 +227,9 @@ export const works: Work[] = [
       {
         type: "lessons",
         items: [
-          { title: "Decomposition was the design", body: "The device, the app, and the share layer each answered a different question. The work was making the three answers read as one product, not three." },
-          { title: "A share screen has to be worth being seen with", body: "Restraint lost to personality on purpose: nobody posts a card that looks like a settings page." },
-          { title: "Colour last, on purpose", body: "Yellow was load-bearing in the early identity, so it was the final decision rather than the first constraint. Twenty concepts, then three, then colour." },
+          { title: "Taking it apart was the design", body: "The device, the app, and the share cards each answered a different question. Most of my job was making the three answers feel like one product instead of three." },
+          { title: "Nobody posts something tasteful", body: "The share card had to be worth being seen with. Every time I pulled it back toward restraint it got more forgettable, so I stopped pulling." },
+          { title: "Decide colour last", body: "Yellow was doing so much work in the early identity that choosing it first would have locked everything else in. Shapes, then structure, then colour." },
         ],
       },
       { type: "gate", hint: "The full study sits behind a password under NDA." },
@@ -291,17 +291,17 @@ export const works: Work[] = [
       /* brief + takeaways drafted 2026-10-20 from Margaret's prose below; she edits in her pass */
       {
         type: "brief",
-        objective: "Make an invisible cost visible before anyone thinks to ask.",
+        objective: "Show teams what their AI agents cost before the invoice does.",
         goals: [
-          "Cost almost nothing to adopt: two lines, no code changes",
-          "Show value before there is a crisis",
-          "Scope to what makes it usable, then to what makes it worth paying for",
+          "Two lines to set up, no code changes",
+          "Prove useful before anything is on fire",
+          "Work out what makes it usable, then what makes it worth paying for",
         ],
         did: [
-          "Product: scoped and designed the dashboard from 50+ customer calls",
-          "The brand system, from nothing",
-          "traeco.dev, the marketing site",
-          "Two pitch decks, one to present and one to send",
+          "Scoped and designed the dashboard off 50+ customer calls",
+          "Built the brand from nothing",
+          "Designed and shipped traeco.dev",
+          "Two decks: one to present, one to send",
         ],
       },
       {
@@ -320,7 +320,7 @@ export const works: Work[] = [
         pieces: [
           {
             name: "The dashboard",
-            caption: "I scoped the dashboard against user conversations rather than a feature list. Two questions ran in parallel: what has to be here for this to be usable, and what has to be here for someone to pay for it. Those produce different lists, and the second one is shorter. The timing insight above set the constraint: this had to earn attention from people who were not yet in pain.",
+            caption: "I scoped the dashboard against what people told us on calls, not a feature list. Two questions ran side by side: what has to be here for this to be usable, and what has to be here for someone to pay for it? Those give you different lists, and the second one is shorter. The timing insight set the constraint: this had to earn attention from people who weren't in pain yet.",
             // the 2026-10-08 revamp (Figma Traeco-Revamp 48:6630): the home screen leads
             media: { src: "/images/traeco/dashboard-home.png", alt: "Traeco dashboard: savings available, top recommendations, spend breakdown" },
           },
@@ -330,17 +330,17 @@ export const works: Work[] = [
             // traeco.dev on 2026-10-09 (Margaret's order: build the study from the
             // live site); she edits in her pass. The brand sheet itself is still
             // hers to supply - the About page stands in for it meanwhile.
-            caption: "Built from nothing as the only designer on the team: identity, system, and every application of it. The system runs on one rule: near-black everywhere and a single green, so the only colour on any screen is the thing that matters, whether that is a saving, a verdict, or the second line of a headline. The mark is four lobes off one stem, drawn to hold at favicon size and, on the site, to scale up until it fills a whole hero.",
+            caption: "I was the only designer, so the brand was mine from the first sketch: the identity, the system, every application of it. It runs on one rule. Near-black everywhere and a single green, so the only colour on a screen is the thing that matters, whether that's a saving, a verdict, or the second line of a headline. The mark is four lobes off one stem. It holds at favicon size, and on the site it scales up until it fills the hero.",
             media: { src: "/images/traeco/site-about.jpg", alt: "traeco.dev About page: the display face, the one green, the mark in the nav" },
           },
           {
             name: "traeco.dev",
-            caption: "The site carries the argument in the order a buyer meets it. The bill first: your AI agents are bleeding money. Then the gap the product fills: observability tells you what happened, nobody tells you what it should cost. Then the four steps from traces to savings, connect, visualize, optimize, monitor, and three pricing tiers. Integrates in two lines is the promise repeated on every screen.",
+            caption: "The site makes the argument in the order a buyer meets it. The bill first: your AI agents are bleeding money. Then the gap: observability tells you what happened, nobody tells you what it should cost. Then four steps from traces to savings, and three pricing tiers. \"Integrates in two lines\" is on every screen because it's the promise that matters most.",
             media: { src: "/images/traeco/site-hero.jpg", alt: "traeco.dev hero: the mark scaled to full bleed behind the headline" },
           },
           {
             name: "Two decks, two jobs",
-            caption: "Two decks for two jobs. One built to be presented live, with us speaking over it, sparse enough that the room watches us instead of reading the slide. One built to survive alone in an investor's inbox, carrying the whole argument without a presenter. Different density, different job.",
+            caption: "Two decks for two jobs. One to present live, with us talking over it, sparse enough that the room watches us instead of reading the slide. One that has to survive alone in an investor's inbox and carry the whole argument without a presenter. Different density, different job.",
             /* Margaret's screen recording of the pitch deck (2026-10-08),
                re-encoded 1280 wide for the web; poster is frame 2s in */
             media: { src: "/videos/traeco-pitch.mp4", alt: "Traeco pitch deck", video: true, poster: "/images/traeco/pitch-poster.jpg" },
@@ -373,9 +373,9 @@ export const works: Work[] = [
       {
         type: "lessons",
         items: [
-          { title: "Build for the person who doesn't feel it yet", body: "Someone already in pain tolerates friction. Someone who can only see it coming needs the product to cost nothing to try and to prove itself before the bill does." },
-          { title: "The paying list is shorter than the usable list", body: "Two questions ran in parallel through every screen: what has to be here for this to be usable, and what has to be here for someone to pay for it. The second list is the product." },
-          { title: "Two decks, two jobs", body: "A deck you speak over and a deck that has to survive alone in an inbox are different objects. Same argument, different density." },
+          { title: "Design for the person who isn't in pain yet", body: "Someone whose budget just blew up will put up with friction. The founders we talked to could see it coming but didn't feel it yet, so Traeco had to cost nothing to try and prove itself before anything went wrong." },
+          { title: "The paying list is shorter than the usable list", body: "Every screen got the same two questions: does this have to be here for it to be usable, and does it have to be here for someone to pay? The second list is the product. The first is the floor." },
+          { title: "A deck you talk over and a deck you send are different objects", body: "Same argument, different density. Trying to make one deck do both jobs is how you end up with slides nobody reads." },
         ],
       },
       { type: "wip", email: WIP_EMAIL },
@@ -442,17 +442,17 @@ export const works: Work[] = [
          solution piece now lives as the takeaways */
       {
         type: "brief",
-        objective: "Read what young Californians are actually saying, in real time, without waiting for a quarterly report.",
+        objective: "Read what young Californians are actually saying, in real time, instead of waiting for a quarterly report.",
         goals: [
-          "Trustworthy summaries with the source one click away",
+          "Summaries people could trust, with the source one click away",
           "Useful to advocacy groups and policy researchers on day one",
-          "A brand that is neither academic beige nor aggressively tech",
+          "A brand that wasn't academic beige or aggressively tech",
         ],
         did: [
-          "Research: weeks of reports, researchers, and advocacy people before screens",
-          "The dashboard, cut back to what matters in the first three seconds",
-          "Brand identity and the design system",
-          "The pitch deck for the Seoul final",
+          "Weeks on reports, researchers, and advocacy people before opening Figma",
+          "Designed the dashboard, then cut it back to what matters in the first three seconds",
+          "The brand and the design system",
+          "The deck for the Seoul final",
         ],
       },
       {
@@ -494,8 +494,8 @@ export const works: Work[] = [
         // sentence stays out: retired line, unconfirmed name)
         type: "lessons",
         items: [
-          { title: "Research before design isn't a checkbox", body: "Every time I shortcut it and started designing first, I had to throw work away. Every conversation before opening Figma made the design go faster, because half the decisions were already made." },
-          { title: "Restraint reads as confidence", body: "Cutting a field off a card felt scary at first. It made the whole grid feel more confident than adding one ever would have." },
+          { title: "Research first isn't a checkbox", body: "Every time I skipped it and started designing, I threw the work away. Every conversation I had before opening Figma made the design go faster, because half the decisions were already made." },
+          { title: "Cutting felt scary and read as confidence", body: "Taking a field off a card felt like losing something. It made the whole grid look more sure of itself than adding one ever did." },
         ],
       },
       { type: "wip", email: WIP_EMAIL },

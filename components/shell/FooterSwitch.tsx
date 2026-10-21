@@ -14,5 +14,6 @@ export default function FooterSwitch() {
   const pathname = usePathname();
   const { nav } = useNav();
   if (nav.home || pathname === "/") return null;
+  if (/^\/works\/[^/]+/.test(pathname)) return null; // no footer on a case study (Margaret, 2026-10-20)
   return <SiteFooter mode="static" />;
 }

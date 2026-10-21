@@ -37,12 +37,15 @@ import { getWork } from "@/lib/works";
   label), so it keeps the way home and the links - name left, links right -
   and drops the label; home keeps links + the bare counter.
 
-  SCROLL: on a CASE STUDY only, the pill lifts out of the way on scroll
-  down and returns on the first scroll up (Margaret, 2026-10-08; ref
-  emmiwu.com). Everywhere else it is pinned - it never moves. Scroll
-  events are read in the capture phase on the document so the study's
-  scroller counts whether it is the window or the overlay panel.
+  SCROLL: on every page but home, the pill lifts all the way out once the
+  page has scrolled past HIDE_AT and comes back once it is above it again
+  (Margaret, 2026-10-20; it used to react to scroll direction, on case
+  studies only). Home keeps it pinned: the dots live in it and the home
+  page never scrolls the window. Scroll events are read in the capture
+  phase on the document so any inner scroller counts too.
 */
+
+const HIDE_AT = 160; // px of scroll past which the pill is gone
 
 const links: { label: string; href: string; external?: boolean }[] = [
   { label: "ABOUT", href: "/about" }, // the letter page - /contact redirects here
@@ -59,25 +62,19 @@ const LABELS: Record<string, string> = {
   "/play": "PLAYGROUND", // case-study mockup (2026-10-08)
 };
 
-/* true while the reader is scrolling down past the top band; any upward
-   scroll or returning near the top brings the pill back */
+/* `away` once the page is scrolled past HIDE_AT; `scrolled` once it has
+   left the top at all (the veil's cue) */
 function useScrollState() {
   const [away, setAway] = useState(false);
-  const [scrolled, setScrolled] = useState(false); // the page has left the top at all - the veil's cue
+  const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const last = new WeakMap<EventTarget, number>();
     const onScroll = (e: Event) => {
       const t = e.target;
       const el = t === document ? document.scrollingElement : (t as Element);
       if (!el || !(el instanceof Element)) return;
-      /* first event on a scroller compares against 0, not itself - a
-         single big wheel tick must still read as "down" */
-      const y = el.scrollTop, prev = last.get(el) ?? 0;
-      last.set(el, y);
+      const y = el.scrollTop;
       setScrolled(y > 24);
-      if (y < 80) setAway(false);
-      else if (y > prev + 2) setAway(true);
-      else if (y < prev - 2) setAway(false);
+      setAway(y > HIDE_AT);
     };
     document.addEventListener("scroll", onScroll, { capture: true, passive: true });
     return () => document.removeEventListener("scroll", onScroll, { capture: true });
@@ -107,10 +104,8 @@ export default function Nav() {
   const onHome = pending ? pending === "/" : nav.home || pathname === "/";
   const hidden = onHome && nav.hidden;
 
-  /* only a case study (page route, not the overlay over home) hides the pill */
-  const study = !onHome && /^\/works\/[^/]+/.test(route);
   const scroll = useScrollState();
-  const away = scroll.away && study;
+  const away = scroll.away && !onHome;
 
   const slide = reduce ? { duration: 0 } : { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const };
   const fade = reduce ? { duration: 0 } : { duration: 0.3, ease: "easeOut" as const };

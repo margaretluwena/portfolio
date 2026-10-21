@@ -76,6 +76,10 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     const el = scroller.current, box = inner.current;
     if (!el || !box) return;
     const fit = () => {
+      /* only while the column is its own scroller (md+). In normal flow its
+         height includes the padding this sets, and the two feed each other
+         until the page is 200,000px tall (found 2026-10-20 on a phone). */
+      if (!window.matchMedia("(min-width: 768px)").matches) { box.style.paddingBottom = ""; return; }
       const tops = cardTops(el);
       if (tops.length < 2) return;
       const first = tops[0], last = tops[tops.length - 1];
