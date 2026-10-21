@@ -102,7 +102,7 @@ export function createSkyField(canvas, options = {}) {
   const reduceMotion = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   let W = 0, H = 0, cols = 0, rows = 0, cw = 6, ch = 11;
   let chars = [], col = new Uint8Array(0), hillCh = [], hillCol = new Uint8Array(0), skyLimit = new Int16Array(0);
-  let frontTop = new Int16Array(0), frontTopF = null, domeTop = new Int16Array(0), flowers = [];
+  let frontTop = new Int16Array(0), frontTopF = null, domeTop = new Int16Array(0), farTop = new Int16Array(0), flowers = [];
   let seed = P.seed | 0, T = 0, last = 0, dirty = true, raf = 0, destroyed = false, drift = 0, F = null;
   /* Motion style (2026-10-08, after the ostrich clip): things in motion are
      not solid. Cloud edges and a moving dog shed and regather their cells -
@@ -114,13 +114,22 @@ export function createSkyField(canvas, options = {}) {
   /* pointer weather: where the mouse is (canvas px), the eased strength of each effect, live raindrops */
   let M = { x: 0, y: 0, on: false }, fx = { rain: 0 }, drops = [], frameDt = 0, sprouts = 0, backSprouts = [];
   /* rain grows the field (Margaret, 2026-10-20): where a drop lands, now and then a small
-     flower pops up on the front hill near that column. Sprouts draw their stem cell by cell
+     flower pops up near that column, on the far ridge, the back hill, or the front hill (a
+     third each). Front-hill sprouts draw their stem cell by cell
      and open their head last (`grow` 0 -> 1); at most 40 per visit; a rebuild clears them. */
   function sprout(c) {
     if (sprouts >= 40 || Math.random() > 0.08 || !frontTop.length) return;
     const cc = clamp(c + ((Math.random() * 5) | 0) - 2, 2, cols - 3);
-    // half the time a distant one on the back hill: a single cell, a dot that becomes a star
-    if (domeTop.length && Math.random() < 0.5) {
+    // a third each: the far ridge (a single dot, where the drops actually land), the back hill
+    // (a dot that becomes a star), the front hill (a small tuft)
+    const pick = Math.random();
+    if (farTop.length && pick < 0.34) {
+      const lo = farTop[cc] + 1, hi = domeTop[cc] - 1; if (hi <= lo) return;
+      const r = lo + ((Math.random() * (hi - lo)) | 0), k = hillCol[r * cols + cc];
+      if (k !== 5 && k !== 6 && k !== 0) return;
+      backSprouts.push({ r, c: cc, petal: PETAL + ((Math.random() * 4) | 0), age: 0, far: true }); sprouts++; return;
+    }
+    if (domeTop.length && pick < 0.67) {
       const lo = domeTop[cc] + 2, hi = frontTop[cc] - 1; if (hi <= lo) return;
       const r = lo + ((Math.random() * (hi - lo)) | 0), k = hillCol[r * cols + cc];
       if (k !== 9 && k !== 10 && k !== 0) return;
@@ -222,7 +231,7 @@ export function createSkyField(canvas, options = {}) {
         for (const [r, s] of segs[c]) set(r, c, s, L.ridge);
       }
     }
-    frontTop = front.topEff; domeTop = dome.topEff;
+    frontTop = front.topEff; domeTop = dome.topEff; farTop = far.topEff;
     // distant flowers dotted across the middle hill
     const n = Math.round(cols * 0.35 * P.flowers);
     for (let k = 0; k < n; k++) { const c = (rng() * cols) | 0; const lo = dome.topEff[c] + 2, hi = front.topEff[c] - 1; if (hi <= lo) continue;
@@ -504,7 +513,7 @@ export function createSkyField(canvas, options = {}) {
         if (d.y >= skyLimit[c]) { put(skyLimit[c] - 1, c, ',', RAIN); drops.splice(i, 1); sprout(c); continue; }
         put(Math.floor(d.y), c, '/', RAIN); }
     }
-    for (const b of backSprouts) { b.age += frameDt; put(b.r, b.c, b.age < 0.6 ? '.' : '*', b.petal); }
+    for (const b of backSprouts) { b.age += frameDt; put(b.r, b.c, b.far ? '.' : b.age < 0.6 ? '.' : '*', b.petal); }
     G.labels = []; G.eyes = [];
     if (P.game) drawGame(put);
     // draw: merge same-coloured runs (spaces included) into single fillText calls
