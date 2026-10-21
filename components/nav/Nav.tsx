@@ -37,12 +37,11 @@ import { getWork } from "@/lib/works";
   label), so it keeps the way home and the links - name left, links right -
   and drops the label; home keeps links + the bare counter.
 
-  SCROLL: on every page but home, the pill lifts all the way out once the
+  SCROLL: on a CASE STUDY only, the pill lifts all the way out once the
   page has scrolled past HIDE_AT and comes back once it is above it again
-  (Margaret, 2026-10-20; it used to react to scroll direction, on case
-  studies only). Home keeps it pinned: the dots live in it and the home
-  page never scrolls the window. Scroll events are read in the capture
-  phase on the document so any inner scroller counts too.
+  (Margaret, 2026-10-20: studies only, by scroll position). Everywhere
+  else it stays pinned. Scroll events are read in the capture phase on
+  the document so any inner scroller counts too.
 */
 
 const HIDE_AT = 160; // px of scroll past which the pill is gone
@@ -104,8 +103,10 @@ export default function Nav() {
   const onHome = pending ? pending === "/" : nav.home || pathname === "/";
   const hidden = onHome && nav.hidden;
 
+  /* only a case study hides the pill */
+  const study = !onHome && /^\/works\/[^/]+/.test(route);
   const scroll = useScrollState();
-  const away = scroll.away && !onHome;
+  const away = scroll.away && study;
 
   const slide = reduce ? { duration: 0 } : { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const };
   const fade = reduce ? { duration: 0 } : { duration: 0.3, ease: "easeOut" as const };
