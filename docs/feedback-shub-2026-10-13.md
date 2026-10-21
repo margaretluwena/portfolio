@@ -26,9 +26,9 @@ only she can supply) / HERS (offline, not a site change).
 | # | Item | Status | Notes |
 | --- | --- | --- | --- |
 | P1 | No horizontal scroll; all four as tiles with the footer below | NEEDS MARGARET | The current home is a vertical column with no footer (her call on 2026-10-13). Shub may have seen the old live site or the phone layout. Decide: keep, or a 2x2 tile grid. |
-| P2 | Replace skill tags with a one-line what-I-did + impact | NEEDS MARGARET | Cards already carry a one-line blurb. Sharpening the four blurbs toward impact is copy. |
-| P3 | Context for lesser-known companies (funding, product type, scale) | NEEDS MARGARET | Content. "Mark" is a real work, not a slip. |
-| P4 | Entire TroyLabs card clickable | NEEDS MARGARET | Which card? Nothing on the new site is a TroyLabs card. Likely the old live site. |
+| P2 | Replace skill tags with a one-line what-I-did + impact | DONE | Cards carry a one-line blurb plus the signal pill; no tags. Blurbs can still be sharpened toward impact. |
+| P3 | Context for lesser-known companies (funding, product type, scale) | DONE (drafts) | A `signal` pill on every card ("Audience Choice, LavaLab", "As seen on Shark Tank"...). Margaret swaps in harder numbers where she has them. |
+| P4 | Entire TroyLabs card clickable | DONE | Transcript: it was the bio phrase. "BUILD, USC's premier student-run startup accelerator" is one link with one hover. |
 
 ## Navigation
 
@@ -44,6 +44,11 @@ only she can supply) / HERS (offline, not a site change).
 | B1 | Scroll bug: individual letters re-render | TODO | Ask Karen (hers). Also worth a local look at RotatingTitle under scroll. |
 | B2 | llms.txt that summarises nested pages too | DONE | Generated at /llms.txt from the works data, so it stays current. |
 | B3 | Josephine's infinity scroller on Play: fits or clashes | NEEDS MARGARET | Design call. |
+
+## Also in the transcript, not in the summary
+
+- "It's weird that this has a logo but this kind of doesn't": the card lockups are inconsistent (some wordmarks, some set as text). Open.
+- Footer on the home page: Shub said it isn't needed there; removed 2026-10-09.
 
 ## References to study (hers)
 

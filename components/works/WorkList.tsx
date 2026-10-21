@@ -163,6 +163,18 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
                   </Prox>
                 </div>
               )}
+              {/* the signal pill: one fact about the team or the scale, on the
+                  lockup's row at the right edge (Shub's feedback, 2026-10-09) */}
+              {work.signal && (
+                <span
+                  className={`absolute right-[4.6%] max-w-[46%] truncate rounded-full border px-[10px] py-[5px] text-label uppercase tracking-[0.06em] backdrop-blur-sm ${
+                    work.cardText === "light" ? "border-white/15 bg-white/10 text-white/70" : "border-black/[0.08] bg-white/70 text-ink/60"
+                  }`}
+                  style={{ bottom: "calc(5.9% + 22px + 8px)" }}
+                >
+                  {work.signal}
+                </span>
+              )}
               <p
                 className={`absolute bottom-[5.9%] left-[4.6%] w-[82%] truncate text-secondary ${
                   work.cardText === "light" ? "text-white/50" : "text-ink-50"

@@ -12,7 +12,7 @@ const DEFAULT_COLORS = {
   petals: ['#e0558d', '#e2603f', '#4d82c9', '#d9a521'], flowerCenter: '#b07c22',
   poodle: '#1b1b1b', poodleFace: '#1b1b1b', poodleLegs: '#1b1b1b',
   ballRim: '#cde23a', ballSeam: '#fbfdf0', hint: '#1b1b1b',
-  rain: '#5b7cc4', // pointer weather (2026-10-20): the raindrops
+  rain: '#93a7cc', // pointer weather (2026-10-20): the raindrops, kept subtle
   trail: '#8d8d8d',
 };
 
@@ -450,8 +450,8 @@ export function createSkyField(canvas, options = {}) {
         for (let q = 0; q < line.length; q++) { const g = line[q]; if (g !== ' ') put(r, x0 + q, g, CENTERS.includes(g) ? CENTER : f.petal); } }
     }
     /* ---------- pointer weather (Margaret, 2026-10-20): while the mouse rests on a cloud,
-       rain leaves the cloud's underside inside a radius of it and falls to the field at 45
-       degrees. Eases in and out so crossing a cloud edge never flickers. Off a cloud there is
+       rain leaves the cloud's underside inside a radius of it and falls to the field, leaning
+       about 25 degrees to the left. Eases in and out so crossing a cloud edge never flickers. Off a cloud there is
        nothing (the ray-of-light cone tried here was cut the same day). ---------- */
     if (P.pointerFx && !reduceMotion) {
       const pc = Math.floor(M.x / cw), pr = Math.floor(M.y / ch), dt = frameDt;
@@ -470,15 +470,16 @@ export function createSkyField(canvas, options = {}) {
             if (r + 1 >= skyLimit[c]) continue;
             const dx = (c - pc) / RX, dy = (r - pr) / RY; if (dx * dx + dy * dy > 1) continue;
             // a cloud cell with open air under it is an underside: drops start there
-            if (covAt(r, c) > 0.35 && covAt(r + 1, c) < 0.2 && Math.random() < 7 * fx.rain * dt) drops.push({ c: c + Math.random(), y: r + 1, v: 18 + Math.random() * 10 });
+            if (covAt(r, c) > 0.35 && covAt(r + 1, c) < 0.2 && Math.random() < 4.5 * fx.rain * dt) drops.push({ c: c + Math.random(), y: r + 1, v: 18 + Math.random() * 10 });
           }
         }
       }
-      // drops fall at 45 degrees (down and to the right: the same distance across as down, in px)
-      for (let i = drops.length - 1; i >= 0; i--) { const d = drops[i]; d.y += d.v * dt; d.c += d.v * dt * (ch / cw);
-        const c = Math.floor(d.c); if (c >= cols) { drops.splice(i, 1); continue; }
+      // drops fall about 25 degrees off vertical, down and to the LEFT (Margaret, 2026-10-20:
+      // "decrease the angle, opposite side") - 0.47 px across per px down, in cells via ch/cw
+      for (let i = drops.length - 1; i >= 0; i--) { const d = drops[i]; d.y += d.v * dt; d.c -= d.v * dt * 0.47 * (ch / cw);
+        const c = Math.floor(d.c); if (c < 0 || c >= cols) { drops.splice(i, 1); continue; }
         if (d.y >= skyLimit[c]) { put(skyLimit[c] - 1, c, ',', RAIN); drops.splice(i, 1); continue; }
-        put(Math.floor(d.y), c, '\\', RAIN); }
+        put(Math.floor(d.y), c, '/', RAIN); }
     }
     G.labels = []; G.eyes = [];
     if (P.game) drawGame(put);

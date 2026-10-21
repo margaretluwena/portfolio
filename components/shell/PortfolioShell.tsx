@@ -152,15 +152,17 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
             </p>
             <p>
               I also run{" "}
+              {/* the whole phrase is the link and the hover (Shub, Granola 2026-10-09:
+                  "hyperlink build at Troy Labs, the entire thing") */}
               <a
                 href="https://www.troylabs.vc"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
               >
-                BUILD
+                BUILD, USC’s premier student-run startup accelerator
               </a>
-              , USC’s premier student-run startup accelerator, where I’ve worked with founders who
+              , where I’ve worked with founders who
               have raised millions in pre-seed and brought in operators and investors to
               teach them.
             </p>

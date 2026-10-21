@@ -72,6 +72,10 @@ export type Work = {
   title: string;
   lede: string;            // one sentence, no second period - the opening line
   blurb?: string;          // home-card teaser; card falls back to lede (clamped) when absent
+  /* the card's credibility pill (Shub, Granola 2026-10-09: "$X raised", the
+     product type, the scale - a signal of the team for the visitor who never
+     clicks). One short fact; drafted 2026-10-20 from each study's own prose. */
+  signal?: string;
   credits: Credit[];       // Role / Timeline / Team / Disciplines as rows
   cover?: Media;           // frame visual; hero placeholder until covers exist
   hero?: Media;            // case-study hero when it should differ from the card art (Traeco: the brand hero, 2026-10-08)
@@ -104,6 +108,7 @@ export const works: Work[] = [
   {
     slug: "mark",
     title: "Mark",
+    signal: "TroyLabs BUILD, pitched at LAUNCH",
     lede: "A reading companion that turns the act of underlining into something you'd want to share",
     blurb: "Packaging, UI/UX software, and brand for a reading companion",
     credits: [
@@ -238,6 +243,7 @@ export const works: Work[] = [
   {
     slug: "traeco",
     title: "Traeco",
+    signal: "Audience Choice, LavaLab",
     lede: "Teams are spending more on AI agents than they can see.",
     blurb: "Brand, product, and web for an AI cost platform",
     /* poster stand-in until the real export lands */
@@ -386,6 +392,7 @@ export const works: Work[] = [
   {
     slug: "atlix",
     title: "Atlix",
+    signal: "Finalist, global student startup competition",
     lede: "Narrative intelligence: what young Californians are actually talking about, surfaced in real time",
     blurb: "Brand and interface for a narrative intelligence platform",
     /* poster stand-in until the real export lands */
@@ -499,6 +506,7 @@ export const works: Work[] = [
   {
     slug: "impeccable-chicken",
     title: "Impeccable Chicken",
+    signal: "As seen on Shark Tank",
     lede: "Brand system and pitch deck for the ready to eat chicken brand that pitched on Shark Tank",
     blurb: "Brand and deck for the ready to eat chicken CPG seen on Shark Tank",
     /* poster stand-in until the real export lands */
@@ -548,6 +556,7 @@ export const works: Work[] = [
   {
     slug: "glance",
     title: "Glance",
+    signal: "TroyLabs BUILD",
     lede: "Website and logo design for a productivity startup",
     cover: { src: "/images/glance-hero.png", alt: "Glance" },
     credits: [
@@ -578,6 +587,7 @@ export const works: Work[] = [
   {
     slug: "mountaindew",
     title: "Mountain Dew",
+    signal: "Avenues Consulting Group",
     lede: "Bottle redesigns and brand strategy for Mountain Dew",
     cover: { src: "/images/mountaindew-hero.png", alt: "Mountain Dew" },
     credits: [
@@ -615,6 +625,7 @@ export const works: Work[] = [
   {
     slug: "prosaic-intelligence",
     title: "Prosaic Intelligence",
+    signal: "16 consumer AI products indexed",
     lede: "A public index of consumer AI safety evaluations",
     blurb: "Brand, site, and data design for a consumer AI safety index",
     cover: { src: "/images/covers/prosaic-site.jpg", alt: "Prosaic Intelligence home" },
