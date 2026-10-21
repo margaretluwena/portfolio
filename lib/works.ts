@@ -108,7 +108,7 @@ export const works: Work[] = [
   {
     slug: "mark",
     title: "Mark",
-    signal: "TroyLabs BUILD, pitched at LAUNCH",
+    signal: "Raised $3M+", // Margaret, 2026-10-20
     lede: "A reading companion that turns the act of underlining into something you'd want to share",
     blurb: "Packaging, UI/UX software, and brand for a reading companion",
     credits: [
@@ -243,7 +243,7 @@ export const works: Work[] = [
   {
     slug: "traeco",
     title: "Traeco",
-    signal: "Audience Choice, LavaLab",
+    signal: "Audience Choice winner", // LavaLab closing summit; a traction number would beat this
     lede: "Teams are spending more on AI agents than they can see.",
     blurb: "Brand, product, and web for an AI cost platform",
     /* poster stand-in until the real export lands */
@@ -392,7 +392,7 @@ export const works: Work[] = [
   {
     slug: "atlix",
     title: "Atlix",
-    signal: "Finalist, global student startup competition",
+    signal: "Finalist, Seoul",
     lede: "Narrative intelligence: what young Californians are actually talking about, surfaced in real time",
     blurb: "Brand and interface for a narrative intelligence platform",
     /* poster stand-in until the real export lands */
@@ -506,7 +506,7 @@ export const works: Work[] = [
   {
     slug: "impeccable-chicken",
     title: "Impeccable Chicken",
-    signal: "As seen on Shark Tank",
+    signal: "Seen on Shark Tank",
     lede: "Brand system and pitch deck for the ready to eat chicken brand that pitched on Shark Tank",
     blurb: "Brand and deck for the ready to eat chicken CPG seen on Shark Tank",
     /* poster stand-in until the real export lands */
@@ -625,7 +625,7 @@ export const works: Work[] = [
   {
     slug: "prosaic-intelligence",
     title: "Prosaic Intelligence",
-    signal: "16 consumer AI products indexed",
+    signal: "16 products indexed",
     lede: "A public index of consumer AI safety evaluations",
     blurb: "Brand, site, and data design for a consumer AI safety index",
     cover: { src: "/images/covers/prosaic-site.jpg", alt: "Prosaic Intelligence home" },

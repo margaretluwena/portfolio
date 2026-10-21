@@ -136,52 +136,54 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
                 </div>
               )}
 
-              {/* wordmark + description. Real SVG lockups scale by width
-                  (natural aspect preserved) and sit 6px above the one-line
-                  description (text-secondary: 15px x 1.45 = 22px tall), which
-                  sits 5.9% above the bottom edge. Cards without art keep the
-                  Nohemi text treatment. */}
-              {work.wordmark ? (
-                <div
-                  className="absolute left-[4.6%]"
-                  style={{ bottom: "calc(5.9% + 22px + 6px)", width: work.wordmarkWidth ?? "16%" }}
-                >
-                  <Prox baseOpacity={0.9} maxScale={1} radius={120}>
-                    {/* eslint-disable-next-line @next/next/no-img-element -- local static SVG, no optimization pass needed */}
-                    <img
-                      src={work.wordmark}
-                      alt={work.title}
-                      className="block h-auto w-full"
-                      style={work.wordmarkGlow ? { filter: work.wordmarkGlow } : undefined}
-                    />
-                  </Prox>
-                </div>
-              ) : (
-                <div className="absolute left-[4.6%]" style={{ bottom: "calc(5.9% + 22px + 6px)" }}>
-                  <Prox baseOpacity={0.9} maxScale={1} radius={120}>
-                    <span className="font-display text-name text-ink">{work.title}</span>
-                  </Prox>
-                </div>
-              )}
-              {/* the signal pill: one fact about the team or the scale, on the
-                  lockup's row at the right edge (Shub's feedback, 2026-10-09) */}
-              {work.signal && (
-                <span
-                  className={`absolute right-[4.6%] max-w-[46%] truncate rounded-full border px-[10px] py-[5px] text-label uppercase tracking-[0.06em] backdrop-blur-sm ${
-                    work.cardText === "light" ? "border-white/15 bg-white/10 text-white/70" : "border-black/[0.08] bg-white/70 text-ink/60"
-                  }`}
-                  style={{ bottom: "calc(5.9% + 22px + 8px)" }}
-                >
-                  {work.signal}
-                </span>
-              )}
-              <p
-                className={`absolute bottom-[5.9%] left-[4.6%] w-[82%] truncate text-secondary ${
-                  work.cardText === "light" ? "text-white/50" : "text-ink-50"
-                }`}
+              {/* text zone (Margaret, 2026-10-20): at rest only the lockup row
+                  shows (lockup left, signal pill right) sitting 5.9% above the
+                  bottom edge; on hover the row rises and the one-line
+                  description slides in under it. Below md there is no hover,
+                  so the description is always out. Real SVG lockups scale by
+                  width (natural aspect preserved); the row is inset 4.6% a
+                  side, so the lockup's card-relative width is divided by
+                  0.908 to come out the same. */}
+              <div
+                className="absolute inset-x-0 bottom-[5.9%] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:translate-y-[28px] md:group-hover:translate-y-0"
               >
-                {work.blurb ?? (work.lede === "NEED" ? "" : work.lede)}
-              </p>
+                <div className="flex items-end justify-between gap-4 px-[4.6%]">
+                  {work.wordmark ? (
+                    <div className="shrink-0" style={{ width: `calc(${work.wordmarkWidth ?? "16%"} / 0.908)` }}>
+                      <Prox baseOpacity={0.9} maxScale={1} radius={120}>
+                        {/* eslint-disable-next-line @next/next/no-img-element -- local static SVG, no optimization pass needed */}
+                        <img
+                          src={work.wordmark}
+                          alt={work.title}
+                          className="block h-auto w-full"
+                          style={work.wordmarkGlow ? { filter: work.wordmarkGlow } : undefined}
+                        />
+                      </Prox>
+                    </div>
+                  ) : (
+                    <Prox baseOpacity={0.9} maxScale={1} radius={120}>
+                      <span className="font-display text-name text-ink">{work.title}</span>
+                    </Prox>
+                  )}
+                  {/* the signal pill: one fact about the team or the scale (Shub's feedback, 2026-10-09) */}
+                  {work.signal && (
+                    <span
+                      className={`max-w-[46%] shrink-0 truncate rounded-full border px-[10px] py-[5px] text-label uppercase tracking-[0.06em] backdrop-blur-sm ${
+                        work.cardText === "light" ? "border-white/15 bg-white/10 text-white/70" : "border-black/[0.08] bg-white/70 text-ink/60"
+                      }`}
+                    >
+                      {work.signal}
+                    </span>
+                  )}
+                </div>
+                <p
+                  className={`mt-[6px] h-[22px] w-[82%] truncate pl-[4.6%] text-secondary transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 ${
+                    work.cardText === "light" ? "text-white/50" : "text-ink-50"
+                  }`}
+                >
+                  {work.blurb ?? (work.lede === "NEED" ? "" : work.lede)}
+                </p>
+              </div>
 
               {/* "Coming soon": on pointer devices the cursor bubble says it, so
                   the card itself stays clean (Margaret, 2026-10-09). Below md it

@@ -12,7 +12,7 @@ const DEFAULT_COLORS = {
   petals: ['#e0558d', '#e2603f', '#4d82c9', '#d9a521'], flowerCenter: '#b07c22',
   poodle: '#1b1b1b', poodleFace: '#1b1b1b', poodleLegs: '#1b1b1b',
   ballRim: '#cde23a', ballSeam: '#fbfdf0', hint: '#1b1b1b',
-  rain: '#93a7cc', // pointer weather (2026-10-20): the raindrops, kept subtle
+  rain: '#aab9d6', // pointer weather (2026-10-20): the raindrops, kept subtle
   trail: '#8d8d8d',
 };
 
@@ -112,7 +112,20 @@ export function createSkyField(canvas, options = {}) {
      dog leaves behind while they blow away. Reduced motion renders solid. */
   let smalls = [];
   /* pointer weather: where the mouse is (canvas px), the eased strength of each effect, live raindrops */
-  let M = { x: 0, y: 0, on: false }, fx = { rain: 0 }, drops = [], frameDt = 0;
+  let M = { x: 0, y: 0, on: false }, fx = { rain: 0 }, drops = [], frameDt = 0, sprouts = 0;
+  /* rain grows the field (Margaret, 2026-10-20): where a drop lands, now and then a small
+     flower pops up on the front hill near that column. Sprouts draw their stem cell by cell
+     and open their head last (`grow` 0 -> 1); at most 40 per visit; a rebuild clears them. */
+  function sprout(c) {
+    if (sprouts >= 40 || Math.random() > 0.08 || !frontTop.length) return;
+    const cc = clamp(c + ((Math.random() * 5) | 0) - 2, 2, cols - 3);
+    const span = rows - frontTop[cc] - 3; if (span < 1) return;
+    let t = TYPES[0]; for (const k of TYPES) if (k.s + k.h.length < t.s + t.h.length) t = k; // the smallest tuft
+    const base = frontTop[cc] + 3 + ((Math.random() * span) | 0);
+    if (base - (t.h.length + t.s) + 1 <= frontTop[cc]) return;
+    flowers.push({ c: cc, base, t, petal: PETAL + ((Math.random() * 4) | 0), phase: Math.random() * 6.28, leaf: 0, grow: 0 });
+    sprouts++;
+  }
   const SMALL = 0.68; // small-glyph scale
 
   function hash(x, y) {
@@ -212,7 +225,7 @@ export function createSkyField(canvas, options = {}) {
 
   function buildFlowers() {
     const rng = mulberry(seed ^ 0x9e3779b9);
-    flowers = []; const taken = new Set();
+    flowers = []; sprouts = 0; const taken = new Set();
     const n = Math.round(cols * P.flowers * 0.16); let tries = 0;
     while (flowers.length < n && tries++ < n * 25) {
       const c = 2 + ((rng() * (cols - 4)) | 0);
@@ -443,9 +456,12 @@ export function createSkyField(canvas, options = {}) {
       const s = Math.sin(T * 1.6 + f.phase + f.c * 0.05) * (0.4 + P.wind * 0.3);
       const lean = s > 0.45 ? 1 : s < -0.45 ? -1 : 0, shift = s > 0.95 ? 1 : s < -0.95 ? -1 : 0;
       let r = f.base;
-      for (let k = 0; k < f.t.s; k++, r--) { const top = k === f.t.s - 1;
+      const g = f.grow == null ? 1 : (f.grow = Math.min(1, f.grow + frameDt * 1.6)), stemN = Math.ceil(f.t.s * Math.min(1, g * 1.25));
+      for (let k = 0; k < stemN; k++, r--) { const top = k === f.t.s - 1;
         put(r, f.c, top && lean > 0 ? '/' : top && lean < 0 ? '\\' : '|', STEM);
         if (k === 0 && f.leaf) put(r, f.c + f.leaf, f.leaf < 0 ? '\\' : '/', STEM); }
+      if (g < 1) continue; // the head opens once the stem is up
+      r = f.base - f.t.s;
       for (let j = f.t.h.length - 1; j >= 0; j--, r--) { const line = f.t.h[j], x0 = f.c - (line.length >> 1) + shift;
         for (let q = 0; q < line.length; q++) { const g = line[q]; if (g !== ' ') put(r, x0 + q, g, CENTERS.includes(g) ? CENTER : f.petal); } }
     }
@@ -470,7 +486,7 @@ export function createSkyField(canvas, options = {}) {
             if (r + 1 >= skyLimit[c]) continue;
             const dx = (c - pc) / RX, dy = (r - pr) / RY; if (dx * dx + dy * dy > 1) continue;
             // a cloud cell with open air under it is an underside: drops start there
-            if (covAt(r, c) > 0.35 && covAt(r + 1, c) < 0.2 && Math.random() < 4.5 * fx.rain * dt) drops.push({ c: c + Math.random(), y: r + 1, v: 18 + Math.random() * 10 });
+            if (covAt(r, c) > 0.35 && covAt(r + 1, c) < 0.2 && Math.random() < 3 * fx.rain * dt) drops.push({ c: c + Math.random(), y: r + 1, v: 9 + Math.random() * 6 });
           }
         }
       }
@@ -478,7 +494,7 @@ export function createSkyField(canvas, options = {}) {
       // "decrease the angle, opposite side") - 0.47 px across per px down, in cells via ch/cw
       for (let i = drops.length - 1; i >= 0; i--) { const d = drops[i]; d.y += d.v * dt; d.c -= d.v * dt * 0.47 * (ch / cw);
         const c = Math.floor(d.c); if (c < 0 || c >= cols) { drops.splice(i, 1); continue; }
-        if (d.y >= skyLimit[c]) { put(skyLimit[c] - 1, c, ',', RAIN); drops.splice(i, 1); continue; }
+        if (d.y >= skyLimit[c]) { put(skyLimit[c] - 1, c, ',', RAIN); drops.splice(i, 1); sprout(c); continue; }
         put(Math.floor(d.y), c, '/', RAIN); }
     }
     G.labels = []; G.eyes = [];
