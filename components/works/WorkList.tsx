@@ -150,7 +150,8 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
                       the set read as four brands and three names (Shub, Margaret
                       2026-10-20). The lockups still head the case studies. */}
                   <Prox baseOpacity={0.9} maxScale={1} radius={120}>
-                    <span className={`font-display text-name ${work.cardText === "light" ? "text-white" : "text-ink"}`}>{work.title}</span>
+                    {/* a step up from the name token (Margaret, 2026-10-20: "larger") */}
+                    <span className={`font-display text-[clamp(1.25rem,1.75vw,1.875rem)] leading-none tracking-[-0.02em] ${work.cardText === "light" ? "text-white" : "text-ink"}`}>{work.title}</span>
                   </Prox>
                   {/* the signal pill: one fact about the team or the scale (Shub's feedback, 2026-10-09) */}
                   {work.signal && (
