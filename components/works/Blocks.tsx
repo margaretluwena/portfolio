@@ -205,7 +205,7 @@ function SolutionBlock({ block }: { block: Extract<Block, { type: "solution" }> 
             {isNeed(piece.caption) ? (
               <NeedText label="caption" lines={2} className="max-w-[62ch]" />
             ) : (
-              <p className="max-w-[44ch] text-body-lg text-ink/75">{piece.caption}</p>
+              <p className="max-w-[48ch] text-[clamp(15px,1.05vw,19px)] leading-[1.45] text-ink/75">{piece.caption}</p>
             )}
           </div>
         );
