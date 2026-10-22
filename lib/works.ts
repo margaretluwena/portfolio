@@ -206,6 +206,12 @@ export const works: Work[] = [
             media: { src: "/images/mark/packaging-unitbox-1.jpg", alt: "Mark packaging, the last round: six sleeves with yellow on" },
           },
           {
+            name: "Merch",
+            /* Margaret, 2026-10-21: the three merch sheets are stickers, shirts, totes */
+            caption: "Stickers first: the lockup, the two black blocks, and the lines from the share cards, make your mark, on your words. Then the same marks on white shirts, small on the chest, and on canvas totes. Merch was where the brand got to be worn rather than read.",
+            media: { src: "/images/mark/merch-stickers.jpg", alt: "Mark sticker sheet: the lockup, the blocks, and the make your mark lines" },
+          },
+          {
             name: "LAUNCH",
             caption: "The three-minute pitch, as we gave it at TroyLabs' end-of-semester LAUNCH summit.",
             /* Margaret's screen recording of the deck (2026-10-08), last 3s
@@ -217,9 +223,8 @@ export const works: Work[] = [
       {
         type: "artifactGrid",
         media: [
-          { src: "/images/mark/merch-stickers.jpg", alt: "Mark sticker sheet" },
-          { src: "/images/mark/merch-shirts.png", alt: "Mark shirt variants" },
-          { src: "/images/mark/merch-tote.jpg", alt: "Mark tote bags" },
+          { src: "/images/mark/merch-shirts.png", alt: "Mark shirts: the lockup and the blocks on white tees" },
+          { src: "/images/mark/merch-tote.jpg", alt: "Mark canvas totes" },
           { src: "NEED", alt: "Make your mark wordplay" },
         ],
       },
