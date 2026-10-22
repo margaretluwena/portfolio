@@ -178,7 +178,7 @@ export const works: Work[] = [
         pieces: [
           {
             name: "Reading, made social",
-            caption: "Wrapped-style cards that turn a stretch of reading into something you'd post. They're deliberately a bit much. A share screen only works if someone wants to be seen posting it, so I traded restraint for personality.",
+            caption: "Wrapped-style cards that turn a stretch of reading into something you'd post. They're deliberately a bit much. A share screen only works if someone wants to be seen posting it, so I traded restraint for personality. A second version puts the quote on paper, signed, in a yellow envelope: the same idea, slower and more personal.",
             media: { src: "/images/mark/app-share.png", alt: "Mark share screens" },
           },
           {
@@ -233,7 +233,7 @@ export const works: Work[] = [
         media: [
           { src: "/images/mark/app-home.png", alt: "Mark app home screen" },
           { src: "/images/mark/app-notes-inside.png", alt: "Mark note detail screen" },
-          { src: "/images/mark/app-share-funky.png", alt: "Mark share card variants" },
+          { src: "/images/mark/app-share-funky.png", alt: "Mark share screen, the envelope version: the quote on paper, signed, in a yellow envelope" },
         ],
       },
       {

@@ -341,26 +341,6 @@ export function Blocks({ work }: { work: Work }) {
 
 export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => void }) {
   const entries = railEntries(work);
-  const reduce = useReducedMotion();
-  const [active, setActive] = useState(entries[0]?.id);
-
-  useEffect(() => {
-    if (entries.length < 2) return;
-    const io = new IntersectionObserver(
-      (obs) => {
-        const hit = obs.filter((o) => o.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-        if (hit) setActive(hit.target.id);
-      },
-      { rootMargin: "-25% 0px -55% 0px" }
-    );
-    entries.forEach((e) => {
-      const el = document.getElementById(e.id);
-      if (el) io.observe(el);
-    });
-    return () => io.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [work.slug]);
-
   const linkClass =
     "text-body text-ink/40 transition-colors duration-300 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
   /* a small return arrow (a left hook) beside the word */
@@ -372,18 +352,16 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
       Return
     </span>
   );
+  /* the section links now live on the ASCII minimap (AsciiScrollbar), at the
+     rows their sections land on (Margaret, 2026-10-21); the rail keeps Return,
+     above the minimap and aligned with its labels. A thin work with one entry
+     has no minimap labels to speak of, so Return is all it shows either way. */
+  void entries;
 
   return (
-    /* fixed to the far-left gutter (the --inset line the nav shares) so the
-       case-study column stays centered on the page independent of the
-       rail. The section links sit centred on the viewport's middle, and
-       "Return" hangs above them (Margaret, 2026-10-09; it used to lead
-       from 43vh with the sections below) - back to the home column, or,
-       in the overlay, closes it. A rail with one entry tells the reader
-       nothing, so thin works keep Return only, itself at the middle. */
     <>
-    {/* phones: the rail is hidden and the nav pill leaves on scroll, so a
-        small Return pill stays pinned at the bottom-left (audit, 2026-10-20) */}
+    {/* phones: the minimap is hidden and the nav pill leaves on scroll, so a
+        small Return pill stays pinned at the bottom-left */}
     <div className="fixed bottom-[max(16px,env(safe-area-inset-bottom))] left-[var(--inset)] z-40 md:hidden">
       {onReturn ? (
         <button type="button" onClick={onReturn} className="rounded-full border border-black/[0.12] bg-white/90 px-4 py-2 text-body text-ink shadow-[0_8px_19px_rgba(0,0,0,0.08)] backdrop-blur">
@@ -396,43 +374,17 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
       )}
     </div>
     <nav
-      aria-label="Case study sections"
-      className="fixed left-[calc(var(--inset)*0.55)] top-1/2 z-10 hidden -translate-y-1/2 md:block"
+      aria-label="Case study"
+      className="fixed left-[calc(var(--inset)*0.18+72px)] top-[11vh] z-30 hidden md:block"
     >
-      <div className={entries.length >= 2 ? "absolute bottom-full left-0 mb-[5vh] whitespace-nowrap" : undefined}>
-        {onReturn ? (
-          <button type="button" onClick={onReturn} className={linkClass}>
-            {returnLabel}
-          </button>
-        ) : (
-          <TransitionLink href="/" className={linkClass}>
-            {returnLabel}
-          </TransitionLink>
-        )}
-      </div>
-      {entries.length >= 2 && (
-        <ol className="space-y-[3.2vh]">
-          {entries.map((e) => {
-            const current = e.id === active;
-            return (
-              <li key={e.id}>
-                <button
-                  type="button"
-                  aria-current={current || undefined}
-                  onClick={() =>
-                    document.getElementById(e.id)?.scrollIntoView({
-                      behavior: reduce ? "auto" : "smooth",
-                      block: "start",
-                    })
-                  }
-                  className={`${linkClass} ${current ? "!text-ink" : ""}`}
-                >
-                  {e.name}
-                </button>
-              </li>
-            );
-          })}
-        </ol>
+      {onReturn ? (
+        <button type="button" onClick={onReturn} className={linkClass}>
+          {returnLabel}
+        </button>
+      ) : (
+        <TransitionLink href="/" className={linkClass}>
+          {returnLabel}
+        </TransitionLink>
       )}
     </nav>
     </>
