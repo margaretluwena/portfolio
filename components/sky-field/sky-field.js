@@ -262,7 +262,7 @@ export function createSkyField(canvas, options = {}) {
     dog: { x: -200, st: 'away', face: 1, moving: false, jump: 0, jv: 0, home: 0, woof: 0, say: '', sayT: 0 },
     throws: null,
     grab: null, hist: [], shakes: [], lastDir: 0, met: false, labels: [], eyes: [], ballWig: 0, trail: [], dt: 0,
-    throwsHere: 0, idle: 0 };
+    throwsHere: 0, idle: 0, begged: 0 };
   const ballR = () => ch * 0.95;
   function groundAt(px) { if (!frontTopF) return H * 0.9; const f = clamp(px / cw, 0, cols - 1), i = Math.floor(f), t = f - i;
     const a = frontTopF[i], b = frontTopF[Math.min(cols - 1, i + 1)]; return (a + (b - a) * t) * ch; }
@@ -300,6 +300,11 @@ export function createSkyField(canvas, options = {}) {
     d.woof = Math.max(0, d.woof - dt); d.sayT = Math.max(0, d.sayT - dt);
     // a minute of sitting together with nothing happening: the dog brings it up again itself
     G.idle = d.st === 'wait' && b.st === 'rest' && !G.grab ? G.idle + dt : 0;
+    if (G.idle === 0) G.begged = 0;
+    // the dog has come and nobody has thrown yet: after a few seconds it asks, and
+    // asks again every so often until the first throw (Margaret, 2026-10-21)
+    if (G.throwsHere === 0 && G.idle > 5 && G.idle - G.begged > 18 && d.sayT <= 0) {
+      d.say = 'throw the ball please!'; d.sayT = 3.2; G.begged = G.idle; }
     if (G.idle > 60) { G.idle = 0; if (P.onCount) announce((() => { try { return P.onCount(); } catch { return null; } })()); }
     if (d.st === 'enter') {
       if (moveDog(d, b.x - d.face * (DOGW / 2 + 2) * cw, 330, dt)) { d.st = 'wait'; d.woof = 1.2; d.face = Math.sign(b.x - d.x) || 1; }
@@ -360,8 +365,10 @@ export function createSkyField(canvas, options = {}) {
             if (rel > 0.7 && n < 0.45) { smalls.push(top + r, left + q, '+', k); continue; }
           }
           put(top + r, left + q, g, k); } }
-      if (d.sayT > 0) G.labels.push({ text: d.say, x: d.x, y: (top - 1) * ch, bubble: true, at: d.x + d.face * (DOGW / 4) * cw });
-      else if (d.woof > 0) G.labels.push({ text: 'woof!', x: d.x, y: (top - 1) * ch, bubble: true, at: d.x + d.face * (DOGW / 4) * cw });
+      // speech comes from the side of the mouth the dog faces (Margaret, 2026-10-21)
+      const mouthY = groundAt(d.x) - ch * (DOGH - MOUTH) + d.jump;
+      if (d.sayT > 0) G.labels.push({ text: d.say, x: d.x, y: (top - 1) * ch, bubble: true, at: mouthX(d), my: mouthY, face: d.face });
+      else if (d.woof > 0) G.labels.push({ text: 'woof!', x: d.x, y: (top - 1) * ch, bubble: true, at: mouthX(d), my: mouthY, face: d.face });
       // eyes: the sprite's eye gap (EYE_ROW/EYE_COL facing right) gets a real eye - white, a pupil
       // looking the way the dog faces, and a blink every few seconds
       const ec = left + (d.face > 0 ? EYE_COL : DOGW - 1 - EYE_COL);
@@ -417,15 +424,25 @@ export function createSkyField(canvas, options = {}) {
         ctx.globalAlpha = 1;
         continue;
       }
-      // speech bubble drawn in characters, the 'v' in the bottom rule pointing at the speaker
-      const inner = l.text.length + 2, bar = '-'.repeat(inner);
-      const lines = ['.' + bar + '.', '| ' + l.text + ' |', "'" + bar + "'"];
-      const wpx = (inner + 2) * gw, x = clamp(l.x - wpx / 2, 4, W - wpx - 4), y = clamp(l.y - gh * 3.2, 4, H - gh * 3 - 4);
-      const vcol = clamp(Math.round((l.at - x) / gw), 2, inner - 1);
-      lines[2] = lines[2].slice(0, vcol) + 'v' + lines[2].slice(vcol + 1);
-      ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fillRect(x + gw * 0.5, y + gh * 0.15, wpx - gw, gh * 2.7);
-      ctx.fillStyle = C.hint;
-      lines.forEach((ln, i) => ctx.fillText(ln, x, y + i * gh));
+      // a rounded speech bubble beside the mouth, on the side the dog faces, its tail
+      // curling down from the near corner toward the mouth (Margaret, 2026-10-21)
+      const tw = ctx.measureText(l.text).width, pad = gw * 1.4, bh = gh * 1.7, bw = tw + pad * 2, r = bh / 2;
+      let face = l.face || 1, gap = cw * 1.2;
+      let x0 = face > 0 ? l.at + gap : l.at - gap - bw;
+      if (x0 < 4 || x0 + bw > W - 4) { face = -face; x0 = face > 0 ? l.at + gap : l.at - gap - bw; }
+      x0 = clamp(x0, 4, W - bw - 4);
+      const y0 = clamp(l.my - bh - ch * 1.4, 4, H - bh - 4);
+      ctx.lineWidth = 1.5; ctx.strokeStyle = C.hint; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      // the tail: from the bottom of the near end, a hook down and toward the mouth
+      const nx = face > 0 ? x0 + r * 0.9 : x0 + bw - r * 0.9, tipX = face > 0 ? x0 - r * 0.15 : x0 + bw + r * 0.15, tipY = y0 + bh + ch * 1.1;
+      ctx.beginPath(); ctx.moveTo(nx + face * r * 0.55, y0 + bh - 1);
+      ctx.quadraticCurveTo(nx + face * r * 0.3, y0 + bh + ch * 0.8, tipX, tipY);
+      ctx.quadraticCurveTo(nx - face * r * 0.1, y0 + bh + ch * 0.5, nx - face * r * 0.35, y0 + bh - 1);
+      ctx.closePath(); ctx.fillStyle = 'rgba(255,255,255,0.96)'; ctx.fill(); ctx.stroke();
+      // the pill
+      ctx.beginPath(); ctx.roundRect(x0, y0, bw, bh, r);
+      ctx.fillStyle = 'rgba(255,255,255,0.96)'; ctx.fill(); ctx.stroke();
+      ctx.fillStyle = C.hint; ctx.fillText(l.text, x0 + pad, y0 + (bh - gh) / 2 + gh * 0.08);
     }
     ctx.textBaseline = 'top'; ctx.font = `${P.cellSize}px ${P.fontFamily}`;
   }
