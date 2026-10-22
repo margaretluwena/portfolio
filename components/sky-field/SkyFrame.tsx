@@ -70,7 +70,7 @@ async function readCount(): Promise<number> {
    hint, shown until the visitor has done the thing once - shaken the ball
    hard enough to call the dog, petted the dog - and then never again on
    this device (localStorage, like the player number). */
-const HOVER_LINES = { ball: "Pick it up and shake", dog: "Pet me" } as const;
+const HOVER_LINES = { ball: "Try shaking!", dog: "Pet me" } as const; // the ball's first-hover line (Margaret, 2026-10-21)
 const DONE_KEY = { ball: "sky:hint:ball", dog: "sky:hint:dog" } as const;
 const isDone = (k: keyof typeof DONE_KEY) => { try { return localStorage.getItem(DONE_KEY[k]) === "1"; } catch { return false; } };
 const markDone = (k: keyof typeof DONE_KEY) => { try { localStorage.setItem(DONE_KEY[k], "1"); } catch {} };
@@ -112,6 +112,7 @@ export default function SkyFrame() {
         hillTexture={0.45}
         flowers={0.5}
         ballX={0.17}
+        hint="" /* no "shake me" label on the ball (Margaret, 2026-10-21): the cursor bubble says it on first hover; the idle wiggle stays */
         onThrow={countThrow}
         onCount={readCount}
         onHover={onHover}
