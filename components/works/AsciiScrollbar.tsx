@@ -63,6 +63,7 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
       setFrac(Math.min(1, el.clientHeight / Math.max(1, el.scrollHeight)));
       progress.set(max > 0 ? Math.min(1, Math.max(0, el.scrollTop / max)) : 0);
       if (ref.current) setRows(Math.max(12, Math.floor(ref.current.clientHeight / CELL)));
+      else requestAnimationFrame(measure); // the track mounts a frame later; measure it then
       /* a section's marker sits where the lens's centre will be when the
          section's top reaches the reading line (30% down the viewport) */
       setMarks(
@@ -155,12 +156,16 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
     return box ? Math.floor((clientY - box.getBoundingClientRect().top) / CELL) : null;
   };
 
-  if (frac >= 1) return null;
+  /* the track always mounts (its ref is what gets measured); it stays
+     invisible until the rows are known and the page can scroll, then fades
+     in - no first paint with the names bunched at the top (Margaret, 2026-10-21) */
+  const ready = rows > 0 && frac < 1;
 
   return (
     <div
-      className="fixed bottom-[18vh] left-[calc(var(--inset)*0.18)] top-[26vh] z-30 hidden md:block"
-      style={{ fontFamily: "var(--font-sky), ui-monospace, Menlo, monospace" }}
+      className="fixed bottom-[18vh] left-[calc(var(--inset)*0.18)] top-[26vh] z-30 hidden transition-opacity duration-500 md:block"
+      style={{ fontFamily: "var(--font-sky), ui-monospace, Menlo, monospace", opacity: ready ? 1 : 0, pointerEvents: ready ? "auto" : "none" }}
+      aria-hidden={!ready}
     >
       {/* the track, with the pointer column to its left */}
       <div
