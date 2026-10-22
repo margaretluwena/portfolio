@@ -126,7 +126,7 @@ function MediaView({ media, sizes = "(max-width: 768px) 92vw, 56vw" }: { media: 
       width={w}
       height={h}
       sizes={portrait ? "(max-width: 768px) 60vw, 25vw" : sizes}
-      className="block rounded-[4px]"
+      className={`block rounded-[4px] ${portrait ? "" : ""}`}
       /* landscape images take the column's full width (capped at their own
          pixel width) and share the text's left edge - centred, narrower
          images read as misaligned next to left-set copy (Margaret, 2026-10-21) */
@@ -194,7 +194,7 @@ function SolutionBlock({ block }: { block: Extract<Block, { type: "solution" }> 
     ? block.pieces.filter((p) => !(isNeed(p.name) && isNeed(p.caption) && p.media.src === "NEED"))
     : block.pieces;
   return (
-    <section className="space-y-10">
+    <section className="space-y-[9vh]">
       <SectionLabel>{RAIL_NAMES.solution}</SectionLabel>
       {pieces.map((piece, i) => {
         const tall = isPortrait(piece.media);
@@ -215,9 +215,10 @@ function SolutionBlock({ block }: { block: Extract<Block, { type: "solution" }> 
         /* a tall image sits beside its text instead of under it, so the
            column never carries a phone screen with nothing to its sides
            (Margaret, 2026-10-20) */
-        /* a gallery: the piece's extra images in one row, side by side, tops aligned */
+        /* a gallery: the piece's extra images in one row, side by side, tops
+           aligned, with a clear breath above it (Margaret, 2026-10-21) */
         const gallery = piece.gallery && piece.gallery.length > 0 && (
-          <div className="grid grid-cols-3 items-start gap-3 md:gap-5">
+          <div className="grid grid-cols-3 items-start gap-3 pt-[4vh] md:gap-5">
             {piece.gallery.map((m) => {
               const [w, h] = SIZES[m.src] ?? [1200, 1600];
               return (
@@ -226,11 +227,15 @@ function SolutionBlock({ block }: { block: Extract<Block, { type: "solution" }> 
             })}
           </div>
         );
+        /* a tall image beside its text sits flush with the column's right edge,
+           so the phone screens down the study share one line (Margaret, 2026-10-21) */
         return tall ? (
           <div key={`${i}-${piece.name}`} className="space-y-6">
             <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,42%)] md:items-start md:gap-10">
               {text}
-              <MediaView media={piece.media} />
+              <div className="md:flex md:justify-end">
+                <MediaView media={piece.media} />
+              </div>
             </div>
             {gallery}
           </div>
