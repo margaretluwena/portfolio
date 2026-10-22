@@ -16,13 +16,13 @@ import { useMotionValue, useMotionValueEvent, useReducedMotion, useSpring } from
              ends to nine at its middle. It follows the scroll on a SPRING,
              so it lags a touch and settles, and its pattern walks with
              time like a cloud rim - it reads as alive, not pasted on
-    pointer  ">" to the left of the lens's centre row
-    markers  the sections are FANNED evenly down the track, a dash and the
-             name at each, and the lens travels between them at whatever
-             pace the section's length demands - a long section moves it
-             slowly, a short one quickly (Margaret, 2026-10-21). So the
-             track IS the list. When the lens crosses a marker the row
-             bursts wide for a beat and that name turns to ink
+    markers  the sections are FANNED evenly down the track, a fixed dash
+             and the name at each, and the lens travels between them at
+             whatever pace the section's length demands - a long section
+             moves it slowly, a short one quickly (Margaret, 2026-10-21).
+             So the track IS the list. As the lens reaches a marker it
+             bulges (the lens alone, never the dash) and the name turns
+             to ink
     up       an arrow pill at the foot of the track: back to the top
 
   Interactive: click anywhere on the track to go there, drag the lens,
@@ -165,7 +165,7 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
       <div
         ref={ref}
         aria-hidden
-        className="absolute bottom-0 left-0 top-0 w-[64px] cursor-pointer select-none text-[9px] leading-[9px]"
+        className="absolute bottom-0 left-0 top-0 w-[60px] cursor-pointer select-none text-[9px] leading-[9px]"
         style={{ touchAction: "none" }}
         onPointerDown={(e) => {
           drag.current = true;
@@ -188,7 +188,7 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
         {/* the lens bulges as it passes a header: 0 away from any marker, 1 on one */}
         {Array.from({ length: rows }, (_, i) => {
           const markerRows = marks.map((_, k) => Math.round(span * tOf(k)) + Math.floor((thumb - 1) / 2));
-          const atHeader = markerRows.reduce((m, r) => Math.max(m, 1 - Math.abs(centre - r) / 3), 0);
+          const atHeader = markerRows.reduce((m, r) => Math.max(m, 1 - Math.abs(centre - r) / 4), 0);
           const TAIL = 3; // rows past each end that dither off
           const inThumb = i >= start && i < start + thumb;
           const inTail = !inThumb && i >= start - TAIL && i < start + thumb + TAIL;
@@ -196,14 +196,14 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
           const isMark = marks.some((_, k) => Math.round(span * tOf(k)) + Math.floor((thumb - 1) / 2) === i);
           const flare = burst && Math.abs(i - burst.row) <= 2 ? burstAmt * (1 - Math.abs(i - burst.row) / 3) : 0;
           const isCentre = Math.round(centre) === i;
-          /* every row is [pointer cell][11-cell field], the field centred on the track's axis */
+          /* every row is an 11-cell field centred on the track's axis */
           let field = "";
           let cls = "text-ink/25";
           if (inThumb) {
             const d = Math.abs(i - centre) / Math.max(1, (thumb - 1) / 2); // 0 centre .. 1 end
             /* a gentler swell: one cell at the ends, five at the middle, plus up to
                four more while the lens sits on a header (Margaret, 2026-10-21) */
-            const width = Math.min(11, 1 + 2 * Math.round((2 + atHeader * 2) * Math.pow(Math.max(0, 1 - d), 1.3) + flare * 1.5));
+            const width = Math.min(11, 1 + 2 * Math.round((2 + atHeader * 3) * Math.pow(Math.max(0, 1 - d), 1.3) + flare * 1.5));
             for (let k = 0; k < width; k++) {
               const c = Math.abs(k - (width - 1) / 2) / Math.max(1, (width - 1) / 2);
               const n = hash(i * 7 + k * 13, reduce ? 0 : tick) * 0.45 + (1 - c) * 0.6;
@@ -218,30 +218,29 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
             const keep = hash(i * 11, reduce ? 1 : tick) < 0.55 - dist * 0.15;
             field = keep ? (hash(i * 5, tick) < 0.5 ? ":" : ".") : TRACK;
             cls = keep ? "text-[var(--study-blue)]" : "text-ink/25";
-          } else if (isMark || flare > 0) {
-            const w = Math.min(11, 3 + Math.round(flare * 5));
-            field = "-".repeat(w);
-            cls = flare > 0 ? "text-[var(--study-blue)]" : "text-ink/60";
+          } else if (isMark) {
+            field = "---"; // a fixed dash; the bulge is the lens's alone
+            cls = "text-ink/50";
           } else {
             field = near ? ":" : TRACK;
             cls = near ? "text-ink/60" : "text-ink/25";
           }
           const pad = Math.max(0, Math.floor((11 - field.length) / 2));
+          void isCentre;
           return (
             <span key={i} className={`block whitespace-pre ${cls}`} style={{ height: CELL }}>
-              <span className={isCentre ? "text-[var(--study-blue)]" : "text-transparent"}>{">"}</span>
               {" ".repeat(pad) + field}
             </span>
           );
         })}
-      {/* back to the top, centred on the track's axis (the pointer cell + half the 11-cell field) */}
+      {/* back to the top, centred on the track's axis (half the 11-cell field) */}
       <button
         type="button"
         onClick={() => scrollToP(0, true)}
         onPointerDown={(e) => e.stopPropagation()}
         aria-label="Back to top"
         className="absolute -bottom-[40px] grid h-[28px] w-[28px] -translate-x-1/2 place-items-center rounded-full border border-black/[0.12] bg-white/90 text-ink/60 shadow-[0_6px_16px_rgba(0,0,0,0.08)] backdrop-blur transition-colors hover:text-ink"
-        style={{ left: "6.5ch", fontSize: 9 }}
+        style={{ left: "5.5ch", fontSize: 9 }}
       >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
           <path d="M6 10V2M2.5 5.5 6 2l3.5 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
