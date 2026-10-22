@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useReducedMotion } from "motion/react";
 import type { Block, Media, Work } from "@/lib/works";
-import { getWork } from "@/lib/works";
+import { indexWorks } from "@/lib/works";
 import Prox from "@/components/ui/Prox";
 import { TransitionLink } from "@/components/providers/PageTransition";
 import imageSizes from "@/lib/image-sizes.json";
@@ -408,19 +408,36 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
 
 /* ---------- next ---------- */
 
+/* the way on from a study: previous on the left, next on the right, walking
+   the open studies in their index order (Margaret, 2026-10-21). Only
+   studies with a page count; the first has no previous and the last no next. */
 export function NextWork({ slug }: { slug: string }) {
-  const target = getWork(slug);
-  if (!target) return null;
+  const open = indexWorks.filter((w) => !w.comingSoon);
+  const i = open.findIndex((w) => w.slug === slug);
+  const prev = i > 0 ? open[i - 1] : null;
+  const next = i >= 0 && i < open.length - 1 ? open[i + 1] : null;
+  if (!prev && !next) return null;
+  const cls = "text-label uppercase text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink";
   return (
-    <p className="mt-[8vh] border-t border-hairline pt-6">
-      <Prox baseOpacity={0.6} maxScale={1} radius={140}>
-        <Link
-          href={`/works/${target.slug}`}
-          className="text-label uppercase text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-        >
-          Next · {target.title}
-        </Link>
-      </Prox>
+    <p className="mt-[8vh] flex items-center justify-between gap-6 border-t border-hairline pt-6">
+      <span>
+        {prev && (
+          <Prox baseOpacity={0.6} maxScale={1} radius={140}>
+            <TransitionLink href={`/works/${prev.slug}`} className={cls}>
+              Previous · {prev.title}
+            </TransitionLink>
+          </Prox>
+        )}
+      </span>
+      <span className="text-right">
+        {next && (
+          <Prox baseOpacity={0.6} maxScale={1} radius={140}>
+            <TransitionLink href={`/works/${next.slug}`} className={cls}>
+              Next · {next.title}
+            </TransitionLink>
+          </Prox>
+        )}
+      </span>
     </p>
   );
 }

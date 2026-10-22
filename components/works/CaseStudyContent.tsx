@@ -133,7 +133,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
         {!isOverlay && <AsciiScrollbar sections={railEntries(work)} />}
         <SectionRail work={work} onReturn={isOverlay ? () => router.back() : undefined} />
         <Blocks work={work} />
-        <NextWork slug={work.next} />
+        <NextWork slug={work.slug} />
       </section>
     </div>
   );
