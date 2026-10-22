@@ -429,7 +429,8 @@ export function createSkyField(canvas, options = {}) {
       // little away from the dog and a little above the mouth (Margaret, 2026-10-21)
       const inner = l.text.length + 2, bar = '-'.repeat(inner);
       let face = l.face || 1;
-      const rows = [' .' + bar + '. ', '( ' + l.text + ' )', " '" + bar + "' "];
+      // every row is text.length + 4 cells wide, so the walls sit at the box's ends
+      const rows = ['.' + bar + '.', '( ' + l.text + ' )', "'" + bar + "'"];
       const cols = rows[0].length, wpx = cols * gw, gap = cw * 4;
       let x = face > 0 ? l.at + gap : l.at - gap - wpx;
       if (x < 4 || x + wpx > W - 4) { face = -face; x = face > 0 ? l.at + gap : l.at - gap - wpx; }
@@ -437,7 +438,7 @@ export function createSkyField(canvas, options = {}) {
       const y = clamp(l.my - ch * 3 - gh * 4, 4, H - gh * 4 - 4);
       // the tail: a row below the box, one cell in from the near end, leaning toward the mouth
       const tail = face > 0 ? ' /' : ' '.repeat(cols - 2) + '\\';
-      ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fillRect(x + gw * 0.6, y + gh * 0.15, wpx - gw * 1.2, gh * 2.7);
+      ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fillRect(x + gw * 0.3, y + gh * 0.15, wpx - gw * 0.6, gh * 2.7);
       ctx.fillStyle = C.hint;
       rows.forEach((ln, i) => ctx.fillText(ln, x, y + i * gh));
       ctx.fillText(tail, x, y + 3 * gh);
