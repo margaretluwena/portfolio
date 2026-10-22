@@ -12,8 +12,9 @@ import { useMotionValue, useMotionValueEvent, useReducedMotion, useSpring } from
     track    one "·" per row in the sky's mono face, 9px rows, so the
              column is dense
     lens     where you are: the project's accent (--study-blue) drawn in
-             the sky's dither characters, swelling from one cell at its
-             ends to nine at its middle. It follows the scroll on a SPRING,
+             the sky's dither characters. Between headers it runs nearly
+             flat, a thread one to three cells wide; reaching a header it
+             swells to five at its middle. It follows the scroll on a SPRING,
              so it lags a touch and settles, and its pattern walks with
              time like a cloud rim - it reads as alive, not pasted on
     markers  the sections are FANNED evenly down the track, a fixed dash
@@ -201,9 +202,9 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
           let cls = "text-ink/25";
           if (inThumb) {
             const d = Math.abs(i - centre) / Math.max(1, (thumb - 1) / 2); // 0 centre .. 1 end
-            /* a gentler swell: one cell at the ends, five at the middle, plus up to
-               four more while the lens sits on a header (Margaret, 2026-10-21) */
-            const width = Math.min(11, 1 + 2 * Math.round((2 + atHeader * 3) * Math.pow(Math.max(0, 1 - d), 1.3) + flare * 1.5));
+            /* nearly flat between headers (one to three cells), swelling to the
+               full five-wide lens as it reaches one (Margaret, 2026-10-21) */
+            const width = Math.min(11, 1 + 2 * Math.round((0.6 + atHeader * 1.6) * Math.pow(Math.max(0, 1 - d), 1.3) + flare * 1.2));
             for (let k = 0; k < width; k++) {
               const c = Math.abs(k - (width - 1) / 2) / Math.max(1, (width - 1) / 2);
               const n = hash(i * 7 + k * 13, reduce ? 0 : tick) * 0.45 + (1 - c) * 0.6;
