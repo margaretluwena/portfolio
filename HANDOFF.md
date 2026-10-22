@@ -1,74 +1,92 @@
 # Hand-off - start here
 
-Paste this into a fresh Claude Code session (or just say "read HANDOFF.md")
-to pick up where the 2026-10-08 session left off.
+Paste "read HANDOFF.md" into a fresh Claude Code session to pick up where
+the 2026-10-21 session left off. Everything below is live on
+margaretluwena.net; the working tree is clean.
 
 ## The repo in one paragraph
 
-Next.js 15 / React 19 portfolio for Margaret Luwena, branch `redesign`
-(production = margaretluwena.net). Git remote: github.com/margaretluwena/
-portfolio; Vercel builds `main` on push as production and other branches
-as previews, so **pushing `main` IS deploying - only on Margaret's say-so**.
-Commits must be authored as luwena@usc.edu (set per-repo) or Vercel
-silently skips the build. Upstash Redis ("sky-throws", free plan) is
-attached for the player counter. Design source of truth is the
-Figma file `zsUcjQVncy8OinX0VJl8EB` ("Portfolio Revamp" page). Dev server:
-`npm run dev -- --port 3001` (`.claude/launch.json` has it as
-`portfolio-redesign`). Typecheck with `npx tsc --noEmit`; ESLint is not
-installed. `npm run build` also runs `scripts/check-dashes.mjs` - **no em
-dashes anywhere in copy or code comments**, the build fails on them.
+Next.js 15 / React 19 portfolio for Margaret Luwena. Branch `redesign` is
+the working branch; `main` is kept fast-forwarded to it. Git remote:
+github.com/margaretluwena/portfolio. Vercel builds `main` on push as
+PRODUCTION and other branches as login-protected previews, so **pushing
+`main` IS deploying - only on Margaret's say-so**. Commits must be authored
+as luwena@usc.edu (set per-repo) or Vercel silently skips the build. The
+release ritual used all session: commit on `redesign`, `git checkout main
+&& git merge --ff-only redesign`, back to `redesign`, `git push origin
+main redesign`, then poll the Vercel deployments API for READY on that
+sha. Upstash Redis ("sky-throws", free plan) is attached for the player
+counter. Design source of truth is the Figma file `zsUcjQVncy8OinX0VJl8EB`
+("Portfolio Revamp" page). Dev server: `npm run dev -- --port 3001`
+(`.claude/launch.json` has it as `portfolio-redesign`); a copy is usually
+already running on 3001 from Margaret's terminal - attach, don't start a
+second. Typecheck with `npx tsc --noEmit`; ESLint is not installed. `npm
+run build` also runs `scripts/check-dashes.mjs` - **no em dashes anywhere
+in copy or code comments**, the build fails on them.
 
 ## Where things live
 
 | Area | Files |
 | --- | --- |
-| Home page + intro wordmark flight | `app/page.tsx`, `components/shell/PortfolioShell.tsx` |
-| Nav pill (persistent, animates between home/subpage layouts, hides on scroll only in case studies, veil under it) | `components/nav/Nav.tsx`, `NavContext.tsx`, `components/providers/PageTransition.tsx` |
-| Rotating tagline (plain ink, 7 lines) | `components/shell/RotatingTitle.tsx` |
-| Bio stickers (USC / Traeco / TroyLabs, pop on hover and stay) | `components/shell/StickerWord.tsx` |
-| Work cards (home column + /works 3-col grid share `WorkCard` and `CoverArt`) | `components/works/WorkList.tsx`, `WorksColumn.tsx`, `app/works/page.tsx` |
-| Case-study template (56.4vw column, hero, lede headline + lockup, 4 credits, accent labels, rail centred with Return above; blocks: context, brief, problem, solution, artifactGrid, lessons) | `components/works/CaseStudyContent.tsx`, `Blocks.tsx`, `app/works/[slug]/page.tsx` - the card-to-study morph and the overlay route are gone (2026-10-20); a card is a plain route change |
-| Works data (slugs, credits, blocks, cover art geometry incl. `rotate`/`crop`, `hero`, `accent`) | `lib/works.ts` |
+| Home: intro wordmark flight, then bio column (fixed) + works column (its own scroller, auto-cycles one card every 4s until touched, ends where the last card meets the first's line, "See more work" under it). No footer on home. | `app/page.tsx`, `components/shell/PortfolioShell.tsx`, `components/works/WorksColumn.tsx` |
+| Nav pill: dots for the works index on home; on a case study it lifts fully out past 160px of scroll and returns above; pinned everywhere else | `components/nav/Nav.tsx`, `NavContext.tsx` |
+| Page transitions: fade out, scroll to top, route; a 700ms safety net fires the route if the exit never reports back | `components/providers/PageTransition.tsx` |
+| Cursor bubble: a white pill off the pointer. `data-bubble="..."` on any element, or `setCursorBubble()` for the canvas. "Coming soon!" on parked cards; "Try shaking!" / "Pet me" on the ball and dog, each shown until done once per visit | `components/providers/CursorBubble.tsx`, `SkyFrame.tsx` |
+| Work cards: text title (no SVG lockups on cards), a `signal` pill ("Raised $3M+", "Audience Choice winner", ...), description slides in on hover; parked cards are inert | `components/works/WorkList.tsx`, `lib/works.ts` |
+| Case-study template: 56.4vw column; hero rises in (no card morph, no overlay route); blocks context / brief / problem / solution (pieces may carry a `gallery` row) / artifactGrid / lessons; landscape images fill the column flush left, tall ones sit beside their text flush right; Previous / Next walk the open studies; no footer | `components/works/CaseStudyContent.tsx`, `Blocks.tsx`, `app/works/[slug]/page.tsx` |
+| ASCII minimap (studies, md+): left gutter; track of 9px cells, sections fanned evenly down it, lens paced by section length on a spring, nearly flat between headers and swelling five wide on one, dithered ends; names beside it at the rail's spacing, active one slides right and turns ink; Return above; up-arrow pill below; native scrollbar hidden on studies | `components/works/AsciiScrollbar.tsx`, `Blocks.tsx` (SectionRail = Return only + phone Return pill), `app/globals.css` (`html.study-scroll`) |
+| Study type scale: body 16-22px, labels 15-22px medium in the project accent, headline 22-36px | `app/globals.css` (`.study-*`) |
+| Works data: slugs, credits, `signal`, blocks, cover art geometry (`rotate` / `crop`), `hero`, `accent`; `comingSoon` parks a work (redirects home, card inert) | `lib/works.ts` |
 | Image pixel sizes for true-aspect rendering | `lib/image-sizes.json` - regenerate with `npm run images` after adding images (macOS `sips`) |
-| Sky Field background (Margaret's ASCII sky + fetch game + pointer weather: rain under clouds, light cone in open sky, `pointerFx`) | `components/sky-field/sky-field.js` (her engine, with added options: `hills`, `bumps`, `hillTexture`, `ballX`, `onThrow`, `onCount`), `SkyFrame.tsx` (route-aware opacity + all the dials), `SkyFieldBackground.tsx` |
-| Player counter API (one number per visitor's first throw) | `app/api/throws/route.ts` - uses Upstash/KV REST when `KV_REST_API_URL`/`KV_REST_API_TOKEN` exist, else an in-memory counter |
-| About page: blue card + contact icons, pinned Work Experiences, sticker-driven photo fan | `components/about/AboutCard.tsx`, `AboutExperience.tsx`, `AboutInvolvement.tsx`, `app/about/page.tsx` |
-| Footer (reveal mode on home sized under the bio; static at the bottom of every other page) | `components/shell/SiteFooter.tsx`, `FooterSwitch.tsx` |
-| Social icon list (shared by bio, footer, About) | `socials` export in `PortfolioShell.tsx` - the `ink` ratio equalises visible glyph size |
+| Sky Field: Margaret's ASCII sky + fetch game. Added: pointer rain (over real cloud only, ~25deg to the left, sprouts flowers on all three hills where it lands), `onHover` / `onAction` hooks, speech bubble in characters beside the mouth on the side the dog faces, "throw the ball please!" after ~5s with no throw, the dog returns the ball to the LEFT (`ballX`), announces the running player total | `components/sky-field/sky-field.js` (engine), `SkyFrame.tsx` (dials, bubble lines, visit-scoped hints), `SkyFieldBackground.tsx` |
+| Player counter API: one count per browser's first throw, total read on every catch | `app/api/throws/route.ts` (KV REST when `KV_REST_API_URL` / `KV_REST_API_TOKEN` exist) |
+| About: blue card (tilt halved), mail left / socials right, pinned Work Experiences (22vh, top + bottom fades), involvement stickers + polaroid fan (two-up below lg) | `components/about/AboutCard.tsx`, `AboutExperience.tsx`, `AboutInvolvement.tsx` |
+| Footer: static, bottom of About / Works / Play only; one colophon line | `components/shell/SiteFooter.tsx`, `FooterSwitch.tsx` |
+| Socials: LinkedIn, X, mail (Instagram dropped) | `socials` + `EMAIL` in `PortfolioShell.tsx` |
+| OG card: the home page at card size (sky, pill, name, tagline, bio, two art-only cards, hills, ball, dog); Manrope fetched from Google Fonts at render | `app/opengraph-image.tsx` |
+| `/llms.txt` generated from the works data; sitemap and robots exclude parked works | `app/llms.txt/route.ts`, `app/sitemap.ts`, `app/robots.ts` |
 
 ## Conventions that bit us
 
-- Figma exports of child/rotated nodes come **flattened on the page's
-  white**; use `rawImages` from `download_assets` and apply rotation/crop
-  in CSS (`CoverLayer.rotate` / `.crop`).
-- `next.config.js` is the config Next loads (the `.mjs`/`.ts` siblings are
-  dead); it stamps `NEXT_PUBLIC_BUILD_DATE` for the footer.
-- Videos: no ffmpeg on this Mac; `scratchpad` Swift scripts (AVFoundation)
-  were used to trim/encode `public/videos/*.mp4` at 1280 wide, 1.6 Mbps.
-- The Claude desktop browser pane throttles rAF to ~1fps and reports the
-  tab hidden, so Motion animations and native scroll events can't be
-  judged there; verify state via JS, judge feel in a real browser.
+- Storage access must be guarded (`try { localStorage... } catch {}`): a
+  browser that blocks storage threw inside React and killed the home page.
+- Figma exports of child/rotated nodes come flattened on the page's white;
+  use `rawImages` from `download_assets` and apply rotation/crop in CSS.
+- `next.config.js` is the only config (siblings deleted); it stamps
+  `NEXT_PUBLIC_BUILD_DATE` for the footer.
+- Videos: no ffmpeg on this Mac; AVFoundation Swift scripts were used.
+  macOS safe-save leftovers (`*.sb-*`) are gitignored.
+- The Claude desktop browser pane throttles rAF and reports the tab hidden,
+  so motion can't be judged there. The gstack headless browser
+  (`~/.claude/skills/gstack/browse/dist/browse`) renders properly; the
+  dog's lines are 3s windows, so screenshot in bursts.
+- The sky engine exposes nothing to `window`; for state tracing a TEMP line
+  `window.__skyG = G` was added and removed each time. Never ship it.
+- Mark's packaging story is three pieces (first board with blue dots and
+  pink stars, the narrowed board cropped to the board, the last round in
+  yellow) plus Merch; the share piece carries a `gallery` of the three
+  share styles. Don't put those images back in the artifact grid.
 
 ## Content still marked NEED (Margaret's to supply)
 
-- `AANC` work: lede, category, year, cover. `Prosaic Intelligence`: everything but the lede. Her test build (mar-test-prosaic-intelligence.vercel.app) is behind Vercel login on a team the connector can't reach; the study is to be written from that site once she grants access or shares a bypass link. Never link the site from the study.
-- Traeco: the brand "one rule" line, the traeco.dev piece, and the team roles were drafted from the live site 2026-10-09 for her to edit; brand sheet and deck spreads still hers.
-- Traeco: problem media (outreach tracker).
-- Mark: context/problem media, "Make your mark" artifact.
-- Visitor counter in the footer (needs the same Upstash store as the player counter).
-
-## Open decisions (asked, not yet answered)
-
-1. Subpage pill: name on the LEFT (built to the Figma frames) vs. right (what Margaret first wrote).
-2. (done 2026-10-09) Upstash attached, `main` merged and live.
+- Prosaic Intelligence: the study is drafted and the images are in, but the
+  card is `comingSoon` until she opens it. Role / timeline / disciplines
+  are inferred. Never link her test site.
+- AANC and FoundHer House: removed from the data for now; she fills them
+  in later.
+- Traeco: outreach-tracker media, brand sheet, deck spreads. Signal pill
+  wants a real number.
+- Mark: context / problem media, "Make your mark" artifact.
+- Visitor counter in the footer (same Upstash store).
+- Josephine's infinity scroller for Play: her call.
 
 ## Parked ideas (Margaret's, not started)
 
-- Sky field easter egg (2026-10-13): throw the ball off the edge of the
-  screen and the dog chases it out of frame, then comes back carrying a
-  different item instead of the ball.
+- Sky field easter egg: throw the ball off the edge, the dog chases it out
+  of frame and comes back carrying a different item.
 
-## Commit message suggestion (when she's ready)
+## Shub's feedback tracker
 
-"Redesign pass 2026-10-08: nav pill, sky field, case-study template, About
-rebuild, footer, works grid, Mark/Traeco assets"
+`docs/feedback-shub-2026-10-13.md` - everything is DONE or HERS except
+the tile-grid home layout (she chose the column) and the lockup
+consistency note (resolved by text titles on cards).
