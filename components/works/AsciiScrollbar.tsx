@@ -17,10 +17,12 @@ import { useMotionValue, useMotionValueEvent, useReducedMotion, useSpring } from
              so it lags a touch and settles, and its pattern walks with
              time like a cloud rim - it reads as alive, not pasted on
     pointer  ">" to the left of the lens's centre row
-    markers  a section's row is a short dash. The names sit beside the
-             track in an evenly spaced list centred on the viewport; when
-             the lens crosses a marker the row bursts wide for a beat and
-             that name turns to ink
+    markers  the sections are FANNED evenly down the track, a dash and the
+             name at each, and the lens travels between them at whatever
+             pace the section's length demands - a long section moves it
+             slowly, a short one quickly (Margaret, 2026-10-21). So the
+             track IS the list. When the lens crosses a marker the row
+             bursts wide for a beat and that name turns to ink
     up       an arrow pill at the foot of the track: back to the top
 
   Interactive: click anywhere on the track to go there, drag the lens,
@@ -89,11 +91,33 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
     return () => clearInterval(id);
   }, [reduce]);
 
-  const thumb = Math.max(9, Math.round(rows * frac));
+  /* the lens is a fixed 9 rows; its centre maps page progress -> track
+     position piecewise through the markers' even positions */
+  const thumb = 9;
+  const n = marks.length;
+  const tOf = (i: number) => (n > 1 ? 0.06 + 0.88 * (i / (n - 1)) : 0.5); // a marker's place on the track, 0..1
+  const toTrack = (p: number) => {
+    if (n === 0) return p;
+    const pts = [{ p: 0, t: 0 }, ...marks.map((m, i) => ({ p: m.p, t: tOf(i) })), { p: 1, t: 1 }];
+    for (let k = 0; k < pts.length - 1; k++) {
+      const a = pts[k], b = pts[k + 1];
+      if (p <= b.p) return b.p === a.p ? b.t : a.t + ((p - a.p) / (b.p - a.p)) * (b.t - a.t);
+    }
+    return 1;
+  };
+  const toPage = (t: number) => {
+    if (n === 0) return t;
+    const pts = [{ p: 0, t: 0 }, ...marks.map((m, i) => ({ p: m.p, t: tOf(i) })), { p: 1, t: 1 }];
+    for (let k = 0; k < pts.length - 1; k++) {
+      const a = pts[k], b = pts[k + 1];
+      if (t <= b.t) return b.t === a.t ? b.p : a.p + ((t - a.t) / (b.t - a.t)) * (b.p - a.p);
+    }
+    return 1;
+  };
   const span = Math.max(1, rows - thumb);
-  const start = Math.round(span * sp);
+  const start = Math.round(span * toTrack(sp));
   const centre = start + (thumb - 1) / 2;
-  const rowFor = (p: number) => Math.round(span * p) + (thumb - 1) / 2; // the row a section's marker sits on
+  void frac;
   const activeIdx = (() => {
     let a = -1;
     marks.forEach((m, i) => { if (sp >= m.p - 0.003) a = i; });
@@ -107,7 +131,7 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
     const crossed = activeIdx > lastActive.current ? activeIdx : lastActive.current;
     lastActive.current = activeIdx;
     if (reduce || crossed < 0 || !marks[crossed]) return;
-    setBurst({ row: Math.round(rowFor(marks[crossed].p)), at: performance.now() });
+    setBurst({ row: Math.round(span * tOf(crossed)) + Math.floor((thumb - 1) / 2), at: performance.now() });
     const ids = [60, 140, 240, 360, 520].map((ms) => window.setTimeout(() => setTick((t) => t + 1), ms));
     return () => ids.forEach(clearTimeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -123,7 +147,7 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
     if (!box) return;
     const r = box.getBoundingClientRect();
     const usable = Math.max(1, r.height - thumb * CELL);
-    scrollToP(Math.min(1, Math.max(0, (clientY - r.top - (thumb * CELL) / 2) / usable)), smooth);
+    scrollToP(toPage(Math.min(1, Math.max(0, (clientY - r.top - (thumb * CELL) / 2) / usable))), smooth);
   };
   const rowAt = (clientY: number) => {
     const box = ref.current;
@@ -134,7 +158,7 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
 
   return (
     <div
-      className="fixed bottom-[12vh] left-[calc(var(--inset)*0.18)] top-[18vh] z-30 hidden md:block"
+      className="fixed bottom-[18vh] left-[calc(var(--inset)*0.18)] top-[26vh] z-30 hidden md:block"
       style={{ fontFamily: "var(--font-sky), ui-monospace, Menlo, monospace" }}
     >
       {/* the track, with the pointer column to its left */}
@@ -164,7 +188,7 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
         {Array.from({ length: rows }, (_, i) => {
           const inThumb = i >= start && i < start + thumb;
           const near = hover !== null && Math.abs(i - hover) <= 2;
-          const isMark = marks.some((m) => Math.round(rowFor(m.p)) === i);
+          const isMark = marks.some((_, k) => Math.round(span * tOf(k)) + Math.floor((thumb - 1) / 2) === i);
           const flare = burst && Math.abs(i - burst.row) <= 2 ? burstAmt * (1 - Math.abs(i - burst.row) / 3) : 0;
           const isCentre = Math.round(centre) === i;
           /* every row is [pointer cell][11-cell field], the field centred on the track's axis */
@@ -198,27 +222,25 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
         })}
       </div>
 
-      {/* section names beside the track, evenly spaced and centred on the
-          viewport (the rail's old spacing, Margaret 2026-10-21); the track's
-          dashes still mark where each section really sits */}
-      <ol className="absolute left-[72px] top-1/2 -translate-y-1/2 space-y-[3.2vh]">
+      {/* section names beside the track, fanned evenly down it at their markers */}
+      <div className="absolute bottom-0 left-[72px] top-0 w-[120px]">
         {marks.map((m, i) => {
           const on = i === activeIdx;
           return (
-            <li key={m.id}>
-              <button
-                type="button"
-                onClick={() => scrollToP(m.p, true)}
-                className={`block whitespace-nowrap font-body text-body transition-colors duration-300 ${
-                  on ? "text-ink" : "text-ink/40 hover:text-ink/70"
-                }`}
-              >
-                {m.name}
-              </button>
-            </li>
+            <button
+              key={m.id}
+              type="button"
+              onClick={() => scrollToP(m.p, true)}
+              className={`absolute left-0 block -translate-y-1/2 whitespace-nowrap font-body text-body transition-colors duration-300 ${
+                on ? "text-ink" : "text-ink/40 hover:text-ink/70"
+              }`}
+              style={{ top: (Math.round(span * tOf(i)) + Math.floor((thumb - 1) / 2)) * CELL + CELL / 2 }}
+            >
+              {m.name}
+            </button>
           );
         })}
-      </ol>
+      </div>
 
       {/* back to the top */}
       <button

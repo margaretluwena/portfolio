@@ -97,10 +97,8 @@ body {
 /* dialled down 2026-10-20 (Margaret: "a bit too big"); still scales with the
    viewport, at a gentler slope and a lower ceiling */
 .study-title { font-size: clamp(22px, 1.9vw, 36px); line-height: 1.15; letter-spacing: -0.01em; }
-/* section headers read as headers (Margaret, 2026-10-21): a step up, medium
-   weight, and the project's dot in front, like a chapter mark */
-.study-label { font-size: clamp(15px, 1.25vw, 22px); line-height: 1.3; font-weight: 500; color: var(--study-blue); display: flex; align-items: center; gap: 0.55em; }
-.study-label::before { content: ""; width: 0.55em; height: 0.55em; border-radius: 9999px; background: var(--study-blue); flex: none; }
+/* section headers read as headers (Margaret, 2026-10-21): a step up, medium weight */
+.study-label { font-size: clamp(15px, 1.25vw, 22px); line-height: 1.3; font-weight: 500; color: var(--study-blue); }
 .study-body  { font-size: clamp(16px, 1.15vw, 22px); line-height: 1.4; }
 
 /* a case study hides the native scrollbar: AsciiScrollbar draws its own (md+) */
