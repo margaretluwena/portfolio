@@ -215,15 +215,30 @@ function SolutionBlock({ block }: { block: Extract<Block, { type: "solution" }> 
         /* a tall image sits beside its text instead of under it, so the
            column never carries a phone screen with nothing to its sides
            (Margaret, 2026-10-20) */
+        /* a gallery: the piece's extra images in one row, side by side, tops aligned */
+        const gallery = piece.gallery && piece.gallery.length > 0 && (
+          <div className="grid grid-cols-3 items-start gap-3 md:gap-5">
+            {piece.gallery.map((m) => {
+              const [w, h] = SIZES[m.src] ?? [1200, 1600];
+              return (
+                <Image key={m.src} src={m.src} alt={m.alt} width={w} height={h} sizes="(max-width: 768px) 30vw, 18vw" className="block h-auto w-full rounded-[4px]" />
+              );
+            })}
+          </div>
+        );
         return tall ? (
-          <div key={`${i}-${piece.name}`} className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,42%)] md:items-start md:gap-10">
-            {text}
-            <MediaView media={piece.media} />
+          <div key={`${i}-${piece.name}`} className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,42%)] md:items-start md:gap-10">
+              {text}
+              <MediaView media={piece.media} />
+            </div>
+            {gallery}
           </div>
         ) : (
           <div key={`${i}-${piece.name}`} className="space-y-5">
             {text}
             <MediaView media={piece.media} />
+            {gallery}
           </div>
         );
       })}

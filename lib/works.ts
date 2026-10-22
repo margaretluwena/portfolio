@@ -30,7 +30,8 @@ export type Block =
   /* takeaways: what she is taking with her, each a claim and a line under it */
   | { type: "lessons"; items: { title: string; body: string }[] }
   | { type: "problem"; headline: string; evidence: string[]; body: string; media?: Media }
-  | { type: "solution"; pieces: { name: string; caption: string; media: Media }[] }
+  /* a piece may carry a `gallery`: a row of images side by side under its media (the three Mark share styles, 2026-10-21) */
+  | { type: "solution"; pieces: { name: string; caption: string; media: Media; gallery?: Media[] }[] }
   | { type: "artifactGrid"; media: Media[] }  // 2-6 images, no captions
   | { type: "wip"; email: string };
 
@@ -178,8 +179,14 @@ export const works: Work[] = [
         pieces: [
           {
             name: "Reading, made social",
-            caption: "Wrapped-style cards that turn a stretch of reading into something you'd post. They're deliberately a bit much. A share screen only works if someone wants to be seen posting it, so I traded restraint for personality. A second version puts the quote on paper, signed, in a yellow envelope: the same idea, slower and more personal.",
+            caption: "Wrapped-style cards that turn a stretch of reading into something you'd post. They're deliberately a bit much. A share screen only works if someone wants to be seen posting it, so I traded restraint for personality. Three styles to pick from: a letter in a yellow envelope, a postcard with a stamp, and a sticky note with the line circled.",
             media: { src: "/images/mark/app-share.png", alt: "Mark share screens" },
+            /* the three share styles, side by side (Margaret, 2026-10-21) */
+            gallery: [
+              { src: "/images/mark/share-envelope.jpg", alt: "Share style one: the quote on paper, signed, in a yellow envelope" },
+              { src: "/images/mark/share-postcard.jpg", alt: "Share style two: a postcard, the quote on the back with a stamp and postmark" },
+              { src: "/images/mark/share-sticky.jpg", alt: "Share style three: a yellow sticky note, the quote circled in blue" },
+            ],
           },
           {
             name: "From page to library",
