@@ -17,10 +17,10 @@ import { useMotionValue, useMotionValueEvent, useReducedMotion, useSpring } from
              so it lags a touch and settles, and its pattern walks with
              time like a cloud rim - it reads as alive, not pasted on
     pointer  ">" to the left of the lens's centre row
-    markers  a section's row is a short dash; its name sits beside the
-             track at that row, so the labels line up with the scroll
-             itself. When the lens crosses one the row bursts wide for a
-             beat and the name turns to ink
+    markers  a section's row is a short dash. The names sit beside the
+             track in an evenly spaced list centred on the viewport; when
+             the lens crosses a marker the row bursts wide for a beat and
+             that name turns to ink
     up       an arrow pill at the foot of the track: back to the top
 
   Interactive: click anywhere on the track to go there, drag the lens,
@@ -172,7 +172,8 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
           let cls = "text-ink/25";
           if (inThumb) {
             const d = Math.abs(i - centre) / Math.max(1, (thumb - 1) / 2); // 0 centre .. 1 end
-            const width = Math.min(11, 1 + 2 * Math.round(4 * Math.pow(Math.max(0, 1 - d), 1.5) + flare * 2));
+            /* a gentler swell: one cell at the ends, five at the middle (Margaret, 2026-10-21) */
+            const width = Math.min(11, 1 + 2 * Math.round(2 * Math.pow(Math.max(0, 1 - d), 1.3) + flare * 1.5));
             for (let k = 0; k < width; k++) {
               const c = Math.abs(k - (width - 1) / 2) / Math.max(1, (width - 1) / 2);
               const n = hash(i * 7 + k * 13, reduce ? 0 : tick) * 0.45 + (1 - c) * 0.6;
@@ -180,7 +181,7 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
             }
             cls = "text-[var(--study-blue)]";
           } else if (isMark || flare > 0) {
-            const w = Math.min(11, 3 + Math.round(flare * 8));
+            const w = Math.min(11, 3 + Math.round(flare * 5));
             field = "-".repeat(w);
             cls = flare > 0 ? "text-[var(--study-blue)]" : "text-ink/60";
           } else {
@@ -197,25 +198,27 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
         })}
       </div>
 
-      {/* section names beside the track, at their rows */}
-      <div className="absolute bottom-0 left-[72px] top-0 w-[120px]">
+      {/* section names beside the track, evenly spaced and centred on the
+          viewport (the rail's old spacing, Margaret 2026-10-21); the track's
+          dashes still mark where each section really sits */}
+      <ol className="absolute left-[72px] top-1/2 -translate-y-1/2 space-y-[3.2vh]">
         {marks.map((m, i) => {
           const on = i === activeIdx;
           return (
-            <button
-              key={m.id}
-              type="button"
-              onClick={() => scrollToP(m.p, true)}
-              className={`absolute left-0 block whitespace-nowrap font-body text-body transition-all duration-300 ${
-                on ? "translate-x-[4px] text-ink" : "text-ink/40 hover:text-ink/70"
-              }`}
-              style={{ top: rowFor(m.p) * CELL - 9 }}
-            >
-              {m.name}
-            </button>
+            <li key={m.id}>
+              <button
+                type="button"
+                onClick={() => scrollToP(m.p, true)}
+                className={`block whitespace-nowrap font-body text-body transition-colors duration-300 ${
+                  on ? "text-ink" : "text-ink/40 hover:text-ink/70"
+                }`}
+              >
+                {m.name}
+              </button>
+            </li>
           );
         })}
-      </div>
+      </ol>
 
       {/* back to the top */}
       <button
