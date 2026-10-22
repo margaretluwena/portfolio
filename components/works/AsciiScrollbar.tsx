@@ -263,10 +263,13 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
               key={m.id}
               type="button"
               onClick={() => scrollToP(m.p, true)}
-              className={`absolute left-0 block -translate-y-1/2 whitespace-nowrap font-body text-body transition-colors duration-300 ${
-                on ? "text-ink" : "text-ink/40 hover:text-ink/70"
+              className={`absolute left-0 block -translate-y-1/2 whitespace-nowrap font-body text-body transition-[color,transform] duration-300 ${
+                on ? "translate-x-[6px] text-ink" : "text-ink/40 hover:text-ink/70"
               }`}
-              style={{ top: (Math.round(span * tOf(i)) + Math.floor((thumb - 1) / 2)) * CELL + CELL / 2 }}
+              /* placed by CSS from the track's own height, so the names are fanned from
+                 the very first paint rather than after the rows are measured; this is
+                 the same row the marker lands on: t * (H - lens) + half a lens */
+              style={{ top: `calc(${tOf(i)} * (100% - ${thumb * CELL}px) + ${Math.floor((thumb - 1) / 2) * CELL + CELL / 2}px)` }}
             >
               {m.name}
             </button>
