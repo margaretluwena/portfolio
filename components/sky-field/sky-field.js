@@ -268,7 +268,7 @@ export function createSkyField(canvas, options = {}) {
     dog: { x: -200, st: 'away', face: 1, moving: false, jump: 0, jv: 0, home: 0, woof: 0, say: '', sayT: 0 },
     throws: null,
     grab: null, hist: [], shakes: [], lastDir: 0, met: false, labels: [], eyes: [], ballWig: 0, trail: [], dt: 0,
-    throwsHere: 0, idle: 0, begged: 0 };
+    throwsHere: 0, idle: 0, begged: 0, held: 0, heldAsk: 0 };
   const ballR = () => ch * 0.95;
   function groundAt(px) { if (!frontTopF) return H * 0.9; const f = clamp(px / cw, 0, cols - 1), i = Math.floor(f), t = f - i;
     const a = frontTopF[i], b = frontTopF[Math.min(cols - 1, i + 1)]; return (a + (b - a) * t) * ch; }
@@ -312,6 +312,14 @@ export function createSkyField(canvas, options = {}) {
     if (G.throwsHere === 0 && G.idle > 5 && (G.begged === 0 || G.idle - G.begged > 18) && d.sayT <= 0) {
       d.say = 'throw the ball please!'; d.sayT = 3.2; G.begged = G.idle; }
     if (G.idle > 60) { G.idle = 0; if (P.onCount) announce((() => { try { return P.onCount(); } catch { return null; } })()); }
+    // holding the ball and doing nothing with it, before the first throw of
+    // the visit: the dog asks for it, and again every so often while it is
+    // still held. Moving the ball restarts the clock (onMove); once the
+    // player line has been earned the dog leaves it alone (Margaret, 2026-10-21)
+    G.held = G.grab && d.st === 'wait' && G.throwsHere === 0 ? G.held + dt : 0;
+    if (G.held === 0) G.heldAsk = 0;
+    if (G.held > 2.5 && (G.heldAsk === 0 || G.held - G.heldAsk > 10) && d.sayT <= 0) {
+      d.say = 'please throw it!'; d.sayT = 3.2; G.heldAsk = G.held; }
     if (d.st === 'enter') {
       if (moveDog(d, b.x - d.face * (DOGW / 2 + 2) * cw, 330, dt)) { d.st = 'wait'; d.woof = 1.2; d.face = Math.sign(b.x - d.x) || 1; }
     } else if (d.st === 'wait') {
@@ -623,7 +631,7 @@ export function createSkyField(canvas, options = {}) {
     // a shake is a change of direction; two of them inside 1.5s call the dog
     // (was four inside 1s, which took a real rattle - "you don't have to shake
     // it as hard", Margaret, 2026-10-21; same rule for mouse and touch)
-    if (Math.abs(mdx) > 4) { const dir = Math.sign(mdx);
+    if (Math.abs(mdx) > 4) { G.held = 0; const dir = Math.sign(mdx);
       if (G.lastDir && dir !== G.lastDir) { G.shakes.push(now); G.shakes = G.shakes.filter((t) => now - t < 1500);
         if (G.shakes.length >= 2) { G.shakes = []; summon(); action('shake'); } }
       G.lastDir = dir; }
