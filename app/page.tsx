@@ -33,14 +33,19 @@ export default function Page() {
   const [phase, setPhase] = useState<"intro" | "main">("intro");
   const [worksIndex, setWorksIndex] = useState(0);
 
-  // returning within the session? skip the intro before first paint
+  // returning within the session? skip the intro before first paint.
+  // Storage access is guarded: a browser that blocks it (private browsing,
+  // a locked-down profile) used to throw here and take the whole page down
+  // with it - nothing interactive, the ball dead (found 2026-10-21)
   useLayoutEffect(() => {
-    if (reduce || sessionStorage.getItem(SEEN_KEY)) setPhase("main");
+    let seen = false;
+    try { seen = !!sessionStorage.getItem(SEEN_KEY); } catch {}
+    if (reduce || seen) setPhase("main");
   }, [reduce]);
 
   useEffect(() => {
     if (phase === "main") {
-      sessionStorage.setItem(SEEN_KEY, "1");
+      try { sessionStorage.setItem(SEEN_KEY, "1"); } catch {}
       return;
     }
     const t = setTimeout(() => setPhase("main"), HOLD_MS);

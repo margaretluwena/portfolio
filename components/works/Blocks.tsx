@@ -390,7 +390,7 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
     </div>
     <nav
       aria-label="Case study"
-      className="fixed left-[calc(var(--inset)*0.18+72px)] top-[18vh] z-30 hidden md:block"
+      className="fixed left-[calc(var(--inset)*0.18+72px)] top-[21vh] z-30 hidden md:block"
     >
       {onReturn ? (
         <button type="button" onClick={onReturn} className={linkClass}>
