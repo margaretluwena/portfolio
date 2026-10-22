@@ -29,12 +29,25 @@ export function GET() {
     "",
     "## Works",
     "",
-    ...studies.map((w) => {
+    ...studies.flatMap((w) => {
       const open = !w.comingSoon;
       const where = open ? `[${w.title}](${SITE}/works/${w.slug})` : `${w.title} (case study coming soon)`;
       const meta = [w.category, w.year, w.role].filter((v) => v && v !== "NEED").join(", ");
       const lede = w.lede && w.lede !== "NEED" ? ` ${w.lede.replace(/\.$/, "")}.` : "";
-      return `- ${where}: ${meta}.${lede}`;
+      const out = [`- ${where}: ${meta}.${lede}`];
+      if (!open) return out;
+      /* an open study also lists what the page itself says: the card's
+         signal, the credit rows, and the brief's "what I did" lines - all
+         read from the same data the page renders, so a wording change on
+         the study shows up here on the next build (Margaret, 2026-10-21) */
+      if (w.signal) out.push(`  - Signal: ${w.signal}`);
+      for (const c of w.credits) if (c.value && c.value !== "NEED") out.push(`  - ${c.label}: ${c.value}`);
+      const brief = w.blocks.find((b) => b.type === "brief");
+      if (brief && brief.type === "brief") {
+        out.push(`  - Objective: ${brief.objective}`);
+        out.push(`  - What Margaret did: ${brief.did.join("; ")}`);
+      }
+      return out;
     }),
     "",
     "## Play",

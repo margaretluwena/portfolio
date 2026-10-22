@@ -268,7 +268,7 @@ export function createSkyField(canvas, options = {}) {
     dog: { x: -200, st: 'away', face: 1, moving: false, jump: 0, jv: 0, home: 0, woof: 0, say: '', sayT: 0 },
     throws: null,
     grab: null, hist: [], shakes: [], lastDir: 0, met: false, labels: [], eyes: [], ballWig: 0, trail: [], dt: 0,
-    throwsHere: 0, idle: 0, begged: 0, held: 0, heldAsk: 0 };
+    throwsHere: 0, idle: 0, begged: 0, held: 0, heldAsk: 0, bub: { text: '', side: 0, x: null, y: null } };
   const ballR = () => ch * 0.95;
   function groundAt(px) { if (!frontTopF) return H * 0.9; const f = clamp(px / cw, 0, cols - 1), i = Math.floor(f), t = f - i;
     const a = frontTopF[i], b = frontTopF[Math.min(cols - 1, i + 1)]; return (a + (b - a) * t) * ch; }
@@ -280,7 +280,10 @@ export function createSkyField(canvas, options = {}) {
     const d = G.dog; G.met = true;
     if (d.st === 'away') { const fromLeft = Math.random() < 0.5;
       d.x = fromLeft ? -DOGW * cw : W + DOGW * cw; d.face = fromLeft ? 1 : -1; d.st = 'enter'; }
-    else { d.jv = -240; d.woof = 1; }
+    // already here: a hop and a woof, but only from the ground. Every shake
+    // used to re-arm the jump mid-air, so shaking the ball under the dog sent
+    // it up without end (a friend of Margaret's, 2026-10-21)
+    else if (d.jump === 0 && d.jv === 0) { d.jv = -240; d.woof = 1; }
   }
   function moveDog(d, target, speed, dt) {
     // ease off over the last ~10 cells so the dog settles instead of stopping dead
@@ -381,8 +384,11 @@ export function createSkyField(canvas, options = {}) {
           put(top + r, left + q, g, k); } }
       // speech comes from the side of the mouth the dog faces (Margaret, 2026-10-21)
       const mouthY = groundAt(d.x) - ch * (DOGH - MOUTH) + d.jump;
-      if (d.sayT > 0) G.labels.push({ text: d.say, x: d.x, y: (top - 1) * ch, bubble: true, at: mouthX(d), my: mouthY, face: d.face });
-      else if (d.woof > 0) G.labels.push({ text: 'woof!', x: d.x, y: (top - 1) * ch, bubble: true, at: mouthX(d), my: mouthY, face: d.face });
+      // `dest`: where the mouth will be once the dog stops - its home while it
+      // walks the ball back - so the bubble can pick a side that still fits there
+      const dest = d.st === 'return' ? d.home + d.face * (DOGW / 2) * cw : mouthX(d);
+      if (d.sayT > 0) G.labels.push({ text: d.say, x: d.x, y: (top - 1) * ch, bubble: true, at: mouthX(d), my: mouthY, face: d.face, dest });
+      else if (d.woof > 0) G.labels.push({ text: 'woof!', x: d.x, y: (top - 1) * ch, bubble: true, at: mouthX(d), my: mouthY, face: d.face, dest });
       // eyes: the sprite's eye gap (EYE_ROW/EYE_COL facing right) gets a real eye - white, a pupil
       // looking the way the dog faces, and a blink every few seconds
       const ec = left + (d.face > 0 ? EYE_COL : DOGW - 1 - EYE_COL);
@@ -425,6 +431,7 @@ export function createSkyField(canvas, options = {}) {
         ctx.beginPath(); ctx.arc(e.x + e.face * r * 0.3, e.y, r * 0.5, 0, Math.PI * 2); ctx.fillStyle = C.poodle; ctx.fill();
       }
     }
+    if (!G.labels.some((l) => l.bubble)) G.bub.text = ''; // next line starts fresh
     if (!G.labels.length) return;
     const fs = Math.round(P.cellSize * 1.75);
     ctx.font = `500 ${fs}px ${P.fontFamily}`; ctx.textBaseline = 'top';
@@ -459,10 +466,25 @@ export function createSkyField(canvas, options = {}) {
       // every row is width + 4 cells wide, so the walls sit at the box's ends
       const rows = ['.' + bar + '.', ...lines.map((t) => '( ' + t.padEnd(width) + ' )'), "'" + bar + "'"];
       const cols = rows[0].length, n = rows.length, wpx = cols * gw, gap = cw * 4;
-      let x = face > 0 ? l.at + gap : l.at - gap - wpx;
-      if (x < 4 || x + wpx > W - 4) { face = -face; x = face > 0 ? l.at + gap : l.at - gap - wpx; }
-      x = clamp(x, 4, W - wpx - 4);
-      const y = clamp(l.my - ch * 1 - gh * (n + 1), 4, H - gh * (n + 1) - 4); // the tail's foot lands a row above the mouth
+      // which side: the side was re-chosen every frame from the dog's current
+      // spot, so the long player line flipped across the dog, and back, as it
+      // walked home past the screen's edge (Margaret, 2026-10-21). Now a side
+      // is kept while the box still fits there, and a new one is picked only
+      // when it stops fitting: the facing side first, preferring a side that
+      // will also fit where the dog is headed. The box then glides to its
+      // place instead of jumping, so a flip reads as a swing across the head.
+      const bub = G.bub, fitsAt = (side, at) => (side > 0 ? at + gap + wpx <= W - 4 : at - gap - wpx >= 4);
+      const fresh = bub.text !== l.text;
+      if (fresh || !fitsAt(bub.side, l.at)) {
+        const now = [face, -face].filter((side) => fitsAt(side, l.at));
+        bub.side = now.find((side) => fitsAt(side, l.dest ?? l.at)) ?? now[0] ?? face;
+        bub.text = l.text; if (fresh) bub.x = null; }
+      face = bub.side;
+      const tx = clamp(face > 0 ? l.at + gap : l.at - gap - wpx, 4, W - wpx - 4);
+      const ty = clamp(l.my - ch * 1 - gh * (n + 1), 4, H - gh * (n + 1) - 4); // the tail's foot lands a row above the mouth
+      if (bub.x == null || reduceMotion) { bub.x = tx; bub.y = ty; }
+      else { const k = 1 - Math.pow(0.0005, G.dt); bub.x += (tx - bub.x) * k; bub.y += (ty - bub.y) * k; }
+      const x = bub.x, y = bub.y;
       // the tail: a row below the box, one cell in from the near end, leaning toward the mouth
       const tail = face > 0 ? ' /' : ' '.repeat(cols - 2) + '\\';
       ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fillRect(x + gw * 0.3, y + gh * 0.15, wpx - gw * 0.6, gh * (n - 0.3));
