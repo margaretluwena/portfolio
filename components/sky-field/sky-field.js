@@ -303,7 +303,7 @@ export function createSkyField(canvas, options = {}) {
     if (G.idle === 0) G.begged = 0;
     // the dog has come and nobody has thrown yet: after a few seconds it asks, and
     // asks again every so often until the first throw (Margaret, 2026-10-21)
-    if (G.throwsHere === 0 && G.idle > 5 && G.idle - G.begged > 18 && d.sayT <= 0) {
+    if (G.throwsHere === 0 && G.idle > 5 && (G.begged === 0 || G.idle - G.begged > 18) && d.sayT <= 0) {
       d.say = 'throw the ball please!'; d.sayT = 3.2; G.begged = G.idle; }
     if (G.idle > 60) { G.idle = 0; if (P.onCount) announce((() => { try { return P.onCount(); } catch { return null; } })()); }
     if (d.st === 'enter') {
