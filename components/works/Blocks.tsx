@@ -126,11 +126,14 @@ function MediaView({ media, sizes = "(max-width: 768px) 92vw, 56vw" }: { media: 
       width={w}
       height={h}
       sizes={portrait ? "(max-width: 768px) 60vw, 25vw" : sizes}
-      className="mx-auto block rounded-[4px]"
+      className="block rounded-[4px]"
+      /* landscape images take the column's full width (capped at their own
+         pixel width) and share the text's left edge - centred, narrower
+         images read as misaligned next to left-set copy (Margaret, 2026-10-21) */
       style={
         portrait
           ? { width: "auto", height: "auto", maxHeight: "58vh", maxWidth: `min(100%, ${Math.round(w / 2)}px)` }
-          : { width: "100%", height: "auto", maxWidth: `min(100%, ${Math.round(w / 2)}px)` }
+          : { width: "100%", height: "auto", maxWidth: `min(100%, ${w}px)` }
       }
     />
   );
@@ -213,7 +216,7 @@ function SolutionBlock({ block }: { block: Extract<Block, { type: "solution" }> 
            column never carries a phone screen with nothing to its sides
            (Margaret, 2026-10-20) */
         return tall ? (
-          <div key={`${i}-${piece.name}`} className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,42%)] md:items-center md:gap-10">
+          <div key={`${i}-${piece.name}`} className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,42%)] md:items-start md:gap-10">
             {text}
             <MediaView media={piece.media} />
           </div>
@@ -394,7 +397,7 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
     </div>
     <nav
       aria-label="Case study sections"
-      className="fixed left-[var(--inset)] top-1/2 z-10 hidden -translate-y-1/2 md:block"
+      className="fixed left-[calc(var(--inset)*0.55)] top-1/2 z-10 hidden -translate-y-1/2 md:block"
     >
       <div className={entries.length >= 2 ? "absolute bottom-full left-0 mb-[5vh] whitespace-nowrap" : undefined}>
         {onReturn ? (

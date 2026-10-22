@@ -100,6 +100,12 @@ body {
 .study-label { font-size: clamp(13px, 1vw, 17px); line-height: 1.3; color: var(--study-blue); }
 .study-body  { font-size: clamp(16px, 1.15vw, 22px); line-height: 1.4; }
 
+/* a case study hides the native scrollbar: AsciiScrollbar draws its own (md+) */
+@media (min-width: 768px) {
+  html.study-scroll { scrollbar-width: none; }
+  html.study-scroll::-webkit-scrollbar { display: none; }
+}
+
 /* blinking caret for the rotating tagline */
 .tagline-caret {
   display: inline-block;

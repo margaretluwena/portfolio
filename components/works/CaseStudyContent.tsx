@@ -6,6 +6,8 @@ import { motion } from "motion/react";
 import type { Work } from "@/lib/works";
 import { Blocks, SectionRail, NextWork, isNeed, HIDE_NEEDS } from "@/components/works/Blocks";
 import { CoverArt } from "@/components/works/WorkList";
+import AsciiScrollbar from "@/components/works/AsciiScrollbar";
+import { useEffect } from "react";
 
 /*
   The case-study body - Margaret's 2026-10-08 template (general for every
@@ -39,6 +41,12 @@ const CREDIT_ORDER = ["Timeline", "Role", "Team", "Disciplines"];
 export default function CaseStudyContent({ work, variant }: { work: Work; variant: "page" | "overlay" }) {
   const isOverlay = variant === "overlay";
   const router = useRouter();
+
+  /* the ASCII scrollbar stands in for the native one while a study is up */
+  useEffect(() => {
+    document.documentElement.classList.add("study-scroll");
+    return () => document.documentElement.classList.remove("study-scroll");
+  }, []);
 
   const credits = (HIDE_NEEDS ? work.credits.filter((c) => !isNeed(c.value)) : work.credits)
     .slice()
@@ -122,6 +130,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
 
       {/* sections; the rail is fixed to the gutter and renders independently */}
       <section className="mt-[10vh] pb-[10vh]">
+        {!isOverlay && <AsciiScrollbar />}
         <SectionRail work={work} onReturn={isOverlay ? () => router.back() : undefined} />
         <Blocks work={work} />
         <NextWork slug={work.next} />

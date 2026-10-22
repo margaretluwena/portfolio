@@ -49,27 +49,37 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   const reduce = useReducedMotion();
   const [pending, setPending] = useState<string | null>(null);
   const dest = useRef<string | null>(null);
+  const pushed = useRef<string | null>(null);
+
+  const go = (href: string) => {
+    if (pushed.current === href) return;
+    pushed.current = href;
+    window.scrollTo(0, 0);
+    router.push(href);
+  };
 
   const navigate = (href: string) => {
     if (href === pathname) return;
-    if (reduce) {
-      window.scrollTo(0, 0);
-      return router.push(href);
-    }
+    if (reduce) return go(href);
     dest.current = href;
     setPending(href);
+    /* safety net (2026-10-21): if the exit animation never reports back
+       (interrupted, or the frame was already at 0), go anyway rather than
+       leave a faded page with nothing on it */
+    window.setTimeout(() => {
+      if (dest.current === href) go(href);
+    }, 700);
   };
 
   // arrival: clear the exit state; the page's own PageEnter animates in
   useEffect(() => {
     setPending(null);
     dest.current = null;
+    pushed.current = null;
   }, [pathname]);
 
   const onLeft = () => {
-    if (!dest.current) return;
-    window.scrollTo(0, 0);
-    router.push(dest.current);
+    if (dest.current) go(dest.current);
   };
 
   return <Ctx.Provider value={{ navigate, pending, leaving: pending !== null, onLeft }}>{children}</Ctx.Provider>;
