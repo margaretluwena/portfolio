@@ -617,7 +617,9 @@ export function createSkyField(canvas, options = {}) {
     b.vx = vx; b.vy = vy; b.st = 'flying';
     const d = G.dog;
     // any release is a throw to the dog - a drop right next to it included
-    if (d.st === 'wait') { d.home = clamp(d.x, DOGW * cw, W - DOGW * cw); d.st = 'chase';
+    // the dog brings the ball back to the LEFT of the field, where it started, so what it
+    // says lands in open space rather than behind the cards (Margaret, 2026-10-21)
+    if (d.st === 'wait') { d.home = clamp(P.ballX * W, DOGW * cw, W - DOGW * cw); d.st = 'chase';
       // a real throw: count it (the host resolves the global total; the dog reads it out on the catch)
       G.throwsHere++; G.throws = P.onThrow ? (() => { try { return P.onThrow(); } catch { return null; } })() : null; }
   }
