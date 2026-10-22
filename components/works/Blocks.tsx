@@ -361,17 +361,18 @@ export function Blocks({ work }: { work: Work }) {
 
 export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => void }) {
   const entries = railEntries(work);
-  const linkClass =
-    "text-body text-ink/40 transition-colors duration-300 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
-  /* a small return arrow (a left hook) beside the word */
+  /* the return arrow (a left hook) alone in a circle - the word "Return"
+     is gone (Margaret, 2026-10-21: "just the icon, more like a circle");
+     the name survives for screen readers as the control's label */
   const returnLabel = (
-    <span className="inline-flex items-center gap-2">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden className="shrink-0">
-        <path d="M5.5 3.5 2 7l3.5 3.5M2 7h7a3 3 0 0 1 0 6H8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-      Return
-    </span>
+    <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden className="shrink-0">
+      <path d="M5.5 3.5 2 7l3.5 3.5M2 7h7a3 3 0 0 1 0 6H8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
+  const circle =
+    "grid place-items-center rounded-full border border-black/[0.12] bg-white/90 text-ink shadow-[0_8px_19px_rgba(0,0,0,0.08)] backdrop-blur transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+  const phoneCircle = `${circle} h-[44px] w-[44px]`;
+  const railCircle = `${circle} h-[36px] w-[36px] text-ink/60 hover:text-ink`;
   /* the section links now live on the ASCII minimap (AsciiScrollbar), at the
      rows their sections land on (Margaret, 2026-10-21); the rail keeps Return,
      above the minimap and aligned with its labels. A thin work with one entry
@@ -384,11 +385,11 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
         small Return pill stays pinned at the bottom-left */}
     <div className="fixed bottom-[max(16px,env(safe-area-inset-bottom))] left-[var(--inset)] z-40 md:hidden">
       {onReturn ? (
-        <button type="button" onClick={onReturn} className="rounded-full border border-black/[0.12] bg-white/90 px-4 py-2 text-body text-ink shadow-[0_8px_19px_rgba(0,0,0,0.08)] backdrop-blur">
+        <button type="button" onClick={onReturn} aria-label="Return" className={phoneCircle}>
           {returnLabel}
         </button>
       ) : (
-        <TransitionLink href="/" className="inline-block rounded-full border border-black/[0.12] bg-white/90 px-4 py-2 text-body text-ink shadow-[0_8px_19px_rgba(0,0,0,0.08)] backdrop-blur">
+        <TransitionLink href="/" aria-label="Return" className={phoneCircle}>
           {returnLabel}
         </TransitionLink>
       )}
@@ -398,11 +399,11 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
       className="fixed left-[calc(var(--inset)*0.18+72px)] top-[21vh] z-30 hidden md:block"
     >
       {onReturn ? (
-        <button type="button" onClick={onReturn} className={linkClass}>
+        <button type="button" onClick={onReturn} aria-label="Return" className={railCircle}>
           {returnLabel}
         </button>
       ) : (
-        <TransitionLink href="/" className={linkClass}>
+        <TransitionLink href="/" aria-label="Return" className={railCircle}>
           {returnLabel}
         </TransitionLink>
       )}

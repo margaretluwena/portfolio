@@ -91,7 +91,7 @@ export default function Page() {
         <div className="fixed inset-0 z-20 grid place-items-center">
           <motion.h1
             layoutId="wordmark"
-            className="wordmark text-hero text-ink px-6 text-center"
+            className="wordmark text-hero text-ink whitespace-nowrap px-6 text-center"
             transition={{ layout: reduce ? { duration: 0 } : GESTURE }}
           >
             MARGARET LUWENA

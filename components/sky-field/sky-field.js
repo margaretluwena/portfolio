@@ -194,16 +194,22 @@ export function createSkyField(canvas, options = {}) {
     // P.hills sinks every layer toward the bottom edge (base lines and bumps together);
     // P.bumps then scales the bumps alone, so low hills can still roll
     const hs = clamp(P.hills, 0.1, 1.5), bs = clamp(P.bumps, 0, 3), base = (b) => 1 - (1 - b) * hs, amp = (a) => a * hs * bs;
+    // bump centres spread across the real width so every hill stays on screen,
+    // but their widths are taken from a landscape-shaped width: on a tall
+    // phone (375 wide, 812 tall) the bumps were a quarter as wide as on a
+    // desktop for the same height, so the ridges came out as steep broken
+    // spikes of / and \ instead of rolling domes (2026-10-21)
+    const SW = Math.max(W, H * 1.6);
     const far = { base: base(0.75), bumps: [], ridge: 5, kind: 'far' };
-    for (let i = 0; i < 5; i++) far.bumps.push({ mu: R(-0.1, 1.1) * W, s: R(0.1, 0.2) * W, a: amp(R(0.012, 0.03)) });
+    for (let i = 0; i < 5; i++) far.bumps.push({ mu: R(-0.1, 1.1) * W, s: R(0.1, 0.2) * SW, a: amp(R(0.012, 0.03)) });
     const domeX = R(0.5, 0.75);
     const dome = { base: base(0.88), ridge: 7, kind: 'dome', bumps: [
-      { mu: domeX * W, s: R(0.2, 0.26) * W, a: amp(R(0.11, 0.14)) },
-      { mu: R(0.08, 0.28) * W, s: R(0.16, 0.22) * W, a: amp(R(0.06, 0.09)) },
-      { mu: (domeX + R(0.2, 0.32)) * W, s: R(0.1, 0.14) * W, a: amp(R(0.03, 0.05)) }] };
+      { mu: domeX * W, s: R(0.2, 0.26) * SW, a: amp(R(0.11, 0.14)) },
+      { mu: R(0.08, 0.28) * W, s: R(0.16, 0.22) * SW, a: amp(R(0.06, 0.09)) },
+      { mu: (domeX + R(0.2, 0.32)) * W, s: R(0.1, 0.14) * SW, a: amp(R(0.03, 0.05)) }] };
     const front = { base: base(0.9), ridge: 11, kind: 'front', bumps: [
-      { mu: R(-0.05, 0.25) * W, s: R(0.26, 0.34) * W, a: amp(R(0.035, 0.05)) },
-      { mu: R(0.85, 1.1) * W, s: R(0.22, 0.3) * W, a: amp(R(0.03, 0.045)) }] };
+      { mu: R(-0.05, 0.25) * W, s: R(0.26, 0.34) * SW, a: amp(R(0.035, 0.05)) },
+      { mu: R(0.85, 1.1) * W, s: R(0.22, 0.3) * SW, a: amp(R(0.03, 0.045)) }] };
     hillCh = new Array(rows * cols).fill(' '); hillCol = new Uint8Array(rows * cols);
     skyLimit = new Int16Array(cols).fill(rows);
     const set = (r, c, s, k) => { if (r < 0 || r >= rows || c < 0 || c >= cols) return; const i = r * cols + c; hillCh[i] = s; hillCol[i] = k; };
@@ -427,21 +433,34 @@ export function createSkyField(canvas, options = {}) {
       // a speech bubble in characters, rounded, beside the mouth on the side the dog
       // faces, its tail dropping from the near corner toward the mouth; it sits a
       // little away from the dog and a little above the mouth (Margaret, 2026-10-21)
-      const inner = l.text.length + 2, bar = '-'.repeat(inner);
+      // on a screen too narrow for the line (phones) the text folds onto two
+      // lines, split between words as evenly as it can be, each row padded
+      // to the longer one (Margaret, 2026-10-21). The fold comes at four
+      // fifths of the width: the player-count line is 45 characters and
+      // spanned a 375px phone edge to edge in one row
+      let lines = [l.text];
+      if ((l.text.length + 4) * gw > W * 0.8) {
+        const words = l.text.split(' '); let best = null;
+        for (let k = 1; k < words.length; k++) {
+          const a = words.slice(0, k).join(' '), b = words.slice(k).join(' '), w = Math.max(a.length, b.length);
+          if (!best || w < best.w) best = { w, a, b }; }
+        if (best) lines = [best.a, best.b];
+      }
+      const width = Math.max(...lines.map((t) => t.length)), inner = width + 2, bar = '-'.repeat(inner);
       let face = l.face || 1;
-      // every row is text.length + 4 cells wide, so the walls sit at the box's ends
-      const rows = ['.' + bar + '.', '( ' + l.text + ' )', "'" + bar + "'"];
-      const cols = rows[0].length, wpx = cols * gw, gap = cw * 4;
+      // every row is width + 4 cells wide, so the walls sit at the box's ends
+      const rows = ['.' + bar + '.', ...lines.map((t) => '( ' + t.padEnd(width) + ' )'), "'" + bar + "'"];
+      const cols = rows[0].length, n = rows.length, wpx = cols * gw, gap = cw * 4;
       let x = face > 0 ? l.at + gap : l.at - gap - wpx;
       if (x < 4 || x + wpx > W - 4) { face = -face; x = face > 0 ? l.at + gap : l.at - gap - wpx; }
       x = clamp(x, 4, W - wpx - 4);
-      const y = clamp(l.my - ch * 1 - gh * 4, 4, H - gh * 4 - 4); // the tail's foot lands a row above the mouth
+      const y = clamp(l.my - ch * 1 - gh * (n + 1), 4, H - gh * (n + 1) - 4); // the tail's foot lands a row above the mouth
       // the tail: a row below the box, one cell in from the near end, leaning toward the mouth
       const tail = face > 0 ? ' /' : ' '.repeat(cols - 2) + '\\';
-      ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fillRect(x + gw * 0.3, y + gh * 0.15, wpx - gw * 0.6, gh * 2.7);
+      ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fillRect(x + gw * 0.3, y + gh * 0.15, wpx - gw * 0.6, gh * (n - 0.3));
       ctx.fillStyle = C.hint;
       rows.forEach((ln, i) => ctx.fillText(ln, x, y + i * gh));
-      ctx.fillText(tail, x, y + 3 * gh);
+      ctx.fillText(tail, x, y + n * gh);
     }
     ctx.textBaseline = 'top'; ctx.font = `${P.cellSize}px ${P.fontFamily}`;
   }
@@ -601,9 +620,12 @@ export function createSkyField(canvas, options = {}) {
     const p = pt(e), b = G.ball;
     const nx = clamp(p.x + G.grab.ox, cw, W - cw), ny = Math.min(p.y + G.grab.oy, groundAt(nx) - ballR());
     const now = performance.now(), mdx = nx - G.hist[G.hist.length - 1].x;
+    // a shake is a change of direction; two of them inside 1.5s call the dog
+    // (was four inside 1s, which took a real rattle - "you don't have to shake
+    // it as hard", Margaret, 2026-10-21; same rule for mouse and touch)
     if (Math.abs(mdx) > 4) { const dir = Math.sign(mdx);
-      if (G.lastDir && dir !== G.lastDir) { G.shakes.push(now); G.shakes = G.shakes.filter((t) => now - t < 1000);
-        if (G.shakes.length >= 4) { G.shakes = []; summon(); action('shake'); } }
+      if (G.lastDir && dir !== G.lastDir) { G.shakes.push(now); G.shakes = G.shakes.filter((t) => now - t < 1500);
+        if (G.shakes.length >= 2) { G.shakes = []; summon(); action('shake'); } }
       G.lastDir = dir; }
     b.x = nx; b.y = ny; G.hist.push({ x: nx, y: ny, t: now }); if (G.hist.length > 8) G.hist.shift();
   }

@@ -112,7 +112,7 @@ export const works: Work[] = [
       { label: "Role", value: "Designer, TroyLabs BUILD" },
       { label: "Timeline", value: "2025" },
       { label: "Team", value: "Founded by Eason Tang" },
-      { label: "Disciplines", value: "UI/UX Design, Brand System, Merchandise, Pitch Deck" },
+      { label: "Disciplines", value: "UI/UX Design, Brand, Merchandise, Packaging, Pitch Deck" },
     ],
     /* poster stand-in until the real export lands */
     cover: { src: "/images/covers/mark-device.png", alt: "Mark device" },
@@ -142,12 +142,15 @@ export const works: Work[] = [
     blocks: [
       {
         type: "context",
-        body: "Mark is a capture device and companion app built by Eason Tang through TroyLabs' BUILD program. Eason's thesis was that reading should be social, a Spotify Wrapped for what you read, rather than another place to file highlights. I joined as the designer and worked across four surfaces over the semester: the app and its share system, the brand, the physical packaging, and the deck we presented at LAUNCH.",
+        body: "Mark is a capture device and companion app built by Eason Tang through TroyLabs' BUILD program. Eason's thesis was that reading should be social, a Spotify Wrapped for what you read, rather than another place to file highlights. I joined as the designer for the semester: the app and its share cards were my focus, I contributed to the brand and built the merch, did the packaging for the final product, and made the deck for LAUNCH.",
         media: { src: "NEED", alt: "device or hero shot" },
       },
       /* brief + takeaways drafted 2026-10-20 from Margaret's own prose above
          (her order: objective, goals, what I did, lessons - after the Sam
-         Cheng / Emmi Wu / Karen Lou studies); she edits in her pass */
+         Cheng / Emmi Wu / Karen Lou studies). What she did, in her words
+         (2026-10-21): share cards and the app were the focus, contributed to
+         the brand, built the merch, made the deck for LAUNCH, packaging for
+         the final product. Nothing beyond that list goes in this study. */
       {
         type: "brief",
         objective: "Make reading something you'd want to share, starting with the line you underline.",
@@ -158,9 +161,9 @@ export const works: Work[] = [
         ],
         did: [
           "Designed the app and its share cards",
-          "Built the brand and the merch",
-          "Packaging: twenty rough boxes down to three, then one",
-          "Made the deck for LAUNCH and helped pitch it",
+          "Contributed to the brand and built the merch",
+          "Packaging for the final product: twenty rough boxes down to one",
+          "Made the deck for LAUNCH",
         ],
       },
       {
@@ -220,7 +223,7 @@ export const works: Work[] = [
           },
           {
             name: "LAUNCH",
-            caption: "The three-minute pitch, as we gave it at TroyLabs' end-of-semester LAUNCH summit.",
+            caption: "The three-minute deck I made for TroyLabs' end-of-semester LAUNCH summit.",
             /* Margaret's screen recording of the deck (2026-10-08), last 3s
                trimmed, re-encoded 1280 wide for the web; poster is frame 2s in */
             media: { src: "/videos/mark-pitch.mp4", alt: "Mark pitch deck, as presented at LAUNCH", video: true, poster: "/images/mark/pitch-poster.jpg" },

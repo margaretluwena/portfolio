@@ -60,7 +60,10 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
         {/* LEFT - fixed on desktop, first block in normal flow on mobile */}
         {/* the column runs to the works gutter (not a fixed 300px) so the
             longest tagline has room before it wraps; the bio keeps its own cap */}
-        <aside className="px-[var(--inset)] pt-[36vh] md:fixed md:inset-y-0 md:left-[var(--inset)] md:w-[calc(var(--col-right)-var(--inset)-56px)] md:px-0 md:pt-0">
+        {/* phone: the name sits at 24vh, the same anchor as desktop - the
+            36vh from the July layout left a third of the screen of empty sky
+            above it (Margaret, 2026-10-21: "you can scroll up way too far") */}
+        <aside className="px-[var(--inset)] pt-[24vh] md:fixed md:inset-y-0 md:left-[var(--inset)] md:w-[calc(var(--col-right)-var(--inset)-56px)] md:px-0 md:pt-0">
           {/* identity group - anchored once at 24.2vh, then FIXED px gaps so
               the name/tagline/icons rhythm doesn't stretch with viewport
               height (separate vh anchors read as uneven spacing) */}

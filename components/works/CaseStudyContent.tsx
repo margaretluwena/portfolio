@@ -61,7 +61,10 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
 
   return (
     <div
-      className="mx-auto w-[min(56.4vw,92vw)]"
+      /* phones: the column runs between the same insets as every other
+         page - 56.4vw of a 375px screen was a 212px reading column, which
+         read as confined (Margaret, 2026-10-21) */
+      className="mx-auto w-[calc(100%-2*var(--inset))] md:w-[min(56.4vw,92vw)]"
       style={work.accent ? ({ "--study-blue": work.accent } as React.CSSProperties) : undefined}
     >
       {/* hero - the shared element. A work's own `hero` image wins; else

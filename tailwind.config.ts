@@ -42,7 +42,11 @@ const config: Config = {
         "corner": ["clamp(1rem, 1.45vw, 1.5625rem)", { lineHeight: "1", letterSpacing: "-0.05em" }],
         "title": ["clamp(1.75rem, 2.3vw, 2.5rem)", { lineHeight: "1.1" }],
         "body-lg": ["clamp(1rem, 1.45vw, 1.5625rem)", { lineHeight: "1.35" }],
-        "hero": ["clamp(2.5rem, 6.83vw, 7.375rem)", { lineHeight: "1", letterSpacing: "-0.05em" }],    // intro MARGARET LUWENA — leave: intro is off-limits
+        // intro MARGARET LUWENA. The 9vw cap is for phones only: at 375px the
+        // 2.5rem floor wrapped the name onto two lines, which then morphed into
+        // the one-line corner wordmark (Margaret, 2026-10-21). From 768px up
+        // the first two terms win and nothing changes.
+        "hero": ["min(max(2.5rem, 6.83vw), 9vw, 7.375rem)", { lineHeight: "1", letterSpacing: "-0.05em" }],
       },
     },
   },

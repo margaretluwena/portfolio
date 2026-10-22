@@ -36,6 +36,11 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     if (reduce) return;
     const el = scroller.current;
     if (!el) return;
+    /* below md the column is in normal flow with no overflow of its own, so
+       both "ends" always read as reached and every wheel tick stretched the
+       cards up to 130px against the page (seen as the home page scrolling
+       past its top on a phone-sized viewport, 2026-10-21) */
+    if (el.scrollHeight <= el.clientHeight) return;
     const atTop = el.scrollTop <= 0;
     const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
     const cur = y.get();
@@ -148,6 +153,33 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     });
     onIndex(best);
   }
+  /* phones: the column is in normal flow, so it is the PAGE that scrolls and
+     onScroll above never fires - the nav's dots sat on the first work however
+     far down the visitor was (Margaret, 2026-10-21). Read the same probe off
+     the window instead whenever the column has no scrolling of its own. */
+  useEffect(() => {
+    if (!onIndex) return;
+    const el = scroller.current;
+    if (!el) return;
+    const onPage = () => {
+      if (el.scrollHeight > el.clientHeight) return; // its own scroller: onScroll handles it
+      const probe = window.innerHeight * 0.4;
+      const items = Array.from(el.querySelectorAll("li[data-work]")) as HTMLElement[];
+      let best = 0, bestD = Infinity;
+      items.forEach((li, i) => {
+        const r = li.getBoundingClientRect();
+        const d = Math.abs(r.top + r.height / 2 - probe);
+        if (d < bestD) { bestD = d; best = i; }
+      });
+      onIndex(best);
+    };
+    window.addEventListener("scroll", onPage, { passive: true });
+    window.addEventListener("resize", onPage);
+    return () => {
+      window.removeEventListener("scroll", onPage);
+      window.removeEventListener("resize", onPage);
+    };
+  }, [onIndex]);
 
   return (
     <div
@@ -160,7 +192,13 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     >
       {/* first card's top edge at 19.7vh (Figma 128:503: 220/1117 - it scrolls
           under the fixed nav band); width and inset from the layout tokens */}
-      <motion.div ref={inner} style={{ y }} className="px-[var(--inset)] pb-0 pt-12 md:px-0 md:pt-[19.7vh]">
+      {/* phone: the page ends with room under "See more work" so the hills,
+          the ball, and the dog along the bottom of the fixed sky come fully
+          into view at the end of the scroll instead of sitting under the
+          last card (Margaret, 2026-10-21). The hills top out ~20vh up and the
+          dog's two-line bubble reaches ~26vh, so "See more work" clears both.
+          md+ gets its padding from `fit` above. */}
+      <motion.div ref={inner} style={{ y }} className="px-[var(--inset)] pb-[27vh] pt-12 md:px-0 md:pb-0 md:pt-[19.7vh]">
         <WorkList reveal={reveal} />
         {/* the way onward once the four are seen (Shub's feedback, 2026-10-13):
             close under the last card, flush with its right edge */}
