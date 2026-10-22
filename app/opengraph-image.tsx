@@ -1,9 +1,12 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 /*
   OG card (2026-10-21): the home page itself, at card size. White paper,
   the ASCII sky across the top, the nav pill, the name and tagline in the
-  body face, one work card on the right, and the hills with the ball and
+  body face, two work cards on the right carrying their real art (no
+  titles, no pills; Margaret, 2026-10-21), and the hills with the ball and
   the dog along the bottom. The sky and hills are rows of characters laid
   out in fixed-width cells, so they read the same whatever font renders
   them (the card has no mono face loaded).
@@ -105,8 +108,19 @@ async function font(weight: 500 | 700) {
   }
 }
 
+/* the card art, inlined as data URIs from /public (the OG renderer takes no
+   relative URLs); the geometry is the home cards' own, from lib/works.ts */
+async function art(file: string) {
+  const buf = await readFile(join(process.cwd(), "public/images/covers", file));
+  return `data:image/png;base64,${buf.toString("base64")}`;
+}
+
 export default async function OG() {
-  const [m500, m700] = await Promise.all([font(500), font(700)]);
+  const [m500, m700, markHand, markLower, markTop, traecoLaptop, traecoDash] = await Promise.all([
+    font(500), font(700),
+    art("mark-hand-tilt.png"), art("mark-device-lower.png"), art("mark-device-top.png"),
+    art("traeco-laptop.png"), art("traeco-dashboard.png"),
+  ]);
   const fonts = [
     ...(m500 ? [{ name: "Manrope", data: m500, weight: 500 as const, style: "normal" as const }] : []),
     ...(m700 ? [{ name: "Manrope", data: m700, weight: 700 as const, style: "normal" as const }] : []),
@@ -166,33 +180,6 @@ export default async function OG() {
           </div>
         </div>
 
-        {/* one work card, as it sits in the home column */}
-        <div
-          style={{
-            position: "absolute", left: 700, top: 150, width: 404, height: 282, display: "flex", flexDirection: "column",
-            borderRadius: 10, background: "#303036", border: "1px solid rgba(0,0,0,0.09)", boxShadow: "0 10px 50px rgba(0,0,0,0.05)",
-            overflow: "hidden",
-          }}
-        >
-          <div style={{ display: "flex", margin: "24px 26px 0", height: 148, borderRadius: 8, background: "#1b1b1f", border: "1px solid rgba(255,255,255,0.08)" }}>
-            <div style={{ display: "flex", flexDirection: "column", margin: 18, gap: 10 }}>
-              <div style={{ display: "flex", width: 150, height: 8, borderRadius: 4, background: "rgba(255,255,255,0.35)" }} />
-              <div style={{ display: "flex", width: 220, height: 30, borderRadius: 6, background: "rgba(27,168,111,0.18)", border: "1px solid rgba(27,168,111,0.5)" }} />
-              <div style={{ display: "flex", gap: 8 }}>
-                {[0, 1, 2].map((i) => (
-                  <div key={i} style={{ display: "flex", width: 104, height: 40, borderRadius: 6, background: "rgba(255,255,255,0.06)" }} />
-                ))}
-              </div>
-            </div>
-          </div>
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", margin: "auto 26px 18px" }}>
-            <div style={{ display: "flex", fontSize: 26, color: "#ffffff" }}>Traeco</div>
-            <div style={{ display: "flex", padding: "6px 11px", borderRadius: 999, fontSize: 11, letterSpacing: 1, color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.1)" }}>
-              AUDIENCE CHOICE WINNER
-            </div>
-          </div>
-        </div>
-
         {/* the hills */}
         {ridges.map((rg, i) =>
           rg.segs.map(([a, b], k) => (
@@ -218,6 +205,23 @@ export default async function OG() {
             <div key={i} style={{ display: "flex" }}>{ln}</div>
           ))}
         </div>
+        {/* two work cards, as they sit in the home column: their art only */}
+        {/* Mark: the hand, the lower device, the device close-up (Figma 255:586 geometry) */}
+        <div style={{ position: "absolute", left: 700, top: 120, width: 404, height: 282, display: "flex", borderRadius: 10, background: "#ffffff", border: "1px solid rgba(0,0,0,0.09)", boxShadow: "0 10px 50px rgba(0,0,0,0.05)", overflow: "hidden" }}>
+          <img src={markHand} alt="" style={{ position: "absolute", left: "10.02%", top: "27.08%", width: "74.63%", height: "71.33%", objectFit: "contain", transform: "rotate(-3.82deg)" }} />
+          <img src={markLower} alt="" style={{ position: "absolute", left: "6.63%", top: "37.82%", width: "97.28%", height: "78.45%", objectFit: "contain", transform: "rotate(-12.18deg)" }} />
+          <div style={{ position: "absolute", left: "30.35%", top: "4.43%", width: "42.48%", height: "30.79%", display: "flex", overflow: "hidden", transform: "rotate(2.82deg)" }}>
+            <img src={markTop} alt="" style={{ position: "absolute", left: "-39.56%", top: "-78.8%", width: "139.57%", height: "345.11%", objectFit: "fill" }} />
+          </div>
+          <div style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, display: "flex", background: "linear-gradient(to bottom, rgba(255,255,255,0), #ffffff 77.9%)" }} />
+        </div>
+        {/* Traeco: the laptop under the floating dashboard (Figma 139:559), cut by the card's edge */}
+        <div style={{ position: "absolute", left: 700, top: 428, width: 404, height: 282, display: "flex", borderRadius: 10, background: "#303036", border: "1px solid rgba(0,0,0,0.09)", overflow: "hidden" }}>
+          <img src={traecoLaptop} alt="" style={{ position: "absolute", left: "-1.95%", top: "9.29%", width: "103.81%", height: "86%", objectFit: "contain" }} />
+          <img src={traecoDash} alt="" style={{ position: "absolute", left: "8.96%", top: "12.17%", width: "81.55%", height: "72.22%", objectFit: "contain" }} />
+          <div style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, display: "flex", background: "linear-gradient(to bottom, rgba(36,36,40,0), rgba(36,36,40,0.03) 37.5%, #242428 77.9%)" }} />
+        </div>
+
       </div>
     ),
     { ...size, ...(fonts.length ? { fonts } : {}) }
