@@ -424,25 +424,23 @@ export function createSkyField(canvas, options = {}) {
         ctx.globalAlpha = 1;
         continue;
       }
-      // a rounded speech bubble beside the mouth, on the side the dog faces, its tail
-      // curling down from the near corner toward the mouth (Margaret, 2026-10-21)
-      const tw = ctx.measureText(l.text).width, pad = gw * 1.4, bh = gh * 1.7, bw = tw + pad * 2, r = bh / 2;
-      let face = l.face || 1, gap = cw * 1.2;
-      let x0 = face > 0 ? l.at + gap : l.at - gap - bw;
-      if (x0 < 4 || x0 + bw > W - 4) { face = -face; x0 = face > 0 ? l.at + gap : l.at - gap - bw; }
-      x0 = clamp(x0, 4, W - bw - 4);
-      const y0 = clamp(l.my - bh - ch * 1.4, 4, H - bh - 4);
-      ctx.lineWidth = 1.5; ctx.strokeStyle = C.hint; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-      // the tail: from the bottom of the near end, a hook down and toward the mouth
-      const nx = face > 0 ? x0 + r * 0.9 : x0 + bw - r * 0.9, tipX = face > 0 ? x0 - r * 0.15 : x0 + bw + r * 0.15, tipY = y0 + bh + ch * 1.1;
-      ctx.beginPath(); ctx.moveTo(nx + face * r * 0.55, y0 + bh - 1);
-      ctx.quadraticCurveTo(nx + face * r * 0.3, y0 + bh + ch * 0.8, tipX, tipY);
-      ctx.quadraticCurveTo(nx - face * r * 0.1, y0 + bh + ch * 0.5, nx - face * r * 0.35, y0 + bh - 1);
-      ctx.closePath(); ctx.fillStyle = 'rgba(255,255,255,0.96)'; ctx.fill(); ctx.stroke();
-      // the pill
-      ctx.beginPath(); ctx.roundRect(x0, y0, bw, bh, r);
-      ctx.fillStyle = 'rgba(255,255,255,0.96)'; ctx.fill(); ctx.stroke();
-      ctx.fillStyle = C.hint; ctx.fillText(l.text, x0 + pad, y0 + (bh - gh) / 2 + gh * 0.08);
+      // a speech bubble in characters, rounded, beside the mouth on the side the dog
+      // faces, its tail dropping from the near corner toward the mouth; it sits a
+      // little away from the dog and a little above the mouth (Margaret, 2026-10-21)
+      const inner = l.text.length + 2, bar = '-'.repeat(inner);
+      let face = l.face || 1;
+      const rows = [' .' + bar + '. ', '( ' + l.text + ' )', " '" + bar + "' "];
+      const cols = rows[0].length, wpx = cols * gw, gap = cw * 4;
+      let x = face > 0 ? l.at + gap : l.at - gap - wpx;
+      if (x < 4 || x + wpx > W - 4) { face = -face; x = face > 0 ? l.at + gap : l.at - gap - wpx; }
+      x = clamp(x, 4, W - wpx - 4);
+      const y = clamp(l.my - ch * 3 - gh * 4, 4, H - gh * 4 - 4);
+      // the tail: a row below the box, one cell in from the near end, leaning toward the mouth
+      const tail = face > 0 ? ' /' : ' '.repeat(cols - 2) + '\\';
+      ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fillRect(x + gw * 0.6, y + gh * 0.15, wpx - gw * 1.2, gh * 2.7);
+      ctx.fillStyle = C.hint;
+      rows.forEach((ln, i) => ctx.fillText(ln, x, y + i * gh));
+      ctx.fillText(tail, x, y + 3 * gh);
     }
     ctx.textBaseline = 'top'; ctx.font = `${P.cellSize}px ${P.fontFamily}`;
   }
