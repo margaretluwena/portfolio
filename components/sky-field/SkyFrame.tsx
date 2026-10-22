@@ -67,13 +67,14 @@ async function readCount(): Promise<number> {
 }
 
 /* the cursor bubble's lines for the game (Margaret, 2026-10-09). Each is a
-   hint, shown until the visitor has done the thing once - shaken the ball
-   hard enough to call the dog, petted the dog - and then never again on
-   this device (localStorage, like the player number). */
-const HOVER_LINES = { ball: "Try shaking!", dog: "Pet me" } as const; // the ball's first-hover line (Margaret, 2026-10-21)
-const DONE_KEY = { ball: "sky:hint:ball", dog: "sky:hint:dog" } as const;
-const isDone = (k: keyof typeof DONE_KEY) => { try { return localStorage.getItem(DONE_KEY[k]) === "1"; } catch { return false; } };
-const markDone = (k: keyof typeof DONE_KEY) => { try { localStorage.setItem(DONE_KEY[k], "1"); } catch {} };
+   hint, shown on hover until the visitor has done the thing once THIS VISIT
+   - shaken the ball hard enough to call the dog, petted the dog - and then
+   not again until the next page load (was for good, per device, which meant
+   a returning visitor never saw it; Margaret, 2026-10-21). */
+const HOVER_LINES = { ball: "Try shaking!", dog: "Pet me" } as const;
+const done = new Set<"ball" | "dog">();
+const isDone = (k: "ball" | "dog") => done.has(k);
+const markDone = (k: "ball" | "dog") => done.add(k);
 
 export default function SkyFrame() {
   const pathname = usePathname();
