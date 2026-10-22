@@ -185,8 +185,13 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
           drag.current = false;
         }}
       >
+        {/* the lens bulges as it passes a header: 0 away from any marker, 1 on one */}
         {Array.from({ length: rows }, (_, i) => {
+          const markerRows = marks.map((_, k) => Math.round(span * tOf(k)) + Math.floor((thumb - 1) / 2));
+          const atHeader = markerRows.reduce((m, r) => Math.max(m, 1 - Math.abs(centre - r) / 3), 0);
+          const TAIL = 3; // rows past each end that dither off
           const inThumb = i >= start && i < start + thumb;
+          const inTail = !inThumb && i >= start - TAIL && i < start + thumb + TAIL;
           const near = hover !== null && Math.abs(i - hover) <= 2;
           const isMark = marks.some((_, k) => Math.round(span * tOf(k)) + Math.floor((thumb - 1) / 2) === i);
           const flare = burst && Math.abs(i - burst.row) <= 2 ? burstAmt * (1 - Math.abs(i - burst.row) / 3) : 0;
@@ -196,14 +201,23 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
           let cls = "text-ink/25";
           if (inThumb) {
             const d = Math.abs(i - centre) / Math.max(1, (thumb - 1) / 2); // 0 centre .. 1 end
-            /* a gentler swell: one cell at the ends, five at the middle (Margaret, 2026-10-21) */
-            const width = Math.min(11, 1 + 2 * Math.round(2 * Math.pow(Math.max(0, 1 - d), 1.3) + flare * 1.5));
+            /* a gentler swell: one cell at the ends, five at the middle, plus up to
+               four more while the lens sits on a header (Margaret, 2026-10-21) */
+            const width = Math.min(11, 1 + 2 * Math.round((2 + atHeader * 2) * Math.pow(Math.max(0, 1 - d), 1.3) + flare * 1.5));
             for (let k = 0; k < width; k++) {
               const c = Math.abs(k - (width - 1) / 2) / Math.max(1, (width - 1) / 2);
               const n = hash(i * 7 + k * 13, reduce ? 0 : tick) * 0.45 + (1 - c) * 0.6;
-              field += RAMP[Math.min(RAMP.length - 1, Math.floor(n * RAMP.length))];
+              /* the ends dither off: cells near the lens's ends drop out at random */
+              const drop = d > 0.55 && hash(i * 3 + k * 17, reduce ? 1 : tick) < (d - 0.55) * 1.6;
+              field += drop ? " " : RAMP[Math.min(RAMP.length - 1, Math.floor(n * RAMP.length))];
             }
             cls = "text-[var(--study-blue)]";
+          } else if (inTail) {
+            /* a sparse tail past each end, thinning with distance */
+            const dist = i < start ? start - i : i - (start + thumb - 1);
+            const keep = hash(i * 11, reduce ? 1 : tick) < 0.55 - dist * 0.15;
+            field = keep ? (hash(i * 5, tick) < 0.5 ? ":" : ".") : TRACK;
+            cls = keep ? "text-[var(--study-blue)]" : "text-ink/25";
           } else if (isMark || flare > 0) {
             const w = Math.min(11, 3 + Math.round(flare * 5));
             field = "-".repeat(w);
@@ -220,6 +234,19 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
             </span>
           );
         })}
+      {/* back to the top, centred on the track's axis (the pointer cell + half the 11-cell field) */}
+      <button
+        type="button"
+        onClick={() => scrollToP(0, true)}
+        onPointerDown={(e) => e.stopPropagation()}
+        aria-label="Back to top"
+        className="absolute -bottom-[40px] grid h-[28px] w-[28px] -translate-x-1/2 place-items-center rounded-full border border-black/[0.12] bg-white/90 text-ink/60 shadow-[0_6px_16px_rgba(0,0,0,0.08)] backdrop-blur transition-colors hover:text-ink"
+        style={{ left: "6.5ch", fontSize: 9 }}
+      >
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+          <path d="M6 10V2M2.5 5.5 6 2l3.5 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
       </div>
 
       {/* section names beside the track, fanned evenly down it at their markers */}
@@ -242,17 +269,6 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
         })}
       </div>
 
-      {/* back to the top */}
-      <button
-        type="button"
-        onClick={() => scrollToP(0, true)}
-        aria-label="Back to top"
-        className="absolute -bottom-[40px] left-[18px] grid h-[28px] w-[28px] place-items-center rounded-full border border-black/[0.12] bg-white/90 text-ink/60 shadow-[0_6px_16px_rgba(0,0,0,0.08)] backdrop-blur transition-colors hover:text-ink"
-      >
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-          <path d="M6 10V2M2.5 5.5 6 2l3.5 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
     </div>
   );
 }
