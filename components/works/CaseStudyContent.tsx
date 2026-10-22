@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import type { Work } from "@/lib/works";
-import { Blocks, SectionRail, NextWork, isNeed, HIDE_NEEDS } from "@/components/works/Blocks";
+import { Blocks, SectionRail, NextWork, isNeed, HIDE_NEEDS, railEntries } from "@/components/works/Blocks";
 import { CoverArt } from "@/components/works/WorkList";
 import AsciiScrollbar from "@/components/works/AsciiScrollbar";
 import { useEffect } from "react";
@@ -130,7 +130,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
 
       {/* sections; the rail is fixed to the gutter and renders independently */}
       <section className="mt-[10vh] pb-[10vh]">
-        {!isOverlay && <AsciiScrollbar />}
+        {!isOverlay && <AsciiScrollbar sections={railEntries(work)} />}
         <SectionRail work={work} onReturn={isOverlay ? () => router.back() : undefined} />
         <Blocks work={work} />
         <NextWork slug={work.next} />

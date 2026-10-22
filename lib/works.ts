@@ -187,9 +187,23 @@ export const works: Work[] = [
             media: { src: "/images/mark/app-notes.png", alt: "Mark notes library screens" },
           },
           {
-            name: "Twenty, then three, then colour",
-            caption: "Twenty rough packaging concepts, narrowed to three, then worked properly before any colour went on. Yellow carried so much of the early identity that I made it the last decision on purpose, not the first constraint.",
-            media: { src: "/images/mark/packaging-sleeves-2.jpg", alt: "Mark packaging sleeves, second round" },
+            name: "Twenty rough ideas",
+            /* Margaret, 2026-10-21: this board is the initial ideas; the ones we
+               liked got a blue dot, the ones we really liked a pink star */
+            caption: "The first board: twenty rough packaging concepts, pinned up and marked. A blue dot meant we liked it. A pink star meant we really did. Those are the ones that went to the next round.",
+            media: { src: "/images/mark/packaging-sleeves-1.jpg", alt: "Mark packaging, the first board of twenty ideas, marked with blue dots and pink stars" },
+          },
+          {
+            name: "Then three, then colour",
+            caption: "Three went forward and got worked properly before any colour went on. Yellow carried so much of the early identity that I made it the last decision on purpose, not the first constraint.",
+            // cropped to the board alone - the lone device render on the right is gone (Margaret, 2026-10-21)
+            media: { src: "/images/mark/packaging-sleeves-2-board.jpg", alt: "Mark packaging sleeves, second round" },
+          },
+          {
+            name: "The last round",
+            /* Margaret, 2026-10-21: "final final round, closer to what we were looking for" */
+            caption: "The last round, and the closest to what we were after. Yellow is finally on, as a glow that fades into cream rather than a flat fill, and the lockup settles small in a corner where it can stay out of the way.",
+            media: { src: "/images/mark/packaging-unitbox-1.jpg", alt: "Mark packaging, the last round: six sleeves with yellow on" },
           },
           {
             name: "LAUNCH",
@@ -206,8 +220,6 @@ export const works: Work[] = [
           { src: "/images/mark/merch-stickers.jpg", alt: "Mark sticker sheet" },
           { src: "/images/mark/merch-shirts.png", alt: "Mark shirt variants" },
           { src: "/images/mark/merch-tote.jpg", alt: "Mark tote bags" },
-          { src: "/images/mark/packaging-sleeves-1.jpg", alt: "Mark packaging sleeves, first round" },
-          { src: "/images/mark/packaging-unitbox-1.jpg", alt: "Mark unit box explorations, first round" },
           { src: "NEED", alt: "Make your mark wordplay" },
         ],
       },
