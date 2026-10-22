@@ -435,7 +435,7 @@ export function createSkyField(canvas, options = {}) {
       let x = face > 0 ? l.at + gap : l.at - gap - wpx;
       if (x < 4 || x + wpx > W - 4) { face = -face; x = face > 0 ? l.at + gap : l.at - gap - wpx; }
       x = clamp(x, 4, W - wpx - 4);
-      const y = clamp(l.my - ch * 3 - gh * 4, 4, H - gh * 4 - 4);
+      const y = clamp(l.my - ch * 1 - gh * 4, 4, H - gh * 4 - 4); // the tail's foot lands a row above the mouth
       // the tail: a row below the box, one cell in from the near end, leaning toward the mouth
       const tail = face > 0 ? ' /' : ' '.repeat(cols - 2) + '\\';
       ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fillRect(x + gw * 0.3, y + gh * 0.15, wpx - gw * 0.6, gh * 2.7);
