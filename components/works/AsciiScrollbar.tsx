@@ -263,8 +263,8 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
               key={m.id}
               type="button"
               onClick={() => scrollToP(m.p, true)}
-              className={`absolute left-0 block -translate-y-1/2 whitespace-nowrap font-body text-body transition-[color,transform] duration-300 ${
-                on ? "translate-x-[6px] text-ink" : "text-ink/40 hover:text-ink/70"
+              className={`absolute left-0 block -translate-y-1/2 whitespace-nowrap font-body text-body text-ink/50 transition-[color,transform] duration-300 hover:text-ink ${
+                on ? "translate-x-[6px]" : ""
               }`}
               /* placed by CSS from the track's own height, so the names are fanned from
                  the very first paint rather than after the rows are measured; this is
