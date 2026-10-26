@@ -25,12 +25,13 @@ import imageSizes from "@/lib/image-sizes.json";
 
 /* rail: derived from blocks, context/problem/solution/gate only -
    wip and artifactGrid render inline but never appear in the rail */
-const RAIL_TYPES = ["context", "brief", "problem", "solution", "lessons"] as const;
+const RAIL_TYPES = ["context", "brief", "problem", "solution", "also", "lessons"] as const;
 const RAIL_NAMES: Record<string, string> = {
   context: "Context",
   brief: "Brief",
   problem: "Problem",
   solution: "Solution",
+  also: "Also",
   lessons: "Takeaways",
 };
 
@@ -218,11 +219,24 @@ function SolutionBlock({ block }: { block: Extract<Block, { type: "solution" }> 
         /* a gallery: the piece's extra images in one row, side by side, tops
            aligned, with a clear breath above it (Margaret, 2026-10-21) */
         const gallery = piece.gallery && piece.gallery.length > 0 && (
-          <div className="grid grid-cols-3 items-start gap-3 pt-[4vh] md:gap-5">
+          <div className="grid grid-flow-col auto-cols-fr items-start gap-3 pt-[4vh] md:gap-5">
             {piece.gallery.map((m) => {
               const [w, h] = SIZES[m.src] ?? [1200, 1600];
+              /* phone screens in a two-up gallery would run the full half
+                 column and tower; tall images scale by height instead,
+                 like MediaView's portrait cap (2026-10-26) */
+              const tall = h > w * 1.15;
               return (
-                <Image key={m.src} src={m.src} alt={m.alt} width={w} height={h} sizes="(max-width: 768px) 30vw, 18vw" className="block h-auto w-full rounded-[4px]" />
+                <Image
+                  key={m.src}
+                  src={m.src}
+                  alt={m.alt}
+                  width={w}
+                  height={h}
+                  sizes="(max-width: 768px) 30vw, 18vw"
+                  className="block rounded-[4px]"
+                  style={tall ? { width: "auto", height: "auto", maxHeight: "44vh", maxWidth: "100%" } : { width: "100%", height: "auto" }}
+                />
               );
             })}
           </div>
@@ -295,6 +309,37 @@ function LessonsBlock({ block }: { block: Extract<Block, { type: "lessons" }> })
   );
 }
 
+/* the "also" strip: the work beside the product story, compact on purpose -
+   three up, each an image at its own aspect, a name, and one line, so it
+   reads as a footnote to the solution rather than more of it (Chris
+   Pramana's feedback, 2026-10-26) */
+function AlsoBlock({ block }: { block: Extract<Block, { type: "also" }> }) {
+  const items = HIDE_NEEDS ? block.items.filter((it) => it.media.src !== "NEED") : block.items;
+  return (
+    <section className="space-y-6">
+      <SectionLabel>{RAIL_NAMES.also}</SectionLabel>
+      {block.intro && <p className="study-body text-ink">{block.intro}</p>}
+      <ul className="grid gap-6 pt-2 md:grid-cols-3 md:gap-8">
+        {items.map((it) => (
+          <li key={it.name} className="space-y-3">
+            {/* one 4:3 frame per item, the image or video covering it, so the
+                three names sit on one line whatever the sources' shapes */}
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[4px] bg-placeholder/40">
+              {it.media.video ? (
+                <video src={it.media.src} poster={it.media.poster} controls preload="metadata" playsInline className="absolute inset-0 h-full w-full object-cover" />
+              ) : (
+                <Image src={it.media.src} alt={it.media.alt} fill sizes="(max-width: 768px) 92vw, 18vw" className="object-cover" />
+              )}
+            </div>
+            <h3 className="text-body font-medium text-ink">{it.name}</h3>
+            <p className="text-[clamp(14px,0.95vw,17px)] leading-[1.45] text-ink/65">{it.line}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 function ArtifactGridBlock({ block }: { block: Extract<Block, { type: "artifactGrid" }> }) {
   /* a masonry: three columns, every image at its own aspect, stacked -
      nothing cropped or forced into a square (Margaret, 2026-10-08).
@@ -347,6 +392,8 @@ export function Blocks({ work }: { work: Work }) {
             return <div key={id} id={id}><LessonsBlock block={b} /></div>;
           case "solution":
             return <div key={id} id={id}><SolutionBlock block={b} /></div>;
+          case "also":
+            return <div key={id} id={id}><AlsoBlock block={b} /></div>;
           case "artifactGrid":
             return <div key={id} id={id}><ArtifactGridBlock block={b} /></div>;
           case "wip":

@@ -33,6 +33,11 @@ export type Block =
   /* a piece may carry a `gallery`: a row of images side by side under its media (the three Mark share styles, 2026-10-21) */
   | { type: "solution"; pieces: { name: string; caption: string; media: Media; gallery?: Media[] }[] }
   | { type: "artifactGrid"; media: Media[] }  // 2-6 images, no captions
+  /* the "also" strip (Chris Pramana's feedback, 2026-10-26: show the solution,
+     then say "here are a few other things I did"): the work that is not the
+     product story, each item an image, a name, and one line, after the
+     solution and before the takeaways */
+  | { type: "also"; intro?: string; items: { name: string; line: string; media: Media }[] }
   | { type: "wip"; email: string };
 
 export type Credit = { label: string; value: string };
@@ -101,18 +106,24 @@ export type Work = {
 const WIP_EMAIL = "luwena@usc.edu";
 
 export const works: Work[] = [
-  /* ---- Mark - canonical content: docs/content/mark.md ---- */
+  /* ---- Mark - canonical content: docs/content/mark.md ----
+     Restructured 2026-10-26 after Chris Pramana's read (Ramp): the study
+     led with brand and packaging and had no narrative. Now: the product
+     story (share cards, the library) is the solution; packaging, merch,
+     and the LAUNCH deck sit in one "also" strip; the artifact grids are
+     gone. The three-round packaging story (2026-10-21) is collapsed to its
+     last round on purpose. ---- */
   {
     slug: "mark",
     title: "Mark",
-    signal: "Raised $3M+", // Margaret, 2026-10-20
+    signal: "Raised $1M+", // Margaret, 2026-10-26 (was $3M+)
     lede: "A reading companion that turns the act of underlining into something you'd want to share",
-    blurb: "Packaging, UI/UX software, and brand for a reading companion",
+    blurb: "The app and share cards for a reading companion", // product first (2026-10-26)
     credits: [
       { label: "Role", value: "Designer, TroyLabs BUILD" },
       { label: "Timeline", value: "2025" },
       { label: "Team", value: "Founded by Eason Tang" },
-      { label: "Disciplines", value: "UI/UX Design, Brand, Merchandise, Packaging, Pitch Deck" },
+      { label: "Disciplines", value: "Product Design, UI/UX, Brand, Merchandise, Packaging, Pitch Deck" },
     ],
     /* poster stand-in until the real export lands */
     cover: { src: "/images/covers/mark-device.png", alt: "Mark device" },
@@ -142,7 +153,7 @@ export const works: Work[] = [
     blocks: [
       {
         type: "context",
-        body: "Mark is a capture device and companion app built by Eason Tang through TroyLabs' BUILD program. Eason's thesis was that reading should be social, a Spotify Wrapped for what you read, rather than another place to file highlights. I joined as the designer for the semester: the app and its share cards were my focus, I contributed to the brand and built the merch, did the packaging for the final product, and made the deck for LAUNCH.",
+        body: "Mark is a capture device and companion app built by Eason Tang through TroyLabs' BUILD program. Eason's thesis was that reading should be social, a Spotify Wrapped for what you read, rather than another place to file highlights.\n\nI joined as the designer for the semester. This study is about the product: the app and the share cards, and the one question they had to answer. The brand I contributed to, the merch, the packaging, and the LAUNCH deck are at the end.",
         media: { src: "NEED", alt: "device or hero shot" },
       },
       /* brief + takeaways drafted 2026-10-20 from Margaret's own prose above
@@ -157,7 +168,7 @@ export const works: Work[] = [
         goals: [
           "Capture a line without pulling you out of the book",
           "Make the device, the app, and the share cards feel like one thing",
-          "A brand and a box people actually want on their desk",
+          "A share card someone would actually want to be seen posting",
         ],
         did: [
           "Designed the app and its share cards",
@@ -174,7 +185,7 @@ export const works: Work[] = [
           "Nothing connected the device to the app, or the app to a library",
           "A highlight is only interesting to the person who made it",
         ],
-        body: "Eason had the thesis before I joined; my problem was making it real. Most of the work was decomposition: the device, the app, and the share layer each answered a different question, and the answers had to add up to one product rather than three.",
+        body: "Eason had the thesis before I joined; my problem was making it real. The device captures a line. The app has to make that line worth keeping, and the share card has to make it worth showing. Those are two different questions, and the answers had to add up to one product rather than two.",
         media: { src: "NEED", alt: "early flow or sketch" },
       },
       {
@@ -195,55 +206,33 @@ export const works: Work[] = [
             name: "From page to library",
             caption: "Log a highlight on the device without leaving the page, then sort it in the app by book, by category, or by a note you wrote. It's organised the way people actually read, not the way files are stored.",
             media: { src: "/images/mark/app-notes.png", alt: "Mark notes library screens" },
+            /* the app's home (today's session, the latest line) and a note's own page (2026-10-26) */
+            gallery: [
+              { src: "/images/mark/app-home.png", alt: "Mark app home: today's reading session and the latest highlight" },
+              { src: "/images/mark/app-notes-inside.png", alt: "Mark note detail: the book, the line, and the tools under it" },
+            ],
           },
+        ],
+      },
+      {
+        type: "also",
+        intro: "Alongside the product, three more things I made for Mark.",
+        items: [
           {
-            name: "Twenty rough ideas",
-            /* Margaret, 2026-10-21: this board is the initial ideas; the ones we
-               liked got a blue dot, the ones we really liked a pink star */
-            caption: "The first board: twenty rough packaging concepts, pinned up and marked. A blue dot meant we liked it. A pink star meant we really did. Those are the ones that went to the next round.",
-            media: { src: "/images/mark/packaging-sleeves-1.jpg", alt: "Mark packaging, the first board of twenty ideas, marked with blue dots and pink stars" },
-          },
-          {
-            name: "Then three, then colour",
-            caption: "Three went forward and got worked properly before any colour went on. Yellow carried so much of the early identity that I made it the last decision on purpose, not the first constraint.",
-            // cropped to the board alone - the lone device render on the right is gone (Margaret, 2026-10-21)
-            media: { src: "/images/mark/packaging-sleeves-2-board.jpg", alt: "Mark packaging sleeves, second round" },
-          },
-          {
-            name: "The last round",
-            /* Margaret, 2026-10-21: "final final round, closer to what we were looking for" */
-            caption: "The last round, and the closest to what we were after. Yellow is finally on, as a glow that fades into cream rather than a flat fill, and the lockup settles small in a corner where it can stay out of the way.",
+            name: "Packaging",
+            line: "Twenty rough boxes down to three, then one. Yellow went on last, as a glow that fades into cream, with the lockup small in a corner.",
             media: { src: "/images/mark/packaging-unitbox-1.jpg", alt: "Mark packaging, the last round: six sleeves with yellow on" },
           },
           {
             name: "Merch",
-            /* Margaret, 2026-10-21: the three merch sheets are stickers, shirts, totes */
-            caption: "Stickers first: the lockup, the two black blocks, and the lines from the share cards, make your mark, on your words. Then the same marks on white shirts, small on the chest, and on canvas totes. Merch was where the brand got to be worn rather than read.",
+            line: "Stickers, white shirts, and canvas totes carrying the lockup, the two blocks, and the lines from the share cards.",
             media: { src: "/images/mark/merch-stickers.jpg", alt: "Mark sticker sheet: the lockup, the blocks, and the make your mark lines" },
           },
           {
-            name: "LAUNCH",
-            caption: "The three-minute deck I made for TroyLabs' end-of-semester LAUNCH summit.",
-            /* Margaret's screen recording of the deck (2026-10-08), last 3s
-               trimmed, re-encoded 1280 wide for the web; poster is frame 2s in */
+            name: "The LAUNCH deck",
+            line: "The three-minute deck I made for TroyLabs' end-of-semester LAUNCH summit.",
             media: { src: "/videos/mark-pitch.mp4", alt: "Mark pitch deck, as presented at LAUNCH", video: true, poster: "/images/mark/pitch-poster.jpg" },
           },
-        ],
-      },
-      {
-        type: "artifactGrid",
-        media: [
-          { src: "/images/mark/merch-shirts.png", alt: "Mark shirts: the lockup and the blocks on white tees" },
-          { src: "/images/mark/merch-tote.jpg", alt: "Mark canvas totes" },
-          { src: "NEED", alt: "Make your mark wordplay" },
-        ],
-      },
-      {
-        type: "artifactGrid",
-        media: [
-          { src: "/images/mark/app-home.png", alt: "Mark app home screen" },
-          { src: "/images/mark/app-notes-inside.png", alt: "Mark note detail screen" },
-          { src: "/images/mark/app-share-funky.png", alt: "Mark share screen, the envelope version: the quote on paper, signed, in a yellow envelope" },
         ],
       },
       {

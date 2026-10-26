@@ -1,5 +1,11 @@
 # Mark - canonical spine content (supersedes all prior drafts)
 
+> 2026-10-26: the study was restructured in lib/works.ts after Chris
+> Pramana's read (product story as the solution, packaging / merch / deck in
+> one "also" strip, artifact grids gone, signal "Raised $1M+"). The data
+> file leads now; the spine below is the earlier draft, kept for the voice
+> notes and the NEED list.
+
 Source: Margaret's voice notes, consolidated 2026-07-31. This is the ONLY
 approved copy for Mark's case study. Strings marked NEED are Margaret's to
 supply. Do not fill NEEDs with generated text.
