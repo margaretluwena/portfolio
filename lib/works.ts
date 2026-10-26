@@ -216,7 +216,7 @@ export const works: Work[] = [
       },
       {
         type: "also",
-        intro: "Alongside the product, three more things I made for Mark.",
+        intro: "Three more things I made for Mark, beside the product.",
         items: [
           {
             name: "Packaging",
