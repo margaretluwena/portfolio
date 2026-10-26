@@ -31,7 +31,7 @@ const RAIL_NAMES: Record<string, string> = {
   brief: "Brief",
   problem: "Problem",
   solution: "Solution",
-  also: "Alongside", // the work beside the product story (was "Also", 2026-10-26)
+  also: "Around it", // the work around the product story (was "Also", then "Alongside", 2026-10-26)
   lessons: "Takeaways",
 };
 
