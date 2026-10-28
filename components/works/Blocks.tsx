@@ -394,7 +394,10 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
   /* a generous hit area, nothing drawn but the icon */
   const bare =
     "grid place-items-center transition-colors duration-300 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
-  const phoneBare = `${bare} h-[44px] w-[44px] -ml-[13px] text-ink/80`;
+  /* phones: the arrow scrolls over images, so it sits on a soft frosted
+     spot - a blur and a little white, no outline, no shadow - that keeps
+     it legible over a dark screenshot without reading as a button */
+  const phoneBare = `${bare} h-[44px] w-[44px] -ml-[13px] rounded-full bg-white/60 text-ink/80 backdrop-blur-md`;
   const railBare = `${bare} h-[36px] w-[36px] -ml-[9px] text-ink/60`;
   /* rises in once scrolled, and is not a target until it has */
   const reveal = {
