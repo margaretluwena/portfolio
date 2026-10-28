@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useReducedMotion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { Block, Media, Work } from "@/lib/works";
 import { indexWorks } from "@/lib/works";
 import Prox from "@/components/ui/Prox";
@@ -359,20 +359,50 @@ export function Blocks({ work }: { work: Work }) {
 
 /* ---------- section rail ---------- */
 
+/* the Return arrow shows once the page has scrolled past where the nav
+   pill leaves (the same 160px), rising in; at the top the pill's own
+   wordmark is the way home, so the arrow would only double it */
+const RETURN_AT = 160;
+function useScrolledPast(px: number) {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const read = (e?: Event) => {
+      const t = e?.target;
+      const el = t && t !== document ? (t as Element) : document.scrollingElement;
+      if (!el || !(el instanceof Element)) return;
+      setOn(el.scrollTop > px);
+    };
+    read();
+    document.addEventListener("scroll", read, { capture: true, passive: true });
+    return () => document.removeEventListener("scroll", read, { capture: true });
+  }, [px]);
+  return on;
+}
+
 export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => void }) {
   const entries = railEntries(work);
-  /* the return arrow (a left hook) alone in a circle - the word "Return"
-     is gone (Margaret, 2026-10-21: "just the icon, more like a circle");
-     the name survives for screen readers as the control's label */
+  const reduce = useReducedMotion();
+  const on = useScrolledPast(RETURN_AT);
+  /* the return arrow (a left hook) on its own - no word (Margaret,
+     2026-10-21) and no circle around it either (2026-10-28: "keep the icon,
+     remove the button"); the name survives for screen readers */
   const returnLabel = (
-    <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden className="shrink-0">
+    <svg width="18" height="18" viewBox="0 0 14 14" fill="none" aria-hidden className="shrink-0">
       <path d="M5.5 3.5 2 7l3.5 3.5M2 7h7a3 3 0 0 1 0 6H8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
-  const circle =
-    "grid place-items-center rounded-full border border-black/[0.12] bg-white/90 text-ink shadow-[0_8px_19px_rgba(0,0,0,0.08)] backdrop-blur transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
-  const phoneCircle = `${circle} h-[44px] w-[44px]`;
-  const railCircle = `${circle} h-[36px] w-[36px] text-ink/60 hover:text-ink`;
+  /* a generous hit area, nothing drawn but the icon */
+  const bare =
+    "grid place-items-center transition-colors duration-300 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+  const phoneBare = `${bare} h-[44px] w-[44px] -ml-[13px] text-ink/80`;
+  const railBare = `${bare} h-[36px] w-[36px] -ml-[9px] text-ink/60`;
+  /* rises in once scrolled, and is not a target until it has */
+  const reveal = {
+    initial: false as const,
+    animate: { opacity: on ? 1 : 0, y: on ? 0 : 10 },
+    transition: { duration: reduce ? 0 : 0.5, ease: [0.22, 1, 0.36, 1] as const },
+    style: { pointerEvents: on ? ("auto" as const) : ("none" as const) },
+  };
   /* the section links now live on the ASCII minimap (AsciiScrollbar), at the
      rows their sections land on (Margaret, 2026-10-21); the rail keeps Return,
      above the minimap and aligned with its labels. A thin work with one entry
@@ -381,33 +411,34 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
 
   return (
     <>
-    {/* phones: the minimap is hidden and the nav pill leaves on scroll, so a
-        small Return pill stays pinned at the bottom-left */}
-    <div className="fixed bottom-[max(16px,env(safe-area-inset-bottom))] left-[var(--inset)] z-40 md:hidden">
+    {/* phones: the minimap is hidden and the nav pill leaves on scroll, so the
+        Return arrow sits pinned at the bottom-left once the page has scrolled */}
+    <motion.div {...reveal} className="fixed bottom-[max(16px,env(safe-area-inset-bottom))] left-[var(--inset)] z-40 md:hidden">
       {onReturn ? (
-        <button type="button" onClick={onReturn} aria-label="Return" className={phoneCircle}>
+        <button type="button" onClick={onReturn} aria-label="Return" className={phoneBare}>
           {returnLabel}
         </button>
       ) : (
-        <TransitionLink href="/" aria-label="Return" className={phoneCircle}>
+        <TransitionLink href="/" aria-label="Return" className={phoneBare}>
           {returnLabel}
         </TransitionLink>
       )}
-    </div>
-    <nav
+    </motion.div>
+    <motion.nav
+      {...reveal}
       aria-label="Case study"
       className="fixed left-[calc(var(--inset)*0.18+72px)] top-[21vh] z-30 hidden md:block"
     >
       {onReturn ? (
-        <button type="button" onClick={onReturn} aria-label="Return" className={railCircle}>
+        <button type="button" onClick={onReturn} aria-label="Return" className={railBare}>
           {returnLabel}
         </button>
       ) : (
-        <TransitionLink href="/" aria-label="Return" className={railCircle}>
+        <TransitionLink href="/" aria-label="Return" className={railBare}>
           {returnLabel}
         </TransitionLink>
       )}
-    </nav>
+    </motion.nav>
     </>
   );
 }
