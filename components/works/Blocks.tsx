@@ -389,8 +389,10 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
         const decision = para.startsWith("Decision:");
         const text = decision ? para.slice("Decision:".length).trim() : para;
         const after = block.visualAfter === i && visual ? <div className="pt-2 pb-8">{visual}</div> : null;
+        /* a real box per paragraph (display: contents swallowed the section's
+           vertical rhythm, so every gap collapsed; Margaret, 2026-10-29) */
         return decision ? (
-          <div key={i} className="contents">
+          <div key={i} className="space-y-6">
             <div className="grid gap-2 border-t border-hairline pt-4 md:grid-cols-[120px_minmax(0,1fr)] md:gap-8">
               <span className="text-label uppercase text-ink/50">Decision</span>
               <p className="study-body text-ink"><Marked text={text} /></p>
@@ -398,7 +400,7 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
             {after}
           </div>
         ) : (
-          <div key={i} className="contents">
+          <div key={i} className="space-y-6">
             <p className="study-body whitespace-pre-line text-ink"><Marked text={text} /></p>
             {after}
           </div>
@@ -470,7 +472,9 @@ function AlsoBlock({ block }: { block: Extract<Block, { type: "also" }> }) {
                 <Image src={it.media.src} alt={it.media.alt} fill sizes="(max-width: 768px) 92vw, 18vw" className="object-cover" />
               )}
             </div>
-            <h3 className="text-body font-medium text-ink">{it.name}</h3>
+            <h3 className="text-body font-medium text-ink">
+              {it.href ? <a href={it.href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink">{it.name}</a> : it.name}
+            </h3>
             <p className="text-[clamp(14px,0.95vw,17px)] leading-[1.45] text-ink/65">{it.line}</p>
           </li>
         ))}

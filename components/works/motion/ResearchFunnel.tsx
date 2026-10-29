@@ -32,22 +32,30 @@ const INDUSTRIES: { name: string; n: number; focus?: boolean }[] = [
   { name: "Agentic AI", n: 14, focus: true },
 ];
 const TOTAL = INDUSTRIES.reduce((s, i) => s + i.n, 0); // 52
-const COPY = "The teams closest to it said it wasn't urgent yet, and that they knew it would be.";
+/* where the fourteen agentic AI dots settle: the Traeco mark, four lobes
+   off one stem, as points in a 100 x 120 box (Margaret, 2026-10-29) */
+const MARK: [number, number][] = [
+  [50, 12], [41, 24], [59, 24],          // top lobe
+  [13, 46], [24, 36], [24, 56],          // left lobe
+  [87, 46], [76, 36], [76, 56],          // right lobe
+  [50, 106], [41, 94], [59, 94],         // bottom lobe
+  [50, 52], [50, 74],                    // the stem
+];
 
 /* one seeded random so the scatter is the same on every visit */
 const rng = (seed: number) => () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
 
-type Layout = { w: number; h: number; centers: [number, number][]; focus: [number, number]; copyY: number; label: number };
+type Layout = { w: number; h: number; centers: [number, number][]; focus: [number, number]; copyY: number; label: number; markScale: number };
 const WIDE: Layout = {
   w: 1128, h: 560,
   // four to a row, 270px apart, so "Semiconductors & hardware · 4" never touches its neighbour; agentic AI alone on the right of the last row
   centers: [[160, 100], [430, 100], [700, 100], [970, 100], [160, 280], [430, 280], [700, 280], [970, 280], [160, 460], [430, 460], [800, 440]],
-  focus: [800, 420], copyY: 540, label: 13,
+  focus: [800, 420], copyY: 540, label: 13, markScale: 1.15,
 };
 const NARROW: Layout = {
   w: 600, h: 900,
   centers: [[110, 110], [300, 110], [490, 110], [110, 290], [300, 290], [490, 290], [110, 470], [300, 470], [490, 470], [110, 650], [360, 650]],
-  focus: [360, 640], copyY: 860, label: 15,
+  focus: [360, 640], copyY: 860, label: 15, markScale: 1.1,
 };
 
 type Dot = { ind: number; scatter: [number, number]; cluster: [number, number]; narrow: [number, number]; r: number; phase: number };
@@ -60,8 +68,8 @@ function buildDots(L: Layout): Dot[] {
     for (let k = 0; k < ind.n; k++) {
       const a = (k / ind.n) * Math.PI * 2 + ci, rad = ind.n > 6 ? 22 + (k % 2) * 12 : 14 + (k % 2) * 6;
       const cluster: [number, number] = [cx + Math.cos(a) * rad, cy + Math.sin(a) * rad];
-      const fa = (k / ind.n) * Math.PI * 2, fr = 34 + (k % 3) * 11;
-      const narrow: [number, number] = ind.focus ? [L.focus[0] + Math.cos(fa) * fr, L.focus[1] + Math.sin(fa) * fr] : cluster;
+      const m = MARK[k % MARK.length], ms = L.markScale;
+      const narrow: [number, number] = ind.focus ? [L.focus[0] + (m[0] - 50) * ms, L.focus[1] + (m[1] - 60) * ms] : cluster;
       // sizes vary a little and each dot bobs on its own phase, so the field reads as alive rather than plotted
       dots.push({ ind: ci, scatter: [40 + r() * (L.w - 80), 40 + r() * (L.h - 120)], cluster, narrow, r: 4 + r() * 2.5, phase: r() * Math.PI * 2 });
     }
@@ -154,8 +162,6 @@ export default function ResearchFunnel() {
   }, [inView, reduce, L, d.scatterSpring, d.clusterStagger, d.clusterSpring, d.narrowDelay, d.narrowEase, d.loopPause]);
 
   const focusLabelScale = useTransform(narrow, [0, 1], [1, 1.35]);
-  const copyOpacity = useTransform(narrow, [0.4, 1], [0, 1]);
-  const copyY = useTransform(narrow, [0.4, 1], [6, 0]);
 
   return (
     <div ref={ref} className="w-full">
@@ -164,11 +170,9 @@ export default function ResearchFunnel() {
           <FunnelDot key={`${L.w}-${i}`} dot={dot} scatter={scatter} cluster={clusters[dot.ind]} narrow={narrow} clock={clock} faded={d.fadedOpacity} focus={!!INDUSTRIES[dot.ind].focus} />
         ))}
         {INDUSTRIES.map((ind, ci) => (
-          <FunnelLabel key={`${L.w}-${ind.name}`} name={ind.name} count={ind.n} x={L.centers[ci][0]} y={L.centers[ci][1] + (ind.n > 6 ? 54 : 40)} size={L.label} cluster={clusters[ci]} narrow={narrow} faded={d.fadedOpacity} focus={!!ind.focus} focusScale={focusLabelScale} focusPos={ind.focus ? [L.focus[0], L.focus[1] + 74] : undefined} />
+          <FunnelLabel key={`${L.w}-${ind.name}`} name={ind.name} count={ind.n} x={L.centers[ci][0]} y={L.centers[ci][1] + (ind.n > 6 ? 54 : 40)} size={L.label} cluster={clusters[ci]} narrow={narrow} faded={d.fadedOpacity} focus={!!ind.focus} focusScale={focusLabelScale} focusPos={ind.focus ? [L.focus[0], L.focus[1] + 62 * L.markScale + 16] : undefined} />
         ))}
       </svg>
-      {/* the line lands under the drawing, in the column's own type, once the field has narrowed */}
-      <motion.p className="study-body pt-2 text-ink/70" style={{ opacity: copyOpacity, y: copyY }}>{COPY}</motion.p>
     </div>
   );
 }

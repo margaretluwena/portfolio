@@ -35,7 +35,7 @@ type Step =
   | { type: "move"; target: string }
   | { type: "click" }
   | { type: "scroll"; target: string; ms: number; block?: ScrollLogicalPosition };
-type Shot = { id: string; route: string; sidebarCollapsed: boolean; posterAtMs: number; steps: Step[] };
+type Shot = { id: string; route: string; sidebarCollapsed: boolean; posterAtMs: number; steps: Step[]; viewport?: { width: number; height: number } };
 type Still = { id: string; route: string; file: string; width: number; height: number; deviceScaleFactor: number; sidebarCollapsed: boolean; fullPage?: boolean; waitMs: number; note?: string };
 type Config = {
   baseUrl: string;
@@ -185,13 +185,14 @@ async function resetDecisions() {
 async function record(shot: Shot, tmp: string) {
   await resetDecisions();
   const browser = await chromium.launch();
+  const vp = shot.viewport ?? config.viewport; // a shot may take its own frame (the hero is taller)
   const ctx = await browser.newContext({
-    viewport: { width: config.viewport.width, height: config.viewport.height },
+    viewport: { width: vp.width, height: vp.height },
     deviceScaleFactor: config.viewport.deviceScaleFactor,
     /* the screencast is drawn at viewport size; asking for a larger frame
        does not scale it up, it pads it (the clips came out quarter-size in
        a grey field, 2026-10-29), so the video is 1x and the poster is 2x */
-    recordVideo: { dir: tmp, size: { width: config.viewport.width, height: config.viewport.height } },
+    recordVideo: { dir: tmp, size: { width: vp.width, height: vp.height } },
     reducedMotion: "no-preference",
   });
   await prep(ctx, shot.sidebarCollapsed);
@@ -199,7 +200,7 @@ async function record(shot: Shot, tmp: string) {
   const recordingStart = Date.now(); // the video starts with the page; sign-in and navigation are trimmed off below
   await login(page);
   await page.goto(config.baseUrl + shot.route, { waitUntil: "networkidle" });
-  await placeCursor(page, config.viewport.width * 0.55, config.viewport.height * 0.6);
+  await placeCursor(page, vp.width * 0.55, vp.height * 0.6);
   const t0 = Date.now();
   let posterTaken = false;
   const posterPath = path.join(ROOT, config.out.posters, `${shot.id}.jpg`);

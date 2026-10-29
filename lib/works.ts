@@ -37,7 +37,7 @@ export type Block =
      then say "here are a few other things I did"): the work that is not the
      product story, each item an image, a name, and one line, after the
      solution and before the takeaways */
-  | { type: "also"; intro?: string; items: { name: string; line: string; media: Media }[] }
+  | { type: "also"; intro?: string; items: { name: string; line: string; media: Media; href?: string }[] }
   /* an essay section (Traeco, 2026-10-29): a titled run of paragraphs with
      an optional visual. `rail` is the minimap's short name. A paragraph
      that starts "Decision:" renders with that word as a label. Text in
@@ -341,7 +341,7 @@ export const works: Work[] = [
           "AI agents are getting expensive faster than anyone can see them. Alphabet posted its first negative quarterly free cash flow since its 2004 IPO, [$5.9B on $44.9B of AI capex](https://www.sec.gov/Archives/edgar/data/0001652044/000165204426000043/googexhibit991q12026.htm), and Uber [exhausted its entire 2026 AI coding budget by April](https://finance.yahoo.com/markets/stocks/articles/uber-stock-drops-reportedly-caps-190100595.html) and now caps engineers at $1,500 a month per tool.",
           "So we built a layer that tells teams what their agents should cost. Most tools in this space stop at observability, showing what an agent did and what it spent, while Traeco goes a step further and recommends what each agent should change to cost less without doing worse work. I was cofounder, CPO and the only designer across the product, brand, site and decks.",
         ],
-        visual: { kind: "video", src: "/videos/traeco/hero.mp4", poster: "/images/traeco/posters/hero.jpg", caption: "Switch the range and the savings figure follows the data; hover a day to see which model spent it." },
+        visual: { kind: "video", src: "/videos/traeco/hero.mp4", poster: "/images/traeco/posters/hero.jpg", aspect: "1128 / 760", caption: "The finished dashboard. Is something ever finished, though?" },
       },
       {
         type: "stats",
@@ -360,7 +360,7 @@ export const works: Work[] = [
           "The calls also showed us the gap. Plenty of platforms already offered observability, but almost nobody we found was recommending what someone else's agents should actually do differently to cost less, and that became the part of Traeco only we were building.",
           "The finding that changed the brief: agent cost was not yet anyone's most pressing problem, but they could see it coming and were certain it would land on everyone.",
         ],
-        visual: { kind: "animation", name: "research-funnel", caption: "Fifty-plus calls gather by industry, then narrow to the agentic AI teams who felt the same thing." },
+        visual: { kind: "animation", name: "research-funnel", caption: "The teams closest to it said we were early." },
         visualAfter: 0, // between "we ran into one ourselves" and "the calls also showed us the gap" (Margaret, 2026-10-29)
       },
       {
@@ -382,7 +382,7 @@ export const works: Work[] = [
           "Explorations: [MAR: early dashboard versions, each with a one-line caption on what it tried to show]",
           "Decision: Instead of [MAR: the fuller first version], I kept the home screen to savings available, top recommendations and a spend breakdown, and pushed everything else one level deeper. [CHECK]",
         ],
-        visual: { kind: "animation", name: "before-after", caption: "Drag to compare an earlier home screen with the one that shipped." },
+        visual: { kind: "animation", name: "before-after", caption: "Drag to compare my first iteration with the most recent one!" },
       },
       {
         type: "essay",
@@ -430,6 +430,7 @@ export const works: Work[] = [
           },
           {
             name: "traeco.dev",
+            href: "https://traeco.dev",
             line: "The site carries the argument in the order a buyer meets it: the bill, then the gap, then the four steps from traces to savings, then pricing.",
             media: { src: "/images/traeco/site-hero.jpg", alt: "traeco.dev hero: the mark scaled to full bleed behind the headline" },
           },
