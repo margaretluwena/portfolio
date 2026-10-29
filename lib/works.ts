@@ -47,16 +47,20 @@ export type Block =
   | {
       type: "essay";
       title: string;
-      rail?: string;
+      /* the minimap's short name; null keeps the section out of the minimap
+         (the second and third problems sit under the first's "Problems") */
+      rail?: string | null;
       body?: string[];
       items?: { num: string; title: string; body: string }[];
       parts?: { title: string; body: string }[];
       visual?: Visual;
       /* the visual sits above the body instead of below it */
       visualFirst?: boolean;
+      /* or after this paragraph (0-based) instead of at the end */
+      visualAfter?: number;
     }
   /* the outcome strip under the credits: three or four short facts */
-  | { type: "stats"; items: { value: string; label: string }[] }
+  | { type: "stats"; items: { value: string; label: string; href?: string }[] }
   | { type: "wip"; email: string };
 
 /* a section's visual: recorded product footage, one of the coded animations,
@@ -304,8 +308,11 @@ export const works: Work[] = [
     wordmarkGlow: "drop-shadow(0 1px 3.5px rgba(27,168,111,0.5))", // Figma 140:692 text-shadow
     // Figma "Traeco card" 139:559 is the dark variant: #303036 surface,
     // fade to #242428, white/50 description
-    cardBg: "#303036",
-    cardFade: "linear-gradient(to bottom, rgba(36,36,40,0), rgba(36,36,40,0.03) 37.5%, #242428 77.9%)",
+    /* the green refresh (2026-10-29): the card sits on the dashboard's own
+       near-black (--bg-app) and fades into its sidebar tone, with the new
+       home on the laptop screen (scripts/capture: card-cover) */
+    cardBg: "#111214",
+    cardFade: "linear-gradient(to bottom, rgba(12,13,15,0), rgba(12,13,15,0.03) 37.5%, #0C0D0F 77.9%)",
     cardText: "light",
     // laptop chrome (140:695) under the floating dashboard (140:715); the
     // dashboard is sized a hair past the white display area so no white
@@ -330,7 +337,8 @@ export const works: Work[] = [
         title: "Setup",
         rail: "Setup",
         body: [
-          "AI agents are getting expensive faster than anyone can see them. Alphabet posted its first negative quarterly free cash flow since its 2004 IPO, $5.9B on $44.9B of AI capex, and Uber exhausted its entire 2026 AI budget by April and now caps engineers at $1,500 a month per tool. [CHECK: re-verify both figures and link a source before publishing]",
+          /* both figures re-verified 2026-10-29: Alphabet Q2 2026 (SEC exhibit 99.1), Uber's cap as reported in April 2026 */
+          "AI agents are getting expensive faster than anyone can see them. Alphabet posted its first negative quarterly free cash flow since its 2004 IPO, [$5.9B on $44.9B of AI capex](https://www.sec.gov/Archives/edgar/data/0001652044/000165204426000043/googexhibit991q12026.htm), and Uber [exhausted its entire 2026 AI coding budget by April](https://finance.yahoo.com/markets/stocks/articles/uber-stock-drops-reportedly-caps-190100595.html) and now caps engineers at $1,500 a month per tool.",
           "So we built a layer that tells teams what their agents should cost. Most tools in this space stop at observability, showing what an agent did and what it spent, while Traeco goes a step further and recommends what each agent should change to cost less without doing worse work. I was cofounder, CPO and the only designer across the product, brand, site and decks.",
         ],
         visual: { kind: "video", src: "/videos/traeco/hero.mp4", poster: "/images/traeco/posters/hero.jpg", caption: "Switch the range and the savings figure follows the data; hover a day to see which model spent it." },
@@ -340,7 +348,7 @@ export const works: Work[] = [
         items: [
           { value: "22% to 71%", label: "conversion to action in usability tests" },
           { value: "Audience Choice", label: "LavaLab closing summit" },
-          { value: "traeco.dev", label: "shipped to production" },
+          { value: "traeco.dev", label: "shipped to production", href: "https://traeco.dev" },
         ],
       },
       {
@@ -349,25 +357,26 @@ export const works: Work[] = [
         rail: "Research",
         body: [
           "We started with 50+ calls across 11 industries, from semiconductors and aerospace to entertainment, finance and data infrastructure, looking for a problem worth building for. Partway through, we ran into one ourselves, as the agents we were using kept getting more expensive in a way that felt exponential and nothing we tried fixed it, so we narrowed the rest of our research to agentic AI to find out whether other teams were feeling the same thing, and they were.",
-          "The calls also showed us the gap. Plenty of platforms already offered observability, but almost nobody was recommending what someone else's agents should actually do differently to cost less, and that became the part of Traeco only we were building. [CHECK: you mentioned you may not have researched competitors fully, so phrase this as \"almost nobody we found\" if you are unsure]",
+          "The calls also showed us the gap. Plenty of platforms already offered observability, but almost nobody we found was recommending what someone else's agents should actually do differently to cost less, and that became the part of Traeco only we were building.",
           "The finding that changed the brief: agent cost was not yet anyone's most pressing problem, but they could see it coming and were certain it would land on everyone.",
         ],
         visual: { kind: "animation", name: "research-funnel", caption: "Fifty-plus calls gather by industry, then narrow to the agentic AI teams who felt the same thing." },
+        visualAfter: 0, // between "we ran into one ourselves" and "the calls also showed us the gap" (Margaret, 2026-10-29)
       },
       {
         type: "essay",
         title: "Problem 1: Our users did not feel the pain yet",
-        rail: "Problem 1",
+        rail: "Problems",
         body: [
           "Building for someone already in pain is easy, because they will tolerate friction when they are desperate. Our users were not desperate yet, so the product had to cost almost nothing to adopt, show value before there was a crisis, and make an invisible cost visible before anyone thought to ask.",
-          "Decision: Instead of [MAR: the heavier setup you considered, such as a full platform migration or manual tagging], I made adoption a two-line integration and put savings available at the very top of the dashboard, so the first screen shows money a team can get back rather than a bill. [CHECK]",
+          "Decision: On the calls, setup and privacy were the two things that weighed on people before they would try anything, so I made adoption as simple as it could be: a two-line integration that only ever sees token counts, cost and latency, never prompts. And I put savings available at the very top of the dashboard, so the first screen shows money a team can get back rather than a bill. [CHECK]",
         ],
         visual: { kind: "animation", name: "integration-snippet", caption: "Add two lines around an existing client and the first dashboard view fills in from the traces." },
       },
       {
         type: "essay",
         title: "Problem 2: Usable and worth paying for are different lists",
-        rail: "Problem 2",
+        rail: null,
         body: [
           "I scoped the dashboard against the calls rather than a feature list, with two questions running in parallel: what has to be here for this to be usable, and what has to be here for someone to pay for it. The second list is shorter, and it decided what made the first screen.",
           "Explorations: [MAR: early dashboard versions, each with a one-line caption on what it tried to show]",
@@ -378,7 +387,7 @@ export const works: Work[] = [
       {
         type: "essay",
         title: "Problem 3: Nobody wanted a cheaper agent that does worse work",
-        rail: "Problem 3",
+        rail: null,
         body: [
           "Recommendations were what made Traeco different, and they were also what made people nervous, because if we told a team to switch a model or trim a prompt and their agent got worse, we would be the ones responsible for the drop in quality. Trust in a recommendation had to come from showing that the work itself was not getting worse, not just that the bill was getting smaller.",
           "What we had to build to earn it: quality monitoring on every agent, evals that check whether output holds up after a change, and orchestration that lets a change roll out gradually, so cost and quality are always measured together. [MAR: one line on how your evals or orchestration actually work, kept simple]",
@@ -395,7 +404,8 @@ export const works: Work[] = [
           { num: "01", title: "Home", body: "Savings available, top recommendations and a spend breakdown." },
           { num: "02", title: "Recommendations", body: "Cost, quality and confidence side by side, with accept, canary, reject or defer." },
           { num: "03", title: "Agent detail", body: "Six weeks of quality drift and the recommendation for that agent." },
-          { num: "04", title: "Quality budgets", body: "Set in settings and shipped as a budget.yaml file. [CHECK]" },
+          /* what the repo actually has (checked 2026-10-29): per-agent budgets on the API, GET and POST /budgets/{agent_id}, with defaults of a 2% judge-preference drop, 2% faithfulness drop, zero structure drop and 200ms of p95 latency, alert-only on breach. No settings screen and no budget.yaml yet. */
+          { num: "04", title: "Quality budgets", body: "Per-agent limits the API holds every verdict to: how far judge preference, faithfulness, structure and latency may slip before a change is held. Set through the API today; the settings screen is next." },
         ],
         visual: { kind: "video", src: "/videos/traeco/drilldown.mp4", poster: "/images/traeco/posters/drilldown.jpg", caption: "Follow a recommendation into its agent to see which function is spending the money and why." },
       },
@@ -415,7 +425,8 @@ export const works: Work[] = [
           {
             name: "Brand system",
             line: "One rule runs it, near-black everywhere and a single green, so the only colour on any screen is the thing that matters, and the mark is four lobes off one stem drawn to hold at favicon size and scale up to fill a hero.",
-            media: { src: "/images/traeco/site-about.jpg", alt: "traeco.dev About page: the display face, the one green, the mark in the nav" },
+            /* a sheet of the system itself, rendered from the dashboard's tokens (2026-10-29) */
+            media: { src: "/images/traeco/brand-system.png", alt: "The Traeco system: the mark from favicon to hero size, the single green on near-black, the surface steps and the type scale" },
           },
           {
             name: "traeco.dev",
@@ -423,7 +434,7 @@ export const works: Work[] = [
             media: { src: "/images/traeco/site-hero.jpg", alt: "traeco.dev hero: the mark scaled to full bleed behind the headline" },
           },
           {
-            name: "Two decks",
+            name: "Pitches",
             line: "One sparse enough to present live, one dense enough to survive alone in an investor's inbox.",
             media: { src: "/videos/traeco-pitch.mp4", alt: "Traeco pitch deck", video: true, poster: "/images/traeco/pitch-poster.jpg" },
           },

@@ -47,21 +47,40 @@
     "videos": "public/videos/traeco",
     "posters": "public/images/traeco/posters"
   },
-  "stills": {
-    "homeStill": {
+  "stills": [
+    {
+      "id": "home-still",
       "route": "/",
       "file": "public/images/traeco/home-still.png",
+      "width": 1128,
+      "height": 900,
+      "deviceScaleFactor": 2,
+      "sidebarCollapsed": true,
       "waitMs": 1600
     },
-    "homeAfter": {
+    {
+      "id": "home-after",
       "route": "/",
       "file": "public/images/traeco/home-after.png",
       "width": 1440,
       "height": 900,
+      "deviceScaleFactor": 1,
+      "sidebarCollapsed": false,
       "fullPage": true,
       "waitMs": 1600
+    },
+    {
+      "id": "card-cover",
+      "route": "/",
+      "file": "public/images/covers/traeco-dashboard.png",
+      "width": 1586,
+      "height": 980,
+      "deviceScaleFactor": 2,
+      "sidebarCollapsed": false,
+      "waitMs": 1600,
+      "note": "the home card's laptop screen (coverArt in lib/works.ts) and the OG card"
     }
-  },
+  ],
   "shots": [
     {
       "id": "hero",

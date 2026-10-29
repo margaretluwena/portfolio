@@ -45,7 +45,8 @@
   --card-gap: 5.04vw;                   /* 109px - vertical gap between stacked cards */
   --align-r: 87.52vw;                   /* 1894px - card right edge + right end of nav counter */
   --hairline: rgba(0, 0, 0, 0.12);      /* all 1px rules */
-  --study-blue: #2240ff;                /* case-study labels + section names (2026-10-08 template) */
+  --site-blue: #2240ff;                 /* the site's blue, named so diagrams can use it on a study whose labels take the project's accent (2026-10-29) */
+  --study-blue: var(--site-blue);       /* case-study labels + section names (2026-10-08 template); a work's `accent` overrides it */
 
   /* ---- Legacy layout vars ----
      Still used by /contact, /works, /play, /resume, 404, and the case-study

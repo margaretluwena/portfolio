@@ -19,6 +19,8 @@ import defaults from "@/lib/dials/integration-snippet.json";
 const CONTEXT = ["import os", "from anthropic import Anthropic", "from traeco import init, wrap", ""];
 const LINE_1 = 'init(api_key=os.environ["TRAECO_API_KEY"], agent_name="my_agent")';
 const LINE_2 = "client = wrap(Anthropic())   # read-only: logs tokens, cost, latency";
+/* then the run, typed at the prompt below the file; the dashboard is what comes back */
+const RUN = "python agent.py";
 
 export default function IntegrationSnippet() {
   const d = useStudyDials("IntegrationSnippet", "integration-snippet", {
@@ -36,7 +38,7 @@ export default function IntegrationSnippet() {
   const chars = useMotionValue(0);
   const [typed, setTyped] = useState(0);
   useMotionValueEvent(chars, "change", (v) => setTyped(Math.round(v)));
-  const total = LINE_1.length + LINE_2.length;
+  const total = LINE_1.length + LINE_2.length + RUN.length;
   const loopTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -56,7 +58,8 @@ export default function IntegrationSnippet() {
       reset();
       seq = animate([
         [chars, LINE_1.length, { duration: LINE_1.length / d.typingSpeed, ease: "linear" }],
-        [chars, total, { duration: LINE_2.length / d.typingSpeed, ease: "linear", at: `+${d.lineGap}` }],
+        [chars, LINE_1.length + LINE_2.length, { duration: LINE_2.length / d.typingSpeed, ease: "linear", at: `+${d.lineGap}` }],
+        [chars, total, { duration: RUN.length / d.typingSpeed, ease: "linear", at: `+${d.lineGap * 1.5}` }],
         [scope.current.querySelector("[data-shot]")!, { opacity: 1, y: 0 }, { ...toTransition(d.dashboardSpring), at: `+${d.dashboardDelay}` }],
       ]);
       seq.then(() => {
@@ -92,18 +95,34 @@ export default function IntegrationSnippet() {
   }, [inView, reduce, chars, total, scope, animateScope, d.typingSpeed, d.lineGap, d.dashboardDelay, d.dashboardSpring, d.dashboardRise, d.loopPause]);
 
   const t1 = LINE_1.slice(0, Math.min(typed, LINE_1.length));
-  const t2 = typed > LINE_1.length ? LINE_2.slice(0, typed - LINE_1.length) : "";
-  const caretOn = typed < total ? (typed <= LINE_1.length ? 1 : 2) : 0;
+  const t2 = typed > LINE_1.length ? LINE_2.slice(0, Math.min(typed - LINE_1.length, LINE_2.length)) : "";
+  const t3 = typed > LINE_1.length + LINE_2.length ? RUN.slice(0, typed - LINE_1.length - LINE_2.length) : "";
+  const caretOn = typed < total ? (typed <= LINE_1.length ? 1 : typed <= LINE_1.length + LINE_2.length ? 2 : 3) : 0;
 
   return (
-    <div ref={scope} className="grid gap-4 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-center md:gap-6">
-      {/* the two lines, in the site's mono face on ink; the typed lines in the study's accent */}
-      <pre className="overflow-x-auto rounded-[4px] bg-ink p-4 font-mono text-[12px] leading-[1.6] text-white/60 md:text-[13px]" aria-label="Two-line Traeco integration">
-        {CONTEXT.map((l, i) => <span key={i} className="block">{l || " "}</span>)}
-        <span className="block text-[var(--study-blue)]">{t1}{caretOn === 1 && <Caret />}</span>
-        <span className="block text-[var(--study-blue)]">{t2 || (caretOn === 2 ? "" : " ")}{caretOn === 2 && <Caret />}</span>
-      </pre>
-      <div data-shot className="overflow-hidden rounded-[4px] bg-placeholder/40" style={{ opacity: 0, aspectRatio: "1128 / 623" }}>
+    <div ref={scope} className="grid gap-4 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-stretch md:gap-6">
+      {/* a terminal window: title bar with the file name, the two lines in the
+          site's mono face on ink, the typed lines in the study's accent. It
+          stretches to the still's height beside it (Margaret, 2026-10-29). */}
+      <div className="flex min-h-0 flex-col overflow-hidden rounded-[6px] bg-ink" aria-label="Two-line Traeco integration">
+        <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2">
+          <span className="h-[9px] w-[9px] rounded-full bg-white/25" />
+          <span className="h-[9px] w-[9px] rounded-full bg-white/25" />
+          <span className="h-[9px] w-[9px] rounded-full bg-white/25" />
+          <span className="ml-2 font-mono text-[11px] text-white/45">agent.py</span>
+        </div>
+        <pre className="flex-1 whitespace-pre-wrap break-words p-4 font-mono text-[12px] leading-[1.7] text-white/55 md:text-[13px]">
+          {CONTEXT.map((l, i) => <span key={i} className="block">{l || NBSP}</span>)}
+          <span className="block text-[var(--study-blue)]">{t1}{caretOn === 1 && <Caret />}</span>
+          <span className="block text-[var(--study-blue)]">{t2 || (caretOn === 2 ? "" : NBSP)}{caretOn === 2 && <Caret />}</span>
+        </pre>
+        {/* the prompt: the run that produces the dashboard beside it */}
+        <div className="border-t border-white/10 px-4 py-3 font-mono text-[12px] leading-[1.7] text-white/80 md:text-[13px]">
+          <span className="text-white/40">$ </span>{t3}{caretOn === 3 && <Caret />}
+        </div>
+      </div>
+      {/* the still: the home with the sidebar collapsed, down through the top recommendations */}
+      <div data-shot className="overflow-hidden rounded-[6px] bg-placeholder/40" style={{ opacity: 0, aspectRatio: "1128 / 900" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/images/traeco/home-still.png" alt="Traeco home after the first traces arrive: savings available and the top recommendations" className="block h-full w-full object-cover object-top" loading="lazy" />
       </div>
@@ -111,4 +130,5 @@ export default function IntegrationSnippet() {
   );
 }
 
+const NBSP = String.fromCharCode(160);
 const Caret = () => <span aria-hidden className="ml-px inline-block h-[1.1em] w-[2px] translate-y-[2px] bg-[var(--study-blue)] align-baseline" />;

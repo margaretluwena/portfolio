@@ -46,7 +46,7 @@ export function visibleBlocks(work: Work): Block[] {
 export function railEntries(work: Work): { id: string; name: string }[] {
   return visibleBlocks(work)
     .map((b, i) => ({ b, i }))
-    .filter(({ b }) => (RAIL_TYPES as readonly string[]).includes(b.type))
+    .filter(({ b }) => (RAIL_TYPES as readonly string[]).includes(b.type) && !(b.type === "essay" && b.rail === null))
     .map(({ b, i }) => ({ id: `block-${i}-${b.type}`, name: b.type === "essay" ? b.rail ?? b.title : RAIL_NAMES[b.type] }));
 }
 
@@ -317,18 +317,26 @@ function LessonsBlock({ block }: { block: Extract<Block, { type: "lessons" }> })
    Margaret's [MAR: ...] and [CHECK ...] notes stay in the text and render as
    highlighted slots so she can see on the page what is still hers to fill
    (2026-10-29). Nothing else about the sentence changes. */
-const SLOT_RE = /(\[(?:MAR|CHECK)[^\]]*\])/g;
+const SLOT_RE = /(\[(?:MAR|CHECK)[^\]]*\]|\[[^\]]+\]\(https?:\/\/[^)]+\))/g;
+const LINK_RE = /^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/;
+/* also renders [label](https://...) as a link, for sourcing a figure in the copy */
 export function Marked({ text }: { text: string }) {
   const parts = text.split(SLOT_RE);
   return (
     <>
-      {parts.map((part, i) =>
-        SLOT_RE.test(part) && part.startsWith("[") ? (
+      {parts.map((part, i) => {
+        const link = part.match(LINK_RE);
+        if (link) {
+          return (
+            <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink">{link[1]}</a>
+          );
+        }
+        return part.startsWith("[MAR") || part.startsWith("[CHECK") ? (
           <mark key={i} className="rounded-[3px] bg-[#fff2a8] px-1 text-ink/80">{part}</mark>
         ) : (
           <span key={i}>{part}</span>
-        )
-      )}
+        );
+      })}
     </>
   );
 }
@@ -380,13 +388,20 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
       {block.body?.map((para, i) => {
         const decision = para.startsWith("Decision:");
         const text = decision ? para.slice("Decision:".length).trim() : para;
+        const after = block.visualAfter === i && visual ? <div className="py-2">{visual}</div> : null;
         return decision ? (
-          <div key={i} className="grid gap-2 border-t border-hairline pt-4 md:grid-cols-[120px_minmax(0,1fr)] md:gap-8">
-            <span className="text-label uppercase text-ink/50">Decision</span>
-            <p className="study-body text-ink"><Marked text={text} /></p>
+          <div key={i} className="contents">
+            <div className="grid gap-2 border-t border-hairline pt-4 md:grid-cols-[120px_minmax(0,1fr)] md:gap-8">
+              <span className="text-label uppercase text-ink/50">Decision</span>
+              <p className="study-body text-ink"><Marked text={text} /></p>
+            </div>
+            {after}
           </div>
         ) : (
-          <p key={i} className="study-body whitespace-pre-line text-ink"><Marked text={text} /></p>
+          <div key={i} className="contents">
+            <p className="study-body whitespace-pre-line text-ink"><Marked text={text} /></p>
+            {after}
+          </div>
         );
       })}
       {block.items && (
@@ -410,7 +425,7 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
           ))}
         </div>
       )}
-      {!block.visualFirst && visual && <div className="pt-2">{visual}</div>}
+      {!block.visualFirst && block.visualAfter === undefined && visual && <div className="pt-2">{visual}</div>}
     </section>
   );
 }
@@ -421,7 +436,11 @@ function StatsBlock({ block }: { block: Extract<Block, { type: "stats" }> }) {
     <ul className="grid gap-6 md:grid-cols-3 md:gap-8">
       {block.items.map((it) => (
         <li key={it.label} className="space-y-1 border-t border-hairline pt-3">
-          <div className="study-body font-medium text-ink">{it.value}</div>
+          <div className="study-body font-medium text-ink">
+            {it.href ? (
+              <a href={it.href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink">{it.value}</a>
+            ) : it.value}
+          </div>
           <div className="text-label uppercase text-ink/50">{it.label}</div>
         </li>
       ))}

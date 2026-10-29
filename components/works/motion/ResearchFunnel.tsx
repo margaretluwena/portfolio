@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { animate, motion, useInView, useMotionValue, useReducedMotion, useTransform, type AnimationSequence, type MotionValue } from "motion/react";
+import { animate, motion, useAnimationFrame, useInView, useMotionValue, useReducedMotion, useTransform, type AnimationSequence, type MotionValue } from "motion/react";
 import { useStudyDials, toTransition, transitionLength } from "@/components/dev/dials";
 import { registerTransport } from "@/components/dev/transport";
 import defaults from "@/lib/dials/research-funnel.json";
@@ -39,9 +39,10 @@ const rng = (seed: number) => () => { seed = (seed * 1664525 + 1013904223) % 429
 
 type Layout = { w: number; h: number; centers: [number, number][]; focus: [number, number]; copyY: number; label: number };
 const WIDE: Layout = {
-  w: 1128, h: 520,
-  centers: [[110, 120], [300, 120], [490, 120], [680, 120], [870, 120], [1030, 120], [110, 330], [300, 330], [490, 330], [680, 330], [920, 330]],
-  focus: [920, 300], copyY: 480, label: 13,
+  w: 1128, h: 560,
+  // four to a row, 270px apart, so "Semiconductors & hardware · 4" never touches its neighbour; agentic AI alone on the right of the last row
+  centers: [[160, 100], [430, 100], [700, 100], [970, 100], [160, 280], [430, 280], [700, 280], [970, 280], [160, 460], [430, 460], [800, 440]],
+  focus: [800, 420], copyY: 540, label: 13,
 };
 const NARROW: Layout = {
   w: 600, h: 900,
@@ -49,7 +50,7 @@ const NARROW: Layout = {
   focus: [360, 640], copyY: 860, label: 15,
 };
 
-type Dot = { ind: number; scatter: [number, number]; cluster: [number, number]; narrow: [number, number] };
+type Dot = { ind: number; scatter: [number, number]; cluster: [number, number]; narrow: [number, number]; r: number; phase: number };
 
 function buildDots(L: Layout): Dot[] {
   const r = rng(7);
@@ -61,7 +62,8 @@ function buildDots(L: Layout): Dot[] {
       const cluster: [number, number] = [cx + Math.cos(a) * rad, cy + Math.sin(a) * rad];
       const fa = (k / ind.n) * Math.PI * 2, fr = 34 + (k % 3) * 11;
       const narrow: [number, number] = ind.focus ? [L.focus[0] + Math.cos(fa) * fr, L.focus[1] + Math.sin(fa) * fr] : cluster;
-      dots.push({ ind: ci, scatter: [40 + r() * (L.w - 80), 40 + r() * (L.h - 120)], cluster, narrow });
+      // sizes vary a little and each dot bobs on its own phase, so the field reads as alive rather than plotted
+      dots.push({ ind: ci, scatter: [40 + r() * (L.w - 80), 40 + r() * (L.h - 120)], cluster, narrow, r: 4 + r() * 2.5, phase: r() * Math.PI * 2 });
     }
   });
   return dots;
@@ -96,6 +98,9 @@ export default function ResearchFunnel() {
 
   const scatter = useMotionValue(0);
   const narrow = useMotionValue(0);
+  // a slow clock for the idle bob; stays still under reduced motion
+  const clock = useMotionValue(0);
+  useAnimationFrame((t) => { if (!reduce) clock.set(t / 1000); });
   // one progress value per industry; hooks in a fixed-length loop, order never changes
   const clusters: MotionValue<number>[] = INDUSTRIES.map(() => useMotionValue(0)); // eslint-disable-line react-hooks/rules-of-hooks
   const loopTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -150,30 +155,32 @@ export default function ResearchFunnel() {
 
   const focusLabelScale = useTransform(narrow, [0, 1], [1, 1.35]);
   const copyOpacity = useTransform(narrow, [0.4, 1], [0, 1]);
+  const copyY = useTransform(narrow, [0.4, 1], [6, 0]);
 
   return (
     <div ref={ref} className="w-full">
-      <svg viewBox={`0 0 ${L.w} ${L.h}`} className="block h-auto w-full" role="img" aria-label={`${TOTAL} calls across ${INDUSTRIES.length} industries, narrowing to agentic AI`}>
+      <svg viewBox={`0 0 ${L.w} ${L.h - 50}`} className="block h-auto w-full" role="img" aria-label={`${TOTAL} calls across ${INDUSTRIES.length} industries, narrowing to agentic AI`}>
         {dots.map((dot, i) => (
-          <FunnelDot key={`${L.w}-${i}`} dot={dot} scatter={scatter} cluster={clusters[dot.ind]} narrow={narrow} faded={d.fadedOpacity} focus={!!INDUSTRIES[dot.ind].focus} />
+          <FunnelDot key={`${L.w}-${i}`} dot={dot} scatter={scatter} cluster={clusters[dot.ind]} narrow={narrow} clock={clock} faded={d.fadedOpacity} focus={!!INDUSTRIES[dot.ind].focus} />
         ))}
         {INDUSTRIES.map((ind, ci) => (
           <FunnelLabel key={`${L.w}-${ind.name}`} name={ind.name} count={ind.n} x={L.centers[ci][0]} y={L.centers[ci][1] + (ind.n > 6 ? 54 : 40)} size={L.label} cluster={clusters[ci]} narrow={narrow} faded={d.fadedOpacity} focus={!!ind.focus} focusScale={focusLabelScale} focusPos={ind.focus ? [L.focus[0], L.focus[1] + 74] : undefined} />
         ))}
-        <motion.text x={L.w / 2} y={L.copyY} textAnchor="middle" fontSize={L.label + 1} fill="currentColor" className="text-ink/70" style={{ opacity: copyOpacity, fontFamily: "var(--font-body)" }}>
-          {COPY}
-        </motion.text>
       </svg>
+      {/* the line lands under the drawing, in the column's own type, once the field has narrowed */}
+      <motion.p className="study-body pt-2 text-ink/70" style={{ opacity: copyOpacity, y: copyY }}>{COPY}</motion.p>
     </div>
   );
 }
 
-function FunnelDot({ dot, scatter, cluster, narrow, faded, focus }: { dot: Dot; scatter: MotionValue<number>; cluster: MotionValue<number>; narrow: MotionValue<number>; faded: number; focus: boolean }) {
-  const cx = useTransform([scatter, cluster, narrow], ([s, c, n]: number[]) => lerp(lerp(dot.scatter[0], dot.cluster[0], c), dot.narrow[0], n) + (1 - s) * 18);
-  const cy = useTransform([scatter, cluster, narrow], ([s, c, n]: number[]) => lerp(lerp(dot.scatter[1], dot.cluster[1], c), dot.narrow[1], n) - (1 - s) * 18);
+function FunnelDot({ dot, scatter, cluster, narrow, clock, faded, focus }: { dot: Dot; scatter: MotionValue<number>; cluster: MotionValue<number>; narrow: MotionValue<number>; clock: MotionValue<number>; faded: number; focus: boolean }) {
+  // the bob: a couple of px on a slow sine, each dot on its own phase, calmer once the field has narrowed
+  const cx = useTransform([scatter, cluster, narrow, clock], ([s, c, n, t]: number[]) => lerp(lerp(dot.scatter[0], dot.cluster[0], c), dot.narrow[0], n) + (1 - s) * 18 + Math.sin(t * 0.9 + dot.phase) * 1.6);
+  const cy = useTransform([scatter, cluster, narrow, clock], ([s, c, n, t]: number[]) => lerp(lerp(dot.scatter[1], dot.cluster[1], c), dot.narrow[1], n) - (1 - s) * 18 + Math.cos(t * 1.1 + dot.phase) * (2.2 - n * 1.2));
   const opacity = useTransform([scatter, narrow], ([s, n]: number[]) => Math.min(1, s) * (focus ? 1 : lerp(1, faded, n)));
-  const r = useTransform(narrow, [0, 1], focus ? [5, 6] : [5, 4]);
-  return <motion.circle cx={cx} cy={cy} r={r} style={{ opacity }} fill={focus ? "var(--study-blue)" : "currentColor"} className="text-ink/45" />;
+  // a pop as a dot lands in its cluster: up a third at the midpoint, back to size at rest
+  const r = useTransform([cluster, narrow], ([c, n]: number[]) => dot.r * (1 + 0.35 * Math.sin(Math.PI * Math.min(1, Math.max(0, c)))) * (focus ? 1 + 0.2 * n : 1 - 0.2 * n));
+  return <motion.circle cx={cx} cy={cy} r={r} style={{ opacity }} fill={focus ? "var(--study-blue)" : "var(--site-blue)"} fillOpacity={focus ? 1 : 0.42} />;
 }
 
 function FunnelLabel({ name, count, x, y, size, cluster, narrow, faded, focus, focusScale, focusPos }: { name: string; count: number; x: number; y: number; size: number; cluster: MotionValue<number>; narrow: MotionValue<number>; faded: number; focus: boolean; focusScale: MotionValue<number>; focusPos?: [number, number] }) {
@@ -181,7 +188,7 @@ function FunnelLabel({ name, count, x, y, size, cluster, narrow, faded, focus, f
   const lx = useTransform(narrow, [0, 1], [x, focusPos ? focusPos[0] : x]);
   const ly = useTransform(narrow, [0, 1], [y, focusPos ? focusPos[1] : y]);
   return (
-    <motion.text x={lx} y={ly} textAnchor="middle" fontSize={size} style={{ opacity, scale: focus ? focusScale : 1, transformOrigin: `${x}px ${y}px`, fontFamily: "var(--font-body)" }} fill="currentColor" className={focus ? "text-ink font-medium" : "text-ink/60"}>
+    <motion.text x={lx} y={ly} textAnchor="middle" fontSize={size} style={{ opacity, scale: focus ? focusScale : 1, transformOrigin: `${x}px ${y}px`, fontFamily: "var(--font-body)" }} fill={focus ? "var(--study-blue)" : "var(--site-blue)"} fillOpacity={focus ? 1 : 0.7} className={focus ? "font-medium" : ""}>
       {name} · {count}
     </motion.text>
   );

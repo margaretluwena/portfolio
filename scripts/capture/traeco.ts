@@ -36,6 +36,7 @@ type Step =
   | { type: "click" }
   | { type: "scroll"; target: string; ms: number; block?: ScrollLogicalPosition };
 type Shot = { id: string; route: string; sidebarCollapsed: boolean; posterAtMs: number; steps: Step[] };
+type Still = { id: string; route: string; file: string; width: number; height: number; deviceScaleFactor: number; sidebarCollapsed: boolean; fullPage?: boolean; waitMs: number; note?: string };
 type Config = {
   baseUrl: string;
   login: { path: string; emailEnv: string; passwordEnv: string };
@@ -47,7 +48,7 @@ type Config = {
   out: { videos: string; posters: string };
   mockApi?: string;
   resetDecisions?: { list: string; patch: string; status: string };
-  stills: { homeStill: { route: string; file: string; waitMs: number }; homeAfter: { route: string; file: string; width: number; height: number; fullPage: boolean; waitMs: number } };
+  stills: Still[];
   shots: Shot[];
 };
 
@@ -232,33 +233,25 @@ async function encode(webm: string, id: string, trimMs: number): Promise<{ mp4: 
   return { mp4, bytes, crf: config.encode.crfLadder.at(-1)! };
 }
 
-/* ---------- stills for the coded animations ---------- */
-async function stills() {
+/* ---------- stills: the snippet's dashboard, the slider's "after", the card's laptop screen ---------- */
+async function stills(which?: string) {
   const browser = await chromium.launch();
-  const s1 = config.stills.homeStill;
-  {
-    const ctx = await browser.newContext({ viewport: { width: config.viewport.width, height: config.viewport.height }, deviceScaleFactor: config.viewport.deviceScaleFactor });
-    await prep(ctx, false);
+  const done: string[] = [];
+  for (const s of config.stills) {
+    if (which && which !== "stills" && which !== s.id) continue;
+    const ctx = await browser.newContext({ viewport: { width: s.width, height: s.height }, deviceScaleFactor: s.deviceScaleFactor });
+    await prep(ctx, s.sidebarCollapsed);
     const page = await ctx.newPage();
     await login(page);
-    await page.goto(config.baseUrl + s1.route, { waitUntil: "networkidle" });
-    await sleep(s1.waitMs);
-    await page.screenshot({ path: path.join(ROOT, s1.file), type: "png" });
-    await ctx.close();
-  }
-  const s2 = config.stills.homeAfter;
-  {
-    const ctx = await browser.newContext({ viewport: { width: s2.width, height: s2.height }, deviceScaleFactor: 1 });
-    await prep(ctx, false);
-    const page = await ctx.newPage();
-    await login(page);
-    await page.goto(config.baseUrl + s2.route, { waitUntil: "networkidle" });
-    await sleep(s2.waitMs);
+    await page.goto(config.baseUrl + s.route, { waitUntil: "networkidle" });
+    await sleep(s.waitMs);
     await page.evaluate(() => { const c = document.getElementById("__capcursor"); if (c) c.remove(); });
-    await page.screenshot({ path: path.join(ROOT, s2.file), type: "png", fullPage: s2.fullPage });
+    await page.screenshot({ path: path.join(ROOT, s.file), type: "png", fullPage: !!s.fullPage });
     await ctx.close();
+    done.push(s.file);
   }
   await browser.close();
+  return done;
 }
 
 /* ---------- main ---------- */
@@ -267,7 +260,8 @@ async function main() {
   await fs.mkdir(path.join(ROOT, config.out.posters), { recursive: true });
   const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "traeco-capture-"));
   const results: string[] = [];
-  if (!only || only === "stills") { await stills(); results.push(`stills: ${config.stills.homeStill.file}, ${config.stills.homeAfter.file}`); }
+  const stillIds = config.stills.map((s) => s.id);
+  if (!only || only === "stills" || stillIds.includes(only)) { const files = await stills(only); results.push(`stills: ${files.join(", ")}`); }
   for (const shot of config.shots) {
     if (only && only !== shot.id) continue;
     const { webm, totalMs, posterPath, trimMs } = await record(shot, tmp);

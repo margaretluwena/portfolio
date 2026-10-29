@@ -120,8 +120,8 @@
     807
   ],
   "/images/covers/traeco-dashboard.png": [
-    1586,
-    980
+    3172,
+    1960
   ],
   "/images/covers/traeco-laptop.png": [
     1944,
@@ -307,6 +307,18 @@
     1440,
     1598
   ],
+  "/images/traeco/brand-system.png": [
+    1600,
+    1200
+  ],
+  "/images/traeco/brand/traeco-icon.png": [
+    327,
+    411
+  ],
+  "/images/traeco/brand/traeco-logo.png": [
+    2420,
+    724
+  ],
   "/images/traeco/dashboard-home.png": [
     1440,
     1559
@@ -319,9 +331,29 @@
     1194,
     810
   ],
+  "/images/traeco/home-after.png": [
+    1440,
+    1218
+  ],
+  "/images/traeco/home-still.png": [
+    2256,
+    1800
+  ],
   "/images/traeco/pitch-poster.jpg": [
     1280,
     718
+  ],
+  "/images/traeco/posters/drilldown.jpg": [
+    2256,
+    1246
+  ],
+  "/images/traeco/posters/hero.jpg": [
+    2256,
+    1246
+  ],
+  "/images/traeco/posters/recommendations.jpg": [
+    2256,
+    1246
   ],
   "/images/traeco/quality-budgets.png": [
     1440,

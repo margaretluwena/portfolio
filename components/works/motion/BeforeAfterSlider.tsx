@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { animate, motion, useInView, useMotionTemplate, useMotionValue, useReducedMotion } from "motion/react";
+import { animate, motion, useInView, useMotionTemplate, useMotionValue, useReducedMotion, useTransform } from "motion/react";
 import { useStudyDials, toTransition } from "@/components/dev/dials";
 import { registerTransport } from "@/components/dev/transport";
 import defaults from "@/lib/dials/before-after-slider.json";
@@ -34,6 +34,9 @@ export default function BeforeAfterSlider() {
   const pos = useMotionValue(d.startPosition);
   const clip = useMotionTemplate`inset(0 0 0 ${pos}%)`;
   const left = useMotionTemplate`${pos}%`;
+  // the tags leave once the handle has crossed them, so "Before" never sits on the after image (Margaret, 2026-10-29)
+  const beforeTag = useTransform(pos, [8, 16], [0, 1]);
+  const afterTag = useTransform(pos, [84, 92], [1, 0]);
   const taken = useRef(false);
 
   useEffect(() => { if (!taken.current) pos.set(d.startPosition); }, [d.startPosition, pos]);
@@ -96,8 +99,8 @@ export default function BeforeAfterSlider() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={AFTER.src} alt={AFTER.alt} className="absolute top-0 max-w-none" style={frame(AFTER)} draggable={false} />
       </motion.div>
-      <span className="absolute left-3 top-3 rounded-full bg-white/85 px-2 py-0.5 text-label uppercase text-ink/70 backdrop-blur">Before</span>
-      <span className="absolute right-3 top-3 rounded-full bg-white/85 px-2 py-0.5 text-label uppercase text-ink/70 backdrop-blur">After</span>
+      <motion.span style={{ opacity: beforeTag }} className="absolute left-3 top-3 rounded-full bg-white/85 px-2 py-0.5 text-label uppercase text-ink/70 backdrop-blur">Before</motion.span>
+      <motion.span style={{ opacity: afterTag }} className="absolute right-3 top-3 rounded-full bg-white/85 px-2 py-0.5 text-label uppercase text-ink/70 backdrop-blur">After</motion.span>
       {/* the handle: a hairline with a grip, keyboard-operable */}
       <motion.div
         role="slider"
