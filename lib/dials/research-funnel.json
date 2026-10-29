@@ -1,0 +1,27 @@
+{
+  "scatterSpring": {
+    "type": "spring",
+    "visualDuration": 0.9,
+    "bounce": 0.1
+  },
+  "clusterStagger": 0.08,
+  "clusterSpring": {
+    "type": "spring",
+    "visualDuration": 0.8,
+    "bounce": 0.18
+  },
+  "narrowDelay": 0.9,
+  "narrowEase": {
+    "type": "easing",
+    "duration": 1.1,
+    "ease": [
+      0.65,
+      0,
+      0.35,
+      1
+    ]
+  },
+  "fadedOpacity": 0.18,
+  "loopPause": 5,
+  "triggerThreshold": 0.4
+}

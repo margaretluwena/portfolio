@@ -4,9 +4,37 @@
     {
       "name": "portfolio-redesign",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "3001"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "3001"
+      ],
       "port": 3001,
       "cwd": "/Users/margaretluwena/Portfolio"
+    },
+    {
+      "name": "traeco-mock-api",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "/Users/margaretluwena/Traeco/Agent-Optimization-Platform/frontend/dev/mock-api.mjs"
+      ],
+      "port": 8010
+    },
+    {
+      "name": "traeco-dashboard",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/margaretluwena/Traeco/Agent-Optimization-Platform/frontend",
+        "run",
+        "dev",
+        "--",
+        "-p",
+        "3100"
+      ],
+      "port": 3100
     }
   ]
 }

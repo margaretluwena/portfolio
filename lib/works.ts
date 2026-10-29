@@ -38,7 +38,34 @@ export type Block =
      product story, each item an image, a name, and one line, after the
      solution and before the takeaways */
   | { type: "also"; intro?: string; items: { name: string; line: string; media: Media }[] }
+  /* an essay section (Traeco, 2026-10-29): a titled run of paragraphs with
+     an optional visual. `rail` is the minimap's short name. A paragraph
+     that starts "Decision:" renders with that word as a label. Text in
+     [MAR: ...] or [CHECK ...] brackets is Margaret's placeholder and renders
+     highlighted on the page until she fills it. `items` is a numbered list
+     (What shipped); `parts` are titled sub-paragraphs (Designing in code). */
+  | {
+      type: "essay";
+      title: string;
+      rail?: string;
+      body?: string[];
+      items?: { num: string; title: string; body: string }[];
+      parts?: { title: string; body: string }[];
+      visual?: Visual;
+      /* the visual sits above the body instead of below it */
+      visualFirst?: boolean;
+    }
+  /* the outcome strip under the credits: three or four short facts */
+  | { type: "stats"; items: { value: string; label: string }[] }
   | { type: "wip"; email: string };
+
+/* a section's visual: recorded product footage, one of the coded animations,
+   a plain image, or a slot still to be filled */
+export type Visual =
+  | { kind: "video"; src: string; poster: string; caption: string; aspect?: string }
+  | { kind: "animation"; name: "integration-snippet" | "before-after" | "research-funnel"; caption: string }
+  | { kind: "image"; media: Media; caption?: string }
+  | { kind: "slot"; note: string };
 
 export type Credit = { label: string; value: string };
 
@@ -255,16 +282,16 @@ export const works: Work[] = [
     title: "Traeco",
     signal: "Audience Choice winner", // LavaLab closing summit; a traction number would beat this
     lede: "Teams are spending more on AI agents than they can see.",
-    blurb: "Brand, product, and web for an AI cost platform",
+    blurb: "The dashboard that tells teams what their agents should cost", // product first (2026-10-29)
     /* poster stand-in until the real export lands */
     cover: { src: "/images/covers/traeco-dashboard.png", alt: "Traeco dashboard" },
     /* the study opens on the brand hero (moved up from the context block) */
     hero: { src: "/images/traeco/hero.png", alt: "Traeco brand hero" },
     credits: [
-      { label: "Role", value: "Co-founder & CPO" },
       { label: "Timeline", value: "2026" },
+      { label: "Role", value: "Cofounder and CPO" },
       { label: "Team", value: "Mehek Mandal, Kyna Rochlani, Sania Gupta" }, // roles confirmed by traeco.dev/about (2026-10-09)
-      { label: "Disciplines", value: "Product, Brand System, UI/UX, Web, Pitch" },
+      { label: "Scope", value: "Product, design system, web, brand, pitch" },
     ],
     next: "atlix",
     category: "AI B2B SaaS",
@@ -290,105 +317,125 @@ export const works: Work[] = [
       { src: "/images/covers/traeco-laptop.png", left: "-1.95%", top: "9.29%", width: "103.81%", height: "86%" },
       { src: "/images/covers/traeco-dashboard.png", left: "8.96%", top: "12.17%", width: "81.55%", height: "72.22%" },
     ],
+    /* Restructured 2026-10-29 to Margaret's copy (after Chris Pramana's
+       read): Setup, the research story, three problems each with a
+       decision and a visual, what shipped, designing in code, around it,
+       reflection. Her [MAR: ...] and [CHECK ...] notes are kept verbatim
+       and render highlighted on the page until she fills them. Visuals:
+       recorded product footage (scripts/capture/traeco.ts) and three coded
+       animations (components/works/motion). */
     blocks: [
       {
-        type: "context",
-        // outcomes sentences appended 2026-08-01, verbatim from the old
-        // live-site Traeco copy (main:lib/projects.ts) per Margaret's order
-        body: "Traeco is observability and cost management for AI agents, founded with my co-founders through LavaLab, USC's largest incubator. I'm co-founder and CPO, and was the only designer: the brand, the product, the site, and the decks are all mine. Live at traeco.dev. We won Audience Choice at the closing summit. Shipped the dashboard, marketing site, and full design system to production. Conversion to action in usability tests went from 22% to 71%.",
-        // prior live-site asset, surfaced per the v2 file rule (veto and it reverts to NEED)
-      },
-      /* brief + takeaways drafted 2026-10-20 from Margaret's prose below; she edits in her pass */
-      {
-        type: "brief",
-        objective: "Show teams what their AI agents cost before the invoice does.",
-        goals: [
-          "Two lines to set up, no code changes",
-          "Prove useful before anything is on fire",
-          "Work out what makes it usable, then what makes it worth paying for",
+        type: "essay",
+        title: "Setup",
+        rail: "Setup",
+        body: [
+          "AI agents are getting expensive faster than anyone can see them. Alphabet posted its first negative quarterly free cash flow since its 2004 IPO, $5.9B on $44.9B of AI capex, and Uber exhausted its entire 2026 AI budget by April and now caps engineers at $1,500 a month per tool. [CHECK: re-verify both figures and link a source before publishing]",
+          "So we built a layer that tells teams what their agents should cost. Most tools in this space stop at observability, showing what an agent did and what it spent, while Traeco goes a step further and recommends what each agent should change to cost less without doing worse work. I was cofounder, CPO and the only designer across the product, brand, site and decks.",
         ],
-        did: [
-          "Scoped and designed the dashboard off 50+ customer calls",
-          "Built the brand from nothing",
-          "Designed and shipped traeco.dev",
-          "Two decks: one to present, one to send",
+        visual: { kind: "video", src: "/videos/traeco/hero.mp4", poster: "/images/traeco/posters/hero.jpg", caption: "Switch the range and the savings figure follows the data; hover a day to see which model spent it." },
+      },
+      {
+        type: "stats",
+        items: [
+          { value: "22% to 71%", label: "conversion to action in usability tests" },
+          { value: "Audience Choice", label: "LavaLab closing summit" },
+          { value: "traeco.dev", label: "shipped to production" },
         ],
       },
       {
-        type: "problem",
-        headline: "AI agents are getting expensive faster than anyone can see them.",
-        evidence: [
-          "Alphabet posted its first negative quarterly free cash flow since its 2004 IPO, $5.9B, on $44.9B of AI capex",
-          "Uber exhausted its entire 2026 AI budget by April and now caps engineers at $1,500 a month per tool",
-          "Across 50+ calls in 11 industries, the teams closest to it told us it wasn't urgent yet, and that they knew it would be",
+        type: "essay",
+        title: "We hit the problem ourselves first",
+        rail: "Research",
+        body: [
+          "We started with 50+ calls across 11 industries, from semiconductors and aerospace to entertainment, finance and data infrastructure, looking for a problem worth building for. Partway through, we ran into one ourselves, as the agents we were using kept getting more expensive in a way that felt exponential and nothing we tried fixed it, so we narrowed the rest of our research to agentic AI to find out whether other teams were feeling the same thing, and they were.",
+          "The calls also showed us the gap. Plenty of platforms already offered observability, but almost nobody was recommending what someone else's agents should actually do differently to cost less, and that became the part of Traeco only we were building. [CHECK: you mentioned you may not have researched competitors fully, so phrase this as \"almost nobody we found\" if you are unsure]",
+          "The finding that changed the brief: agent cost was not yet anyone's most pressing problem, but they could see it coming and were certain it would land on everyone.",
         ],
-        body: "We spent weeks looking for a problem before we found this one. Fifty plus calls across eleven industries: semiconductors and hardware, aerospace and defense, entertainment, AR/VR, product, architecture, branding, research, finance, data infrastructure. The last stretch of calls was entirely agentic AI, which is where we stopped.\n\nWhat those founders told us was more useful than agreement. Agent cost was not their most pressing problem yet. They could see it coming, and they were certain it would land on everyone. That changed the brief. Building for someone already in pain is easy, because they will tolerate friction when they are desperate. Building for someone who does not feel it yet means the product has to cost almost nothing to adopt, has to show value before there is a crisis, and has to make an invisible cost visible before anyone thinks to ask.",
-        media: { src: "NEED", alt: "outreach tracker screenshot, industry column converging to agentic AI" },
+        visual: { kind: "animation", name: "research-funnel", caption: "Fifty-plus calls gather by industry, then narrow to the agentic AI teams who felt the same thing." },
       },
       {
-        type: "solution",
-        pieces: [
+        type: "essay",
+        title: "Problem 1: Our users did not feel the pain yet",
+        rail: "Problem 1",
+        body: [
+          "Building for someone already in pain is easy, because they will tolerate friction when they are desperate. Our users were not desperate yet, so the product had to cost almost nothing to adopt, show value before there was a crisis, and make an invisible cost visible before anyone thought to ask.",
+          "Decision: Instead of [MAR: the heavier setup you considered, such as a full platform migration or manual tagging], I made adoption a two-line integration and put savings available at the very top of the dashboard, so the first screen shows money a team can get back rather than a bill. [CHECK]",
+        ],
+        visual: { kind: "animation", name: "integration-snippet", caption: "Add two lines around an existing client and the first dashboard view fills in from the traces." },
+      },
+      {
+        type: "essay",
+        title: "Problem 2: Usable and worth paying for are different lists",
+        rail: "Problem 2",
+        body: [
+          "I scoped the dashboard against the calls rather than a feature list, with two questions running in parallel: what has to be here for this to be usable, and what has to be here for someone to pay for it. The second list is shorter, and it decided what made the first screen.",
+          "Explorations: [MAR: early dashboard versions, each with a one-line caption on what it tried to show]",
+          "Decision: Instead of [MAR: the fuller first version], I kept the home screen to savings available, top recommendations and a spend breakdown, and pushed everything else one level deeper. [CHECK]",
+        ],
+        visual: { kind: "animation", name: "before-after", caption: "Drag to compare an earlier home screen with the one that shipped." },
+      },
+      {
+        type: "essay",
+        title: "Problem 3: Nobody wanted a cheaper agent that does worse work",
+        rail: "Problem 3",
+        body: [
+          "Recommendations were what made Traeco different, and they were also what made people nervous, because if we told a team to switch a model or trim a prompt and their agent got worse, we would be the ones responsible for the drop in quality. Trust in a recommendation had to come from showing that the work itself was not getting worse, not just that the bill was getting smaller.",
+          "What we had to build to earn it: quality monitoring on every agent, evals that check whether output holds up after a change, and orchestration that lets a change roll out gradually, so cost and quality are always measured together. [MAR: one line on how your evals or orchestration actually work, kept simple]",
+          "Decision: Instead of recommendations that only show savings, I put cost, quality and confidence side by side on every one, with accept, canary, reject and defer as the choices, so a team can try a change on a slice of traffic and watch quality before committing to it. [MAR: if you explored a savings-only version first, add one line on why it lost]",
+          "[MAR: if putting quality next to cost is what moved conversion to action from 22% to 71%, say so here, since that would make this the turn of the whole study]",
+        ],
+        visual: { kind: "video", src: "/videos/traeco/recommendations.mp4", poster: "/images/traeco/posters/recommendations.jpg", caption: "Open a recommendation to see what it saves, what it does to quality and how sure the judge is, then accept it." },
+      },
+      {
+        type: "essay",
+        title: "What shipped",
+        rail: "Shipped",
+        items: [
+          { num: "01", title: "Home", body: "Savings available, top recommendations and a spend breakdown." },
+          { num: "02", title: "Recommendations", body: "Cost, quality and confidence side by side, with accept, canary, reject or defer." },
+          { num: "03", title: "Agent detail", body: "Six weeks of quality drift and the recommendation for that agent." },
+          { num: "04", title: "Quality budgets", body: "Set in settings and shipped as a budget.yaml file. [CHECK]" },
+        ],
+        visual: { kind: "video", src: "/videos/traeco/drilldown.mp4", poster: "/images/traeco/posters/drilldown.jpg", caption: "Follow a recommendation into its agent to see which function is spending the money and why." },
+      },
+      {
+        type: "essay",
+        title: "Designing in code",
+        rail: "In code",
+        parts: [
+          { title: "The first product I built from scratch and shipped", body: "I have designed in Figma for years, but Traeco was the first time I built something myself and put it in production, and the first time I used Claude Code. I shipped the dashboard, the marketing site and the full design system, and building them taught me how different a shipped product is from a mockup, because I could see quickly what was actually feasible and what only looked good on a canvas. [MAR: one concrete example, such as a screen you redesigned once you saw real data in it]" },
+          { title: "Designing a system that scales", body: "Once real agents and real data were flowing through it, every component had to hold up for one agent or hundreds, so the design system stopped being a style guide and became the thing that kept the product consistent as it grew. [MAR: one example, such as a table or chart component that had to work at very different sizes, or quality budgets shipping as a budget.yaml file]" },
+        ],
+      },
+      {
+        type: "also",
+        intro: "Three more things I made for Traeco around the product.",
+        items: [
           {
-            name: "The dashboard",
-            caption: "I scoped the dashboard against what people told us on calls, not a feature list. Two questions ran side by side: what has to be here for this to be usable, and what has to be here for someone to pay for it? Those give you different lists, and the second one is shorter. The timing insight set the constraint: this had to earn attention from people who weren't in pain yet.",
-            // the 2026-10-08 revamp (Figma Traeco-Revamp 48:6630): the home screen leads
-            media: { src: "/images/traeco/dashboard-home.png", alt: "Traeco dashboard: savings available, top recommendations, spend breakdown" },
-          },
-          {
-            name: "The brand system",
-            // the "one idea" line and the site piece below are DRAFTS read off
-            // traeco.dev on 2026-10-09 (Margaret's order: build the study from the
-            // live site); she edits in her pass. The brand sheet itself is still
-            // hers to supply - the About page stands in for it meanwhile.
-            caption: "I was the only designer, so the brand was mine from the first sketch: the identity, the system, every application of it. It runs on one rule. Near-black everywhere and a single green, so the only colour on a screen is the thing that matters, whether that's a saving, a verdict, or the second line of a headline. The mark is four lobes off one stem. It holds at favicon size, and on the site it scales up until it fills the hero.",
+            name: "Brand system",
+            line: "One rule runs it, near-black everywhere and a single green, so the only colour on any screen is the thing that matters, and the mark is four lobes off one stem drawn to hold at favicon size and scale up to fill a hero.",
             media: { src: "/images/traeco/site-about.jpg", alt: "traeco.dev About page: the display face, the one green, the mark in the nav" },
           },
           {
             name: "traeco.dev",
-            caption: "The site makes the argument in the order a buyer meets it. The bill first: your AI agents are bleeding money. Then the gap: observability tells you what happened, nobody tells you what it should cost. Then four steps from traces to savings, and three pricing tiers. \"Integrates in two lines\" is on every screen because it's the promise that matters most.",
+            line: "The site carries the argument in the order a buyer meets it: the bill, then the gap, then the four steps from traces to savings, then pricing.",
             media: { src: "/images/traeco/site-hero.jpg", alt: "traeco.dev hero: the mark scaled to full bleed behind the headline" },
           },
           {
-            name: "Two decks, two jobs",
-            caption: "Two decks for two jobs. One to present live, with us talking over it, sparse enough that the room watches us instead of reading the slide. One that has to survive alone in an investor's inbox and carry the whole argument without a presenter. Different density, different job.",
-            /* Margaret's screen recording of the pitch deck (2026-10-08),
-               re-encoded 1280 wide for the web; poster is frame 2s in */
+            name: "Two decks",
+            line: "One sparse enough to present live, one dense enough to survive alone in an investor's inbox.",
             media: { src: "/videos/traeco-pitch.mp4", alt: "Traeco pitch deck", video: true, poster: "/images/traeco/pitch-poster.jpg" },
           },
         ],
       },
       {
-        /* the rest of the revamp, the three screens that carry the product's
-           argument (Margaret: "pick maybe the most important ones"): the
-           recommendation queue, an agent's quality drift + verdict, and the
-           quality budgets that gate every verdict. The agents list, team,
-           member, and onboarding screens were left out on purpose. */
-        type: "artifactGrid",
-        media: [
-          { src: "/images/traeco/recommendations.png", alt: "Recommendations: cost, quality, and confidence side by side, with accept / canary / reject / defer" },
-          { src: "/images/traeco/agent-detail.png", alt: "Support Agent: six-week quality drift and the recommendation for this agent" },
-          { src: "/images/traeco/quality-budgets.png", alt: "Settings: quality budgets and the budget.yaml they ship as" },
-        ],
-      },
-      {
-        type: "artifactGrid",
-        media: [
-          // prior live-site asset, surfaced per the v2 file rule: an earlier
-          // round of the hero ("wasting tokens", before "bleeding money")
-          { src: "/images/traeco/website.png", alt: "traeco.dev, an earlier round of the hero" },
-          { src: "/images/traeco/site-pricing.jpg", alt: "traeco.dev pricing: Starter, Growth, Enterprise" },
-          { src: "NEED", alt: "deck spreads" },
-        ],
-      },
-      {
         type: "lessons",
         items: [
-          { title: "Design for the person who isn't in pain yet", body: "Someone whose budget just blew up will put up with friction. The founders we talked to could see it coming but didn't feel it yet, so Traeco had to cost nothing to try and prove itself before anything went wrong." },
-          { title: "The paying list is shorter than the usable list", body: "Every screen got the same two questions: does this have to be here for it to be usable, and does it have to be here for someone to pay? The second list is the product. The first is the floor." },
-          { title: "A deck you talk over and a deck you send are different objects", body: "Same argument, different density. Trying to make one deck do both jobs is how you end up with slides nobody reads." },
+          { title: "A recommendation is only as good as the trust behind it", body: "Telling someone how to save money was the easy part, and showing them their agent would still do the job was what made them willing to act." },
+          { title: "Shipping changes what you design", body: "Building Traeco myself showed me what was feasible and what would scale in a way Figma never had, and I design differently because of it." },
         ],
       },
-      { type: "wip", email: WIP_EMAIL },
     ],
   },
 
@@ -763,8 +810,8 @@ if (process.env.NODE_ENV !== "production" || process.env.npm_lifecycle_event ===
     if (!w.blocks.some((b) => b.type === "problem")) {
       console.warn(`[works] ${w.slug}: no problem block - case study reads as unfinished`);
     }
-    if (w.blocks.length > 9) {
-      console.warn(`[works] ${w.slug}: ${w.blocks.length} blocks exceeds the 9-block cap`);
+    if (w.blocks.length > 12) {
+      console.warn(`[works] ${w.slug}: ${w.blocks.length} blocks exceeds the 12-block cap`);
     }
     if (w.featured && !w.blurb && w.lede.length > 72) {
       console.warn(`[works] ${w.slug}: no blurb and lede is ${w.lede.length} chars - will clamp on the home card`);

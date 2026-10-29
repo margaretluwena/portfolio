@@ -1,0 +1,214 @@
+{
+  "baseUrl": "http://localhost:3100",
+  "login": {
+    "path": "/signin",
+    "emailEnv": "TRAECO_EMAIL",
+    "passwordEnv": "TRAECO_PASSWORD"
+  },
+  "viewport": {
+    "width": 1128,
+    "height": 623,
+    "deviceScaleFactor": 2
+  },
+  "sidebarStorageKey": "traeco:sidebar-collapsed",
+  "hideSelectors": [
+    ".tr-demo",
+    "nextjs-portal",
+    "#__next-build-watcher",
+    "[data-nextjs-toast]",
+    "[data-next-badge-root]",
+    "[data-nextjs-dialog-overlay]",
+    "[data-agentation-root]",
+    "[data-agentation-toolbar]",
+    "[data-agentation-portal]"
+  ],
+  "cursor": {
+    "size": 22,
+    "speedPxPerSec": 900,
+    "minMoveMs": 320,
+    "holdBeforeClickMs": 220,
+    "clickRippleMs": 420,
+    "settleAfterClickMs": 140,
+    "fps": 30
+  },
+  "encode": {
+    "fps": 30,
+    "maxBytes": 3000000,
+    "crfLadder": [
+      22,
+      25,
+      28,
+      31,
+      34
+    ],
+    "preset": "slow"
+  },
+  "out": {
+    "videos": "public/videos/traeco",
+    "posters": "public/images/traeco/posters"
+  },
+  "stills": {
+    "homeStill": {
+      "route": "/",
+      "file": "public/images/traeco/home-still.png",
+      "waitMs": 1600
+    },
+    "homeAfter": {
+      "route": "/",
+      "file": "public/images/traeco/home-after.png",
+      "width": 1440,
+      "height": 900,
+      "fullPage": true,
+      "waitMs": 1600
+    }
+  },
+  "shots": [
+    {
+      "id": "hero",
+      "route": "/",
+      "sidebarCollapsed": false,
+      "posterAtMs": 7300,
+      "steps": [
+        {
+          "type": "wait",
+          "ms": 1000
+        },
+        {
+          "type": "move",
+          "target": "button.tr-seg:text-is('7d')"
+        },
+        {
+          "type": "click"
+        },
+        {
+          "type": "wait",
+          "ms": 1200
+        },
+        {
+          "type": "move",
+          "target": "button.tr-seg:text-is('30d')"
+        },
+        {
+          "type": "click"
+        },
+        {
+          "type": "wait",
+          "ms": 900
+        },
+        {
+          "type": "scroll",
+          "target": ".tr-chart-wrap",
+          "ms": 900,
+          "block": "center"
+        },
+        {
+          "type": "move",
+          "target": "@peakBar"
+        },
+        {
+          "type": "wait",
+          "ms": 1500
+        }
+      ]
+    },
+    {
+      "id": "recommendations",
+      "route": "/recommendations",
+      "sidebarCollapsed": true,
+      "posterAtMs": 5600,
+      "steps": [
+        {
+          "type": "wait",
+          "ms": 900
+        },
+        {
+          "type": "move",
+          "target": ".tr-rec:has-text('Route sentiment_analyzer') >> .tr-rec-main"
+        },
+        {
+          "type": "click"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        },
+        {
+          "type": "scroll",
+          "target": ".tr-rec:has-text('Collapse retry loop')",
+          "ms": 800,
+          "block": "center"
+        },
+        {
+          "type": "move",
+          "target": ".tr-rec:has-text('Collapse retry loop') >> .tr-rec-main"
+        },
+        {
+          "type": "click"
+        },
+        {
+          "type": "wait",
+          "ms": 2400
+        },
+        {
+          "type": "move",
+          "target": ".tr-rec:has-text('Collapse retry loop') >> button:has-text('Accept')"
+        },
+        {
+          "type": "click"
+        },
+        {
+          "type": "wait",
+          "ms": 1600
+        }
+      ]
+    },
+    {
+      "id": "drilldown",
+      "route": "/agents",
+      "sidebarCollapsed": true,
+      "posterAtMs": 4200,
+      "steps": [
+        {
+          "type": "wait",
+          "ms": 1100
+        },
+        {
+          "type": "move",
+          "target": "tr:has-text('mehek_agent')"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        },
+        {
+          "type": "click"
+        },
+        {
+          "type": "waitFor",
+          "target": ".tr-span-bar",
+          "ms": 8000
+        },
+        {
+          "type": "wait",
+          "ms": 2200
+        },
+        {
+          "type": "scroll",
+          "target": "h2:text-is('Recommendations for this agent')",
+          "ms": 1000,
+          "block": "center"
+        },
+        {
+          "type": "wait",
+          "ms": 1800
+        }
+      ]
+    }
+  ],
+  "mockApi": "http://localhost:8010",
+  "resetDecisions": {
+    "list": "/rec-decisions",
+    "patch": "/rec-decisions/{agent_id}/{rec_type}",
+    "status": "pending"
+  }
+}

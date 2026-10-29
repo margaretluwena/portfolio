@@ -1,0 +1,7 @@
+{
+  "startPosition": 50,
+  "nudgeDistance": 10,
+  "nudgeDelay": 0.6,
+  "nudgeSpring": { "type": "spring", "visualDuration": 0.9, "bounce": 0.2 },
+  "triggerThreshold": 0.5
+}

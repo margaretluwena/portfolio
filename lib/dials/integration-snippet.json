@@ -1,0 +1,9 @@
+{
+  "typingSpeed": 32,
+  "lineGap": 0.5,
+  "dashboardDelay": 0.35,
+  "dashboardSpring": { "type": "spring", "visualDuration": 0.7, "bounce": 0.12 },
+  "dashboardRise": 18,
+  "loopPause": 4,
+  "triggerThreshold": 0.4
+}

@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import type { Block, Media, Work } from "@/lib/works";
+import type { Block, Media, Visual, Work } from "@/lib/works";
+import StudyVideo from "@/components/works/StudyVideo";
+import IntegrationSnippet from "@/components/works/motion/IntegrationSnippet";
+import BeforeAfterSlider from "@/components/works/motion/BeforeAfterSlider";
+import ResearchFunnel from "@/components/works/motion/ResearchFunnel";
 import { indexWorks } from "@/lib/works";
 import Prox from "@/components/ui/Prox";
 import { TransitionLink } from "@/components/providers/PageTransition";
@@ -25,7 +29,7 @@ import imageSizes from "@/lib/image-sizes.json";
 
 /* rail: derived from blocks, context/problem/solution/gate only -
    wip and artifactGrid render inline but never appear in the rail */
-const RAIL_TYPES = ["context", "brief", "problem", "solution", "also", "lessons"] as const;
+const RAIL_TYPES = ["context", "brief", "problem", "solution", "also", "lessons", "essay"] as const;
 const RAIL_NAMES: Record<string, string> = {
   context: "Context",
   brief: "Brief",
@@ -43,7 +47,7 @@ export function railEntries(work: Work): { id: string; name: string }[] {
   return visibleBlocks(work)
     .map((b, i) => ({ b, i }))
     .filter(({ b }) => (RAIL_TYPES as readonly string[]).includes(b.type))
-    .map(({ b, i }) => ({ id: `block-${i}-${b.type}`, name: RAIL_NAMES[b.type] }));
+    .map(({ b, i }) => ({ id: `block-${i}-${b.type}`, name: b.type === "essay" ? b.rail ?? b.title : RAIL_NAMES[b.type] }));
 }
 
 /* ---------- NEED placeholders ----------
@@ -309,6 +313,122 @@ function LessonsBlock({ block }: { block: Extract<Block, { type: "lessons" }> })
   );
 }
 
+/* ---------- placeholders in the copy ----------
+   Margaret's [MAR: ...] and [CHECK ...] notes stay in the text and render as
+   highlighted slots so she can see on the page what is still hers to fill
+   (2026-10-29). Nothing else about the sentence changes. */
+const SLOT_RE = /(\[(?:MAR|CHECK)[^\]]*\])/g;
+export function Marked({ text }: { text: string }) {
+  const parts = text.split(SLOT_RE);
+  return (
+    <>
+      {parts.map((part, i) =>
+        SLOT_RE.test(part) && part.startsWith("[") ? (
+          <mark key={i} className="rounded-[3px] bg-[#fff2a8] px-1 text-ink/80">{part}</mark>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </>
+  );
+}
+
+/* a section's visual: recorded footage, a coded animation, an image, or a
+   slot still to be filled; each with one caption line under it */
+function VisualView({ visual }: { visual: Visual }) {
+  if (visual.kind === "slot") {
+    return (
+      <div className="grid aspect-[16/9] w-full place-items-center rounded-[4px] bg-placeholder/40 px-6 text-center">
+        <span className="text-label uppercase text-ink/50"><Marked text={visual.note} /></span>
+      </div>
+    );
+  }
+  const caption = "caption" in visual && visual.caption ? <p className="text-[clamp(13px,0.95vw,16px)] leading-[1.45] text-ink/55">{visual.caption}</p> : null;
+  if (visual.kind === "video") {
+    return (
+      <figure className="space-y-3">
+        <StudyVideo src={visual.src} poster={visual.poster} aspect={visual.aspect ?? "1128 / 623"} label={visual.caption} />
+        <figcaption>{caption}</figcaption>
+      </figure>
+    );
+  }
+  if (visual.kind === "animation") {
+    const Comp = visual.name === "integration-snippet" ? IntegrationSnippet : visual.name === "before-after" ? BeforeAfterSlider : ResearchFunnel;
+    return (
+      <figure className="space-y-3">
+        <Comp />
+        <figcaption>{caption}</figcaption>
+      </figure>
+    );
+  }
+  return (
+    <figure className="space-y-3">
+      <MediaView media={visual.media} />
+      <figcaption>{caption}</figcaption>
+    </figure>
+  );
+}
+
+/* an essay section: title, paragraphs (a "Decision:" paragraph gets the
+   word as a label), an optional numbered list or titled parts, and a visual */
+function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
+  const visual = block.visual && <VisualView visual={block.visual} />;
+  return (
+    <section className="space-y-6">
+      <SectionLabel>{block.title}</SectionLabel>
+      {block.visualFirst && visual}
+      {block.body?.map((para, i) => {
+        const decision = para.startsWith("Decision:");
+        const text = decision ? para.slice("Decision:".length).trim() : para;
+        return decision ? (
+          <div key={i} className="grid gap-2 border-t border-hairline pt-4 md:grid-cols-[120px_minmax(0,1fr)] md:gap-8">
+            <span className="text-label uppercase text-ink/50">Decision</span>
+            <p className="study-body text-ink"><Marked text={text} /></p>
+          </div>
+        ) : (
+          <p key={i} className="study-body whitespace-pre-line text-ink"><Marked text={text} /></p>
+        );
+      })}
+      {block.items && (
+        <ol className="grid gap-6 md:grid-cols-2 md:gap-8">
+          {block.items.map((it) => (
+            <li key={it.num} className="space-y-1 border-t border-hairline pt-3">
+              <span className="text-label uppercase text-ink/40">{it.num}</span>
+              <h3 className="study-body font-medium text-ink">{it.title}</h3>
+              <p className="text-body text-ink/70"><Marked text={it.body} /></p>
+            </li>
+          ))}
+        </ol>
+      )}
+      {block.parts && (
+        <div className="space-y-6">
+          {block.parts.map((pt) => (
+            <div key={pt.title} className="space-y-2">
+              <h3 className="study-body font-medium text-ink">{pt.title}</h3>
+              <p className="study-body text-ink"><Marked text={pt.body} /></p>
+            </div>
+          ))}
+        </div>
+      )}
+      {!block.visualFirst && visual && <div className="pt-2">{visual}</div>}
+    </section>
+  );
+}
+
+/* the outcome strip: a few short facts under the credits, data treatment */
+function StatsBlock({ block }: { block: Extract<Block, { type: "stats" }> }) {
+  return (
+    <ul className="grid gap-6 md:grid-cols-3 md:gap-8">
+      {block.items.map((it) => (
+        <li key={it.label} className="space-y-1 border-t border-hairline pt-3">
+          <div className="study-body font-medium text-ink">{it.value}</div>
+          <div className="text-label uppercase text-ink/50">{it.label}</div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /* the "also" strip: the work beside the product story, compact on purpose -
    three up, each an image at its own aspect, a name, and one line, so it
    reads as a footnote to the solution rather than more of it (Chris
@@ -394,6 +514,10 @@ export function Blocks({ work }: { work: Work }) {
             return <div key={id} id={id}><SolutionBlock block={b} /></div>;
           case "also":
             return <div key={id} id={id}><AlsoBlock block={b} /></div>;
+          case "essay":
+            return <div key={id} id={id}><EssayBlock block={b} /></div>;
+          case "stats":
+            return <div key={id} id={id}><StatsBlock block={b} /></div>;
           case "artifactGrid":
             return <div key={id} id={id}><ArtifactGridBlock block={b} /></div>;
           case "wip":
