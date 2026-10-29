@@ -388,7 +388,7 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
       {block.body?.map((para, i) => {
         const decision = para.startsWith("Decision:");
         const text = decision ? para.slice("Decision:".length).trim() : para;
-        const after = block.visualAfter === i && visual ? <div className="py-2">{visual}</div> : null;
+        const after = block.visualAfter === i && visual ? <div className="pt-2 pb-8">{visual}</div> : null;
         return decision ? (
           <div key={i} className="contents">
             <div className="grid gap-2 border-t border-hairline pt-4 md:grid-cols-[120px_minmax(0,1fr)] md:gap-8">

@@ -100,11 +100,13 @@ export default function IntegrationSnippet() {
   const caretOn = typed < total ? (typed <= LINE_1.length ? 1 : typed <= LINE_1.length + LINE_2.length ? 2 : 3) : 0;
 
   return (
-    <div ref={scope} className="grid gap-4 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-stretch md:gap-6">
+    <div ref={scope} className="grid gap-4 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-6">
       {/* a terminal window: title bar with the file name, the two lines in the
-          site's mono face on ink, the typed lines in the study's accent. It
-          stretches to the still's height beside it (Margaret, 2026-10-29). */}
-      <div className="flex min-h-0 flex-col overflow-hidden rounded-[6px] bg-ink" aria-label="Two-line Traeco integration">
+          site's mono face on ink, the typed lines in the study's accent. On md+
+          it is absolutely placed in its cell so the still beside it sets the
+          row's height and is never cropped (Margaret, 2026-10-29). */}
+      <div className="relative md:min-h-0">
+      <div className="flex min-h-0 flex-col overflow-hidden rounded-[6px] bg-ink md:absolute md:inset-0" aria-label="Two-line Traeco integration">
         <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2">
           <span className="h-[9px] w-[9px] rounded-full bg-white/25" />
           <span className="h-[9px] w-[9px] rounded-full bg-white/25" />
@@ -120,6 +122,7 @@ export default function IntegrationSnippet() {
         <div className="border-t border-white/10 px-4 py-3 font-mono text-[12px] leading-[1.7] text-white/80 md:text-[13px]">
           <span className="text-white/40">$ </span>{t3}{caretOn === 3 && <Caret />}
         </div>
+      </div>
       </div>
       {/* the still: the home with the sidebar collapsed, down through the top recommendations */}
       <div data-shot className="overflow-hidden rounded-[6px] bg-placeholder/40" style={{ opacity: 0, aspectRatio: "1128 / 900" }}>

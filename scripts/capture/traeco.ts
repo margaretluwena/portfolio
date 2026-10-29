@@ -188,7 +188,10 @@ async function record(shot: Shot, tmp: string) {
   const ctx = await browser.newContext({
     viewport: { width: config.viewport.width, height: config.viewport.height },
     deviceScaleFactor: config.viewport.deviceScaleFactor,
-    recordVideo: { dir: tmp, size: { width: config.viewport.width * config.viewport.deviceScaleFactor, height: config.viewport.height * config.viewport.deviceScaleFactor } },
+    /* the screencast is drawn at viewport size; asking for a larger frame
+       does not scale it up, it pads it (the clips came out quarter-size in
+       a grey field, 2026-10-29), so the video is 1x and the poster is 2x */
+    recordVideo: { dir: tmp, size: { width: config.viewport.width, height: config.viewport.height } },
     reducedMotion: "no-preference",
   });
   await prep(ctx, shot.sidebarCollapsed);
