@@ -341,7 +341,7 @@ export const works: Work[] = [
           "AI agents are getting expensive faster than anyone can see them. Alphabet posted its first negative quarterly free cash flow since its 2004 IPO, [$5.9B on $44.9B of AI capex](https://www.sec.gov/Archives/edgar/data/0001652044/000165204426000043/googexhibit991q12026.htm), and Uber [exhausted its entire 2026 AI coding budget by April](https://finance.yahoo.com/markets/stocks/articles/uber-stock-drops-reportedly-caps-190100595.html) and now caps engineers at $1,500 a month per tool.",
           "So we built a layer that tells teams what their agents should cost. Most tools in this space stop at observability, showing what an agent did and what it spent, while Traeco goes a step further and recommends what each agent should change to cost less without doing worse work. I was cofounder, CPO and the only designer across the product, brand, site and decks.",
         ],
-        visual: { kind: "video", src: "/videos/traeco/hero.mp4", poster: "/images/traeco/posters/hero.jpg", aspect: "1128 / 760", caption: "The finished dashboard. Is something ever finished, though?" },
+        visual: { kind: "video", src: "/videos/traeco/hero.mp4", poster: "/images/traeco/posters/hero.jpg", aspect: "1440 / 900", caption: "The finished dashboard. Is something ever finished, though?" },
       },
       {
         type: "stats",
