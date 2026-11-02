@@ -216,10 +216,10 @@ export default async function OG() {
           <div style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, display: "flex", background: "linear-gradient(to bottom, rgba(255,255,255,0), #ffffff 77.9%)" }} />
         </div>
         {/* Traeco: the laptop under the floating dashboard (Figma 139:559), cut by the card's edge */}
-        <div style={{ position: "absolute", left: 700, top: 428, width: 404, height: 282, display: "flex", borderRadius: 10, background: "#111214", border: "1px solid rgba(0,0,0,0.09)", overflow: "hidden" }}>
+        <div style={{ position: "absolute", left: 700, top: 428, width: 404, height: 282, display: "flex", borderRadius: 10, backgroundColor: "#0F2A20", backgroundImage: "radial-gradient(circle at 50% 42%, rgba(52,211,153,0.62) 0%, rgba(27,168,111,0.34) 30%, rgba(15,42,32,0) 65%)", border: "1px solid rgba(0,0,0,0.09)", overflow: "hidden" }}>
           <img src={traecoLaptop} alt="" style={{ position: "absolute", left: "-1.95%", top: "9.29%", width: "103.81%", height: "86%", objectFit: "contain" }} />
           <img src={traecoDash} alt="" style={{ position: "absolute", left: "8.96%", top: "12.17%", width: "81.55%", height: "72.22%", objectFit: "contain" }} />
-          <div style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, display: "flex", background: "linear-gradient(to bottom, rgba(12,13,15,0), rgba(12,13,15,0.03) 37.5%, #0C0D0F 77.9%)" }} />
+          <div style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, display: "flex", background: "linear-gradient(to bottom, rgba(15,42,32,0), rgba(15,42,32,0.03) 37.5%, #0F2A20 77.9%)" }} />
         </div>
 
       </div>

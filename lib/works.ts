@@ -311,8 +311,12 @@ export const works: Work[] = [
     /* the green refresh (2026-10-29): the card sits on the dashboard's own
        near-black (--bg-app) and fades into its sidebar tone, with the new
        home on the laptop screen (scripts/capture: card-cover) */
-    cardBg: "#111214",
-    cardFade: "linear-gradient(to bottom, rgba(12,13,15,0), rgba(12,13,15,0.03) 37.5%, #0C0D0F 77.9%)",
+    /* the screen is near-black on near-black, so the card carries the
+       brand's green behind it, as traeco.dev's hero does: a glow in the
+       Traeco green rising from behind the laptop on a deep green-black,
+       and the fade lands on that same tone (Margaret, 2026-11-02) */
+    cardBg: "radial-gradient(90% 85% at 50% 42%, rgba(52,211,153,0.62) 0%, rgba(27,168,111,0.34) 38%, rgba(15,42,32,0) 82%), #0F2A20",
+    cardFade: "linear-gradient(to bottom, rgba(15,42,32,0), rgba(15,42,32,0.03) 37.5%, #0F2A20 77.9%)",
     cardText: "light",
     // laptop chrome (140:695) under the floating dashboard (140:715); the
     // dashboard is sized a hair past the white display area so no white
