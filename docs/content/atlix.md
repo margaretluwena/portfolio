@@ -4,7 +4,7 @@
 > "Case Studies" Google Doc (the Atlix section) and lives in lib/works.ts.
 > Open there: cofounder names, what the politicians said, the early
 > versions, which sorts, and whether Telangana can be named. The
-> atlix-landing repo (May 2026) has a 15MB product demo, public/atlixdemo.mp4.
+> atlix-landing repo's product demo is on the site as /videos/atlix/demo.mp4.
 
 > **Three states.**
 >

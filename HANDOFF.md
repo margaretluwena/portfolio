@@ -82,7 +82,9 @@ the Font choice 1 frame), the Traeco platform clone
 (`~/Traeco/Agent-Optimization-Platform`: two-line SDK, "Savings available"
 eyebrow, shadow evaluation in AUDIT.md), and the atlix-landing repo
 (github.com/VishnuK1947/atlix-landing: the May 2026 policymaker
-positioning and `public/atlixdemo.mp4`, 15MB, not pulled in).
+positioning and `public/atlixdemo.mp4`; re-encoded with the repo's
+ffmpeg-static to `public/videos/atlix/demo.mp4` and `card.mp4`, on the
+study and the home card).
 
 ## Content still marked NEED (Margaret's to supply)
 

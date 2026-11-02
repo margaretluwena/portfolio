@@ -487,10 +487,10 @@ export const works: Work[] = [
   /* ---- Atlix - copy from Margaret's "Case Studies" doc (2026-11-02):
      setup, the timing problem, two decisions with what she learned, what
      shipped, around it, looking back. Media: the prior dashboard and hero
-     exports and the pitch recording; the atlix-landing repo (May 2026,
-     Jeff Yang's PRD, public/atlixdemo.mp4) is the later policymaker
-     positioning and a 15MB product demo, not pulled in yet. Team names
-     stay hers to supply. ---- */
+     exports, the pitch recording, and the product demo from the
+     atlix-landing repo (May 2026, Jeff Yang's PRD, public/atlixdemo.mp4),
+     on the home card and under What shipped. Team names stay hers to
+     supply. ---- */
   {
     slug: "atlix",
     title: "Atlix",
@@ -512,9 +512,8 @@ export const works: Work[] = [
     featured: true,
     /* Figma "atlix card" 139:574: navy gradient surface, demo video
        full-bleed across the top (161:749, 972x561 at y=-4), dark fade,
-       white/50 description. Video files pending Mar's Figma export -
-       drop paths into src / srcWebm below and it goes live (poster
-       renders until then). */
+       white/50 description. The video is the repo's product demo at 972
+       wide, 30fps, 0.8MB (2026-11-02); the poster is its first frame. */
     wordmark: "/images/wordmarks/atlix.svg", // Figma 161:747, 154.68/972 of card width
     wordmarkWidth: "15.91%",
     cardBg: "linear-gradient(to bottom, #000615 34.84%, #00245c 131.76%)",
@@ -522,7 +521,7 @@ export const works: Work[] = [
     cardText: "light",
     coverArt: [
       {
-        src: "NEED",
+        src: "/videos/atlix/card.mp4",
         video: true,
         poster: "/images/covers/atlix-poster.png",
         left: "0%",
@@ -591,7 +590,8 @@ export const works: Work[] = [
           { num: "02", title: "Sorting", body: "[MAR: which sorts]" },
           { num: "03", title: "Cards", body: "One narrative each, with its source." },
         ],
-        visual: { kind: "slot", note: "[MAR: a recording of filtering by region and opening a card's source; the demo in the atlix-landing repo could stand in]" },
+        /* the product demo from the atlix-landing repo (public/atlixdemo.mp4, 32s, 1872x1080 at 60fps, 15MB), re-encoded to 1440 wide, 30fps, 1.9MB (2026-11-02) */
+        visual: { kind: "video", src: "/videos/atlix/demo.mp4", poster: "/images/atlix/posters/demo.jpg", aspect: "1440 / 830", caption: "The demo: the feed, filtering by region and issue, and a narrative opened to its sources. [MAR: confirm this is the recording you want here]" },
       },
       {
         type: "also",
