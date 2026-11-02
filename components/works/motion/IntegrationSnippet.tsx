@@ -12,8 +12,13 @@ import defaults from "@/lib/dials/integration-snippet.json";
  *    0s   waiting for scroll into view
  *    0s   line 1 types itself (typingSpeed chars/s)
  *    +lineGap   line 2 types itself
- *    +dashboardDelay   the captured home rises in (dashboardSpring)
+ *    +dashboardDelay   the captured home rises in (dashboardSpring) over
+ *                      the empty dashboard that was there all along
  *    +loopPause   reset and play again (0 = play once)
+ *
+ * The right side is never blank (Margaret, 2026-11-02): an empty dashboard,
+ * the home's layout as muted blocks, sits there while the code types, and
+ * turns into the full dashboard when the run finishes.
  * ───────────────────────────────────────────────────────── */
 
 const CONTEXT = ["import os", "from anthropic import Anthropic", "from traeco import init, wrap", ""];
@@ -124,10 +129,77 @@ export default function IntegrationSnippet() {
         </div>
       </div>
       </div>
-      {/* the still: the home with the sidebar collapsed, down through the top recommendations */}
-      <div data-shot className="overflow-hidden rounded-[6px] bg-placeholder/40" style={{ opacity: 0, aspectRatio: "1128 / 900" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/traeco/home-still.png" alt="Traeco home after the first traces arrive: savings available and the top recommendations" className="block h-full w-full object-cover object-top" loading="lazy" />
+      {/* the dashboard: empty while the code types (the home's layout as
+          muted blocks, breathing), then the still of the home with the
+          sidebar collapsed, down through the top recommendations, fades in
+          over it when the run finishes */}
+      <div className="relative overflow-hidden rounded-[6px] bg-[#111214]" style={{ aspectRatio: "1128 / 900" }}>
+        <EmptyDashboard />
+        <div data-shot className="absolute inset-0" style={{ opacity: 0 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/traeco/home-still.png" alt="Traeco home after the first traces arrive: savings available and the top recommendations" className="block h-full w-full object-cover object-top" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* the home with nothing in it yet: the collapsed rail, the greeting line,
+   the two-by-two of stat cards, the savings card and three recommendation
+   rows, every value a muted block. Proportions follow home-still.png. The
+   blocks breathe slowly (none under reduced motion) so it reads as waiting
+   for traces, not as a broken image. */
+function EmptyDashboard() {
+  const block = "rounded-[3px] bg-white/[0.08]";
+  const faint = "rounded-[3px] bg-white/[0.05]";
+  const card = "rounded-[6px] border border-white/[0.06] bg-white/[0.03]";
+  return (
+    <div aria-hidden className="absolute inset-0 flex motion-safe:animate-[pulse_3.2s_ease-in-out_infinite]">
+      {/* the rail */}
+      <div className="flex w-[5.6%] shrink-0 flex-col items-center gap-[7%] border-r border-white/[0.06] pt-[6%]">
+        <span className="h-[11px] w-[11px] rounded-full bg-[var(--study-blue)]/60" />
+        <span className="h-[8px] w-[8px] rounded-[2px] bg-white/[0.12]" />
+        <span className="h-[8px] w-[8px] rounded-[2px] bg-white/[0.08]" />
+        <span className="h-[8px] w-[8px] rounded-[2px] bg-white/[0.08]" />
+        <span className="h-[8px] w-[8px] rounded-[2px] bg-white/[0.08]" />
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col gap-[2.4%] px-[4%] pt-[4.4%]">
+        {/* greeting and the one-line summary */}
+        <div className={`${block} h-[3.2%] w-[28%]`} />
+        <div className={`${faint} -mt-[0.8%] h-[1.6%] w-[64%]`} />
+        {/* two by two stat cards */}
+        <div className="mt-[1%] grid grid-cols-2 gap-[2.4%]">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className={`${card} flex flex-col gap-[6%] px-[5%] py-[6%]`}>
+              <div className={`${faint} h-[6px] w-[34%]`} />
+              <div className={`${block} h-[12px] w-[48%]`} />
+              {i === 0 && <div className="h-[3px] w-full rounded-full bg-white/[0.06]"><div className="h-full w-[48%] rounded-full bg-[var(--study-blue)]/50" /></div>}
+              <div className={`${faint} h-[5px] w-[42%]`} />
+            </div>
+          ))}
+        </div>
+        {/* savings, then the three recommendations */}
+        <div className={`${card} flex flex-1 flex-col px-[3.4%] pt-[3.4%]`}>
+          <div className="h-[6px] w-[18%] rounded-[3px] bg-[var(--study-blue)]/45" />
+          <div className="mt-[3%] flex items-end gap-[2%]">
+            <div className={`${block} h-[20px] w-[26%]`} />
+            <div className={`${faint} h-[6px] w-[30%]`} />
+          </div>
+          <div className={`${faint} mt-[2.4%] h-[5px] w-[70%]`} />
+          <div className="mt-[4%] flex flex-1 flex-col divide-y divide-white/[0.06] border-t border-white/[0.06]">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="flex flex-1 items-center gap-[3%]">
+                <div className={`${faint} h-[5px] w-[3%]`} />
+                <div className="flex flex-1 flex-col gap-[6px]">
+                  <div className={`${block} h-[7px] w-[58%]`} />
+                  <div className={`${faint} h-[5px] w-[30%]`} />
+                </div>
+                <div className="h-[7px] w-[9%] rounded-[3px] bg-[var(--study-blue)]/40" />
+                <div className="h-[16px] w-[11%] rounded-[4px] bg-white/[0.08]" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
