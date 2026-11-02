@@ -685,67 +685,138 @@ export const works: Work[] = [
       },
     ],
   },
-  /* ---- Prosaic Intelligence - drafted 2026-10-09 from three screenshots
-     Margaret sent (the home page, the AI Safety Index header, the General
-     use chart) and her README line; she edits in her pass. The site is
-     NEVER linked from here (her instruction). Role / timeline / disciplines
-     are inferred - confirm. ---- */
+  /* ---- Prosaic Intelligence - preliminary study, 2026-11-02, written
+     from the project's own record (README, NEXT, HANDOFF, docs/design-system,
+     92 commits from 19 to 20 September 2026) and the "Mar <> Anantika" Figma
+     file (brief, four moodboards, type and colour explorations, hero draft).
+     Margaret's [MAR] and [CHECK] slots stay highlighted until she fills them.
+     The site is NEVER linked from here (her instruction); the index's scores
+     are generated placeholders, so no new screenshots of named products'
+     numbers are added until real data lands. Still parked (comingSoon). ---- */
   {
     slug: "prosaic-intelligence",
     title: "Prosaic Intelligence",
-    signal: "AI Safety Index",
-    lede: "A public index of consumer AI safety evaluations",
-    blurb: "Brand, site, and data design for a consumer AI safety index",
+    signal: "Built in three days",
+    lede: "There is no single safest AI, only the one that is safest for what you care about.",
+    blurb: "A public index of consumer AI safety, designed and built in a weekend",
     cover: { src: "/images/covers/prosaic-site.jpg", alt: "Prosaic Intelligence home" },
     credits: [
+      { label: "Timeline", value: "September 2026, three days" },
       { label: "Role", value: "Design and build" },
-      { label: "Timeline", value: "2026" },
-      { label: "Disciplines", value: "Brand, Web, Data Visualization" },
+      { label: "Team", value: "[CHECK: the founder's name and role, and anyone else on the index]" },
+      { label: "Scope", value: "Brand, web, data visualization, motion" },
     ],
-    next: "mark", // AANC parked 2026-10-09 (Margaret fills it in later)
+    next: "mark",
     category: "AI Safety",
     year: "2026",
     role: "Designer",
-    comingSoon: true, // parked until the images land (Margaret, 2026-10-09); the study below is ready
-    accent: "#2d6fd1", // the index's pill blue
+    comingSoon: true,
+    accent: "#2f6fbf", // the index's signal blue, the one pressable colour on the site
     blocks: [
       {
-        type: "context",
-        body: "Prosaic Intelligence is a public index of consumer AI safety evaluations: sixteen consumer AI products, from ChatGPT and Gemini to Snap AI and Character AI, scored on how safely they behave, and published for the people who use them rather than the people who build them. The site is two things. A front door that says what it is for, building a safer future for consumers, and the index itself, with the methodology beside it.",
-        media: { src: "/images/prosaic/home.jpg", alt: "Prosaic Intelligence home: the serif lockup on a dark card over the dot-screen artwork" },
+        type: "essay",
+        title: "Setup",
+        rail: "Setup",
+        body: [
+          "Prosaic Intelligence is a public index of consumer AI safety: sixteen products people actually use, from ChatGPT and Gemini to Snap AI and Character AI, scored on how they behave when it matters, whether they catch someone in crisis, whether they agree with a claim they should question, whether the protections still hold forty messages in. It does not run its own evaluations. It collects published behavioural results, puts them on one 0 to 100 scale, and groups them into seven risk categories, so studies that were never designed to sit beside each other can.",
+          "The brief arrived on a Friday: a founder with the data, media conversations already underway, and a site needed by Sunday that was both an epic design and clear in what it said. [CHECK: this is how the Figma brief reads; confirm the day and the media detail before publishing] I designed and built the whole thing, brand, site, charts and motion, in those three days, and handed it to the team on the Sunday night with the documentation to carry it to launch.",
+        ],
+        visual: { kind: "image", media: { src: "/images/prosaic/home.jpg", alt: "Prosaic Intelligence home: the serif lockup on a dark card over the dot-screen artwork" }, caption: "The front door: one line of purpose, three pills, and the painting." },
       },
       {
-        type: "problem",
-        headline: "There is no single safest model, only the one that is safest for what you care about.",
-        evidence: [
-          "Sixteen consumer AI products scored on one index",
-          "For general use, three of the sixteen cluster within five points of each other",
-          "A composite is a weighted average, and a model can hold a respectable overall score while failing one category badly",
+        type: "stats",
+        items: [
+          { value: "3 days", label: "from brief to a deployed site" },
+          { value: "16 products, 7 risks", label: "on one scale, re-weighted by use case" },
+          { value: "21 of 21", label: "chart colours pass contrast; accessibility 100" },
         ],
-        body: "Safety rankings flatten. A single leaderboard number invites the wrong question, which model is safest, when the honest answer depends on what you are using it for: a long conversation, a hard night, a quick lookup. The index had to show that without turning into a spreadsheet, and it had to make the gap between a composite score and the risks underneath it impossible to miss.",
-        media: { src: "/images/prosaic/index-header.jpg", alt: "AI Safety Index: which AI is safest for, with the use-case pills" },
       },
       {
-        type: "solution",
-        pieces: [
+        type: "essay",
+        title: "What the founder asked for",
+        rail: "Brief",
+        body: [
+          "The brief fit on one card. Make it a genuinely helpful resource, with the display as the main thing. Have a methodology, because the site makes comparative safety claims about named commercial products and every number has to be defensible. A way to follow along and a way to get in touch, and nothing else. [MAR: anything the founder said on the call that shaped it, in a line]",
+          "The references were as telling as the brief: an abacus, where every value and every calculation is visible and nothing has hidden state; wood grain, paper, colour that is vibrant but muted; and a note that the site should feel closer to a measurement instrument than to a consumer app. Four moodboards came out of that first evening, from abacus and white space to data-forward monochrome with one vibrant pop to dither and pixel texture.",
+        ],
+        visual: { kind: "slot", note: "[MAR: the four moodboards from the Figma file, side by side, with one line each on what it tried]" },
+      },
+      {
+        type: "essay",
+        title: "Problem 1: A ranking invites the wrong question",
+        rail: "Problems",
+        body: [
+          "A leaderboard asks which model is safest. The honest answer depends on what you are using it for: a long conversation, a hard night, a quick lookup. A composite is a weighted average, and a model can hold a respectable overall score while failing one category badly. The site had to say that without turning into a spreadsheet, and it had to make the gap between the headline number and the risks underneath it impossible to miss.",
+          "Decision: The question comes first, as a sentence you finish. WHICH AI IS SAFEST FOR, then a row of use cases: general use, someone having a hard time, looking things up, everyday advice, long conversations. Pick one and the whole index re-ranks around a published weighting, so the reader chooses which harms matter rather than us. General use weights all seven categories equally for the same reason. And the first line under the chart says what the chart cannot: it tells you who leads for this use case, not where the one you are considering gives way.",
+        ],
+        visual: { kind: "image", media: { src: "/images/prosaic/index-header.jpg", alt: "AI Safety Index: which AI is safest for, with the use-case pills" }, caption: "Finish the sentence and the index re-weights around your answer." },
+      },
+      {
+        type: "essay",
+        title: "Problem 2: An instrument that feels alive, without feeling like a toy",
+        rail: null,
+        body: [
+          "Safety data about named products needs the register of a measuring instrument. The defaults that read as machine-made were off the table from the start: cream with a terracotta accent, near-black with one acid green, gradient washes as decoration. But a page of bars on cream is also a page nobody stays on, and the founder wanted something people would talk about.",
+          "Decision: The abacus became the site's whole vocabulary. Beads on wires carry the navigation and the use cases, and the same beads run loose across the page as decoration, settling under a gentle gravity that follows the pointer, and on an iPhone, the tilt of the phone. The two kinds are different objects before anyone is told: interactive beads take the one signal blue and a real 44px target, decorative beads sit in three neutral tints and ignore the pointer entirely. Over all of it runs a halftone rosette, the dither from the moodboards, so pills warm under the pointer and three paintings, night clouds, a lighthouse, a campfire, sit in the page as dot-screens. Type is a serif for the questions, a grotesk for the interface, and a mono for every numeral.",
+          "Each product is a bar in its own colour with its logo at the base, the score inside, and the headroom to 100 in a paler tint of the same colour, so the eye reads how far a model is from safe, not only where it ranks. A dotted line marks the index average. Twenty-one product colours were generated against a contrast check that fails the build if a label falls under 4.5 to 1. [MAR: the one bead or wire moment you are proudest of, in a line]",
+        ],
+        visual: { kind: "image", media: { src: "/images/prosaic/general-use.jpg", alt: "General use: sixteen models as bars against the index average" }, caption: "Sixteen bars, the headroom to 100 in each one's own tint, and one honest line for the average." },
+      },
+      {
+        type: "essay",
+        title: "Problem 3: Three days, and everything had to be defensible",
+        rail: null,
+        body: [
+          "The site publishes numbers about companies that will read it. Every score has to trace to a published result, every colour has to pass contrast, every page has to work on a phone, and all of it had to be true by Sunday with one person building it.",
+          "Decision: I designed it in code from the first hour, with Claude Code, and let the build be the referee. Nothing on screen is a literal: every score, source, weight and colour comes from the data layer, and the build fails on bad data or a failing contrast. Seven widths from 320 to 1440 were checked by script, not by eye, in both orientations. The founder's call ran as a phased brief with a propose-first rule on the palette and the header, so the two decisions that could not be undone were chosen from rendered options rather than argued in the abstract. [MAR: one thing that only became obvious once real screens existed, such as the beads piling against the title]",
+          "It shipped to a test deploy on the Sunday night with ninety-two commits, twenty-three pages, a methodology with its sources and weights tables, and a handoff that lists every account, variable and launch blocker, so the team could take it from there without me.",
+        ],
+        visual: { kind: "slot", note: "[MAR: a short recording of the beads settling under the pointer and the tilt on a phone, or the methodology page with its sources and weights tables]" },
+      },
+      {
+        type: "essay",
+        title: "What shipped",
+        rail: "Shipped",
+        items: [
+          { num: "01", title: "The index", body: "Finish the question, pick a use case, and sixteen products re-rank on one scale with the average marked." },
+          { num: "02", title: "Seven ways a model can fail you", body: "A card per risk category with its own chart, and a page behind each with the finding, the sources and what it does not capture." },
+          { num: "03", title: "Methodology", body: "What the index is, where the data comes from, how scores are normalised, how categories are weighted, and what is not measured." },
+          { num: "04", title: "Company and use-case pages", body: "Every product name links to its maker, with that company's models across all seven categories." },
+        ],
+      },
+      {
+        type: "essay",
+        title: "Designing in code",
+        rail: "In code",
+        parts: [
+          { title: "The build as the referee", body: "A data gate and a contrast gate in the build meant I could move fast on a site where being wrong has consequences. The scores in the repo are placeholders, generated to shape the pages, and the build knows it: the site cannot launch until that flag is false." },
+          { title: "Motion you can measure", body: "The bead physics took most of the tuning. Beads piling against the title oscillated forever until the type became a solid wall inside the solver; a phone's collapsing address bar re-seeded the layout on every scroll until height-only changes rescaled instead. Every one of those was found with a measurement, not a feeling. [MAR: one line on what it felt like to debug motion with numbers]" },
+        ],
+      },
+      {
+        type: "also",
+        intro: "Two more things from the same three days.",
+        items: [
           {
-            name: "Safest for what",
-            caption: "The question comes first, as a sentence you finish: WHICH AI IS SAFEST FOR, then a row of use cases, general use, someone having a hard time, looking things up, everyday. Pick one and the index re-ranks around it. The pills and the dotted strands behind them are the brand's whole vocabulary: one blue, a serif for the headlines, a mono for the numbers.",
-            media: { src: "/images/prosaic/index-header.jpg", alt: "The use-case pills under the AI Safety Index headline" },
+            name: "Type and colour",
+            line: "Newsreader for the questions, Switzer for the interface, Geist Mono for every numeral, and one signal blue on bone, stone and warm grey.",
+            media: { src: "NEED", alt: "The type and colour explorations from the Figma file" },
           },
           {
-            name: "Sixteen bars, one honest line",
-            caption: "Each product is a bar in its own colour with its logo at the base, the score inside, and the headroom to 100 in a paler tint of the same colour. A dotted line marks the index average, so a glance separates the pack from the rest. Under the chart sits the footnote that matters: the composite tells you who leads for this use case, not where the one you are considering gives way.",
-            media: { src: "/images/prosaic/general-use.jpg", alt: "General use: sixteen models as bars against the index average" },
-          },
-          {
-            name: "A front door",
-            caption: "The home page is a dark card over a dot-screen painting: the lockup, one line of purpose, and three pills, the index, the methodology, X. Everything the site has to say fits above the fold, and the artwork does the rest.",
-            media: { src: "/images/prosaic/home.jpg", alt: "Prosaic Intelligence home page" },
+            name: "Handoff",
+            line: "A one-page design system, a decisions log, and an ownership file listing every account, variable and launch blocker, written as the work was done.",
+            media: { src: "NEED", alt: "The handoff documents" },
           },
         ],
       },
-      { type: "wip", email: WIP_EMAIL },
+      {
+        type: "lessons",
+        items: [
+          { title: "Publish the question, not just the answer", body: "The most honest thing on the site is the sentence the reader finishes. A ranking without a use case is a number without a meaning." },
+          { title: "Let the build hold the line", body: "When the deadline is three days and the subject is other companies' products, the gates that fail a build are what let you move fast and still be right." },
+          { title: "Decide the irreversible things from pictures", body: "The palette and the header were chosen from rendered options, and neither was reopened. Everything argued in the abstract that weekend got reopened twice." },
+        ],
+      },
     ],
   },
 
