@@ -505,7 +505,7 @@ export const works: Work[] = [
       { label: "Team", value: "NEED" }, // [MAR: cofounder names]
       { label: "Disciplines", value: "Product Design, Design System, Brand Identity, Pitch Deck" },
     ],
-    next: "mark", // skips Impeccable Chicken while its study is unreachable
+    next: "prosaic-intelligence",
     category: "AI B2B SaaS",
     year: "2026",
     role: "Co-founder",
@@ -622,120 +622,6 @@ export const works: Work[] = [
     ],
   },
 
-  /* ---- Impeccable Chicken - thin until content exists ---- */
-  {
-    slug: "impeccable-chicken",
-    title: "Impeccable Chicken",
-    signal: "Seen on Shark Tank",
-    lede: "Brand system and pitch deck for the ready to eat chicken brand that pitched on Shark Tank",
-    blurb: "Brand and deck for the ready to eat chicken CPG seen on Shark Tank",
-    /* poster stand-in until the real export lands */
-    cover: { src: "/images/covers/ic-photo.png", alt: "Impeccable Chicken photo" },
-    credits: [
-      { label: "Role", value: "Pitch Deck Design" },
-      { label: "Timeline", value: "2025" },
-      { label: "Disciplines", value: "Pitch Deck, Brand System" },
-    ],
-    next: "mark",
-    category: "Brand / Deck",
-    year: "2025",
-    role: "Pitch Deck Design",
-    featured: true,
-    comingSoon: true,
-    /* Figma "impeccable chicken card" 163:758: burnt orange surface, product
-       photo full-bleed (163:759, export pre-clipped to the visible region),
-       orange fade, white/50 description. Wordmark 163:763 is a TEXT node in
-       Monstro; the export outlines it to paths, so it ships as SVG like the
-       others (no font file needed). 163:760 skipped (hidden leftover);
-       163:762 lorem not ported. Video cover later, same as the others. */
-    accent: "#e2531d",                                    // Impeccable Chicken orange
-    // the orange copy of the lockup reads on the white fade; the cream
-    // original (impeccable-chicken.svg) is for the orange-fade card
-    wordmark: "/images/wordmarks/impeccable-chicken-orange.svg", // 168/972 of card width
-    wordmarkWidth: "17.28%",
-    // white surface + white fade like Glance and Mountain Dew for now (Margaret,
-    // 2026-10-09; the orange cardBg read as a harsh ring at the border). The Figma
-    // version was cardBg #c94512, fade linear-gradient(to bottom, rgba(241,95,38,0),
-    // #f15f26 77.889%), cardText "light", photo at left 6.48% / width 93.52%.
-    coverArt: [
-      /* the photo (pre-clipped to 93.52% of the card) drawn 6.9% larger as a crop
-         fill so it reaches the left edge - no white strip beside it */
-      {
-        src: "/images/covers/ic-photo.png", left: "0%", top: "0%", width: "100%", height: "100%",
-        crop: { left: "0%", top: "-3.46%", width: "106.93%", height: "106.93%" },
-      },
-    ],
-    blocks: [
-      { type: "context", body: "Case study in progress. Content coming soon." },
-      { type: "wip", email: WIP_EMAIL },
-    ],
-  },
-
-  /* ---- Works index only ---- */
-  {
-    slug: "glance",
-    title: "Glance",
-    signal: "TroyLabs BUILD",
-    lede: "Website and logo design for a productivity startup",
-    cover: { src: "/images/glance-hero.png", alt: "Glance" },
-    credits: [
-      { label: "Role", value: "Designer, TroyLabs BUILD" },
-      { label: "Timeline", value: "2025" },
-      { label: "Disciplines", value: "Website Design, Logo Design, UI/UX Design, Framer Development" },
-    ],
-    next: "mountaindew",
-    category: "Productivity",
-    year: "2025",
-    role: "Designer",
-    comingSoon: true, // parked for now (Margaret, 2026-10-09)
-    /* the hero art drawn larger and started above the card, so the logo
-       centres ~38% down instead of halfway (Margaret: "shift the logo up") */
-    coverArt: [
-      /* 0.8x of the Mountain Dew-sized layer, scaled about its centre so the
-         logo keeps its height (Margaret, 2026-10-09: "smaller, height is good") */
-      { src: "/images/glance-hero.png", left: "-4.49%", top: "-11.60%", width: "108.98%", height: "99.20%" },
-    ],
-    blocks: [
-      {
-        type: "context",
-        body: "I worked with Glance's founders as a designer on their team during TroyLabs' BUILD program. Most of my time went to the website and to rounds of logo exploration.\n\nThe site itself is no longer accessible, so what survives here is the logo process: the sketches and iterations that got us to the final mark.",
-        media: { src: "/images/glance-content.png", alt: "Glance logo iterations" },
-      },
-    ],
-  },
-  {
-    slug: "mountaindew",
-    title: "Mountain Dew",
-    signal: "Avenues Consulting Group",
-    lede: "Bottle redesigns and brand strategy for Mountain Dew",
-    cover: { src: "/images/mountaindew-hero.png", alt: "Mountain Dew" },
-    credits: [
-      { label: "Role", value: "Design Consultant, Avenues Consulting Group" },
-      { label: "Timeline", value: "2024" },
-      { label: "Disciplines", value: "Product Design, Brand Strategy, Slide Deck" },
-    ],
-    next: "prosaic-intelligence", // Ichioka and Nakao removed 2026-10-09
-    category: "CPG",
-    year: "2024",
-    role: "Design Consultant",
-    comingSoon: true, // parked for now (Margaret, 2026-10-09)
-    coverArt: [
-      { src: "/images/mountaindew-hero.png", left: "-7.95%", top: "-24%", width: "115.90%", height: "124%" },
-    ],
-    blocks: [
-      {
-        type: "context",
-        body: "Mountain Dew came to Avenues Consulting Group as a client. On their team I spearheaded market research and strategy, bottle redesigns built around their new logo, and the final deck presented alongside my team.",
-      },
-      {
-        type: "artifactGrid",
-        media: [
-          { src: "/images/mountaindew-1.png", alt: "Mountain Dew slide deck preview" },
-          { src: "/images/mountaindew-2.png", alt: "Mountain Dew bottle redesigns" },
-        ],
-      },
-    ],
-  },
   /* ---- Prosaic Intelligence - copy from Margaret's "Case Studies" doc
      (2026-11-02), over the preliminary study written the same day from the
      project's own record (README, NEXT, HANDOFF, docs/design-system, 92
@@ -744,7 +630,8 @@ export const works: Work[] = [
      NEVER linked from here (her instruction); the index's scores are
      generated placeholders, so no new screenshots of named products'
      numbers. Unparked so she can read it; her [MAR] and [CHECK] slots
-     render highlighted. ---- */
+     render highlighted. Sits after Atlix in the index and on the home
+     column, where Impeccable Chicken was (Margaret, 2026-11-02). ---- */
   {
     slug: "prosaic-intelligence",
     title: "Prosaic Intelligence",
@@ -758,10 +645,11 @@ export const works: Work[] = [
       { label: "Team", value: "NEED" }, // [CHECK: the founder's name]
       { label: "Scope", value: "Brand, web, data visualization, motion" },
     ],
-    next: "mark",
+    next: "mark", // wraps: Impeccable Chicken after it is parked
     category: "AI Safety",
     year: "2026",
     role: "Designer",
+    featured: true, // on the home column in Impeccable Chicken's place (Margaret, 2026-11-02)
     comingSoon: false, // unparked 2026-11-02 so Margaret can read the draft on the site; the site itself stays unlinked
     accent: "#2f6fbf", // the index's signal blue, the one pressable colour on the site
     blocks: [
@@ -861,6 +749,120 @@ export const works: Work[] = [
     ],
   },
 
+  /* ---- Impeccable Chicken - thin until content exists; index only ---- */
+  {
+    slug: "impeccable-chicken",
+    title: "Impeccable Chicken",
+    signal: "Seen on Shark Tank",
+    lede: "Brand system and pitch deck for the ready to eat chicken brand that pitched on Shark Tank",
+    blurb: "Brand and deck for the ready to eat chicken CPG seen on Shark Tank",
+    /* poster stand-in until the real export lands */
+    cover: { src: "/images/covers/ic-photo.png", alt: "Impeccable Chicken photo" },
+    credits: [
+      { label: "Role", value: "Pitch Deck Design" },
+      { label: "Timeline", value: "2025" },
+      { label: "Disciplines", value: "Pitch Deck, Brand System" },
+    ],
+    next: "mark",
+    category: "Brand / Deck",
+    year: "2025",
+    role: "Pitch Deck Design",
+    featured: false, // off the home column: Prosaic Intelligence took the slot (Margaret, 2026-11-02)
+    comingSoon: true,
+    /* Figma "impeccable chicken card" 163:758: burnt orange surface, product
+       photo full-bleed (163:759, export pre-clipped to the visible region),
+       orange fade, white/50 description. Wordmark 163:763 is a TEXT node in
+       Monstro; the export outlines it to paths, so it ships as SVG like the
+       others (no font file needed). 163:760 skipped (hidden leftover);
+       163:762 lorem not ported. Video cover later, same as the others. */
+    accent: "#e2531d",                                    // Impeccable Chicken orange
+    // the orange copy of the lockup reads on the white fade; the cream
+    // original (impeccable-chicken.svg) is for the orange-fade card
+    wordmark: "/images/wordmarks/impeccable-chicken-orange.svg", // 168/972 of card width
+    wordmarkWidth: "17.28%",
+    // white surface + white fade like Glance and Mountain Dew for now (Margaret,
+    // 2026-10-09; the orange cardBg read as a harsh ring at the border). The Figma
+    // version was cardBg #c94512, fade linear-gradient(to bottom, rgba(241,95,38,0),
+    // #f15f26 77.889%), cardText "light", photo at left 6.48% / width 93.52%.
+    coverArt: [
+      /* the photo (pre-clipped to 93.52% of the card) drawn 6.9% larger as a crop
+         fill so it reaches the left edge - no white strip beside it */
+      {
+        src: "/images/covers/ic-photo.png", left: "0%", top: "0%", width: "100%", height: "100%",
+        crop: { left: "0%", top: "-3.46%", width: "106.93%", height: "106.93%" },
+      },
+    ],
+    blocks: [
+      { type: "context", body: "Case study in progress. Content coming soon." },
+      { type: "wip", email: WIP_EMAIL },
+    ],
+  },
+
+  /* ---- Works index only ---- */
+  {
+    slug: "glance",
+    title: "Glance",
+    signal: "TroyLabs BUILD",
+    lede: "Website and logo design for a productivity startup",
+    cover: { src: "/images/glance-hero.png", alt: "Glance" },
+    credits: [
+      { label: "Role", value: "Designer, TroyLabs BUILD" },
+      { label: "Timeline", value: "2025" },
+      { label: "Disciplines", value: "Website Design, Logo Design, UI/UX Design, Framer Development" },
+    ],
+    next: "mountaindew",
+    category: "Productivity",
+    year: "2025",
+    role: "Designer",
+    comingSoon: true, // parked for now (Margaret, 2026-10-09)
+    /* the hero art drawn larger and started above the card, so the logo
+       centres ~38% down instead of halfway (Margaret: "shift the logo up") */
+    coverArt: [
+      /* 0.8x of the Mountain Dew-sized layer, scaled about its centre so the
+         logo keeps its height (Margaret, 2026-10-09: "smaller, height is good") */
+      { src: "/images/glance-hero.png", left: "-4.49%", top: "-11.60%", width: "108.98%", height: "99.20%" },
+    ],
+    blocks: [
+      {
+        type: "context",
+        body: "I worked with Glance's founders as a designer on their team during TroyLabs' BUILD program. Most of my time went to the website and to rounds of logo exploration.\n\nThe site itself is no longer accessible, so what survives here is the logo process: the sketches and iterations that got us to the final mark.",
+        media: { src: "/images/glance-content.png", alt: "Glance logo iterations" },
+      },
+    ],
+  },
+  {
+    slug: "mountaindew",
+    title: "Mountain Dew",
+    signal: "Avenues Consulting Group",
+    lede: "Bottle redesigns and brand strategy for Mountain Dew",
+    cover: { src: "/images/mountaindew-hero.png", alt: "Mountain Dew" },
+    credits: [
+      { label: "Role", value: "Design Consultant, Avenues Consulting Group" },
+      { label: "Timeline", value: "2024" },
+      { label: "Disciplines", value: "Product Design, Brand Strategy, Slide Deck" },
+    ],
+    next: "mark", // Ichioka and Nakao removed 2026-10-09; Prosaic moved up after Atlix 2026-11-02
+    category: "CPG",
+    year: "2024",
+    role: "Design Consultant",
+    comingSoon: true, // parked for now (Margaret, 2026-10-09)
+    coverArt: [
+      { src: "/images/mountaindew-hero.png", left: "-7.95%", top: "-24%", width: "115.90%", height: "124%" },
+    ],
+    blocks: [
+      {
+        type: "context",
+        body: "Mountain Dew came to Avenues Consulting Group as a client. On their team I spearheaded market research and strategy, bottle redesigns built around their new logo, and the final deck presented alongside my team.",
+      },
+      {
+        type: "artifactGrid",
+        media: [
+          { src: "/images/mountaindew-1.png", alt: "Mountain Dew slide deck preview" },
+          { src: "/images/mountaindew-2.png", alt: "Mountain Dew bottle redesigns" },
+        ],
+      },
+    ],
+  },
   /* ---- PLAY collections (grid page, not the works index) ---- */
   {
     slug: "graphics",

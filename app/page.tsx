@@ -102,8 +102,8 @@ export default function Page() {
       {/* main page underneath; renders the corner wordmark when revealed */}
       <PortfolioShell reveal={isMain} reduce={!!reduce} onWorksIndex={setWorksIndex} />
 
-      {/* no footer on the home page: the works column just ends at Impeccable
-          Chicken (Margaret, 2026-10-09). SiteFooter's reveal mode is kept for
+      {/* no footer on the home page: the works column just ends at Prosaic
+          Intelligence (Margaret, 2026-10-09; the fourth card since 2026-11-02). SiteFooter's reveal mode is kept for
           the day it comes back: `{isMain && <SiteFooter mode="reveal" />}` */}
     </main>
   );

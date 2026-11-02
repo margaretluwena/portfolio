@@ -88,9 +88,10 @@ study and the home card).
 
 ## Content still marked NEED (Margaret's to supply)
 
-- Prosaic Intelligence: the study is drafted and the images are in, but the
-  card is `comingSoon` until she opens it. Role / timeline / disciplines
-  are inferred. Never link her test site.
+- Prosaic Intelligence: open, featured on the home column after Atlix in
+  Impeccable Chicken's old slot (2026-11-02); Impeccable Chicken stays on
+  the All Works page, parked. Team name is still hers. Never link her test
+  site.
 - AANC and FoundHer House: removed from the data for now; she fills them
   in later.
 - Traeco: outreach-tracker media, brand sheet, deck spreads. Signal pill
