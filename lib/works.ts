@@ -710,7 +710,7 @@ export const works: Work[] = [
     category: "AI Safety",
     year: "2026",
     role: "Designer",
-    comingSoon: true,
+    comingSoon: false, // unparked 2026-11-02 so Margaret can read the draft on the site; the site itself stays unlinked
     accent: "#2f6fbf", // the index's signal blue, the one pressable colour on the site
     blocks: [
       {
