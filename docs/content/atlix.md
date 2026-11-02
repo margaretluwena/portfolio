@@ -1,5 +1,11 @@
 # atlix
 
+> 2026-11-02: superseded. The study on the site now follows Margaret's
+> "Case Studies" Google Doc (the Atlix section) and lives in lib/works.ts.
+> Open there: cofounder names, what the politicians said, the early
+> versions, which sorts, and whether Telangana can be named. The
+> atlix-landing repo (May 2026) has a 15MB product demo, public/atlixdemo.mp4.
+
 > **Three states.**
 >
 > - `VERBATIM:` Mar's exact words. Ships as written.

@@ -67,6 +67,23 @@ in copy or code comments**, the build fails on them.
   yellow) plus Merch; the share piece carries a `gallery` of the three
   share styles. Don't put those images back in the artifact grid.
 
+## Case-study copy: the Google Doc leads (2026-11-02)
+
+Margaret's "Case Studies" Google Doc (Mark, Traeco, Atlix, Prosaic
+Intelligence) is the canonical copy; the four studies in `lib/works.ts`
+were rewritten to it on 2026-11-02 in the essay structure (Setup, stats,
+The problem, decisions each with a "What I learned" line, What shipped,
+Around it, Looking back). Her [MAR: ...] and [CHECK ...] notes render
+highlighted on the page until she fills them. Sources mined for media:
+the Mark iOS Figma file (`l917dM0JromELo33T0teG3`, Design-V3 page:
+V3.2 library and share explorations, V3.3 share sketches, Demo V3.3
+screens), the "Mar <> Anantika" Prosaic file (`SuAL6GR89qq2NEDyuabFyV`,
+the Font choice 1 frame), the Traeco platform clone
+(`~/Traeco/Agent-Optimization-Platform`: two-line SDK, "Savings available"
+eyebrow, shadow evaluation in AUDIT.md), and the atlix-landing repo
+(github.com/VishnuK1947/atlix-landing: the May 2026 policymaker
+positioning and `public/atlixdemo.mp4`, 15MB, not pulled in).
+
 ## Content still marked NEED (Margaret's to supply)
 
 - Prosaic Intelligence: the study is drafted and the images are in, but the

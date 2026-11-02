@@ -195,6 +195,26 @@
     644,
     1400
   ],
+  "/images/mark/explore-library-category.png": [
+    402,
+    874
+  ],
+  "/images/mark/explore-library-grid.png": [
+    402,
+    874
+  ],
+  "/images/mark/explore-library-recent.png": [
+    402,
+    874
+  ],
+  "/images/mark/home-reading-pattern.png": [
+    402,
+    874
+  ],
+  "/images/mark/home-recents.png": [
+    402,
+    874
+  ],
   "/images/mark/home-thumbnails-detail.png": [
     944,
     650
@@ -202,6 +222,14 @@
   "/images/mark/home-thumbnails.png": [
     1290,
     1310
+  ],
+  "/images/mark/library-books.png": [
+    402,
+    874
+  ],
+  "/images/mark/library-categories.png": [
+    402,
+    874
   ],
   "/images/mark/merch-shirts.png": [
     1375,
@@ -239,6 +267,14 @@
     1280,
     720
   ],
+  "/images/mark/share-early.png": [
+    402,
+    874
+  ],
+  "/images/mark/share-envelope-screen.png": [
+    402,
+    874
+  ],
   "/images/mark/share-envelope.jpg": [
     1128,
     1600
@@ -250,6 +286,10 @@
   "/images/mark/share-screens.png": [
     1144,
     752
+  ],
+  "/images/mark/share-sketches.png": [
+    1853,
+    1480
   ],
   "/images/mark/share-sticky.jpg": [
     1030,
@@ -286,6 +326,10 @@
   "/images/prosaic/index-header.jpg": [
     2000,
     1021
+  ],
+  "/images/prosaic/type.png": [
+    1600,
+    1200
   ],
   "/images/smallworks-1.webp": [
     1973,

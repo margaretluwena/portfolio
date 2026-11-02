@@ -1,5 +1,9 @@
 # Mark - canonical spine content (supersedes all prior drafts)
 
+> 2026-11-02: superseded. The study on the site now follows Margaret's
+> "Case Studies" Google Doc (the Mark section) and lives in lib/works.ts;
+> the notes below are kept for the voice notes and the NEED list.
+
 > 2026-10-26: the study was restructured in lib/works.ts after Chris
 > Pramana's read (product story as the solution, packaging / merch / deck in
 > one "also" strip, artifact grids gone, signal "Raised $1M+"). The data

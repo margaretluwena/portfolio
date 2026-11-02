@@ -1,5 +1,9 @@
 # traeco - v2, three states
 
+> 2026-11-02: superseded. The study on the site now follows Margaret's
+> "Case Studies" Google Doc (the Traeco section) and lives in lib/works.ts;
+> the spine below is kept for the verified evidence lines and the NEED list.
+
 > * `VERBATIM:` Mar's exact words. Ships as written, no edits.
 > * `DRAFT:` written from Mar's voice notes by her assistant, compressed but
 >   not invented. Renders on the page normally. Mar edits in her pass. Not a

@@ -351,7 +351,8 @@ function VisualView({ visual }: { visual: Visual }) {
       </div>
     );
   }
-  const caption = "caption" in visual && visual.caption ? <p className="text-[clamp(13px,0.95vw,16px)] leading-[1.45] text-ink/55">{visual.caption}</p> : null;
+  /* captions carry [MAR] notes too (a recording to replace a still), so they go through Marked (2026-11-02) */
+  const caption = "caption" in visual && visual.caption ? <p className="text-[clamp(13px,0.95vw,16px)] leading-[1.45] text-ink/55"><Marked text={visual.caption} /></p> : null;
   if (visual.kind === "video") {
     return (
       <figure className="space-y-3">
@@ -369,6 +370,33 @@ function VisualView({ visual }: { visual: Visual }) {
       </figure>
     );
   }
+  if (visual.kind === "gallery") {
+    /* a row of images, tops aligned, like a solution piece's gallery; phone
+       screens scale by height so five of them fit the column (2026-11-02) */
+    return (
+      <figure className="space-y-3">
+        <div className="grid grid-flow-col auto-cols-fr items-start gap-3 md:gap-5">
+          {visual.media.map((m) => {
+            const [w, h] = SIZES[m.src] ?? [1200, 1600];
+            const tall = h > w * 1.15;
+            return (
+              <Image
+                key={m.src}
+                src={m.src}
+                alt={m.alt}
+                width={w}
+                height={h}
+                sizes="(max-width: 768px) 30vw, 14vw"
+                className="block rounded-[4px]"
+                style={tall ? { width: "auto", height: "auto", maxHeight: "44vh", maxWidth: "100%" } : { width: "100%", height: "auto" }}
+              />
+            );
+          })}
+        </div>
+        <figcaption>{caption}</figcaption>
+      </figure>
+    );
+  }
   return (
     <figure className="space-y-3">
       <MediaView media={visual.media} />
@@ -379,22 +407,27 @@ function VisualView({ visual }: { visual: Visual }) {
 
 /* an essay section: title, paragraphs (a "Decision:" paragraph gets the
    word as a label), an optional numbered list or titled parts, and a visual */
+/* a paragraph that opens with one of these gets the phrase as a label beside
+   it: the decision, and what she learned from it (the doc's two beats, 2026-11-02) */
+const PARA_LABELS = ["Decision:", "What I learned:"] as const;
+
 function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
   const visual = block.visual && <VisualView visual={block.visual} />;
+  const extra = block.extraVisual && <VisualView visual={block.extraVisual} />;
   return (
     <section className="space-y-6">
       <SectionLabel>{block.title}</SectionLabel>
       {block.visualFirst && visual}
       {block.body?.map((para, i) => {
-        const decision = para.startsWith("Decision:");
-        const text = decision ? para.slice("Decision:".length).trim() : para;
+        const label = PARA_LABELS.find((l) => para.startsWith(l));
+        const text = label ? para.slice(label.length).trim() : para;
         const after = block.visualAfter === i && visual ? <div className="pt-2 pb-8">{visual}</div> : null;
         /* a real box per paragraph (display: contents swallowed the section's
            vertical rhythm, so every gap collapsed; Margaret, 2026-10-29) */
-        return decision ? (
+        return label ? (
           <div key={i} className="space-y-6">
             <div className="grid gap-2 border-t border-hairline pt-4 md:grid-cols-[120px_minmax(0,1fr)] md:gap-8">
-              <span className="text-label uppercase text-ink/50">Decision</span>
+              <span className="text-label uppercase text-ink/50">{label.slice(0, -1)}</span>
               <p className="study-body text-ink"><Marked text={text} /></p>
             </div>
             {after}
@@ -428,6 +461,7 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
         </div>
       )}
       {!block.visualFirst && block.visualAfter === undefined && visual && <div className="pt-2">{visual}</div>}
+      {extra && <div className="pt-2">{extra}</div>}
     </section>
   );
 }
