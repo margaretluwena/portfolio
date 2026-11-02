@@ -638,7 +638,16 @@ export const works: Work[] = [
     signal: "Built in three days",
     lede: "A public index that scores how sixteen popular AI products handle safety, built so anyone can see which one is safest for what they use it for.",
     blurb: "A public index of consumer AI safety, designed and built in a weekend",
-    cover: { src: "/images/covers/prosaic-site.jpg", alt: "Prosaic Intelligence home" },
+    /* the card is the site's own paper (--color-paper #F7F4EF), with the
+       index header full-bleed (the beads on their wires, AI SAFETY INDEX,
+       WHICH AI IS SAFEST FOR and its pills) cropped to the card's shape from
+       images/prosaic/index-header.jpg, and the fade into the text zone in
+       the same paper rather than white (Margaret, 2026-11-02: "get rid of
+       that white gradient", "more of the website itself"). The placeholder
+       scores at the foot of that screenshot sit under the full paper. */
+    cover: { src: "/images/covers/prosaic-index.jpg", alt: "Prosaic Intelligence: the AI Safety Index header, beads on wires over paper" },
+    cardBg: "#F7F4EF",
+    cardFade: "linear-gradient(to bottom, rgba(247,244,239,0) 42%, #F7F4EF 80%)",
     credits: [
       { label: "Timeline", value: "September 2026, three days" },
       { label: "Role", value: "Designer and builder" },
