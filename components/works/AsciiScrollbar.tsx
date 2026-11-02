@@ -24,7 +24,9 @@ import { useMotionValue, useMotionValueEvent, useReducedMotion, useSpring } from
              So the track IS the list. As the lens reaches a marker it
              bulges (the lens alone, never the dash) and the name turns
              to ink
-    up       an arrow pill at the foot of the track: back to the top
+    up       an arrow pill at the foot of the track: back to the top. It
+             fades in once the page has scrolled past the nav pill's leaving
+             point (160px) and is not a target before that (2026-11-02)
 
   Interactive: click anywhere on the track to go there, drag the lens,
   click a name to jump to that section. The native scrollbar is hidden on
@@ -48,6 +50,7 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
   const [hover, setHover] = useState<number | null>(null);
   const [tick, setTick] = useState(0);
   const [burst, setBurst] = useState<{ row: number; at: number } | null>(null);
+  const [past, setPast] = useState(false); // scrolled beyond the top: shows the back-to-top pill
   const drag = useRef(false);
 
   /* scroll progress, and the lens's springed copy of it */
@@ -62,6 +65,7 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
       const max = el.scrollHeight - el.clientHeight;
       setFrac(Math.min(1, el.clientHeight / Math.max(1, el.scrollHeight)));
       progress.set(max > 0 ? Math.min(1, Math.max(0, el.scrollTop / max)) : 0);
+      setPast(el.scrollTop > 160);
       if (ref.current) setRows(Math.max(12, Math.floor(ref.current.clientHeight / CELL)));
       else requestAnimationFrame(measure); // the track mounts a frame later; measure it then
       /* a section's marker sits where the lens's centre will be when the
@@ -245,8 +249,10 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
         onClick={() => scrollToP(0, true)}
         onPointerDown={(e) => e.stopPropagation()}
         aria-label="Back to top"
-        className="absolute -bottom-[40px] grid h-[28px] w-[28px] -translate-x-1/2 place-items-center rounded-full border border-black/[0.12] bg-white/90 text-ink/60 shadow-[0_6px_16px_rgba(0,0,0,0.08)] backdrop-blur transition-colors hover:text-ink"
-        style={{ left: "5.5ch", fontSize: 9 }}
+        tabIndex={past ? 0 : -1}
+        aria-hidden={!past}
+        className="absolute -bottom-[40px] grid h-[28px] w-[28px] -translate-x-1/2 place-items-center rounded-full border border-black/[0.12] bg-white/90 text-ink/60 shadow-[0_6px_16px_rgba(0,0,0,0.08)] backdrop-blur transition-[opacity,color,transform] duration-500 hover:text-ink"
+        style={{ left: "5.5ch", fontSize: 9, opacity: past ? 1 : 0, transform: `translate(-50%, ${past ? 0 : 8}px)`, pointerEvents: past ? "auto" : "none" }}
       >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
           <path d="M6 10V2M2.5 5.5 6 2l3.5 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />

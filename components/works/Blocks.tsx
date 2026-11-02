@@ -587,9 +587,10 @@ export function Blocks({ work }: { work: Work }) {
 
 /* ---------- section rail ---------- */
 
-/* the Return arrow shows once the page has scrolled past where the nav
-   pill leaves (the same 160px), rising in; at the top the pill's own
-   wordmark is the way home, so the arrow would only double it */
+/* on phones the Return arrow shows once the page has scrolled past where
+   the nav pill leaves (the same 160px), rising in; at the top the pill's
+   own wordmark is the way home, so the arrow would only double it. On
+   desktop Return is always there (2026-11-02). */
 const RETURN_AT = 160;
 function useScrolledPast(px: number) {
   const [on, setOn] = useState(false);
@@ -627,7 +628,9 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
      it legible over a dark screenshot without reading as a button */
   const phoneBare = `${bare} h-[44px] w-[44px] -ml-[13px] rounded-full bg-white/60 text-ink/80 backdrop-blur-md`;
   const railBare = `${bare} h-[36px] w-[36px] -ml-[9px] text-ink/60`;
-  /* rises in once scrolled, and is not a target until it has */
+  /* the phone arrow rises in once scrolled, and is not a target until it has;
+     the desktop one is simply there (Margaret, 2026-11-02: the thing that
+     fades in on scroll is the minimap's back-to-top pill, not Return) */
   const reveal = {
     initial: false as const,
     animate: { opacity: on ? 1 : 0, y: on ? 0 : 10 },
@@ -655,8 +658,7 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
         </TransitionLink>
       )}
     </motion.div>
-    <motion.nav
-      {...reveal}
+    <nav
       aria-label="Case study"
       className="fixed left-[calc(var(--inset)*0.18+72px)] top-[21vh] z-30 hidden md:block"
     >
@@ -669,7 +671,7 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
           {returnLabel}
         </TransitionLink>
       )}
-    </motion.nav>
+    </nav>
     </>
   );
 }
