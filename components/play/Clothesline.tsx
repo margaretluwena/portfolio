@@ -1,45 +1,43 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
 
 /*
   THE CLOTHESLINE (Play, 2026-11-03).
 
   The play pieces hang on a line like washing. They start folded in a
-  basket that sits on the sky's hills at the foot of the window; the
-  filter you pick lifts the matching ones up onto the line, where each
-  hangs from a peg under the rope's sag, and the rest drop back into the
-  basket. On a wide window the line runs in as many rows as the pieces
-  need. Hovering a hung piece sets it swinging on its peg; clicking opens
-  it large.
+  basket on the sky's hills; the filter you pick lifts the matching ones
+  up onto the line, where each hangs from a peg under the rope's sag, and
+  the rest drop back into the basket. Hovering a hung piece sets it
+  swinging on its peg; clicking opens it large.
+
+  The whole thing is a SCENE the height of the window, stuck to the top
+  of the page: two poles planted on the front hill (93vh), the basket on
+  the ground between them, and the line strung between the poles above.
+  The ground never moves; when there are more rows than fit, the LINE
+  scrolls (wheel, trackpad, touch) inside a band that ends just above
+  the basket's handle, so no scroll puts a piece into the basket
+  (Margaret, 2026-11-03), and the band fades at its ends. Scrolling past
+  the line's end hands the wheel back to the page for the footer, which
+  carries the scene and the hills up together.
 
   Geometry is computed, not laid out: the rope is a quadratic curve with
-  a little sag and every piece's hang point is a point on it. The basket
-  is a STICKY layer in the stage's flow AFTER the rows, pinned so its
-  floor sits on the front hill (93vh) whenever the rows end above that
-  line, and scrolling away with the stage's end. When the rows run past
-  the hill line the basket simply follows them in the flow, entering
-  from below as you scroll and sticking once it reaches the hill: so no
-  scroll position ever has a hung piece behind it (Margaret, 2026-11-03:
-  the lowest row used to clip into the basket near the top of the
-  page). The poles' feet are in that layer too, so they stand on the
-  hill with it; their posts run on up the stage. A piece lives in whichever of the two it
-  belongs to; the move between them is a shared-layout flight on its
-  `layoutId` (Motion measures both in window space, so a piece lifts from
-  the pinned basket to wherever its row is). Reduced motion: pieces
-  appear where they belong, nothing springs or sways.
+  a little sag and every piece's hang point is a point on it. A piece
+  lives in the line group (hung) or the scene (folded); the move between
+  them is a shared-layout flight on its `layoutId`. Reduced motion:
+  pieces appear where they belong, nothing springs or sways.
 
-  The rope, the pegs, the poles and the basket are drawn in the sky's
-  own language: glyphs on the sky's cell grid (9px Plex Mono, 11px
-  rows). The stage canvas, under the hung pieces, carries the poles at
-  either end (= cap, || post, an o knot where each rope ties on) and the
-  ropes between them stepping from - to _ as they sag, with a peg (n over
-  |) at every hang point. The basket layer has two: its back (the poles'
-  lower run and = feet, the dotted inside, the = handle) under the folded
-  pieces, and its front over them (a paper fill so they read as inside
-  it, a staggered wicker of - and |, slanted sides, the rim).
+  Everything structural is drawn in the sky's own language: glyphs on
+  the sky's cell grid (9px Plex Mono, 11px rows). The scene canvas has
+  the poles (= cap, || post, ==== feet on the ground), the basket's back
+  (dotted inside, = handle); the line canvas, which scrolls with the
+  rows, has the ropes stepping from - to _ as they sag, an o knot where
+  each ties on, a peg (n over |) at every hang point; the front canvas,
+  over the folded pieces, has the basket's front (a paper fill so they
+  read as inside it, a staggered wicker of - and |, slanted sides, the
+  rim).
 */
 
 export type PlayItem = { src: string; w: number; h: number; group: string; alt?: string };
@@ -50,21 +48,19 @@ const MAX_W = 230, MAX_W_SM = 150;
 const GAP = 22;             // between pieces on the line
 const ROW_GAP = 84;         // between rows, rope to rope
 const ROPE_SAG = 26;
-const TOP = 96;             // the first rope's ends, from the top of the stage
-const BASKET_W = 400, BASKET_H = 150;
-const RIM = 110;            // the rim's y inside the basket layer (handle and folded tops above it)
-const FLOOR_Y = RIM + BASKET_H; // the basket's floor and the poles' feet, inside the layer
-const FLOOR_VH = 0.93;      // the floor, as a share of the window: on the front hill
-// the layer runs on under the feet to the window's bottom (7vh, at least a
-// glyph row), with paper under each foot so the stage's posts stop there
+const TOP = 44;             // the first rope's ends, from the top of the line band
+const BASKET_W = 400, BASKET_H = 150, HANDLE = 78;
+const FLOOR_VH = 0.93;      // the ground: the front hill's line, as a share of the window
 const FOLD = 0.55;          // a folded piece's size, as a share of its hung size
+const FADE = 28;            // the band's fade at either end
 
 const hash = (s: string) => { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return ((h >>> 0) % 1000) / 1000; };
+const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
 type Placed = { item: PlayItem; w: number; h: number; x: number; y: number; rot: number; hung: boolean; delay: number; peg: number };
 
 function ropeY(rowTop: number, x: number, width: number) {
-  const t = Math.min(1, Math.max(0, x / width));
+  const t = clamp(x / width, 0, 1);
   return rowTop + 2 * t * (1 - t) * ROPE_SAG;
 }
 
@@ -76,9 +72,10 @@ const INK = "#111", WOOD = "#8a7350", WICKER = "#b39a6b", INSIDE = "#d9c7a4";
 
 /* a sparse grid of glyphs; a later write to a cell replaces the earlier one */
 class Grid {
-  cells = new Map<number, { ch: string; color: string }>();
+  cells = new Map<number, { ch: string; color: string; back?: boolean }>();
   constructor(public cw: number, public ch: number, public cols: number) {}
-  set(c: number, r: number, ch: string, color: string) { if (c < 0 || r < 0 || c >= this.cols) return; this.cells.set(r * 100000 + c, { ch, color }); }
+  /* `back` paints the cell paper first, for a glyph that must cover what is under the canvas */
+  set(c: number, r: number, ch: string, color: string, back = false) { if (c < 0 || r < 0 || c >= this.cols) return; this.cells.set(r * 100000 + c, { ch, color, back }); }
   at(x: number, y: number) { return [Math.floor(x / this.cw), Math.floor(y / this.ch)] as const; }
   /* a curve, one glyph per cell it crosses, picked by its slope there:
      flat runs step from - to _ as the line drops through the cell (= all
@@ -99,7 +96,11 @@ class Grid {
     }
   }
   draw(ctx: CanvasRenderingContext2D) {
-    for (const [k, v] of this.cells) { ctx.fillStyle = v.color; ctx.fillText(v.ch, (k % 100000) * this.cw, Math.floor(k / 100000) * this.ch); }
+    for (const [k, v] of this.cells) {
+      const x = (k % 100000) * this.cw, y = Math.floor(k / 100000) * this.ch;
+      if (v.back) { ctx.fillStyle = "#fff"; ctx.fillRect(x, y, this.cw, this.ch); }
+      ctx.fillStyle = v.color; ctx.fillText(v.ch, x, y);
+    }
   }
 }
 
@@ -118,31 +119,23 @@ const basketEdge = (bx: number, bw: number, k: number) => [bx - bw / 2 + 28 * k,
 
 export default function Clothesline({ items, groups }: { items: PlayItem[]; groups: string[] }) {
   const reduce = useReducedMotion();
-  const stage = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(0);
-  const [floorMin, setFloorMin] = useState(0); // the stage height that puts the basket's floor on the hill
-  const [under, setUnder] = useState(14);      // the layer's run under the feet, to the window's bottom
+  const scene = useRef<HTMLDivElement>(null);
+  const filtersRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ w: 0, h: 0, filtersH: 40 });
   const [filter, setFilter] = useState<string>("All");
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState<PlayItem | null>(null);
   const [font, setFont] = useState(SKY_FONT_FALLBACK);
+  const sceneRef = useRef<HTMLCanvasElement>(null);
   const lineRef = useRef<HTMLCanvasElement>(null);
-  const backRef = useRef<HTMLCanvasElement>(null);
   const frontRef = useRef<HTMLCanvasElement>(null);
 
   useLayoutEffect(() => {
-    const el = stage.current; if (!el) return;
-    const measure = () => {
-      setWidth(el.clientWidth);
-      const top = el.getBoundingClientRect().top + window.scrollY;
-      const u = Math.max(14, Math.ceil(window.innerHeight * (1 - FLOOR_VH)));
-      setUnder(u);
-      setFloorMin(Math.max(0, window.innerHeight * FLOOR_VH - top + u));
-    };
+    const el = scene.current; if (!el) return;
+    const measure = () => setSize({ w: el.clientWidth, h: el.clientHeight, filtersH: filtersRef.current?.clientHeight ?? 40 });
     const ro = new ResizeObserver(measure);
-    ro.observe(el); measure();
-    window.addEventListener("resize", measure);
-    return () => { ro.disconnect(); window.removeEventListener("resize", measure); };
+    ro.observe(el); if (filtersRef.current) ro.observe(filtersRef.current); measure();
+    return () => ro.disconnect();
   }, []);
   // the first lift happens a beat after the page is in
   useEffect(() => { const t = setTimeout(() => setMounted(true), reduce ? 0 : 500); return () => clearTimeout(t); }, [reduce]);
@@ -151,12 +144,18 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     try { const f = getComputedStyle(document.body).getPropertyValue("--font-sky").trim(); if (f) setFont(`${f}, ${SKY_FONT_FALLBACK}`); } catch {}
   }, []);
 
+  const { w: width, h: vh } = size;
   const small = width < 640;
   const H = small ? HANG_H_SM : HANG_H;
-  const LAYER_H = FLOOR_Y + under;
   const BW = Math.min(BASKET_W, Math.max(200, width - 90)); // between the poles on a phone
+  /* the ground, the basket, and the band the line scrolls in */
+  const floorY = Math.round(vh * FLOOR_VH);
+  const rimY = floorY - BASKET_H;
+  const lineTop = Math.round(vh * 0.17) + size.filtersH + 24;
+  const lineBottom = rimY - HANDLE - 12;
+  const bandH = Math.max(0, lineBottom - lineTop);
 
-  const { placed, rows, height, linesH } = useMemo(() => {
+  const { placed, rows, linesH } = useMemo(() => {
     const maxW = small ? MAX_W_SM : MAX_W;
     const hung = mounted ? items.filter((it) => filter === "All" || it.group === filter) : [];
     // pack the hung pieces into rows, left to right
@@ -178,79 +177,103 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
         placed.push(p); sideOf.set(it.src, p); x += w + GAP;
       });
     });
-    const linesH = rowsOf.length ? TOP + (rowsOf.length - 1) * (H + ROW_GAP) + H + 40 : TOP;
-    // the stage holds the rows, then the basket layer; at least tall enough
-    // for the pinned basket to reach the hill
-    const height = Math.max(linesH + LAYER_H, floorMin);
+    // the line's own height: its rows, in the band's coordinates
+    const linesH = rowsOf.length ? TOP + (rowsOf.length - 1) * (H + ROW_GAP) + H + 16 : TOP;
     // the rest sit in the basket, small and turned, stacked toward its
-    // middle; positions are inside the basket layer, folded over the rim:
-    // the tops show above the basket's front, the rest is behind it
+    // middle, folded over the rim: the tops show above the basket's
+    // front, the rest is behind it (scene coordinates)
     const rest = items.filter((it) => !sideOf.has(it.src));
     rest.forEach((it, i) => {
       const w = Math.min(maxW, H * (it.w / it.h)) * FOLD, h = H * FOLD;
       const spread = Math.min(rest.length - 1, 9) * 14;
       const cx = width / 2 + (rest.length > 1 ? (i / (rest.length - 1) - 0.5) * spread : 0) + (hash(it.src + "x") - 0.5) * 24;
-      placed.push({ item: it, w, h, x: cx - w / 2, y: RIM - h * 0.55 + hash(it.src + "y") * 18, rot: (hash(it.src + "r") - 0.5) * 28, hung: false, delay: i * 0.03, peg: 0 });
+      placed.push({ item: it, w, h, x: cx - w / 2, y: rimY - h * 0.55 + hash(it.src + "y") * 18, rot: (hash(it.src + "r") - 0.5) * 28, hung: false, delay: i * 0.03, peg: 0 });
     });
-    return { placed, rows: rowsOf.length, height, linesH };
-  }, [items, filter, width, mounted, small, H, floorMin, LAYER_H]);
+    return { placed, rows: rowsOf.length, linesH };
+  }, [items, filter, width, mounted, small, H, rimY]);
 
-  /* the poles, ropes and pegs on the stage; the basket in its layer */
+  /* the line's scroll: how far the rows have been pulled up, 0 to maxScroll,
+     eased by a spring; the group under the band moves by it */
+  const maxScroll = Math.max(0, linesH - bandH);
+  const offset = useMotionValue(0);
+  const eased = useSpring(offset, reduce ? { stiffness: 2000, damping: 100 } : { stiffness: 260, damping: 36, mass: 0.6 });
+  const groupY = useTransform(eased, (v) => lineTop - v);
+  useEffect(() => { if (offset.get() > maxScroll) offset.set(maxScroll); }, [maxScroll, offset]);
+  const scrollLine = useCallback((dy: number) => {
+    const next = clamp(offset.get() + dy, 0, maxScroll);
+    const moved = next !== offset.get();
+    if (moved) offset.set(next);
+    return moved;
+  }, [offset, maxScroll]);
   useEffect(() => {
-    const line = lineRef.current, back = backRef.current, front = frontRef.current;
-    if (!line || !back || !front || width <= 0) return;
+    const el = scene.current; if (!el) return;
+    // the wheel pulls the line until it ends, then falls through to the
+    // page (the footer); coming back, the page returns to its top first
+    const onWheel = (e: WheelEvent) => {
+      if (open) return;
+      if (e.deltaY < 0 && window.scrollY > 0) return;
+      if (scrollLine(e.deltaY)) e.preventDefault();
+    };
+    let lastY: number | null = null;
+    const onTouchStart = (e: TouchEvent) => { lastY = e.touches[0]?.clientY ?? null; };
+    const onTouchMove = (e: TouchEvent) => {
+      if (lastY == null || open) return;
+      const y = e.touches[0]?.clientY ?? lastY, dy = lastY - y; lastY = y;
+      if (dy < 0 && window.scrollY > 0) return;
+      if (scrollLine(dy)) e.preventDefault();
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    return () => { el.removeEventListener("wheel", onWheel); el.removeEventListener("touchstart", onTouchStart); el.removeEventListener("touchmove", onTouchMove); };
+  }, [scrollLine, open]);
+
+  /* the glyphs: poles and basket on the scene, ropes and pegs on the line */
+  useEffect(() => {
+    const sc = sceneRef.current, line = lineRef.current, front = frontRef.current;
+    if (!sc || !line || !front || width <= 0 || vh <= 0) return;
     let raf = 0;
     const render = () => {
-      const lctx = sizeCanvas(line, width, height, font), bctx = sizeCanvas(back, width, LAYER_H, font), fctx = sizeCanvas(front, width, LAYER_H, font);
-      if (!lctx || !bctx || !fctx) return;
-      const cw = lctx.measureText("M").width || CELL_FONT * 0.6, ch = CELL_H;
+      const sctx = sizeCanvas(sc, width, vh, font), lctx = sizeCanvas(line, width, linesH, font), fctx = sizeCanvas(front, width, vh, font);
+      if (!sctx || !lctx || !fctx) return;
+      const cw = sctx.measureText("M").width || CELL_FONT * 0.6, ch = CELL_H;
       const cols = Math.ceil(width / cw);
-
-      const g = new Grid(cw, ch, cols);
-      // the poles at either end: a = cap, a || post running down the
-      // stage (the feet are in the basket layer), and an o knot on the
-      // inner face where each rope ties on
       const poleL = 1, poleR = cols - 3; // the inner columns are poleL + 1 and poleR
-      const capR = Math.floor((TOP - 3 * ch) / ch), lastR = Math.floor(height / ch);
-      for (const c of [poleL, poleR]) {
-        for (let r = capR + 1; r <= lastR; r++) { g.set(c, r, "|", WOOD); g.set(c + 1, r, "|", WOOD); }
-        for (let d = -1; d <= 2; d++) g.set(c + d, capR, "=", WOOD);
-      }
-      // the ropes, pole to pole
-      const x0 = (poleL + 2) * cw, x1 = poleR * cw;
-      for (let r = 0; r < Math.max(1, rows); r++) {
-        const y = TOP + r * (H + ROW_GAP);
-        g.plot((t) => { const x = x0 + t * (x1 - x0); return [x, ropeY(y, x, width)]; }, INK, Math.ceil(width / 2));
-        const [, kr] = g.at(x0, y);
-        g.set(poleL + 1, kr, "o", WOOD); g.set(poleR, kr, "o", WOOD);
-      }
-      // a peg on the rope at every hung piece
-      for (const p of placed) {
-        if (!p.hung) continue;
-        const [c, r] = g.at(p.peg, p.y - 8);
-        g.set(c, r - 1, "n", WOOD); g.set(c, r, "|", WOOD); g.set(c, r + 1, "|", WOOD);
-      }
-      g.draw(lctx);
 
-      // the basket's back: its inside, dotted, and the handle over it;
-      // the poles' lower run beside it, standing on = feet level with
-      // the floor (their stage posts continue under the same columns)
-      const bx = width / 2, by = RIM;
-      const b = new Grid(cw, ch, cols);
-      const [, r0] = b.at(bx, by), rN = Math.floor(FLOOR_Y / ch);
-      bctx.fillStyle = "#fff";
+      // the scene: the poles planted on the ground, and the basket's back
+      const g = new Grid(cw, ch, cols);
+      const capR = Math.floor((lineTop - 2 * ch) / ch), footR = Math.floor(floorY / ch);
       for (const c of [poleL, poleR]) {
-        for (let r = 0; r < rN; r++) { b.set(c, r, "|", WOOD); b.set(c + 1, r, "|", WOOD); }
-        for (let d = -1; d <= 2; d++) b.set(c + d, rN, "=", WOOD);
-        bctx.fillRect((c - 1) * cw, (rN + 1) * ch - 2, 4 * cw, LAYER_H); // paper under the foot
+        for (let r = capR + 1; r < footR; r++) { g.set(c, r, "|", WOOD); g.set(c + 1, r, "|", WOOD); }
+        for (let d = -1; d <= 2; d++) { g.set(c + d, capR, "=", WOOD); g.set(c + d, footR, "=", WOOD); }
       }
+      const bx = width / 2, by = rimY;
+      const [, r0] = g.at(bx, by), rN = Math.floor(floorY / ch);
       for (let r = r0 + 1; r < rN; r++) {
         const [l, rr] = basketEdge(bx, BW, (r - r0) / (rN - r0));
         const c0 = Math.ceil(l / cw) + 1, c1 = Math.floor(rr / cw) - 1;
-        for (let c = c0; c <= c1; c++) if ((c + r) % 2 === 0) b.set(c, r, ".", INSIDE);
+        for (let c = c0; c <= c1; c++) if ((c + r) % 2 === 0) g.set(c, r, ".", INSIDE);
       }
-      b.plot((t) => { const [l, rr] = basketEdge(bx, BW, 0); const xa = l + BW * 0.28, xb = rr - BW * 0.28, u = 1 - t; return [u * u * xa + 2 * u * t * bx + t * t * xb, u * u * by + 2 * u * t * (by - 78) + t * t * by]; }, WOOD, 300, true);
-      b.draw(bctx);
+      g.plot((t) => { const [l, rr] = basketEdge(bx, BW, 0); const xa = l + BW * 0.28, xb = rr - BW * 0.28, u = 1 - t; return [u * u * xa + 2 * u * t * bx + t * t * xb, u * u * by + 2 * u * t * (by - HANDLE) + t * t * by]; }, WOOD, 300, true);
+      g.draw(sctx);
+
+      // the line: ropes pole to pole, a knot on the pole where each ties
+      // on (paper under it, since the pole is on the canvas beneath), a
+      // peg at every hung piece
+      const ln = new Grid(cw, ch, cols);
+      const x0 = (poleL + 2) * cw, x1 = poleR * cw;
+      for (let r = 0; r < Math.max(1, rows); r++) {
+        const y = TOP + r * (H + ROW_GAP);
+        ln.plot((t) => { const x = x0 + t * (x1 - x0); return [x, ropeY(y, x, width)]; }, INK, Math.ceil(width / 2));
+        const [, kr] = ln.at(x0, y);
+        ln.set(poleL + 1, kr, "o", WOOD, true); ln.set(poleR, kr, "o", WOOD, true);
+      }
+      for (const p of placed) {
+        if (!p.hung) continue;
+        const [c, r] = ln.at(p.peg, p.y - 8);
+        ln.set(c, r - 1, "n", WOOD); ln.set(c, r, "|", WOOD); ln.set(c, r + 1, "|", WOOD);
+      }
+      ln.draw(lctx);
 
       // the basket's front: paper under a wicker, slanted sides, the rim
       const f = new Grid(cw, ch, cols);
@@ -276,7 +299,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     render();
     if (document.fonts?.ready) document.fonts.ready.then(() => { raf = requestAnimationFrame(render); });
     return () => cancelAnimationFrame(raf);
-  }, [placed, rows, width, height, H, font, LAYER_H, BW]);
+  }, [placed, rows, linesH, width, vh, H, font, BW, lineTop, rimY, floorY]);
 
   const flight = (p: Placed) => reduce ? { duration: 0 } : p.hung
     ? { type: "spring" as const, stiffness: 110, damping: 15, mass: 0.9, delay: p.delay }
@@ -293,7 +316,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       initial={false}
       transition={{ layout: flight(p) }}
       className="absolute cursor-pointer"
-      style={{ left: p.x, top: p.y, width: p.w, height: p.h, zIndex: p.hung ? 3 : 2 }}
+      style={{ left: p.x, top: p.y, width: p.w, height: p.h, zIndex: p.hung ? 2 : 3 }}
       onClick={() => p.hung && setOpen(p.item)}
       role={p.hung ? "button" : undefined}
       tabIndex={p.hung ? 0 : -1}
@@ -321,10 +344,13 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     </motion.div>
   );
 
+  // the band's fade, at its top and just above the basket's handle
+  const mask = `linear-gradient(to bottom, transparent ${lineTop - FADE}px, #000 ${lineTop}px, #000 ${lineBottom}px, transparent ${lineBottom + FADE}px)`;
+
   return (
-    <div className="relative">
+    <div ref={scene} className="sticky top-0 h-screen w-full overflow-hidden" style={{ height: "100dvh" }}>
       {/* the filters: the line is the list, this is what you hang on it */}
-      <div className="mb-2 flex flex-wrap gap-2" role="group" aria-label="Hang">
+      <div ref={filtersRef} className="absolute left-0 right-0 flex flex-wrap gap-2" style={{ top: "17vh", zIndex: 6 }} role="group" aria-label="Hang">
         {["All", ...groups].map((g) => (
           <button
             key={g}
@@ -338,26 +364,21 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
         ))}
       </div>
 
-      <div ref={stage} className="relative w-full" style={{ height }}>
-        {/* the poles, ropes and pegs, in glyphs, under the hung pieces */}
-        <canvas ref={lineRef} className="pointer-events-none absolute left-0 top-0" aria-hidden />
+      {/* the poles on the ground and the basket's back, in glyphs */}
+      <canvas ref={sceneRef} className="pointer-events-none absolute left-0 top-0" aria-hidden style={{ zIndex: 1 }} />
 
-        {/* the hung pieces */}
-        {width > 0 && placed.filter((p) => p.hung).map(piece)}
+      {/* the line: ropes, pegs and the hung pieces, pulled up by the scroll
+          inside a band that fades at its ends */}
+      <motion.div className="absolute inset-0" style={{ zIndex: 2, maskImage: mask, WebkitMaskImage: mask }}>
+        <motion.div className="absolute left-0 top-0 w-full" style={{ y: groupY, height: linesH }}>
+          <canvas ref={lineRef} className="pointer-events-none absolute left-0 top-0" aria-hidden />
+          {width > 0 && placed.filter((p) => p.hung).map(piece)}
+        </motion.div>
+      </motion.div>
 
-        {/* the basket layer: in the stage's flow after the rows (the spacer
-            holds their height), pinned so its floor sits on the front hill
-            once the rows end above it, scrolling away with the stage's end */}
-        <div aria-hidden style={{ height: linesH }} />
-        <div
-          className="sticky w-full"
-          style={{ top: `calc(${FLOOR_VH * 100}vh - ${FLOOR_Y}px)`, height: LAYER_H, zIndex: 5 }}
-        >
-          <canvas ref={backRef} className="pointer-events-none absolute left-0 top-0" aria-hidden />
-          {width > 0 && placed.filter((p) => !p.hung).map(piece)}
-          <canvas ref={frontRef} className="pointer-events-none absolute left-0 top-0" aria-hidden style={{ zIndex: 4 }} />
-        </div>
-      </div>
+      {/* the folded pieces, then the basket's front over them */}
+      {width > 0 && placed.filter((p) => !p.hung).map(piece)}
+      <canvas ref={frontRef} className="pointer-events-none absolute left-0 top-0" aria-hidden style={{ zIndex: 4 }} />
 
       {/* the piece, large */}
       <AnimatePresence>

@@ -112,30 +112,32 @@ study and the home card).
   and gets up when the ball moves or it is petted; 40% of returns end in
   a spin. `npm run capture:dog` redraws the contact sheet at
   `public/images/about/dog-frames.png`.
-- **Play is a clothesline** (`components/play/Clothesline.tsx`): the
-  pieces start in a basket, the filter (All plus each play collection's
-  title) lifts the matching ones onto the rope, pegged under its sag, in
-  as many rows as fit (128px tall on desktop, 92 on phones, so seven or
-  so share a line at 1440); hover sways a hung piece, click opens it
-  large. Groups come from the play works in `lib/works.ts`; finer tags
-  are a data edit away. The basket is a STICKY layer in the stage's
-  flow AFTER the rows (a spacer holds their height), pinned so its floor
-  sits on the sky's front hill (93vh) once the rows end above that line
-  and scrolling away with the stage's end; when the rows run past the
-  hill line it follows them in the flow, entering from below as you
-  scroll, so no scroll position puts a hung piece behind it (Margaret,
-  2026-11-03). The poles' feet are in that layer too. A
-  piece lives in the stage (hung) or the layer (folded) and the move
-  between them is a shared-layout flight on its `layoutId` (Motion
-  measures both in window space). Everything structural is drawn in
-  the sky's glyphs (9px Plex Mono on 11px rows) on canvases: the stage
-  one under the hung pieces (a `||` pole with a `=` cap at either end,
-  the ropes running pole to pole and stepping - to _, an `o` knot where
-  each ties on, a peg `n` over `|` at each hang point), the layer's
-  back (the poles' lower run on `====` feet, with paper under each so
-  the stage's posts stop there, the basket's `=` handle and dotted
-  inside) and its front over the folded pieces (a white fill so they
-  read as inside, a staggered `-|` wicker, `|` sides, the `(====)` rim).
+- **Play is a clothesline** (`components/play/Clothesline.tsx`, a
+  window-tall scene stuck to the top of `app/play/page.tsx`): two poles
+  planted on the sky's front hill (93vh), the basket on the ground
+  between them, the line strung between the poles above. The pieces
+  start in the basket; the filter (All plus each play collection's
+  title) lifts the matching ones onto the rope, pegged under its sag,
+  in as many rows as fit (128px tall on desktop, 92 on phones, so seven
+  or so share a line at 1440); hover sways a hung piece, click opens it
+  large. Groups come from the play works in `lib/works.ts`. The ground
+  never moves: when the rows outgrow the window the LINE scrolls
+  (wheel, trackpad, touch; a spring-eased MotionValue on the line group)
+  inside a band that fades at its ends and stops with the last row just
+  above the basket's handle, so no scroll puts a piece into the basket
+  (Margaret, 2026-11-03); past the line's end the wheel falls through to
+  the page for the footer, which carries the scene and the hills up
+  together. A piece lives in the line group (hung) or the scene
+  (folded); the move between them is a shared-layout flight on its
+  `layoutId`. Everything structural is drawn in the sky's glyphs (9px
+  Plex Mono on 11px rows) on three canvases: the scene's (a `||` pole
+  with a `=` cap and `====` feet at either end, the basket's `=` handle
+  and dotted inside), the line's, which scrolls with the rows (ropes
+  pole to pole stepping - to _, an `o` knot on paper where each ties on,
+  a peg `n` over `|` at each hang point), and the front's over the
+  folded pieces (a white fill so they read as inside, a staggered `-|`
+  wicker, `|` sides, the `(====)` rim). The basket narrows to fit
+  between the poles on a phone.
 
 ## Content still marked NEED (Margaret's to supply)
 
