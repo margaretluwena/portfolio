@@ -25,12 +25,9 @@
   /* the envelope screen's card slot, covered, with one share style laid in
      at a readable size: the postcard's back (the lower card of its export),
      the sticky note's top note (the upper of its export) */
-  .screen .art { position: absolute; left: 34px; top: 108px; width: 202px; height: 306px; background: #f2f2f2; overflow: hidden; }
-  .screen .art img { position: absolute; height: auto; display: block; }
-  /* the postcard's back is the lower half of its export, the sticky note the
-     upper two fifths of its: each clipped to that card and centred in the slot */
-  .screen .art.postcard img { width: 240px; left: -19px; bottom: 64px; clip-path: inset(52% 0 0 0); }
-  .screen .art.sticky img { width: 270px; left: -34px; top: 67px; clip-path: inset(0 0 56% 0); }
+  /* the share screen's card slot, with one of the three styles she exported laid in whole (2026-11-02) */
+  .screen .art { position: absolute; left: 20px; top: 92px; width: 230px; height: 340px; background: #f2f2f2; display: grid; place-items: center; }
+  .screen .art img { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }
   .label { position: absolute; left: 0; right: 0; top: 636px; text-align: center; font-size: 13px; letter-spacing: 0.01em;
            color: rgba(20,20,20,0.5); white-space: nowrap; transition: color 400ms; }
   .label b { font-weight: 500; color: rgba(20,20,20,0.82); }
@@ -45,9 +42,9 @@
     <div class="phone"><div class="bezel"><div class="screen"><img class="shot" src="screens/02-categories.png" alt="" /></div></div><div class="label"><b>Library</b> by category</div></div>
     <div class="phone"><div class="bezel"><div class="screen"><img class="shot" src="screens/03-books.png" alt="" /></div></div><div class="label"><b>Library</b> by book</div></div>
     <div class="phone"><div class="bezel"><div class="screen"><img class="shot" src="screens/04-note.png" alt="" /></div></div><div class="label"><b>Note</b> the line and what you thought</div></div>
-    <div class="phone"><div class="bezel"><div class="screen"><img class="shot" src="screens/07-share-envelope.png" alt="" /></div></div><div class="label"><b>Share, shipped</b> a signed letter</div></div>
-    <div class="phone"><div class="bezel"><div class="screen"><img class="shot" src="screens/07-share-envelope.png" alt="" /><div class="art postcard"><img src="screens/art-postcard.jpg" alt="" /></div></div></div><div class="label"><b>Share, shipped</b> a stamped postcard</div></div>
-    <div class="phone"><div class="bezel"><div class="screen"><img class="shot" src="screens/07-share-envelope.png" alt="" /><div class="art sticky"><img src="screens/art-sticky.jpg" alt="" /></div></div></div><div class="label"><b>Share, shipped</b> a sticky note</div></div>
+    <div class="phone"><div class="bezel"><div class="screen"><img class="shot" src="screens/07-share-envelope.png" alt="" /><div class="art"><img src="screens/style-envelope.webp" alt="" /></div></div></div><div class="label"><b>Share, shipped</b> a signed letter</div></div>
+    <div class="phone"><div class="bezel"><div class="screen"><img class="shot" src="screens/07-share-envelope.png" alt="" /><div class="art"><img src="screens/style-postcard.png" alt="" /></div></div></div><div class="label"><b>Share, shipped</b> a stamped postcard</div></div>
+    <div class="phone"><div class="bezel"><div class="screen"><img class="shot" src="screens/07-share-envelope.png" alt="" /><div class="art"><img src="screens/style-sticky.png" alt="" /></div></div></div><div class="label"><b>Share, shipped</b> a sticky note</div></div>
   </div>
 </div>
 <script>

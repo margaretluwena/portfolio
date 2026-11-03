@@ -112,15 +112,104 @@
       "note": "the seven risk categories, each with its chart"
     },
     {
-      "id": "weights-section",
-      "route": "/methodology",
-      "file": "public/images/prosaic/weights-section.png",
+      "id": "risk-0",
+      "route": "/",
+      "file": "public/images/prosaic/risk-0.png",
       "width": 1128,
       "height": 1000,
       "deviceScaleFactor": 2,
+      "selector": "#risks article.block >> nth=0",
+      "waitMs": 2500
+    },
+    {
+      "id": "risk-1",
+      "route": "/",
+      "file": "public/images/prosaic/risk-1.png",
+      "width": 1128,
+      "height": 1000,
+      "deviceScaleFactor": 2,
+      "selector": "#risks article.block >> nth=1",
+      "waitMs": 2500
+    },
+    {
+      "id": "risk-2",
+      "route": "/",
+      "file": "public/images/prosaic/risk-2.png",
+      "width": 1128,
+      "height": 1000,
+      "deviceScaleFactor": 2,
+      "selector": "#risks article.block >> nth=2",
+      "waitMs": 2500
+    },
+    {
+      "id": "risk-3",
+      "route": "/",
+      "file": "public/images/prosaic/risk-3.png",
+      "width": 1128,
+      "height": 1000,
+      "deviceScaleFactor": 2,
+      "selector": "#risks article.block >> nth=3",
+      "waitMs": 2500
+    },
+    {
+      "id": "risk-4",
+      "route": "/",
+      "file": "public/images/prosaic/risk-4.png",
+      "width": 1128,
+      "height": 1000,
+      "deviceScaleFactor": 2,
+      "selector": "#risks article.block >> nth=4",
+      "waitMs": 2500
+    },
+    {
+      "id": "risk-5",
+      "route": "/",
+      "file": "public/images/prosaic/risk-5.png",
+      "width": 1128,
+      "height": 1000,
+      "deviceScaleFactor": 2,
+      "selector": "#risks article.block >> nth=5",
+      "waitMs": 2500
+    },
+    {
+      "id": "risk-6",
+      "route": "/",
+      "file": "public/images/prosaic/risk-6.png",
+      "width": 1128,
+      "height": 1000,
+      "deviceScaleFactor": 2,
+      "selector": "#risks article.block >> nth=6",
+      "waitMs": 2500
+    },
+    {
+      "id": "weights-section",
+      "route": "/methodology",
+      "file": "public/images/prosaic/weights-section.png",
+      "width": 1440,
+      "height": 1000,
+      "deviceScaleFactor": 1.5,
       "selector": "section:has(table.method-table.is-weights)",
-      "waitMs": 2500,
-      "note": "the weighting section of the methodology, heading and table"
+      "waitMs": 2500
+    },
+    {
+      "id": "sources-table",
+      "route": "/methodology",
+      "file": "public/images/prosaic/sources-table.png",
+      "width": 1440,
+      "height": 1000,
+      "deviceScaleFactor": 1.5,
+      "selector": "section:has(#sources-table)",
+      "waitMs": 2500
+    },
+    {
+      "id": "company-openai",
+      "route": "/provider/openai",
+      "file": "public/images/prosaic/company-openai.png",
+      "width": 1128,
+      "height": 900,
+      "deviceScaleFactor": 2,
+      "waitMs": 3000,
+      "selector": ".chart-card"
     }
   ],
   "shots": [
@@ -308,6 +397,65 @@
         {
           "type": "wait",
           "ms": 1200
+        }
+      ]
+    },
+    {
+      "id": "risk-page",
+      "route": "/category/self-harm-and-crisis",
+      "posterAtMs": 1800,
+      "steps": [
+        {
+          "type": "wait",
+          "ms": 1600
+        },
+        {
+          "type": "move",
+          "target": ".chart-bars .chart-col >> nth=2"
+        },
+        {
+          "type": "wait",
+          "ms": 900
+        },
+        {
+          "type": "scroll",
+          "target": "#found",
+          "ms": 1400,
+          "block": "start"
+        },
+        {
+          "type": "wait",
+          "ms": 1200
+        },
+        {
+          "type": "scroll",
+          "target": "#submeasures",
+          "ms": 1400,
+          "block": "start"
+        },
+        {
+          "type": "wait",
+          "ms": 1200
+        },
+        {
+          "type": "scroll",
+          "target": "#sources",
+          "ms": 1400,
+          "block": "start"
+        },
+        {
+          "type": "wait",
+          "ms": 1200
+        },
+        {
+          "type": "scroll",
+          "target": "#limits",
+          "ms": 1400,
+          "block": "start"
+        },
+        {
+          "type": "wait",
+          "ms": 2200
         }
       ]
     }

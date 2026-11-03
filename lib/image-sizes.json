@@ -80,16 +80,20 @@
     1050
   ],
   "/images/atlix/brand-sheet.png": [
-    2256,
-    1692
+    1600,
+    1200
   ],
   "/images/atlix/card-close-framed.png": [
     2256,
-    1520
+    1400
   ],
   "/images/atlix/card-close.png": [
     802,
     648
+  ],
+  "/images/atlix/dashboard-busy.png": [
+    2936,
+    1510
   ],
   "/images/atlix/dashboard.png": [
     2936,
@@ -367,9 +371,17 @@
     1884,
     1030
   ],
+  "/images/prosaic/company-openai.png": [
+    1884,
+    1072
+  ],
   "/images/prosaic/general-use.jpg": [
     2000,
     1099
+  ],
+  "/images/prosaic/hero.png": [
+    2256,
+    1246
   ],
   "/images/prosaic/home.jpg": [
     2000,
@@ -391,17 +403,57 @@
     2256,
     1400
   ],
+  "/images/prosaic/posters/risk-page.jpg": [
+    2256,
+    1400
+  ],
   "/images/prosaic/posters/use-case.jpg": [
     2256,
     1400
+  ],
+  "/images/prosaic/risk-0.png": [
+    920,
+    588
+  ],
+  "/images/prosaic/risk-1.png": [
+    920,
+    590
+  ],
+  "/images/prosaic/risk-2.png": [
+    920,
+    590
+  ],
+  "/images/prosaic/risk-3.png": [
+    920,
+    590
+  ],
+  "/images/prosaic/risk-4.png": [
+    920,
+    590
+  ],
+  "/images/prosaic/risk-5.png": [
+    920,
+    590
+  ],
+  "/images/prosaic/risk-6.png": [
+    920,
+    590
   ],
   "/images/prosaic/risk-card.png": [
     920,
     588
   ],
+  "/images/prosaic/risks-grid.png": [
+    2256,
+    924
+  ],
   "/images/prosaic/risks.png": [
     1884,
     2650
+  ],
+  "/images/prosaic/sources-table.png": [
+    1464,
+    795
   ],
   "/images/prosaic/type-colour.png": [
     2256,
@@ -412,8 +464,8 @@
     1200
   ],
   "/images/prosaic/weights-section.png": [
-    1884,
-    1056
+    1464,
+    792
   ],
   "/images/prosaic/weights-table.png": [
     1884,

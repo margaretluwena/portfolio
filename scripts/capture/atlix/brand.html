@@ -1,38 +1,19 @@
 <!doctype html>
-<!-- The Atlix brand sheet, second take (2026-11-02; the first read as a
-     template). Built at 4:3 for the Around it strip's crop: the wordmark,
-     the six colours as one band, and the two typefaces. Tokens from the
-     product: ink #05090f, card #0d1526, line #1e3054, amber #c8922a,
-     text #eef1f6, muted #8fa4be; Inter and a mono for data. -->
+<!-- The Atlix brand sheet, sized for the Around it strip's small 4:3 box
+     (Margaret, 2026-11-02): the wordmark, the six colours as a band, and one
+     headline, nothing smaller than reads at a sixth of the column. -->
 <html lang="en"><head><meta charset="utf-8" /><title>Atlix brand</title>
 <style>
   html, body { margin: 0; }
-  body { width: 1128px; height: 846px; background: #05090f; color: #eef1f6; font-family: "Inter", -apple-system, system-ui, sans-serif; position: relative; overflow: hidden; }
-  .wrap { position: absolute; inset: 0; display: grid; grid-template-rows: 1fr auto 1fr; }
-  .top { display: flex; align-items: center; justify-content: center; }
-  .top img { height: 150px; display: block; }
-  .band { display: grid; grid-template-columns: repeat(6, 1fr); height: 150px; }
-  .band div { position: relative; }
-  .band span { position: absolute; left: 18px; bottom: 14px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px; letter-spacing: 0.12em; color: rgba(238,241,246,0.75); }
-  .band .on-light span { color: rgba(5,9,15,0.6); }
-  .bottom { display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 0 96px; gap: 64px; }
-  .type h1 { margin: 0; font-size: 44px; line-height: 1.05; letter-spacing: -0.025em; font-weight: 600; }
-  .type p { margin: 14px 0 0; font-size: 15px; color: #8fa4be; letter-spacing: 0.01em; }
-  .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; color: #c8922a; font-size: 36px; letter-spacing: -0.01em; line-height: 1.2; }
-  .mono small { display: block; color: #8fa4be; font-size: 13px; letter-spacing: 0.08em; margin-top: 12px; font-family: "Inter", system-ui, sans-serif; }
+  body { width: 800px; height: 600px; background: #05090f; color: #eef1f6; font-family: "Inter", -apple-system, system-ui, sans-serif; position: relative; overflow: hidden; }
+  .wrap { position: absolute; inset: 48px 56px; display: grid; grid-template-rows: auto 1fr auto; gap: 28px; }
+  .top img { height: 72px; display: block; }
+  .band { display: grid; grid-template-columns: repeat(6, 1fr); border-radius: 8px; overflow: hidden; }
+  .h { font-size: 40px; line-height: 1.08; letter-spacing: -0.025em; font-weight: 600; max-width: 14ch; }
+  .h span { color: #c8922a; }
 </style></head>
 <body><div class="wrap">
   <div class="top"><img src="../../../public/images/wordmarks/atlix.svg" alt="Atlix" /></div>
-  <div class="band">
-    <div style="background:#05090f"><span>05090F</span></div>
-    <div style="background:#0d1526"><span>0D1526</span></div>
-    <div style="background:#1e3054"><span>1E3054</span></div>
-    <div style="background:#c8922a"><span>C8922A</span></div>
-    <div style="background:#8fa4be" class="on-light"><span>8FA4BE</span></div>
-    <div style="background:#eef1f6" class="on-light"><span>EEF1F6</span></div>
-  </div>
-  <div class="bottom">
-    <div class="type"><h1>Narrative intelligence for the people who have to respond.</h1><p>Inter, one weight up for headlines</p></div>
-    <div class="mono">24,386 posts<br />↑ 47% · 8 narratives<small>A MONO FOR THE DATA</small></div>
-  </div>
+  <div class="band"><div style="background:#0d1526"></div><div style="background:#1e3054"></div><div style="background:#c8922a"></div><div style="background:#8fa4be"></div><div style="background:#dde3ed"></div><div style="background:#eef1f6"></div></div>
+  <div class="h">Narrative intelligence for the people who <span>have to respond.</span></div>
 </div></body></html>

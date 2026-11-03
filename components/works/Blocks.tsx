@@ -345,6 +345,7 @@ export function Marked({ text }: { text: string }) {
 /* a section's visual: recorded footage, a coded animation, an image, or a
    slot still to be filled; each with one caption line under it */
 function VisualView({ visual }: { visual: Visual }) {
+  const reduceMotion = useReducedMotion();
   if (visual.kind === "slot") {
     return (
       <div className="grid aspect-[16/9] w-full place-items-center rounded-[4px] bg-placeholder/40 px-6 text-center">
@@ -378,22 +379,37 @@ function VisualView({ visual }: { visual: Visual }) {
        and desaturated, so what did not ship reads apart from what did
        (Margaret, 2026-11-02: "make it more obvious that these three didn't
        work and the two did"). */
+    /* a muted run turns grey as it scrolls into view, one image after the
+       next, and stays grey (Margaret, 2026-11-02: "animate it turning grey
+       when you scroll"); reduced motion renders it grey from the start */
     const row = (media: Media[], muted?: boolean) => (
       <div className="grid grid-flow-col auto-cols-fr items-start gap-3 md:gap-4">
-        {media.map((m) => {
+        {media.map((m, i) => {
           const [w, h] = SIZES[m.src] ?? [1200, 1600];
           const tall = h > w * 1.15;
-          return (
+          const img = (
             <Image
-              key={m.src}
               src={m.src}
               alt={m.alt}
               width={w}
               height={h}
               sizes="(max-width: 768px) 30vw, 14vw"
-              className={`block rounded-[4px] ${muted ? "opacity-45 grayscale" : ""}`}
+              className="block rounded-[4px]"
               style={tall ? { width: "auto", height: "auto", maxHeight: "44vh", maxWidth: "100%" } : { width: "100%", height: "auto" }}
             />
+          );
+          return muted ? (
+            <motion.div
+              key={m.src}
+              initial={reduceMotion ? { filter: "grayscale(1)", opacity: 0.45 } : { filter: "grayscale(0)", opacity: 1 }}
+              whileInView={{ filter: "grayscale(1)", opacity: 0.45 }}
+              viewport={{ once: true, amount: 0.6 }}
+              transition={{ duration: reduceMotion ? 0 : 0.9, delay: reduceMotion ? 0 : 0.5 + i * 0.25, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {img}
+            </motion.div>
+          ) : (
+            <div key={m.src}>{img}</div>
           );
         })}
       </div>
@@ -402,9 +418,9 @@ function VisualView({ visual }: { visual: Visual }) {
       <figure className="space-y-3">
         {visual.groups ? (
           <div className="grid gap-6 md:gap-8" style={{ gridTemplateColumns: visual.groups.map((g) => `${g.media.length}fr`).join(" ") }}>
-            {visual.groups.map((g) => (
-              <div key={g.label} className="space-y-3">
-                <div className={`text-label uppercase ${g.muted ? "text-ink/40" : "text-[var(--study-blue)]"}`}>{g.label}</div>
+            {visual.groups.map((g, gi) => (
+              <div key={g.label || gi} className="space-y-3">
+                {g.label && <div className={`text-label uppercase ${g.muted ? "text-ink/40" : "text-[var(--study-blue)]"}`}>{g.label}</div>}
                 {row(g.media, g.muted)}
               </div>
             ))}

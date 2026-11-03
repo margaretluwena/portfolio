@@ -112,6 +112,7 @@ export type Work = {
   slug: string;
   title: string;
   lede: string;            // one sentence, no second period - the opening line
+  point?: string;          // the doc's bold "The point" line, under the headline (2026-11-02)
   blurb?: string;          // home-card teaser; card falls back to lede (clamped) when absent
   /* the card's credibility pill (Shub, Granola 2026-10-09: "$X raised", the
      product type, the scale - a signal of the team for the visitor who never
@@ -155,6 +156,7 @@ export const works: Work[] = [
     title: "Mark",
     signal: "Raised $1M+", // Margaret, 2026-10-26 (was $3M+)
     lede: "The app and share cards for Mark, a reading companion that turns the lines you underline into something you'd want to post.",
+    point: "The screen that mattered most was the one that leaves the app; a line only brings in new readers if someone's proud to post it.",
     blurb: "The app and share cards for a reading companion", // product first (2026-10-26)
     credits: [
       { label: "Role", value: "Product designer, TroyLabs BUILD" }, // one of the first (the doc, 2026-11-02)
@@ -234,7 +236,7 @@ export const works: Work[] = [
           kind: "gallery",
           groups: [
             {
-              label: "Didn't ship",
+              label: "",
               muted: true,
               media: [
                 { src: "/images/mark/explore-library-recent.png", alt: "An early Notes screen: the latest line, then a grid of categories" },
@@ -243,7 +245,7 @@ export const works: Work[] = [
               ],
             },
             {
-              label: "Shipped",
+              label: "",
               media: [
                 { src: "/images/mark/library-categories.png", alt: "The library that shipped: Recent, Categories and Books tabs, categories as covers" },
                 { src: "/images/mark/library-books.png", alt: "The library that shipped: the Books tab, every line filed under its book" },
@@ -269,9 +271,9 @@ export const works: Work[] = [
         extraVisual: {
           kind: "gallery",
           groups: [
-            { label: "Earlier", muted: true, media: [{ src: "/images/mark/share-second.png", alt: "An earlier share card: the quote over the book's cover, in orange" }] },
+            { label: "", muted: true, media: [{ src: "/images/mark/share-second.png", alt: "An earlier share card: the quote over the book's cover, in orange" }] },
             {
-              label: "Shipped",
+              label: "",
               media: [
                 { src: "/images/mark/share-envelope.jpg", alt: "Share style one: the quote on paper, signed, in a yellow envelope" },
                 { src: "/images/mark/share-postcard.jpg", alt: "Share style two: a postcard, the quote on the back with a stamp and postmark" },
@@ -336,6 +338,7 @@ export const works: Work[] = [
     title: "Traeco",
     signal: "Audience Choice winner", // LavaLab closing summit; a traction number would beat this
     lede: "A dashboard that shows teams what their AI agents cost and recommends how to spend less without the agents getting worse.",
+    point: "Showing teams what they could save was easy; getting them to act meant proving their agents wouldn't get worse.",
     blurb: "The dashboard that tells teams what their agents should cost", // product first (2026-10-29)
     /* poster stand-in until the real export lands */
     cover: { src: "/images/covers/traeco-dashboard.png", alt: "Traeco dashboard" },
@@ -522,6 +525,7 @@ export const works: Work[] = [
     title: "Atlix",
     signal: "Finalist, GSSC",
     lede: "A dashboard that shows what young Californians are saying about politics online, in real time, for advocacy groups and policy researchers.",
+    point: "Researchers already had more information than they could read, so most of the design work was deciding what to leave out.",
     blurb: "Brand and interface for a narrative intelligence platform",
     /* poster stand-in until the real export lands */
     cover: { src: "/images/covers/atlix-poster.png", alt: "Atlix cover" },
@@ -609,7 +613,15 @@ export const works: Work[] = [
           "Decision: Each card answers four things only: the topic, where it's happening, how fast it's growing and who's talking.",
           "What I learned: Cutting felt like losing something, but every field I removed made the grid look more sure of itself.",
         ],
-        visual: { kind: "slot", note: "[MAR: the busy first version, to sit beside the final grid]" },
+        /* the first version rebuilt from her description (scripts/capture/atlix/busy.html), greying as it scrolls in, beside the final grid */
+        visual: {
+          kind: "gallery",
+          groups: [
+            { label: "", muted: true, media: [{ src: "/images/atlix/dashboard-busy.png", alt: "The busy first version: filters down the left, a row of six numbers, three charts, and cards crowded with tags, sparklines and meters" }] },
+            { label: "", media: [{ src: "/images/atlix/dashboard.png", alt: "The final grid: filters for region and issue, a sort row, and cards that each commit to one narrative" }] },
+          ],
+          caption: "The first version, and the grid that shipped.",
+        },
       },
       {
         type: "essay",
@@ -663,14 +675,18 @@ export const works: Work[] = [
      (prosaicintelligence.ai, which differs from Margaret's build) may be
      linked. The footage and stills come from her build running locally
      (scripts/capture/prosaic.config.json). Her [MAR] and [CHECK] slots
-     render highlighted. Sits after Atlix in the index and on the home
-     column, where Impeccable Chicken was (Margaret, 2026-11-02). ---- */
+     render highlighted. Restructured 2026-11-02 to the doc's new copy: the
+     point, the social-impact problem, "Every page answers the next question"
+     (risk pages, company pages, the methodology) in place of What shipped,
+     Why it matters, Looking back. Sits after Atlix in the index and on the
+     home column, where Impeccable Chicken was. ---- */
   {
     slug: "prosaic-intelligence",
     title: "Prosaic Intelligence",
     signal: "Built in three days",
-    lede: "A public index that scores how sixteen popular AI products handle safety, built so anyone can see which one is safest for what they use it for.",
-    blurb: "A public index of consumer AI safety, designed and built in a weekend",
+    lede: "A public index that scores how safely popular AI products behave on the risks everyday users face, built so anyone can see which one is safest for what they use it for.",
+    point: "There's no single safest AI, only the one that's safest for what you care about, so every page helps you ask your own question before it gives you an answer.",
+    blurb: "A public index that scores how safely popular AI products behave on the risks everyday users face, built so anyone can see which one is safest for what they use it for.", // the doc's one-sentence summary (2026-11-02)
     /* the card is the site's own paper (--color-paper #F7F4EF), with the
        index header full-bleed (the beads on their wires, AI SAFETY INDEX,
        WHICH AI IS SAFEST FOR and its pills) cropped to the card's shape from
@@ -679,7 +695,8 @@ export const works: Work[] = [
        that white gradient", "more of the website itself"). The placeholder
        scores at the foot of that screenshot sit under the full paper. */
     cover: { src: "/images/covers/prosaic-index.jpg", alt: "Prosaic Intelligence: the AI Safety Index header, beads on wires over paper" },
-    /* the study opens on the card's own art, the chart over the bead field (Margaret, 2026-11-02: "use the one for the card's thumbnail") */
+    /* the study opens on the chart card whole over the bead field, at the hero's own shape (scripts/capture/prosaic/hero.html, 2026-11-02) */
+    hero: { src: "/images/prosaic/hero.png", alt: "Prosaic Intelligence: the general-use chart over the bead field" },
     cardBg: "#F7F4EF",
     cardFade: "linear-gradient(to bottom, rgba(247,244,239,0) 52%, #F7F4EF 86%)",
     /* the general-use chart card straight on, over the bead field alone
@@ -694,7 +711,7 @@ export const works: Work[] = [
     credits: [
       { label: "Timeline", value: "September 2026, three days" },
       { label: "Role", value: "Designer and builder" },
-      { label: "Team", value: "Anantika Mannby, founder" },
+      { label: "Team", value: "Anantika Mannby, Keegan Wang" },
       { label: "Scope", value: "Brand, web, data visualization, motion" },
     ],
     next: "mark", // wraps: Impeccable Chicken after it is parked
@@ -710,11 +727,12 @@ export const works: Work[] = [
         title: "Setup",
         rail: "Setup",
         body: [
-          "Prosaic Intelligence is a public index that scores how sixteen popular AI products handle safety, built so anyone can see which one is safest for what they use it for. I designed and built the whole site, including the brand, charts and motion, in three days with Claude Code, in September 2026, with its founder, Anantika Mannby.",
-          "There's no single safest AI, only the one that's safest for what you care about, so the site asks your question before it gives you an answer.",
+          "Prosaic Intelligence is a public index that scores how safely popular AI products behave on the risks everyday users face. I designed and built the site, including the brand, charts, motion and every page type, in three days with Claude Code, in September 2026, with Anantika Mannby and Keegan Wang.",
+          "There's no single safest AI, only the one that's safest for what you care about, so every page helps you ask your own question before it gives you an answer.",
+          "[CHECK: the live index now shows 17 model configurations] [CHECK: the live Our Why page is signed by Anantika, Harsh and Keegan]",
         ],
-        /* recorded from her build (scripts/capture/prosaic.config.json, 2026-11-02): the beads follow the pointer, then the page scrolls to the chart, the two cards and the risks */
         visual: { kind: "video", src: "/videos/prosaic/home.mp4", poster: "/images/prosaic/posters/home.jpg", aspect: "1128 / 700", caption: "The index, top to bottom: the beads lean toward the pointer, the bars answer it, the seven risk charts ripple, down to the foot of the page." },
+        visualAfter: 1,
       },
       {
         type: "stats",
@@ -729,19 +747,20 @@ export const works: Work[] = [
         title: "The problem",
         rail: "Problem",
         body: [
-          "Anantika had collected published safety results for sixteen AI products, from ChatGPT to Character AI, and was already talking to major media outlets. The brief fit on a page: an index that turns those fragmented evaluations into one consumer-facing view of which models are safer across the risks that can actually harm someone, epic in its design and clear in what it says, by Sunday, because it could be on the news by Monday. The comps were the model leaderboards, artificialanalysis.ai first; the inspiration ran from Cognition's site to op.al and Information is Beautiful, tech but warm and human with it. And it names real companies, so every number had to hold up.",
+          "About two billion people use AI for homework, health, money and relationships, so even a tiny failure rate reaches millions of people; OpenAI has said around 1.2 million people a week show signs of suicidal intent in ChatGPT conversations. Researchers already test for these risks, but the results sit in papers most people will never read, and the labs mostly grade their own work. [CHECK: re-verify both figures and link the sources]",
+          "Anantika had collected those published results and wanted one independent place where anyone could compare them, with the press already interested. She needed it by Sunday, and since the site names real companies, every number had to hold up. [CHECK: confirm the timing and the press detail]",
         ],
-        /* Anantika's sketch of the page beside the words (Margaret, 2026-11-02: "pic on the right, text on the left") */
         visual: { kind: "image", media: { src: "/images/prosaic/brief-sketch.jpg", alt: "Anantika's pencil sketch of the page: which AI is safest for, a dropdown that changes the graph, a why card, and six to eight graphs" }, caption: "Anantika's sketch: the question, a dropdown that changes the graph, why, and six to eight graphs below." },
         visualSide: true,
+        extraVisual: { kind: "slot", note: "[VISUAL: a raw benchmark table beside the index view, to show what the site translates]" },
       },
       {
         type: "essay",
         title: "Readers pick their use case before they see a ranking",
         rail: "Decisions",
         body: [
-          "A single safest AI ranking is misleading, because a product can score well overall and still fail badly in one area.",
-          "Decision: The page opens with a sentence to finish, Which AI is safest for, with options like long conversations or someone having a hard time, and the ranking reorders around your answer.",
+          "A single safest AI ranking is misleading, because a model can score well overall and still fail badly in one area.",
+          "Decision: The page opens with a sentence to finish, Which AI is safest for, with options like long conversations or someone having a hard time, and the ranking reorders around your answer. [CHECK: the live home now leads with the overall index, so describe what shipped at handoff]",
           "What I learned: A ranking without a use case is a number without meaning.",
         ],
         visual: { kind: "video", src: "/videos/prosaic/use-case.mp4", poster: "/images/prosaic/posters/use-case.jpg", aspect: "1128 / 700", caption: "Hover a bar for its readout, then finish the sentence and the sixteen re-rank: someone having a hard time, looking things up, everyday advice." },
@@ -755,7 +774,7 @@ export const works: Work[] = [
           "Decision: I built the design around an abacus; beads carry the navigation and move with your cursor or the tilt of your phone, and each bar shows how far a product is from a perfect score, not just its rank. The moment I'm proudest of is the first test. I had the movement in my head from the start, and seeing it come true, dynamic and fun to play with, was the best part of the three days.",
           "What I learned: A tech product can still feel human, as long as the playful parts never get in the way of the data.",
         ],
-        visual: { kind: "image", media: { src: "/images/prosaic/risks.png", alt: "The seven ways a model can fail you: a card per risk category, each with its own small chart of the top models" }, caption: "The seven ways a model can fail you, each with its own chart, and a page behind each." },
+        visual: { kind: "image", media: { src: "/images/prosaic/risks-grid.png", alt: "The seven ways a model can fail you: a card per risk category, each with its own small chart of the top models" }, caption: "The seven ways a model can fail you, each with its own chart and a page behind it." },
       },
       {
         type: "essay",
@@ -770,15 +789,53 @@ export const works: Work[] = [
       },
       {
         type: "essay",
-        title: "What shipped",
-        rail: "Shipped",
-        items: [
-          { num: "01", title: "The index", body: "Pick a use case and sixteen products re-rank on one scale." },
-          { num: "02", title: "Risk pages", body: "One per category, with the finding, its sources and its limits." },
-          { num: "03", title: "Methodology", body: "Where the data comes from and how scores are weighted." },
-          { num: "04", title: "Company pages", body: "Each maker's products across all seven risks." },
+        title: "Every page answers the next question",
+        rail: "Pages",
+        body: [
+          "Most readers arrive with one question and leave with three: which AI is safest, why, and what about the one I use. I designed each page type to answer the next question in that chain. [CHECK: keep only the pages you designed, since the team has added some since handoff]",
         ],
         visual: { kind: "image", media: { src: "/images/prosaic/phone-framed.png", alt: "The index on a phone: the beads, the headline, the use-case pills and the chart card" }, caption: "On a phone, where most readers arrive from a news link." },
+        visualSide: true,
+      },
+      {
+        type: "essay",
+        title: "Risk pages go from a score to the evidence behind it",
+        rail: null,
+        body: [
+          "Each of the seven risks, from mental and emotional safety to misinformation, has its own page in the same order: what it measures, the ranked chart, the benchmarks behind it and how they're weighted, real conversations marked as handled well or poorly, and what the score can't tell you.",
+          "Decision: A score never appears without its evidence; you can flip the chart from safety rate to failure rate, read the actual transcripts, and see the limits stated plainly, such as the fact that these are simulated conversations rather than real-world outcomes.",
+        ],
+        /* recorded from her build: the self-harm and crisis page, chart to limits (scripts/capture/prosaic.config.json) */
+        visual: { kind: "video", src: "/videos/prosaic/risk-page.mp4", poster: "/images/prosaic/posters/risk-page.jpg", aspect: "1128 / 700", caption: "One risk page, top to bottom: the chart, what we found, the benchmarks and their weights, the sources, and the limits. [MAR: the transcripts are on the live site, not in this build]" },
+      },
+      {
+        type: "essay",
+        title: "Company pages answer: is the AI I use safe?",
+        rail: null,
+        body: [
+          "Most people don't think in benchmarks; they think in the app on their phone. Each company page lists that maker's models, with an overall score and a score for each of the seven risks, and every risk links back to its own page.",
+          "Decision: I laid company pages out by model, so a reader can see where one company's products are strong and weak at a glance. On OpenAI's page, for example, one model scores about 90 on bias and fairness but about 21 on medical advice. [CHECK: confirm against the live data before publishing]",
+        ],
+        visual: { kind: "image", media: { src: "/images/prosaic/company-openai.png", alt: "OpenAI's company page: one model, scored in each of the seven risk categories" }, caption: "A company page: one bar per risk, so the weak category stands out. [VISUAL: the weakest risk for each model highlighted]" },
+      },
+      {
+        type: "essay",
+        title: "The methodology shows the work",
+        rail: null,
+        body: [
+          "The methodology explains where the data comes from, how scores are normalised and weighted, and what isn't measured, and each benchmark links to its original paper. An acknowledgements strip credits the research groups behind the benchmarks, and a changelog dates every new model and method change.",
+          "Decision: Nothing changes quietly; if a score moves, a reader can see when and why. [CHECK: confirm the acknowledgements and changelog were yours]",
+        ],
+        visual: { kind: "image", media: { src: "/images/prosaic/sources-table.png", alt: "The methodology's sources table: every benchmark, its research group, date and link" }, caption: "The sources behind the scores, each linked to its paper." },
+      },
+      {
+        type: "essay",
+        title: "Why it matters",
+        rail: "Why",
+        body: [
+          "The index makes patterns visible that were buried in separate papers, like a model that handles emotional distress well but gives unsafe medical advice. That's something a parent, a patient or a reporter can act on, and it's the reason the design keeps pointing back to the evidence instead of asking people to trust a single score. [MAR: any real-world response, such as press coverage of the index, traffic, or how the team has used it]",
+        ],
+        visual: { kind: "slot", note: "[VISUAL: two models side by side, one strong on emotional safety and weak on medical advice]" },
       },
       {
         type: "also",

@@ -1,0 +1,71 @@
+<!doctype html>
+<!-- The busy first version of the Atlix dashboard, rebuilt from Margaret's
+     description (2026-11-02: "filters everywhere, charts on charts, every
+     card trying to say too much at once"), in the product's palette, so it
+     can sit beside the final grid. -->
+<html lang="en"><head><meta charset="utf-8" /><title>Atlix, first version</title>
+<style>
+  html, body { margin: 0; }
+  body { width: 1468px; height: 755px; background: #080e1a; color: #eef1f6; font-family: "Inter", -apple-system, system-ui, sans-serif; font-size: 11px; position: relative; overflow: hidden; }
+  .top { height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-bottom: 1px solid #1e3054; }
+  .top b { font-size: 15px; margin-right: 10px; }
+  .chip { border: 1px solid #2a4570; color: #9bb5cc; border-radius: 999px; padding: 3px 9px; font-size: 10px; }
+  .chip.on { border-color: #c8922a; color: #c8922a; }
+  .body { display: grid; grid-template-columns: 200px 1fr 230px; height: 711px; }
+  .side { border-right: 1px solid #1e3054; padding: 12px; display: grid; gap: 8px; align-content: start; }
+  .side h4, .right h4 { margin: 6px 0 2px; font-family: ui-monospace, Menlo, monospace; font-size: 9px; letter-spacing: 0.16em; color: #4a6080; text-transform: uppercase; }
+  .side label { display: flex; gap: 6px; align-items: center; color: #8fa4be; }
+  .side label i { width: 9px; height: 9px; border: 1px solid #3a5a8a; border-radius: 2px; display: inline-block; }
+  .side label i.on { background: #c8922a; border-color: #c8922a; }
+  .side input { width: 100%; height: 3px; background: #1e3054; -webkit-appearance: none; }
+  .main { padding: 12px; display: grid; grid-template-rows: auto 150px 1fr; gap: 10px; min-width: 0; }
+  .kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+  .kpi { border: 1px solid #1e3054; background: #0d1526; padding: 8px; }
+  .kpi b { display: block; font-family: ui-monospace, Menlo, monospace; font-size: 16px; color: #c8922a; }
+  .kpi span { color: #6e8fac; font-size: 9px; }
+  .charts { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 8px; }
+  .chart { border: 1px solid #1e3054; background: #0d1526; padding: 8px; position: relative; }
+  .chart h5 { margin: 0 0 6px; font-size: 10px; color: #8fa4be; font-weight: 500; }
+  .bars { display: flex; align-items: flex-end; gap: 3px; height: 96px; }
+  .bars i { flex: 1; background: #3a5a8a; }
+  .bars i:nth-child(3n) { background: #c8922a; }
+  .line { height: 96px; background: linear-gradient(to top, rgba(200,146,42,0.12), transparent 60%); border-bottom: 1px solid #2a4570; position: relative; }
+  .line:after { content: ""; position: absolute; inset: 20px 0 30px; border-top: 2px solid #c8922a; transform: skewY(-6deg); }
+  .pie { width: 96px; height: 96px; border-radius: 50%; margin: 0 auto; background: conic-gradient(#c8922a 0 34%, #3a5a8a 34% 61%, #1e3054 61% 80%, #5a7aaa 80%); }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; min-height: 0; }
+  .card { border: 1px solid #1e3054; background: #0d1526; padding: 8px; display: grid; gap: 5px; align-content: start; font-size: 10px; color: #9bb5cc; }
+  .card b { color: #eef1f6; font-size: 11px; line-height: 1.25; }
+  .card .row { display: flex; gap: 4px; flex-wrap: wrap; }
+  .card .row span { border: 1px solid #2a4570; border-radius: 999px; padding: 1px 6px; font-size: 9px; }
+  .card .mini { display: flex; align-items: flex-end; gap: 2px; height: 26px; }
+  .card .mini i { flex: 1; background: #3a5a8a; }
+  .card .meter { height: 4px; background: #111d33; }
+  .card .meter i { display: block; height: 100%; width: 62%; background: linear-gradient(90deg, #4ade80 0 10%, #3a5a8a 10% 28%, #f87171 28%); }
+  .card .meta { font-family: ui-monospace, Menlo, monospace; font-size: 9px; color: #4a6080; }
+  .right { border-left: 1px solid #1e3054; padding: 12px; display: grid; gap: 6px; align-content: start; }
+  .right .ev { border: 1px solid #1e3054; padding: 6px; color: #8fa4be; font-size: 10px; }
+</style></head>
+<body>
+<div class="top"><b>Atlix</b><span class="chip on">Live</span><span class="chip">Feed</span><span class="chip">Ask</span><span class="chip">Insights</span><span class="chip">Map</span><span class="chip">Compare</span><span class="chip">Alerts</span><span class="chip">Export</span><span class="chip">7d</span><span class="chip on">30d</span><span class="chip">90d</span></div>
+<div class="body">
+  <div class="side">
+    <h4>Region</h4><label><i class="on"></i>All California</label><label><i></i>Bay Area</label><label><i></i>LA Metro</label><label><i></i>Sacramento</label><label><i></i>San Diego</label>
+    <h4>Issue</h4><label><i class="on"></i>Housing</label><label><i></i>Debt</label><label><i></i>Climate</label><label><i></i>Mental health</label><label><i></i>Rights</label>
+    <h4>Platform</h4><label><i class="on"></i>Reddit</label><label><i class="on"></i>X</label><label><i></i>TikTok</label><label><i></i>News</label>
+    <h4>Age</h4><input type="range" /><h4>Sentiment</h4><input type="range" /><h4>Velocity</h4><input type="range" /><h4>Reach</h4><input type="range" />
+  </div>
+  <div class="main">
+    <div class="kpis"><div class="kpi"><b>24,386</b><span>posts</span></div><div class="kpi"><b>8</b><span>narratives</span></div><div class="kpi"><b>+47%</b><span>velocity</span></div><div class="kpi"><b>62%</b><span>negative</span></div><div class="kpi"><b>3.1</b><span>polarisation</span></div><div class="kpi"><b>18 to 34</b><span>cohort</span></div></div>
+    <div class="charts"><div class="chart"><h5>Volume by week</h5><div class="bars"><i style="height:40%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:70%"></i><i style="height:62%"></i><i style="height:88%"></i><i style="height:76%"></i><i style="height:95%"></i><i style="height:81%"></i><i style="height:66%"></i><i style="height:90%"></i><i style="height:100%"></i></div></div><div class="chart"><h5>Sentiment trend</h5><div class="line"></div></div><div class="chart"><h5>Share by platform</h5><div class="pie"></div></div></div>
+    <div class="grid">
+      <div class="card"><b>Rent burden driving out-migration among young renters</b><div class="row"><span>Housing</span><span>LA Metro</span><span>Ages 26-29</span><span>frustration</span><span>resignation</span><span>RDT</span><span>X</span></div><div class="mini"><i style="height:30%"></i><i style="height:50%"></i><i style="height:45%"></i><i style="height:70%"></i><i style="height:100%"></i></div><div class="meter"><i></i></div><div class="meta">4,312 posts · +47% · 8% / 18% / 74% · polarisation 3.4 · reach 1.2M · updated 14s</div></div>
+      <div class="card"><b>Politician age gap fuels disillusionment and third-party curiosity</b><div class="row"><span>Politics</span><span>Sacramento</span><span>Ages 18-21</span><span>disillusionment</span><span>RDT</span><span>NEWS</span></div><div class="mini"><i style="height:20%"></i><i style="height:40%"></i><i style="height:65%"></i><i style="height:60%"></i><i style="height:100%"></i></div><div class="meter"><i></i></div><div class="meta">3,620 posts · +52% · 10% / 24% / 66% · polarisation 2.9 · reach 980K</div></div>
+      <div class="card"><b>Student debt relief uncertainty tops young voter priority lists</b><div class="row"><span>Education</span><span>Bay Area</span><span>Ages 22-25</span><span>frustration</span><span>cynicism</span><span>X</span></div><div class="mini"><i style="height:50%"></i><i style="height:35%"></i><i style="height:70%"></i><i style="height:80%"></i><i style="height:100%"></i></div><div class="meter"><i></i></div><div class="meta">3,187 posts · +38% · 12% / 22% / 66% · polarisation 2.2 · reach 740K</div></div>
+      <div class="card"><b>Post-Dobbs reproductive rights discourse remains a primary mobiliser</b><div class="row"><span>Rights</span><span>LA Metro</span><span>Ages 22-25</span><span>fear</span><span>solidarity</span><span>RDT</span><span>X</span><span>NEWS</span></div><div class="mini"><i style="height:60%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:90%"></i><i style="height:100%"></i></div><div class="meter"><i></i></div><div class="meta">2,104 posts · +35% · 22% / 20% / 58% · polarisation 3.8 · reach 1.6M</div></div>
+      <div class="card"><b>Mental health access crisis galvanises youth advocacy</b><div class="row"><span>Mental health</span><span>Central Valley</span><span>Ages 22-25</span><span>vulnerability</span><span>solidarity</span></div><div class="mini"><i style="height:40%"></i><i style="height:45%"></i><i style="height:75%"></i><i style="height:70%"></i><i style="height:100%"></i></div><div class="meter"><i></i></div><div class="meta">2,018 posts · +33% · 18% / 28% / 54% · polarisation 1.9</div></div>
+      <div class="card"><b>Climate anxiety reshapes career choices and political identity</b><div class="row"><span>Climate</span><span>Bay Area</span><span>Ages 18-21</span><span>anxiety</span><span>urgency</span><span>RDT</span></div><div class="mini"><i style="height:35%"></i><i style="height:55%"></i><i style="height:50%"></i><i style="height:85%"></i><i style="height:100%"></i></div><div class="meter"><i></i></div><div class="meta">1,844 posts · +29% · 15% / 25% / 60% · polarisation 2.6</div></div>
+    </div>
+  </div>
+  <div class="right"><h4>Live events</h4><div class="ev">14:02 · spike in LA Metro · housing</div><div class="ev">13:48 · new cluster · tuition</div><div class="ev">13:31 · polarisation up 0.4 · rights</div><div class="ev">13:07 · 212 posts / min · debt</div><h4>Saved queries</h4><div class="ev">Bay Area + climate + 18-21</div><div class="ev">Statewide + housing</div><h4>Alerts</h4><div class="ev">Velocity above 40% on any issue</div><div class="ev">Negative above 70% in district 12</div></div>
+</div>
+</body></html>

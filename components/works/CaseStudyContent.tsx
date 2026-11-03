@@ -103,8 +103,10 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
           sat right of it is gone (Margaret, 2026-11-02: "awkwardly placed");
           the title text is the work's name for screen readers via the page
           title, and the lockup still heads the home card. */}
-      <motion.div {...fade(isOverlay ? 0.4 : 0.35)} className="mt-[6vh]">
+      <motion.div {...fade(isOverlay ? 0.4 : 0.35)} className="mt-[6vh] space-y-5">
         <h1 className="study-title text-ink">{isNeed(work.lede) ? work.title : work.lede}</h1>
+        {/* "The point": the study's one bold line, from the doc (2026-11-02) */}
+        {work.point && <p className="study-body font-medium text-ink"><span className="text-[var(--study-blue)]">The point. </span>{work.point}</p>}
       </motion.div>
 
       {/* credits - four columns on desktop, two on phones */}

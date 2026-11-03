@@ -48,7 +48,26 @@
       "width": 560,
       "height": 1000,
       "deviceScaleFactor": 2,
-      "waitMs": 800
+      "waitMs": 800,
+      "transparent": true
+    },
+    {
+      "id": "hero",
+      "route": "/hero.html",
+      "file": "public/images/prosaic/hero.png",
+      "width": 1128,
+      "height": 623,
+      "deviceScaleFactor": 2,
+      "waitMs": 1200
+    },
+    {
+      "id": "risks-grid",
+      "route": "/risks-grid.html",
+      "file": "public/images/prosaic/risks-grid.png",
+      "width": 1128,
+      "height": 462,
+      "deviceScaleFactor": 2,
+      "waitMs": 1200
     }
   ],
   "shots": []

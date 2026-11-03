@@ -36,8 +36,8 @@
       "id": "brand-sheet",
       "route": "/brand.html",
       "file": "public/images/atlix/brand-sheet.png",
-      "width": 1128,
-      "height": 846,
+      "width": 800,
+      "height": 600,
       "deviceScaleFactor": 2,
       "waitMs": 1200
     },
@@ -46,7 +46,16 @@
       "route": "/card.html",
       "file": "public/images/atlix/card-close-framed.png",
       "width": 1128,
-      "height": 760,
+      "height": 700,
+      "deviceScaleFactor": 2,
+      "waitMs": 1000
+    },
+    {
+      "id": "busy",
+      "route": "/busy.html",
+      "file": "public/images/atlix/dashboard-busy.png",
+      "width": 1468,
+      "height": 755,
       "deviceScaleFactor": 2,
       "waitMs": 1000
     }
