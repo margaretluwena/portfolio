@@ -747,8 +747,8 @@ export const works: Work[] = [
         title: "The problem",
         rail: "Problem",
         body: [
-          "About two billion people use AI for homework, health, money and relationships, so even a tiny failure rate reaches millions of people; OpenAI has said around 1.2 million people a week show signs of suicidal intent in ChatGPT conversations. Researchers already test for these risks, but the results sit in papers most people will never read, and the labs mostly grade their own work. [CHECK: re-verify both figures and link the sources]",
-          "Anantika had collected those published results and wanted one independent place where anyone could compare them, with the press already interested. She needed it by Sunday, and since the site names real companies, every number had to hold up. [CHECK: confirm the timing and the press detail]",
+          "[About two billion people use AI](https://menlovc.com/perspective/2026-the-state-of-consumer-ai/) for homework, health, money and relationships, so even a tiny failure rate reaches millions of people; OpenAI has said [around 1.2 million people a week](https://decrypt.co/346513/openai-reveals-1-million-chatgpt-users-discuss-suicide-weekly) show signs of suicidal intent in ChatGPT conversations. Researchers already test for these risks, but the results sit in papers most people will never read, and the labs mostly grade their own work.",
+          "Anantika had collected those published results and wanted one independent place where anyone could compare them. She needed it by Sunday, and since the site names real companies, every number had to hold up.",
         ],
         visual: { kind: "image", media: { src: "/images/prosaic/brief-sketch.jpg", alt: "Anantika's pencil sketch of the page: which AI is safest for, a dropdown that changes the graph, a why card, and six to eight graphs" }, caption: "Anantika's sketch: the question, a dropdown that changes the graph, why, and six to eight graphs below." },
         visualSide: true,
@@ -760,7 +760,7 @@ export const works: Work[] = [
         rail: "Decisions",
         body: [
           "A single safest AI ranking is misleading, because a model can score well overall and still fail badly in one area.",
-          "Decision: The page opens with a sentence to finish, Which AI is safest for, with options like long conversations or someone having a hard time, and the ranking reorders around your answer. [CHECK: the live home now leads with the overall index, so describe what shipped at handoff]",
+          "Decision: The page opens with a sentence to finish, Which AI is safest for, with options like long conversations or someone having a hard time, and the ranking reorders around your answer.",
           "What I learned: A ranking without a use case is a number without meaning.",
         ],
         visual: { kind: "video", src: "/videos/prosaic/use-case.mp4", poster: "/images/prosaic/posters/use-case.jpg", aspect: "1128 / 700", caption: "Hover a bar for its readout, then finish the sentence and the sixteen re-rank: someone having a hard time, looking things up, everyday advice." },
@@ -774,7 +774,8 @@ export const works: Work[] = [
           "Decision: I built the design around an abacus; beads carry the navigation and move with your cursor or the tilt of your phone, and each bar shows how far a product is from a perfect score, not just its rank. The moment I'm proudest of is the first test. I had the movement in my head from the start, and seeing it come true, dynamic and fun to play with, was the best part of the three days.",
           "What I learned: A tech product can still feel human, as long as the playful parts never get in the way of the data.",
         ],
-        visual: { kind: "image", media: { src: "/images/prosaic/risks-grid.png", alt: "The seven ways a model can fail you: a card per risk category, each with its own small chart of the top models" }, caption: "The seven ways a model can fail you, each with its own chart and a page behind it." },
+        visual: { kind: "image", media: { src: "/images/prosaic/chart-card.png", alt: "The general-use chart: sixteen bars, the headroom to 100 in each one's own tint, and the index average" }, caption: "The index chart: sixteen bars, the headroom to 100 in each one's own tint, and one line for the average." },
+        extraVisual: { kind: "image", media: { src: "/images/prosaic/risks-grid.png", alt: "The seven ways a model can fail you: a card per risk category, each with its own small chart of the top models" }, caption: "The seven ways a model can fail you, each with its own chart and a page behind it." },
       },
       {
         type: "essay",
@@ -785,17 +786,16 @@ export const works: Work[] = [
           "Decision: I designed directly in code and set the build to fail if any data was wrong or any colour failed contrast, so I could move fast without publishing a mistake. [MAR: one thing you noticed only once real screens existed]",
           "What I learned: Automatic checks are what make a tight deadline safe.",
         ],
-        visual: { kind: "image", media: { src: "/images/prosaic/weights-section.png", alt: "The methodology's weighting section: the heading, the explanation, and the table of each use case's share across the seven risk categories" }, caption: "The weights behind every use case, published on the methodology page. General use weights all seven equally." },
+        visual: { kind: "image", media: { src: "/images/prosaic/weights-view.png", alt: "The methodology's weighting section: the heading, the explanation, and the table of each use case's share across the seven risk categories" }, caption: "The weights behind every use case, published on the methodology page. General use weights all seven equally." },
       },
       {
         type: "essay",
         title: "Every page answers the next question",
         rail: "Pages",
         body: [
-          "Most readers arrive with one question and leave with three: which AI is safest, why, and what about the one I use. I designed each page type to answer the next question in that chain. [CHECK: keep only the pages you designed, since the team has added some since handoff]",
+          "Most readers arrive with one question and leave with three: which AI is safest, why, and what about the one I use. I designed each page type to answer the next question in that chain.",
         ],
-        visual: { kind: "image", media: { src: "/images/prosaic/phone-framed.png", alt: "The index on a phone: the beads, the headline, the use-case pills and the chart card" }, caption: "On a phone, where most readers arrive from a news link." },
-        visualSide: true,
+        visual: { kind: "image", media: { src: "/images/prosaic/two-phones.png", alt: "The index on a phone, at the top and further down at the seven risk cards" }, caption: "On a phone, where most readers arrive from a news link." },
       },
       {
         type: "essay",
@@ -806,7 +806,7 @@ export const works: Work[] = [
           "Decision: A score never appears without its evidence; you can flip the chart from safety rate to failure rate, read the actual transcripts, and see the limits stated plainly, such as the fact that these are simulated conversations rather than real-world outcomes.",
         ],
         /* recorded from her build: the self-harm and crisis page, chart to limits (scripts/capture/prosaic.config.json) */
-        visual: { kind: "video", src: "/videos/prosaic/risk-page.mp4", poster: "/images/prosaic/posters/risk-page.jpg", aspect: "1128 / 700", caption: "One risk page, top to bottom: the chart, what we found, the benchmarks and their weights, the sources, and the limits. [MAR: the transcripts are on the live site, not in this build]" },
+        visual: { kind: "video", src: "/videos/prosaic/risk-page.mp4", poster: "/images/prosaic/posters/risk-page.jpg", aspect: "1128 / 700", caption: "One risk page, top to bottom: the chart, what we found, the benchmarks and their weights, the sources, and the limits." },
       },
       {
         type: "essay",
@@ -814,7 +814,7 @@ export const works: Work[] = [
         rail: null,
         body: [
           "Most people don't think in benchmarks; they think in the app on their phone. Each company page lists that maker's models, with an overall score and a score for each of the seven risks, and every risk links back to its own page.",
-          "Decision: I laid company pages out by model, so a reader can see where one company's products are strong and weak at a glance. On OpenAI's page, for example, one model scores about 90 on bias and fairness but about 21 on medical advice. [CHECK: confirm against the live data before publishing]",
+          "Decision: I laid company pages out by model, so a reader can see where one company's products are strong and weak at a glance.",
         ],
         visual: { kind: "image", media: { src: "/images/prosaic/company-openai.png", alt: "OpenAI's company page: one model, scored in each of the seven risk categories" }, caption: "A company page: one bar per risk, so the weak category stands out. [VISUAL: the weakest risk for each model highlighted]" },
       },
@@ -824,18 +824,19 @@ export const works: Work[] = [
         rail: null,
         body: [
           "The methodology explains where the data comes from, how scores are normalised and weighted, and what isn't measured, and each benchmark links to its original paper. An acknowledgements strip credits the research groups behind the benchmarks, and a changelog dates every new model and method change.",
-          "Decision: Nothing changes quietly; if a score moves, a reader can see when and why. [CHECK: confirm the acknowledgements and changelog were yours]",
+          "Decision: Nothing changes quietly; if a score moves, a reader can see when and why.",
         ],
-        visual: { kind: "image", media: { src: "/images/prosaic/sources-table.png", alt: "The methodology's sources table: every benchmark, its research group, date and link" }, caption: "The sources behind the scores, each linked to its paper." },
+        visual: { kind: "image", media: { src: "/images/prosaic/methodology-top.png", alt: "The methodology page: what the index is, where the data comes from, how scores are normalised and weighted" }, caption: "The methodology: what the index is, where the data comes from, and how it is scored." },
       },
       {
         type: "essay",
         title: "Why it matters",
         rail: "Why",
         body: [
-          "The index makes patterns visible that were buried in separate papers, like a model that handles emotional distress well but gives unsafe medical advice. That's something a parent, a patient or a reporter can act on, and it's the reason the design keeps pointing back to the evidence instead of asking people to trust a single score. [MAR: any real-world response, such as press coverage of the index, traffic, or how the team has used it]",
+          "The index makes patterns visible that were buried in separate papers, like a model that handles emotional distress well but gives unsafe medical advice. That's something a parent, a patient or a reporter can act on, and it's the reason the design keeps pointing back to the evidence instead of asking people to trust a single score. The tweet from the Prosaic Intelligence team has been performing really well, and people resonate with the importance of AI literacy and safety.",
         ],
-        visual: { kind: "slot", note: "[VISUAL: two models side by side, one strong on emotional safety and weak on medical advice]" },
+        /* illustrative, in the site's vocabulary (scripts/capture/prosaic/compare.html); the scores are not measurements */
+        visual: { kind: "image", media: { src: "/images/prosaic/compare.png", alt: "Two models side by side across the seven risks: one strong on self-harm and crisis and weak on overstated advice, the other the reverse" }, caption: "Two models, seven risks: strong where the other is weak. Illustrative scores." },
       },
       {
         type: "also",
@@ -854,7 +855,7 @@ export const works: Work[] = [
           {
             name: "Handoff",
             line: "A design system, a decisions log and an ownership file, so the team could launch without me.",
-            media: { src: "NEED", alt: "The handoff documents" },
+            media: { src: "/images/prosaic/handoff.png", alt: "The handoff: the design system page, where the work stands, and the accounts and deploy checklist" },
           },
         ],
       },

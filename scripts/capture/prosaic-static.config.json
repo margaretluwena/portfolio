@@ -68,6 +68,34 @@
       "height": 462,
       "deviceScaleFactor": 2,
       "waitMs": 1200
+    },
+    {
+      "id": "compare",
+      "route": "/compare.html",
+      "file": "public/images/prosaic/compare.png",
+      "width": 1128,
+      "height": 560,
+      "deviceScaleFactor": 2,
+      "waitMs": 1500
+    },
+    {
+      "id": "handoff",
+      "route": "/handoff.html",
+      "file": "public/images/prosaic/handoff.png",
+      "width": 800,
+      "height": 600,
+      "deviceScaleFactor": 2,
+      "waitMs": 1500
+    },
+    {
+      "id": "two-phones",
+      "route": "/two-phones.html",
+      "file": "public/images/prosaic/two-phones.png",
+      "width": 1128,
+      "height": 640,
+      "deviceScaleFactor": 2,
+      "transparent": true,
+      "waitMs": 1000
     }
   ],
   "shots": []

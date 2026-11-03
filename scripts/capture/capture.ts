@@ -41,7 +41,7 @@ type Step =
   | { type: "click" }
   | { type: "scroll"; target: string; ms: number; block?: ScrollLogicalPosition };
 type Shot = { id: string; route: string; sidebarCollapsed?: boolean; cursor?: boolean; posterAtMs: number; steps: Step[]; viewport?: { width: number; height: number } };
-type Still = { id: string; route: string; file: string; width: number; height: number; deviceScaleFactor: number; sidebarCollapsed?: boolean; fullPage?: boolean; selector?: string; hide?: string[]; transparent?: boolean; waitMs: number; note?: string };
+type Still = { id: string; route: string; file: string; width: number; height: number; deviceScaleFactor: number; sidebarCollapsed?: boolean; fullPage?: boolean; selector?: string; hide?: string[]; transparent?: boolean; scrollTo?: string; waitMs: number; note?: string };
 type Config = {
   baseUrl: string;
   login?: { path: string; emailEnv: string; passwordEnv: string };
@@ -261,6 +261,8 @@ async function stills(which?: string) {
     await page.goto(config.baseUrl + s.route, { waitUntil: "networkidle" });
     if (s.hide?.length) await page.addStyleTag({ content: `${s.hide.join(",")}{visibility:hidden!important}` });
     await sleep(s.waitMs);
+    /* a still of the viewport with this element's top 40px down, for things that bleed past their section (the methodology's tables, 2026-11-02) */
+    if (s.scrollTo) { await page.locator(s.scrollTo).first().evaluate((el) => { window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 40); }); await sleep(600); }
     await page.evaluate(() => { const c = document.getElementById("__capcursor"); if (c) c.remove(); });
     if (s.selector) await page.locator(s.selector).first().screenshot({ path: path.join(ROOT, s.file), type: "png", omitBackground: !!s.transparent });
     else await page.screenshot({ path: path.join(ROOT, s.file), type: "png", fullPage: !!s.fullPage, omitBackground: !!s.transparent });

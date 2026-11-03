@@ -1,0 +1,26 @@
+<!doctype html>
+<!-- The handoff: the documents left for the team, their real headings,
+     from the clone (docs/design-system.md, NEXT.md, HANDOFF.md). 4:3. -->
+<html lang="en"><head><meta charset="utf-8" /><title>Prosaic handoff</title>
+<style>
+  @font-face { font-family: "Newsreader"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/newsreader/Newsreader-400.ttf") format("truetype"); }
+  @font-face { font-family: "Switzer"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/switzer/Switzer-500.woff2") format("woff2"); font-weight: 500; }
+  @font-face { font-family: "Switzer"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/switzer/Switzer-400.woff2") format("woff2"); font-weight: 400; }
+  @font-face { font-family: "Geist Mono"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/geist-mono/GeistMono-Variable.woff2") format("woff2-variations"); font-weight: 100 900; }
+
+  html, body { margin: 0; }
+  body { width: 800px; height: 600px; background: #E9E5E2; color: #0B1215; font-family: "Switzer", sans-serif; position: relative; overflow: hidden; }
+  .doc { position: absolute; width: 372px; background: #F7F4EF; border-radius: 6px; padding: 22px 24px; box-shadow: 0 14px 36px rgba(11,18,21,0.14), 0 1px 0 rgba(11,18,21,0.06); }
+  .doc small { font-family: "Geist Mono", monospace; font-size: 10px; letter-spacing: 0.12em; color: #2F6FBF; text-transform: uppercase; }
+  .doc h3 { margin: 8px 0 12px; font-family: "Newsreader", serif; font-size: 27px; font-weight: 400; letter-spacing: -0.01em; }
+  .doc ul { margin: 0; padding: 0; list-style: none; font-size: 13px; color: #4B4B4D; display: grid; gap: 5px; }
+  .doc ul li:before { content: "§ "; color: #2F6FBF; }
+  .a { left: 36px; top: 44px; transform: rotate(-2.5deg); }
+  .b { left: 214px; top: 296px; transform: rotate(1.5deg); }
+  .c { left: 400px; top: 56px; transform: rotate(3deg); }
+</style></head>
+<body>
+  <div class="doc a"><small>docs/design-system.md</small><h3>Design system, one page</h3><ul><li>Colour</li><li>Type</li><li>Space, shape, texture</li><li>Motion</li><li>The rules</li></ul></div>
+  <div class="doc c"><small>HANDOFF.md</small><h3>Accounts, services, deploy</h3><ul><li>Accounts and services</li><li>Repository</li><li>Environment variables</li><li>Fonts and licensing</li><li>Known issues before launch</li><li>Deploy checklist</li></ul></div>
+  <div class="doc b"><small>NEXT.md</small><h3>Where the work stands</h3><ul><li>Start here</li><li>What exists</li><li>Decisions already made</li><li>Open, highest value first</li><li>Committed, pass by pass</li></ul></div>
+</body></html>

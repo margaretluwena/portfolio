@@ -375,9 +375,17 @@
     1884,
     1072
   ],
+  "/images/prosaic/compare.png": [
+    2256,
+    1120
+  ],
   "/images/prosaic/general-use.jpg": [
     2000,
     1099
+  ],
+  "/images/prosaic/handoff.png": [
+    1600,
+    1200
   ],
   "/images/prosaic/hero.png": [
     2256,
@@ -390,6 +398,10 @@
   "/images/prosaic/index-header.jpg": [
     2000,
     1021
+  ],
+  "/images/prosaic/methodology-top.png": [
+    2160,
+    1140
   ],
   "/images/prosaic/phone-framed.png": [
     1120,
@@ -451,9 +463,9 @@
     1884,
     2650
   ],
-  "/images/prosaic/sources-table.png": [
-    1464,
-    795
+  "/images/prosaic/two-phones.png": [
+    2256,
+    1280
   ],
   "/images/prosaic/type-colour.png": [
     2256,
@@ -463,13 +475,13 @@
     1600,
     1200
   ],
-  "/images/prosaic/weights-section.png": [
-    1464,
-    792
-  ],
   "/images/prosaic/weights-table.png": [
     1884,
     530
+  ],
+  "/images/prosaic/weights-view.png": [
+    2160,
+    1080
   ],
   "/images/smallworks-1.webp": [
     1973,

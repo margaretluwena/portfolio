@@ -182,26 +182,6 @@
       "waitMs": 2500
     },
     {
-      "id": "weights-section",
-      "route": "/methodology",
-      "file": "public/images/prosaic/weights-section.png",
-      "width": 1440,
-      "height": 1000,
-      "deviceScaleFactor": 1.5,
-      "selector": "section:has(table.method-table.is-weights)",
-      "waitMs": 2500
-    },
-    {
-      "id": "sources-table",
-      "route": "/methodology",
-      "file": "public/images/prosaic/sources-table.png",
-      "width": 1440,
-      "height": 1000,
-      "deviceScaleFactor": 1.5,
-      "selector": "section:has(#sources-table)",
-      "waitMs": 2500
-    },
-    {
       "id": "company-openai",
       "route": "/provider/openai",
       "file": "public/images/prosaic/company-openai.png",
@@ -210,6 +190,34 @@
       "deviceScaleFactor": 2,
       "waitMs": 3000,
       "selector": ".chart-card"
+    },
+    {
+      "id": "phone-risks",
+      "route": "/#risks",
+      "file": "scripts/capture/prosaic/phone-risks.png",
+      "width": 390,
+      "height": 844,
+      "deviceScaleFactor": 2,
+      "waitMs": 3000
+    },
+    {
+      "id": "weights-view",
+      "route": "/methodology",
+      "file": "public/images/prosaic/weights-view.png",
+      "width": 1440,
+      "height": 720,
+      "deviceScaleFactor": 1.5,
+      "scrollTo": "section:has(table.method-table.is-weights)",
+      "waitMs": 2500
+    },
+    {
+      "id": "methodology-top",
+      "route": "/methodology",
+      "file": "public/images/prosaic/methodology-top.png",
+      "width": 1440,
+      "height": 760,
+      "deviceScaleFactor": 1.5,
+      "waitMs": 3000
     }
   ],
   "shots": [
