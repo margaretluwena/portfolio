@@ -403,6 +403,8 @@ function VisualView({ visual }: { visual: Visual }) {
               key={m.src}
               initial={reduceMotion ? { filter: "grayscale(1)", opacity: 0.45 } : { filter: "grayscale(0)", opacity: 1 }}
               whileInView={{ filter: "grayscale(1)", opacity: 0.45 }}
+              /* hovering a greyed image brings its colour back while the pointer is on it (Margaret, 2026-11-02) */
+              whileHover={{ filter: "grayscale(0)", opacity: 1, transition: { duration: 0.35, delay: 0 } }}
               viewport={{ once: true, amount: 0.6 }}
               transition={{ duration: reduceMotion ? 0 : 0.9, delay: reduceMotion ? 0 : 0.5 + i * 0.25, ease: [0.22, 1, 0.36, 1] }}
             >

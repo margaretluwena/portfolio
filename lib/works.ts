@@ -711,7 +711,7 @@ export const works: Work[] = [
     credits: [
       { label: "Timeline", value: "September 2026, three days" },
       { label: "Role", value: "Designer and builder" },
-      { label: "Team", value: "Anantika Mannby, Harsh, Keegan Wang" },
+      { label: "Team", value: "Anantika Mannby, Harsh Patel, Keegan Wang" },
       { label: "Scope", value: "Brand, web, data visualization, motion" },
     ],
     next: "mark", // wraps: Impeccable Chicken after it is parked
@@ -727,7 +727,7 @@ export const works: Work[] = [
         title: "Setup",
         rail: "Setup",
         body: [
-          "Prosaic Intelligence is a public index that scores how safely popular AI products behave on the risks everyday users face. I designed and built the site, including the brand, charts, motion and every page type, in three days with Claude Code, in September 2026, with Anantika Mannby, Harsh and Keegan Wang.",
+          "Prosaic Intelligence is a public index that scores how safely popular AI products behave on the risks everyday users face. I designed and built the site, including the brand, charts, motion and every page type, in three days with Claude Code, in September 2026, with Anantika Mannby, Harsh Patel and Keegan Wang.",
           "There's no single safest AI, only the one that's safest for what you care about, so every page helps you ask your own question before it gives you an answer.",
         ],
         visual: { kind: "video", src: "/videos/prosaic/home.mp4", poster: "/images/prosaic/posters/home.jpg", aspect: "1128 / 700", caption: "The index, top to bottom: the beads lean toward the pointer, the bars answer it, the seven risk charts ripple, down to the foot of the page." },
@@ -827,7 +827,7 @@ export const works: Work[] = [
           "The methodology explains where the data comes from, how scores are normalised and weighted, and what isn't measured, and each benchmark links to its original paper. An acknowledgements strip credits the research groups behind the benchmarks, and a changelog dates every new model and method change.",
           "Decision: Nothing changes quietly; if a score moves, a reader can see when and why.",
         ],
-        visual: { kind: "image", media: { src: "/images/prosaic/methodology-top.png", alt: "The methodology page: what the index is, where the data comes from, how scores are normalised and weighted" }, caption: "The methodology: what the index is, where the data comes from, and how it is scored." },
+        visual: { kind: "video", src: "/videos/prosaic/methodology.mp4", poster: "/images/prosaic/posters/methodology.jpg", aspect: "1128 / 700", caption: "The methodology, top to bottom: what the index is, where the data comes from, how categories are weighted, what is not measured." },
       },
       {
         type: "essay",

@@ -65,18 +65,20 @@
       "route": "/risks-grid.html",
       "file": "public/images/prosaic/risks-grid.png",
       "width": 1128,
-      "height": 462,
+      "height": 800,
       "deviceScaleFactor": 2,
-      "waitMs": 1200
+      "waitMs": 1200,
+      "selector": ".sheet"
     },
     {
       "id": "compare",
       "route": "/compare.html",
       "file": "public/images/prosaic/compare.png",
       "width": 1128,
-      "height": 560,
+      "height": 800,
       "deviceScaleFactor": 2,
-      "waitMs": 1500
+      "waitMs": 1500,
+      "selector": ".wrap"
     },
     {
       "id": "handoff",
@@ -92,7 +94,7 @@
       "route": "/two-phones.html",
       "file": "public/images/prosaic/two-phones.png",
       "width": 1128,
-      "height": 640,
+      "height": 690,
       "deviceScaleFactor": 2,
       "transparent": true,
       "waitMs": 1000

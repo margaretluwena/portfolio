@@ -1,32 +1,32 @@
 <!doctype html>
-<!-- Why it matters: two models side by side, one strong on emotional safety
-     and weak on advice, the other the reverse, in the site's own vocabulary.
-     ILLUSTRATIVE scores, not measurements (Margaret, 2026-11-02: "generate this"). -->
+<!-- Why it matters: two models side by side in the site's own bar (a pill
+     from the baseline, the headroom to 100 in a pale tint of the same colour
+     above it, the score inside near the top). ILLUSTRATIVE scores. -->
 <html lang="en"><head><meta charset="utf-8" /><title>Prosaic compare</title>
 <style>
-  @font-face { font-family: "Newsreader"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/newsreader/Newsreader-400.ttf") format("truetype"); }
   @font-face { font-family: "Switzer"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/switzer/Switzer-500.woff2") format("woff2"); font-weight: 500; }
   @font-face { font-family: "Switzer"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/switzer/Switzer-400.woff2") format("woff2"); font-weight: 400; }
   @font-face { font-family: "Geist Mono"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/geist-mono/GeistMono-Variable.woff2") format("woff2-variations"); font-weight: 100 900; }
 
   html, body { margin: 0; }
-  body { width: 1128px; height: 560px; background: #F7F4EF; color: #0B1215; font-family: "Switzer", sans-serif; position: relative; overflow: hidden; }
-  .wrap { position: absolute; inset: 36px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-  .card { background: #E9E5E2; border-radius: 16px; padding: 26px 28px 22px; display: grid; grid-template-rows: auto auto 1fr; gap: 10px; }
-  h3 { margin: 0; font-size: 26px; font-weight: 500; letter-spacing: -0.01em; }
-  p { margin: 0; font-size: 14px; color: #4B4B4D; }
+  body { width: 1128px; background: #F7F4EF; color: #0B1215; font-family: "Switzer", sans-serif; }
+  .wrap { padding: 28px 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .card { background: #E9E5E2; border-radius: 16px; padding: 24px 26px 20px; display: grid; gap: 8px; }
+  h3 { margin: 0; font-size: 24px; font-weight: 500; letter-spacing: -0.01em; }
+  p { margin: 0 0 8px; font-size: 13.5px; color: #4B4B4D; }
   p b { font-weight: 500; color: #0B1215; }
-  .bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; align-items: end; height: 300px; padding-top: 10px; }
-  .col { display: grid; grid-template-rows: 1fr auto; height: 100%; gap: 8px; }
-  .bar { align-self: end; position: relative; border-radius: 10px; background: var(--m); display: grid; place-items: start center; min-height: 40px; }
-  .bar b { font-family: "Geist Mono", monospace; font-weight: 400; color: #F7F4EF; font-size: 13px; padding-top: 10px; position: relative; }
-  .bar .head { position: absolute; left: 0; right: 0; bottom: 100%; border-radius: 10px 10px 0 0; background: color-mix(in srgb, var(--m) 28%, #E9E5E2); }
+  .bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 9px; }
+  .col { display: grid; grid-template-rows: 270px auto; gap: 8px; }
+  .stack { display: flex; flex-direction: column; }
+  .head { display: block; border-radius: 10px 10px 0 0; background: color-mix(in srgb, var(--m) 32%, #E9E5E2); }
+  .fill { display: grid; place-items: start center; border-radius: 10px; background: var(--m); margin-top: -10px; position: relative; }
+  .fill b { font-family: "Geist Mono", monospace; font-weight: 400; color: #F7F4EF; font-size: 13px; padding-top: 12px; }
   .col i { font-style: normal; font-size: 9.5px; color: #4B4B4D; text-align: center; line-height: 1.15; }
-  .col.strong .bar { outline: 3px solid #2F6FBF; outline-offset: 2px; }
-  .col.weak .bar { outline: 3px solid #0B1215; outline-offset: 2px; }
+  .col.strong .stack { outline: 3px solid #2F6FBF; outline-offset: 3px; border-radius: 10px; }
+  .col.weak .stack { outline: 3px solid #0B1215; outline-offset: 3px; border-radius: 10px; }
   .col.strong i, .col.weak i { color: #0B1215; font-weight: 500; }
 </style></head>
 <body><div class="wrap">
-  <div class="card" style="--m:#0091CE"><h3>Model A</h3><p>Strong on <b>self-harm and crisis</b>, weak on <b>overstated advice</b>.</p><div class="bars"><div class="col"><div class="bar" style="height:78%"><span class="head" style="height:22%"></span><b>78</b></div><i>Sycophancy</i></div><div class="col" class="strong"><div class="bar" style="height:88%"><span class="head" style="height:12%"></span><b>88</b></div><i>Self-harm and crisis</i></div><div class="col" class="weak"><div class="bar" style="height:31%"><span class="head" style="height:69%"></span><b>31</b></div><i>Overstated advice</i></div><div class="col"><div class="bar" style="height:74%"><span class="head" style="height:26%"></span><b>74</b></div><i>Misinformation</i></div><div class="col"><div class="bar" style="height:70%"><span class="head" style="height:30%"></span><b>70</b></div><i>Bias</i></div><div class="col"><div class="bar" style="height:72%"><span class="head" style="height:28%"></span><b>72</b></div><i>Inappropriate content</i></div><div class="col"><div class="bar" style="height:66%"><span class="head" style="height:34%"></span><b>66</b></div><i>Safeguard durability</i></div></div></div>
-  <div class="card" style="--m:#A552B7"><h3>Model B</h3><p>Strong on <b>overstated advice</b>, weak on <b>self-harm and crisis</b>.</p><div class="bars"><div class="col"><div class="bar" style="height:74%"><span class="head" style="height:26%"></span><b>74</b></div><i>Sycophancy</i></div><div class="col" class="weak"><div class="bar" style="height:42%"><span class="head" style="height:58%"></span><b>42</b></div><i>Self-harm and crisis</i></div><div class="col" class="strong"><div class="bar" style="height:86%"><span class="head" style="height:14%"></span><b>86</b></div><i>Overstated advice</i></div><div class="col"><div class="bar" style="height:80%"><span class="head" style="height:20%"></span><b>80</b></div><i>Misinformation</i></div><div class="col"><div class="bar" style="height:76%"><span class="head" style="height:24%"></span><b>76</b></div><i>Bias</i></div><div class="col"><div class="bar" style="height:61%"><span class="head" style="height:39%"></span><b>61</b></div><i>Inappropriate content</i></div><div class="col"><div class="bar" style="height:70%"><span class="head" style="height:30%"></span><b>70</b></div><i>Safeguard durability</i></div></div></div>
+  <div class="card" style="--m:#0091CE"><h3>Model A</h3><p>Strong on <b>self-harm and crisis</b>, weak on <b>overstated advice</b>.</p><div class="bars"><div class="col"><div class="stack"><span class="head" style="height:22%"></span><span class="fill" style="height:78%"><b>78</b></span></div><i>Sycophancy</i></div><div class="col strong"><div class="stack"><span class="head" style="height:12%"></span><span class="fill" style="height:88%"><b>88</b></span></div><i>Self-harm and crisis</i></div><div class="col weak"><div class="stack"><span class="head" style="height:69%"></span><span class="fill" style="height:31%"><b>31</b></span></div><i>Overstated advice</i></div><div class="col"><div class="stack"><span class="head" style="height:26%"></span><span class="fill" style="height:74%"><b>74</b></span></div><i>Misinformation</i></div><div class="col"><div class="stack"><span class="head" style="height:30%"></span><span class="fill" style="height:70%"><b>70</b></span></div><i>Bias</i></div><div class="col"><div class="stack"><span class="head" style="height:28%"></span><span class="fill" style="height:72%"><b>72</b></span></div><i>Inappropriate content</i></div><div class="col"><div class="stack"><span class="head" style="height:34%"></span><span class="fill" style="height:66%"><b>66</b></span></div><i>Safeguard durability</i></div></div></div>
+  <div class="card" style="--m:#A552B7"><h3>Model B</h3><p>Strong on <b>overstated advice</b>, weak on <b>self-harm and crisis</b>.</p><div class="bars"><div class="col"><div class="stack"><span class="head" style="height:26%"></span><span class="fill" style="height:74%"><b>74</b></span></div><i>Sycophancy</i></div><div class="col weak"><div class="stack"><span class="head" style="height:58%"></span><span class="fill" style="height:42%"><b>42</b></span></div><i>Self-harm and crisis</i></div><div class="col strong"><div class="stack"><span class="head" style="height:14%"></span><span class="fill" style="height:86%"><b>86</b></span></div><i>Overstated advice</i></div><div class="col"><div class="stack"><span class="head" style="height:20%"></span><span class="fill" style="height:80%"><b>80</b></span></div><i>Misinformation</i></div><div class="col"><div class="stack"><span class="head" style="height:24%"></span><span class="fill" style="height:76%"><b>76</b></span></div><i>Bias</i></div><div class="col"><div class="stack"><span class="head" style="height:39%"></span><span class="fill" style="height:61%"><b>61</b></span></div><i>Inappropriate content</i></div><div class="col"><div class="stack"><span class="head" style="height:30%"></span><span class="fill" style="height:70%"><b>70</b></span></div><i>Safeguard durability</i></div></div></div>
 </div></body></html>

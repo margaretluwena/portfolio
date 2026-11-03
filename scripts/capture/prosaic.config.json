@@ -205,7 +205,7 @@
       "route": "/methodology",
       "file": "public/images/prosaic/weights-view.png",
       "width": 1440,
-      "height": 720,
+      "height": 560,
       "deviceScaleFactor": 1.5,
       "scrollTo": "section:has(table.method-table.is-weights)",
       "waitMs": 2500
@@ -464,6 +464,67 @@
         {
           "type": "wait",
           "ms": 2200
+        }
+      ]
+    },
+    {
+      "id": "methodology",
+      "route": "/methodology",
+      "posterAtMs": 1500,
+      "steps": [
+        {
+          "type": "wait",
+          "ms": 1500
+        },
+        {
+          "type": "scroll",
+          "target": "section.method-section >> nth=0",
+          "ms": 1300,
+          "block": "start"
+        },
+        {
+          "type": "wait",
+          "ms": 1000
+        },
+        {
+          "type": "scroll",
+          "target": "section:has(#sources-table)",
+          "ms": 1300,
+          "block": "start"
+        },
+        {
+          "type": "wait",
+          "ms": 1000
+        },
+        {
+          "type": "scroll",
+          "target": "section:has(table.method-table.is-weights)",
+          "ms": 1300,
+          "block": "start"
+        },
+        {
+          "type": "wait",
+          "ms": 1200
+        },
+        {
+          "type": "scroll",
+          "target": "section.method-section >> nth=-1",
+          "ms": 1500,
+          "block": "start"
+        },
+        {
+          "type": "wait",
+          "ms": 1000
+        },
+        {
+          "type": "scroll",
+          "target": "footer.footer",
+          "ms": 1400,
+          "block": "start"
+        },
+        {
+          "type": "wait",
+          "ms": 1800
         }
       ]
     }
