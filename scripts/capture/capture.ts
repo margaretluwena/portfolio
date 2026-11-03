@@ -40,7 +40,7 @@ type Step =
   | { type: "move"; target: string }
   | { type: "click" }
   | { type: "scroll"; target: string; ms: number; block?: ScrollLogicalPosition };
-type Shot = { id: string; route: string; sidebarCollapsed?: boolean; posterAtMs: number; steps: Step[]; viewport?: { width: number; height: number } };
+type Shot = { id: string; route: string; sidebarCollapsed?: boolean; cursor?: boolean; posterAtMs: number; steps: Step[]; viewport?: { width: number; height: number } };
 type Still = { id: string; route: string; file: string; width: number; height: number; deviceScaleFactor: number; sidebarCollapsed?: boolean; fullPage?: boolean; selector?: string; hide?: string[]; waitMs: number; note?: string };
 type Config = {
   baseUrl: string;
@@ -211,7 +211,7 @@ async function record(shot: Shot, tmp: string) {
   const recordingStart = Date.now(); // the video starts with the page; sign-in and navigation are trimmed off below
   await login(page);
   await page.goto(config.baseUrl + shot.route, { waitUntil: "networkidle" });
-  await placeCursor(page, vp.width * 0.55, vp.height * 0.6);
+  await placeCursor(page, vp.width * 0.55, vp.height * 0.6, shot.cursor !== false); // a shot may run without a pointer (the Mark swipe)
   const t0 = Date.now();
   let posterTaken = false;
   const posterPath = path.join(ROOT, config.out.posters, `${shot.id}.jpg`);

@@ -9,6 +9,7 @@ import StudyVideo from "@/components/works/StudyVideo";
 import IntegrationSnippet from "@/components/works/motion/IntegrationSnippet";
 import BeforeAfterSlider from "@/components/works/motion/BeforeAfterSlider";
 import ResearchFunnel from "@/components/works/motion/ResearchFunnel";
+import ReportVsLive from "@/components/works/motion/ReportVsLive";
 import { indexWorks } from "@/lib/works";
 import Prox from "@/components/ui/Prox";
 import { TransitionLink } from "@/components/providers/PageTransition";
@@ -362,7 +363,7 @@ function VisualView({ visual }: { visual: Visual }) {
     );
   }
   if (visual.kind === "animation") {
-    const Comp = visual.name === "integration-snippet" ? IntegrationSnippet : visual.name === "before-after" ? BeforeAfterSlider : ResearchFunnel;
+    const Comp = visual.name === "integration-snippet" ? IntegrationSnippet : visual.name === "before-after" ? BeforeAfterSlider : visual.name === "report-vs-live" ? ReportVsLive : ResearchFunnel;
     return (
       <figure className="space-y-3">
         <Comp />

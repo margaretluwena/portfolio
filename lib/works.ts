@@ -69,7 +69,7 @@ export type Block =
    a plain image, or a slot still to be filled */
 export type Visual =
   | { kind: "video"; src: string; poster: string; caption: string; aspect?: string }
-  | { kind: "animation"; name: "integration-snippet" | "before-after" | "research-funnel"; caption: string }
+  | { kind: "animation"; name: "integration-snippet" | "before-after" | "research-funnel" | "report-vs-live"; caption: string }
   | { kind: "image"; media: Media; caption?: string }
   /* a row of images side by side, tops aligned, one caption for the row */
   | { kind: "gallery"; media: Media[]; caption?: string }
@@ -193,8 +193,8 @@ export const works: Work[] = [
         body: [
           "Mark's bookmark saves a line the moment you underline it, and the app holds what it saves. Eason Tang built it through TroyLabs' BUILD program, and I joined as one of the first product designers for eight weeks in fall 2025. I explored how the app should hold notes and books, then designed the share cards that carry a line from the page to someone's feed.",
           "The screen that mattered most was the one that leaves the app. A line only brings in new readers if someone is proud to post it.",
-          /* the raise is Mark's own announcement (x.com/thinkwithmark, 2026); the TIME listing was not found on time.com's 2026 collection pages on 2026-11-02 */
-          "[CHECK: link the TIME listing and thinkwithmark.com]",
+          /* the raise and the TIME listing are Mark's own announcements on x.com/thinkwithmark (links from Margaret, 2026-11-02) */
+          "Mark is at [thinkwithmark.com](https://www.thinkwithmark.com), and [TIME named it one of the Best Inventions of 2026](https://x.com/thinkwithmark/status/2110796538045931919).",
         ],
         visual: { kind: "image", media: { src: "/images/mark/app-share.png", alt: "Mark share screens: a quote on paper, in the app and ready to post" }, caption: "The share cards, the screen the whole app points at." },
         visualAfter: 1,
@@ -203,7 +203,7 @@ export const works: Work[] = [
         type: "stats",
         items: [
           { value: "$1M+", label: "raised" },
-          { value: "TIME Best Inventions", label: "2026" },
+          { value: "TIME Best Inventions", label: "2026", href: "https://x.com/thinkwithmark/status/2110796538045931919" },
           { value: "8,000", label: "on the waitlist while I worked on it" },
         ],
       },
@@ -214,16 +214,17 @@ export const works: Work[] = [
         body: [
           "Mark's bookmark saves a line the moment you underline it, so capture was already solved. The harder part was what came next: a saved line only mattered to the person who saved it, and Eason wanted reading to feel as shareable as Spotify Wrapped. That left the app with two questions, how to get readers coming back to their lines and how to get anyone else to care about them.",
         ],
-        visual: { kind: "slot", note: "[MAR: a camera roll full of book screenshots, the way people saved lines before Mark]" },
+        /* her screenshot of the Figma reference board (2026-11-02): camera rolls of underlined pages, library cards, shelves */
+        visual: { kind: "image", media: { src: "/images/mark/reference-board.webp", alt: "The reference board: photos of underlined pages and book dedications saved to camera rolls, library cards, and shelves" }, caption: "How people kept lines before Mark: a camera roll of underlined pages." },
       },
       {
         type: "essay",
         title: "The library is organised the way people actually read",
         rail: "Decisions",
         body: [
-          "Mark had books, highlights and handwritten notes, which is more than most reading apps hold, so I spent the first few weeks trying different ways to structure them. [MAR: how many directions, and one line on why each lost]",
+          "Mark had books, highlights and handwritten notes, which is more than most reading apps hold, so I spent the first few weeks trying different ways to structure them. The first was close to a bookshelf, your books on shelves the way they sit at home. It looked the part, and that was the problem: it was stylised in a way nothing else in the app was, it added friction, and Eason didn't like it. The second was simpler, bento-style library cards that put the book itself first, and that is where most of the iterating happened.",
           "Decision: Any line can be found by book, by category or by the note written beside it, and every line stays with its note so you remember why it mattered.",
-          "What I learned: I couldn't find the right structure on paper; it only became obvious after building out the wrong ones. [MAR: confirm]",
+          "What I learned: I couldn't find the right structure on paper. It only became obvious once I put it into action and started designing and building.",
         ],
         /* three of the V3.2 library structures (a Recent card over a category grid, a category as a list, a bare grid), then the two tabs that shipped in Demo V3.3 */
         visual: {
@@ -243,7 +244,7 @@ export const works: Work[] = [
         title: "The share cards are built to be posted",
         rail: null,
         body: [
-          "A quote means very little to someone who hasn't read the book, and nobody posts something that looks like a screenshot. Every time I made the cards quieter, they got more forgettable. [MAR: the quieter versions you tried first]",
+          "A quote means very little to someone who hasn't read the book, and nobody posts something that looks like a screenshot. The first pass was exactly that: the quote on plain paper over a share sheet. Every time I made the cards quieter, they got more forgettable.",
           "Decision: I went bold and Wrapped-style, with three styles to pick from: a signed letter in a yellow envelope, a stamped postcard and a sticky note with the line circled. [MAR: when each one is used]",
           "What I learned: Restraint isn't always good taste; a card has to be worth being seen with, so personality beat polish.",
         ],
@@ -265,21 +266,14 @@ export const works: Work[] = [
         type: "essay",
         title: "What shipped",
         rail: "Shipped",
-        body: ["[MAR: a 15-second recording from the library to a finished share card, to sit above this list]"],
         items: [
           { num: "01", title: "Library", body: "Every line, findable by book, category or note." },
           { num: "02", title: "Note detail", body: "The line next to what you thought about it." },
           { num: "03", title: "Share", body: "Pick a style and post." },
         ],
-        visual: {
-          kind: "gallery",
-          media: [
-            { src: "/images/mark/home-recents.png", alt: "Home: the latest line as a full card over a blurred cover, with View Recents and share" },
-            { src: "/images/mark/app-notes-inside.png", alt: "Note detail: the book, the line, and the tools under it" },
-            { src: "/images/mark/share-envelope-screen.png", alt: "Share quote: the letter in its envelope, with copy link, Messages and Instagram Story" },
-          ],
-          caption: "Home, a note, and the share screen as they shipped.",
-        },
+        /* the swipe: the Figma screens in an iPhone, sliding from the library to the share cards and through their iterations (scripts/capture/mark, 2026-11-02) */
+        visual: { kind: "video", src: "/videos/mark/swipe.mp4", poster: "/images/mark/posters/swipe.jpg", aspect: "1128 / 700", caption: "From the library to a finished share card, through the share cards' iterations: paper, then the cover, then the letter, postcard and sticky note." },
+        visualFirst: true,
       },
       {
         type: "also",
@@ -297,7 +291,7 @@ export const works: Work[] = [
           },
           {
             name: "Pitch deck",
-            line: "I turned Mark's idea into the three-minute deck for the LAUNCH summit. [MAR: the arc of the deck]",
+            line: "I turned Mark's idea into the three-minute deck for the LAUNCH summit.",
             media: { src: "/videos/mark-pitch.mp4", alt: "Mark pitch deck, as presented at LAUNCH", video: true, poster: "/images/mark/pitch-poster.jpg" },
           },
         ],
@@ -306,7 +300,7 @@ export const works: Work[] = [
         type: "essay",
         title: "Looking back",
         rail: "Looking back",
-        body: ["[MAR: one or two sentences on what you'd do differently next time, for example putting the share cards in front of real readers sooner]"],
+        body: ["I'd spend much more time testing these screens in front of real readers. A lot of my assumptions came from my own reading, and I'm not the only user of this product. Putting it in front of people would have let me iterate much faster and reach a final product much sooner."],
       },
     ],
   },
@@ -428,8 +422,8 @@ export const works: Work[] = [
         rail: null,
         body: [
           /* the testing line is drafted from the repo's own record (the SDK's shadow evaluation, AUDIT.md trace 3): a slice of live calls re-run against the candidate model, three judge votes with randomised order, numbers only */
-          "Recommendations were what set us apart, and they also made people nervous; if a cheaper setup made an agent worse, that was on us. So we tracked quality on every agent and tested each change before it rolled out: on a slice of live traffic the SDK re-runs the same request on the cheaper model, and three judge votes compare the two outputs, so a recommendation carries a measured preference before anyone accepts it. [CHECK: this is how the SDK's shadow evaluation reads in the repo; keep it in your words]",
-          "Decision: Each recommendation shows cost, quality and confidence side by side, and teams can try it on a small share of traffic before switching fully. [MAR: if this is what moved 22% to 71%, say so]",
+          "Recommendations were what set us apart, and they also made people nervous; if a cheaper setup made an agent worse, that was on us. So we tracked quality on every agent and tested each change before it rolled out.",
+          "Decision: Each recommendation shows cost, quality and confidence side by side, and teams can try it on a small share of traffic before switching fully. Quality next to cost is what removed much of the stigma and the early hesitation from the first users and partners we worked with.",
           "What I learned: A recommendation is only as useful as people's trust in it.",
         ],
         visual: { kind: "video", src: "/videos/traeco/recommendations.mp4", poster: "/images/traeco/posters/recommendations.jpg", caption: "Open a recommendation to see what it saves, what it does to quality and how sure the judge is, then try it on part of the traffic." },
@@ -452,7 +446,7 @@ export const works: Work[] = [
         title: "Building it myself",
         rail: "In code",
         body: [
-          "Traeco was the first product I built from scratch and shipped, and my first time using Claude Code. Seeing real data in it showed me quickly what was feasible and what only worked in Figma, and every component had to hold up for one agent or hundreds. [MAR: one example]",
+          "Traeco was the first product I built from scratch and shipped, and my first time using Claude Code. Seeing real data in it showed me quickly what was feasible and what only worked in Figma, and every component had to hold up for one agent or hundreds. [MAR: one example, such as a screen you redesigned once real data was in it, or a table or chart that had to hold for one agent and for hundreds]",
         ],
       },
       {
@@ -480,7 +474,7 @@ export const works: Work[] = [
         type: "essay",
         title: "Looking back",
         rail: "Looking back",
-        body: ["[MAR: one or two sentences on what you'd do differently next time, for example narrowing to agentic AI sooner]"],
+        body: ["I wish we had spent more time on this one idea. I enjoyed the earlier explorations and the industries they took us through, chip manufacturing for startups among them, but getting here sooner would have let me sit with the product and flesh it out properly."],
       },
     ],
   },
@@ -503,7 +497,7 @@ export const works: Work[] = [
     credits: [
       { label: "Role", value: "Cofounder and design lead" },
       { label: "Timeline", value: "2026" },
-      { label: "Team", value: "NEED" }, // [MAR: cofounder names]
+      { label: "Team", value: "David Han, Vishnu Kadaba, Kirti Subramanian, Eric Ye" },
       { label: "Disciplines", value: "Product Design, Design System, Brand Identity, Pitch Deck" },
     ],
     next: "prosaic-intelligence",
@@ -537,9 +531,9 @@ export const works: Work[] = [
         title: "Setup",
         rail: "Setup",
         body: [
-          "Atlix is a dashboard that shows what young Californians are saying about politics online, in real time, for advocacy groups and policy researchers. I researched how policy teams work, then designed the dashboard, brand and pitch deck, as cofounder and design lead in 2026 with [MAR: cofounder names].",
+          "Atlix is a dashboard that shows what young Californians are saying about politics online, in real time, for advocacy groups and policy researchers. I researched how policy teams work, then designed the dashboard, brand and pitch deck, as cofounder and design lead in 2026 with David Han, Vishnu Kadaba, Kirti Subramanian and Eric Ye.",
           "Researchers already had more information than they could read, so most of the design work was deciding what to leave out.",
-          "[CHECK: mention the Government of Telangana as a design partner only if it is public]",
+          "We came out of the final in Seoul as finalists, with design partners in Taiwan and the Government of Telangana.",
         ],
         visual: { kind: "image", media: { src: "/images/atlix/dashboard.png", alt: "The Atlix dashboard: filters on the left, a sort row, and a grid of narrative cards" }, caption: "The dashboard card grid." },
         visualAfter: 1,
@@ -558,7 +552,7 @@ export const works: Work[] = [
         body: [
           "The competition asked teams to empower the next generation through social media, so we chose youth political engagement and tested the idea with local politicians first. [MAR: what they told you] The gap was timing; by the time a poll or report comes out, young people's conversation has already moved on.",
         ],
-        visual: { kind: "slot", note: "[MAR: a dated quarterly report beside a live card, to show the gap]" },
+        visual: { kind: "animation", name: "report-vs-live", caption: "A report lands months after its fieldwork. The card keeps moving." },
       },
       {
         type: "essay",
@@ -569,7 +563,7 @@ export const works: Work[] = [
           "Decision: Every card states one narrative in plain words and shows its source, so a researcher can check it in one click.",
           "What I learned: Research isn't a checkbox; every conversation made half the decisions for me.",
         ],
-        visual: { kind: "slot", note: "[MAR: one card up close, with its source visible]" },
+        visual: { kind: "image", media: { src: "/images/atlix/card-close.png", alt: "One Atlix card up close: the narrative, its sentiment split, who is talking, and the sources it came from" }, caption: "One card: the narrative in plain words, its sentiment, who's talking, and the sources one click away." },
       },
       {
         type: "essay",
@@ -588,11 +582,11 @@ export const works: Work[] = [
         rail: "Shipped",
         items: [
           { num: "01", title: "Filters", body: "Region and issue." },
-          { num: "02", title: "Sorting", body: "[MAR: which sorts]" },
+          { num: "02", title: "Sorting", body: "Most pressing, volume, or fastest growing." },
           { num: "03", title: "Cards", body: "One narrative each, with its source." },
         ],
         /* the product demo from the atlix-landing repo (public/atlixdemo.mp4, 32s, 1872x1080 at 60fps, 15MB), re-encoded to 1440 wide, 30fps, 1.9MB (2026-11-02) */
-        visual: { kind: "video", src: "/videos/atlix/demo.mp4", poster: "/images/atlix/posters/demo.jpg", aspect: "1440 / 830", caption: "The demo: the feed, filtering by region and issue, and a narrative opened to its sources. [MAR: confirm this is the recording you want here]" },
+        visual: { kind: "video", src: "/videos/atlix/demo.mp4", poster: "/images/atlix/posters/demo.jpg", aspect: "1440 / 830", caption: "The demo: the feed, filtering by region and issue, and a narrative opened to its sources." },
       },
       {
         type: "also",
@@ -609,8 +603,9 @@ export const works: Work[] = [
           },
           {
             name: "Design system",
-            line: "The components and tokens behind the dashboard.",
-            media: { src: "NEED", alt: "one image of the design system" },
+            line: "Ink, card and line, one amber, Inter with a mono for the data.",
+            /* rendered from the product's own tokens (scripts/capture/atlix/brand.html, 2026-11-02) */
+            media: { src: "/images/atlix/brand-sheet.png", alt: "The Atlix brand sheet: the wordmark, six swatches, Inter and a mono, the pills and source tags" },
           },
         ],
       },
@@ -618,7 +613,7 @@ export const works: Work[] = [
         type: "essay",
         title: "Looking back",
         rail: "Looking back",
-        body: ["[MAR: one or two sentences on what you'd do differently next time]"],
+        body: ["One of the first pieces of feedback we got was that we were frying fish too large. Our design partners in Taiwan and Telangana were big names, but we would have made far more of an impact by working with as many small politicians as we could and iterating on the product with them before going for the big ones."],
       },
     ],
   },
@@ -700,9 +695,11 @@ export const works: Work[] = [
         title: "The problem",
         rail: "Problem",
         body: [
-          "The founder had collected published safety results for sixteen AI products, from ChatGPT to Character AI, and the press was already interested. They needed a site by Sunday that anyone could understand and that would hold up to scrutiny, since it names real companies. [CHECK: confirm the timing and the press detail]",
+          "Anantika had collected published safety results for sixteen AI products, from ChatGPT to Character AI, and the press was already interested. She needed a site by Sunday that anyone could understand and that would hold up to scrutiny, since it names real companies.",
+          "The brief fit on a page. An index that aggregates consumer AI safety benchmarks to compare how leading models behave across risks like encouraging self-harm, overstated advice, misinformation, bias and inappropriate content, turning fragmented evaluations into one consumer-facing view. Epic in its design and clear in what it said, because she was talking to major media outlets and it could be on the news by Monday. The comps were the model leaderboards, artificialanalysis.ai first, and the inspiration ran from Cognition's site to op.al and Information is Beautiful: tech, but warm and human with it.",
         ],
-        visual: { kind: "slot", note: "[MAR: a raw benchmark table beside the index view, to show what the site translates]" },
+        /* Anantika's sketch of the page, from Margaret (2026-11-02) */
+        visual: { kind: "image", media: { src: "/images/prosaic/brief-sketch.jpg", alt: "Anantika's pencil sketch of the page: which AI is safest for, a dropdown that changes the graph, a why card, and six to eight graphs" }, caption: "Anantika's sketch: the question, a dropdown that changes the graph, why, and six to eight graphs below." },
       },
       {
         type: "essay",
@@ -721,8 +718,8 @@ export const works: Work[] = [
         rail: null,
         body: [
           "The founder wanted something people would talk about, but safety data about real companies also needs to feel precise.",
-          "Decision: I built the design around an abacus; beads carry the navigation and move with your cursor or the tilt of your phone, and each bar shows how far a product is from a perfect score, not just its rank. [MAR: the bead moment you're proudest of]",
-          "What I learned: A serious subject can still feel alive, as long as the playful parts never get in the way of the data. [MAR: confirm]",
+          "Decision: I built the design around an abacus; beads carry the navigation and move with your cursor or the tilt of your phone, and each bar shows how far a product is from a perfect score, not just its rank. The moment I'm proudest of is the first test. I had the movement in my head from the start, and seeing it come true, dynamic and fun to play with, was the best part of the three days.",
+          "What I learned: A tech product can still feel human, as long as the playful parts never get in the way of the data.",
         ],
         visual: { kind: "image", media: { src: "/images/prosaic/general-use.jpg", alt: "General use: sixteen models as bars against the index average" }, caption: "Sixteen bars, the headroom to 100 in each one's own tint, and one line for the average." },
       },
@@ -774,7 +771,10 @@ export const works: Work[] = [
         type: "essay",
         title: "Looking back",
         rail: "Looking back",
-        body: ["[MAR: one or two sentences on what you'd do differently next time]"],
+        body: [
+          "This was a mini hackathon with real consequences, and it was interesting to see the whole breadth of what I could do in exactly three days. The subject matters, consumer safety in an industry as expansive and fast-moving as AI, and looking back I wish I could have committed to working with the team for longer. It's a really great team.",
+          "I also wish I had explored many more iterations of the site. I narrowed it down early and went from lo-fi to hi-fi fast, and with more time the outcome would have been better still. I'm proud of the result, and I think the founders liked it.",
+        ],
       },
     ],
   },
@@ -963,7 +963,8 @@ export const getWork = (slug: string) => works.find((w) => w.slug === slug);
 if (process.env.NODE_ENV !== "production" || process.env.npm_lifecycle_event === "build") {
   for (const w of works) {
     if (w.play) continue;
-    if (!w.blocks.some((b) => b.type === "problem")) {
+    /* an essay study carries its problem as the section railed "Problem" (2026-11-02) */
+    if (!w.blocks.some((b) => b.type === "problem" || (b.type === "essay" && b.rail === "Problem"))) {
       console.warn(`[works] ${w.slug}: no problem block - case study reads as unfinished`);
     }
     if (w.blocks.length > 12) {

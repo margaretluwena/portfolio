@@ -79,6 +79,14 @@
     1400,
     1050
   ],
+  "/images/atlix/brand-sheet.png": [
+    2256,
+    1520
+  ],
+  "/images/atlix/card-close.png": [
+    802,
+    648
+  ],
   "/images/atlix/dashboard.png": [
     2936,
     1510
@@ -275,6 +283,14 @@
     1280,
     720
   ],
+  "/images/mark/posters/swipe.jpg": [
+    2256,
+    1400
+  ],
+  "/images/mark/reference-board.webp": [
+    1344,
+    638
+  ],
   "/images/mark/share-early.png": [
     402,
     874
@@ -326,6 +342,14 @@
   "/images/prosaic/beads.png": [
     2184,
     1524
+  ],
+  "/images/prosaic/brief-sketch.jpg": [
+    1500,
+    2000
+  ],
+  "/images/prosaic/brief-sketch.webp": [
+    1500,
+    2000
   ],
   "/images/prosaic/chart-card.png": [
     1884,

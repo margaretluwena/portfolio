@@ -1,0 +1,12 @@
+{
+  "baseUrl": "file:///Users/margaretluwena/Portfolio/scripts/capture/mark",
+  "viewport": { "width": 1128, "height": 700, "deviceScaleFactor": 2 },
+  "hideSelectors": [],
+  "cursor": { "size": 22, "speedPxPerSec": 900, "minMoveMs": 320, "holdBeforeClickMs": 220, "clickRippleMs": 420, "settleAfterClickMs": 140, "fps": 30 },
+  "encode": { "fps": 30, "maxBytes": 3000000, "crfLadder": [22, 25, 28, 31, 34], "preset": "slow" },
+  "out": { "videos": "public/videos/mark", "posters": "public/images/mark/posters" },
+  "stills": [],
+  "shots": [
+    { "id": "swipe", "route": "/swipe.html", "cursor": false, "posterAtMs": 900, "steps": [ { "type": "wait", "ms": 15200 } ] }
+  ]
+}
