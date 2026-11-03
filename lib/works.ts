@@ -711,7 +711,7 @@ export const works: Work[] = [
     credits: [
       { label: "Timeline", value: "September 2026, three days" },
       { label: "Role", value: "Designer and builder" },
-      { label: "Team", value: "Anantika Mannby, Keegan Wang" },
+      { label: "Team", value: "Anantika Mannby, Harsh, Keegan Wang" },
       { label: "Scope", value: "Brand, web, data visualization, motion" },
     ],
     next: "mark", // wraps: Impeccable Chicken after it is parked
@@ -727,9 +727,8 @@ export const works: Work[] = [
         title: "Setup",
         rail: "Setup",
         body: [
-          "Prosaic Intelligence is a public index that scores how safely popular AI products behave on the risks everyday users face. I designed and built the site, including the brand, charts, motion and every page type, in three days with Claude Code, in September 2026, with Anantika Mannby and Keegan Wang.",
+          "Prosaic Intelligence is a public index that scores how safely popular AI products behave on the risks everyday users face. I designed and built the site, including the brand, charts, motion and every page type, in three days with Claude Code, in September 2026, with Anantika Mannby, Harsh and Keegan Wang.",
           "There's no single safest AI, only the one that's safest for what you care about, so every page helps you ask your own question before it gives you an answer.",
-          "[CHECK: the live index now shows 17 model configurations] [CHECK: the live Our Why page is signed by Anantika, Harsh and Keegan]",
         ],
         visual: { kind: "video", src: "/videos/prosaic/home.mp4", poster: "/images/prosaic/posters/home.jpg", aspect: "1128 / 700", caption: "The index, top to bottom: the beads lean toward the pointer, the bars answer it, the seven risk charts ripple, down to the foot of the page." },
         visualAfter: 1,
@@ -752,7 +751,8 @@ export const works: Work[] = [
         ],
         visual: { kind: "image", media: { src: "/images/prosaic/brief-sketch.jpg", alt: "Anantika's pencil sketch of the page: which AI is safest for, a dropdown that changes the graph, a why card, and six to eight graphs" }, caption: "Anantika's sketch: the question, a dropdown that changes the graph, why, and six to eight graphs below." },
         visualSide: true,
-        extraVisual: { kind: "slot", note: "[VISUAL: a raw benchmark table beside the index view, to show what the site translates]" },
+        /* illustrative rows in the shape of published results, beside the index view (scripts/capture/prosaic/translate.html) */
+        extraVisual: { kind: "image", media: { src: "/images/prosaic/translate.png", alt: "A raw table of published benchmark results, each on its own scale, beside the index view that puts them on one scale" }, caption: "What the site translates: published results, each on its own scale, into one chart. Illustrative rows." },
       },
       {
         type: "essay",
@@ -783,7 +783,7 @@ export const works: Work[] = [
         rail: null,
         body: [
           "Every score had to trace back to a source and every page had to work on a phone, with one person building in three days.",
-          "Decision: I designed directly in code and set the build to fail if any data was wrong or any colour failed contrast, so I could move fast without publishing a mistake. [MAR: one thing you noticed only once real screens existed]",
+          "Decision: I designed directly in code and set the build to fail if any data was wrong or any colour failed contrast, so I could move fast without publishing a mistake. What I noticed once real screens existed is, for one, that it is hard. This is a good example of designing for something with this much data, and of how to package that data so it is digestible for the average consumer.",
           "What I learned: Automatic checks are what make a tight deadline safe.",
         ],
         visual: { kind: "image", media: { src: "/images/prosaic/weights-view.png", alt: "The methodology's weighting section: the heading, the explanation, and the table of each use case's share across the seven risk categories" }, caption: "The weights behind every use case, published on the methodology page. General use weights all seven equally." },
@@ -816,7 +816,8 @@ export const works: Work[] = [
           "Most people don't think in benchmarks; they think in the app on their phone. Each company page lists that maker's models, with an overall score and a score for each of the seven risks, and every risk links back to its own page.",
           "Decision: I laid company pages out by model, so a reader can see where one company's products are strong and weak at a glance.",
         ],
-        visual: { kind: "image", media: { src: "/images/prosaic/company-openai.png", alt: "OpenAI's company page: one model, scored in each of the seven risk categories" }, caption: "A company page: one bar per risk, so the weak category stands out. [VISUAL: the weakest risk for each model highlighted]" },
+        visual: { kind: "image", media: { src: "/images/prosaic/company-openai.png", alt: "OpenAI's company page: one model, scored in each of the seven risk categories" }, caption: "A company page: one bar per risk, so the weak category stands out." },
+        extraVisual: { kind: "image", media: { src: "/images/prosaic/company.png", alt: "A company page laid out by model, with the weakest risk of each model outlined" }, caption: "Laid out by model, with each model's weakest risk outlined. Illustrative scores." },
       },
       {
         type: "essay",

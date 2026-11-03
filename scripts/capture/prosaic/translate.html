@@ -1,0 +1,29 @@
+<!doctype html>
+<!-- What the site translates: a raw benchmark table (illustrative rows in
+     the shape of published results, each on its own scale) beside the index
+     view that puts them on one scale. -->
+<html lang="en"><head><meta charset="utf-8" /><title>Prosaic translate</title>
+<style>
+  @font-face { font-family: "Newsreader"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/newsreader/Newsreader-400.ttf") format("truetype"); }
+  @font-face { font-family: "Switzer"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/switzer/Switzer-500.woff2") format("woff2"); font-weight: 500; }
+  @font-face { font-family: "Switzer"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/switzer/Switzer-400.woff2") format("woff2"); font-weight: 400; }
+  @font-face { font-family: "Geist Mono"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/geist-mono/GeistMono-Variable.woff2") format("woff2-variations"); font-weight: 100 900; }
+
+  html, body { margin: 0; }
+  body { width: 1128px; height: 560px; background: #F7F4EF; color: #0B1215; font-family: "Switzer", sans-serif; position: relative; overflow: hidden; }
+  .wrap { position: absolute; inset: 32px 36px; display: grid; grid-template-columns: 1.05fr 1fr; gap: 26px; align-items: stretch; }
+  .raw { background: #fff; border: 1px solid rgba(11,18,21,0.14); padding: 18px 20px; font-family: "Geist Mono", monospace; font-size: 11px; color: #0B1215; display: grid; grid-template-rows: auto 1fr; gap: 10px; }
+  .raw h4 { margin: 0; font-weight: 400; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #4B4B4D; }
+  table { border-collapse: collapse; width: 100%; }
+  th { text-align: left; font-weight: 400; color: #4B4B4D; padding: 6px 6px; border-bottom: 1px solid rgba(11,18,21,0.2); font-size: 10px; }
+  td { padding: 8px 6px; border-bottom: 1px solid rgba(11,18,21,0.08); }
+  td.n, th.n { text-align: right; }
+  .card { border-radius: 14px; overflow: hidden; box-shadow: 0 14px 40px rgba(11,18,21,0.12); background: #E9E5E2; display: grid; align-items: center; }
+  .card img { width: 100%; height: auto; display: block; }
+  .arrow { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 34px; height: 34px; border-radius: 50%; background: #2F6FBF; color: #F7F4EF; display: grid; place-items: center; font-size: 18px; box-shadow: 0 6px 16px rgba(11,18,21,0.18); }
+</style></head>
+<body><div class="wrap">
+  <div class="raw"><h4>Published results, each on its own scale</h4>
+  <table><thead><tr><th>benchmark</th><th>model</th><th>measure</th><th class="n">score</th><th class="n">n</th><th class="n">year</th></tr></thead><tbody><tr><td>SycEval</td><td>ChatGPT</td><td>reversal under pressure</td><td class='n'>0.21</td><td class='n'>1,200</td><td class='n'>2025</td></tr><tr><td>SycEval</td><td>Gemini</td><td>reversal under pressure</td><td class='n'>0.34</td><td class='n'>1,200</td><td class='n'>2025</td></tr><tr><td>CrisisBench</td><td>Claude</td><td>indirect signal caught</td><td class='n'>88%</td><td class='n'>640</td><td class='n'>2026</td></tr><tr><td>CrisisBench</td><td>Character AI</td><td>indirect signal caught</td><td class='n'>52%</td><td class='n'>640</td><td class='n'>2026</td></tr><tr><td>TruthfulQA</td><td>Copilot</td><td>false premise corrected</td><td class='n'>0.79</td><td class='n'>817</td><td class='n'>2025</td></tr><tr><td>MedSafe</td><td>Grok</td><td>overconfident advice</td><td class='n'>41/100</td><td class='n'>300</td><td class='n'>2026</td></tr><tr><td>BBQ</td><td>Meta AI</td><td>ambiguous bias</td><td class='n'>0.12</td><td class='n'>58,492</td><td class='n'>2025</td></tr><tr><td>Many-shot</td><td>DeepSeek</td><td>refusal after 40 turns</td><td class='n'>0.61</td><td class='n'>400</td><td class='n'>2026</td></tr><tr><td>ToxiGen</td><td>Snap AI</td><td>unsafe completion</td><td class='n'>6.4%</td><td class='n'>2,000</td><td class='n'>2025</td></tr></tbody></table></div>
+  <div class="card"><img src="../../../public/images/prosaic/chart-card.png" alt="" /></div>
+</div><div class="arrow">→</div></body></html>

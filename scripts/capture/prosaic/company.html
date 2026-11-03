@@ -1,0 +1,36 @@
+<!doctype html>
+<!-- A company page laid out by model, the weakest risk of each outlined.
+     Illustrative scores. -->
+<html lang="en"><head><meta charset="utf-8" /><title>Prosaic company</title>
+<style>
+  @font-face { font-family: "Newsreader"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/newsreader/Newsreader-400.ttf") format("truetype"); }
+  @font-face { font-family: "Switzer"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/switzer/Switzer-500.woff2") format("woff2"); font-weight: 500; }
+  @font-face { font-family: "Switzer"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/switzer/Switzer-400.woff2") format("woff2"); font-weight: 400; }
+  @font-face { font-family: "Geist Mono"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/geist-mono/GeistMono-Variable.woff2") format("woff2-variations"); font-weight: 100 900; }
+
+  html, body { margin: 0; }
+  body { width: 1128px; height: 620px; background: #F7F4EF; color: #0B1215; font-family: "Switzer", sans-serif; position: relative; overflow: hidden; }
+  .page { position: absolute; inset: 30px 40px; display: grid; grid-template-rows: auto 1fr; gap: 16px; }
+  h1 { margin: 0; font-family: "Newsreader", serif; font-weight: 400; font-size: 40px; text-transform: uppercase; letter-spacing: 0.01em; }
+  h1 small { display: block; font-family: "Switzer", sans-serif; text-transform: none; font-size: 14px; color: #4B4B4D; margin-top: 4px; letter-spacing: 0; }
+  .card { background: #E9E5E2; border-radius: 16px; padding: 18px 24px; display: grid; grid-template-rows: auto repeat(3, 1fr); gap: 8px; }
+  .head { display: grid; grid-template-columns: 210px repeat(7, 1fr); gap: 8px; font-size: 10px; color: #4B4B4D; letter-spacing: 0.08em; text-transform: uppercase; padding-bottom: 6px; border-bottom: 1px solid rgba(11,18,21,0.12); }
+  .head span:first-child { text-transform: none; letter-spacing: 0; }
+  .model { display: grid; grid-template-columns: 210px 1fr; gap: 8px; align-items: center; }
+  .name b { display: block; font-weight: 500; font-size: 16px; }
+  .name span { font-size: 11px; color: #4B4B4D; }
+  .bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; height: 118px; align-items: end; }
+  .bar { height: 100%; display: grid; align-items: end; border-radius: 8px; background: color-mix(in srgb, var(--m) 24%, #E9E5E2); }
+  .bar i { font-style: normal; display: grid; place-items: start center; border-radius: 8px; background: var(--m); min-height: 28px; }
+  .bar i b { font-family: "Geist Mono", monospace; font-weight: 400; font-size: 12px; color: #F7F4EF; padding-top: 7px; }
+  .bar.weak { outline: 3px solid #0B1215; outline-offset: 2px; }
+</style></head>
+<body><div class="page">
+  <h1>Example Labs<small>Three models we test, scored in every risk category. The weakest category of each is outlined.</small></h1>
+  <div class="card">
+    <div class="head"><span>Model</span><span>Sycophancy</span><span>Self-harm and crisis</span><span>Overstated advice</span><span>Misinformation</span><span>Bias</span><span>Inappropriate content</span><span>Safeguard durability</span></div>
+    <div class="model"><div class="name"><b>Model One</b><span>weakest: Overstated advice</span></div><div class="bars"><div class="bar" style="--m:#3284D0"><i style="height:84%"><b>84</b></i></div><div class="bar" style="--m:#3284D0"><i style="height:79%"><b>79</b></i></div><div class="bar weak" style="--m:#3284D0"><i style="height:46%"><b>46</b></i></div><div class="bar" style="--m:#3284D0"><i style="height:81%"><b>81</b></i></div><div class="bar" style="--m:#3284D0"><i style="height:77%"><b>77</b></i></div><div class="bar" style="--m:#3284D0"><i style="height:72%"><b>72</b></i></div><div class="bar" style="--m:#3284D0"><i style="height:70%"><b>70</b></i></div></div></div>
+    <div class="model"><div class="name"><b>Model One Mini</b><span>weakest: Self-harm and crisis</span></div><div class="bars"><div class="bar" style="--m:#87A1BD"><i style="height:76%"><b>76</b></i></div><div class="bar weak" style="--m:#87A1BD"><i style="height:58%"><b>58</b></i></div><div class="bar" style="--m:#87A1BD"><i style="height:64%"><b>64</b></i></div><div class="bar" style="--m:#87A1BD"><i style="height:74%"><b>74</b></i></div><div class="bar" style="--m:#87A1BD"><i style="height:70%"><b>70</b></i></div><div class="bar" style="--m:#87A1BD"><i style="height:69%"><b>69</b></i></div><div class="bar" style="--m:#87A1BD"><i style="height:62%"><b>62</b></i></div></div></div>
+    <div class="model"><div class="name"><b>Model Two</b><span>weakest: Inappropriate content</span></div><div class="bars"><div class="bar" style="--m:#1898B7"><i style="height:88%"><b>88</b></i></div><div class="bar" style="--m:#1898B7"><i style="height:83%"><b>83</b></i></div><div class="bar" style="--m:#1898B7"><i style="height:71%"><b>71</b></i></div><div class="bar" style="--m:#1898B7"><i style="height:85%"><b>85</b></i></div><div class="bar" style="--m:#1898B7"><i style="height:80%"><b>80</b></i></div><div class="bar weak" style="--m:#1898B7"><i style="height:55%"><b>55</b></i></div><div class="bar" style="--m:#1898B7"><i style="height:78%"><b>78</b></i></div></div></div>
+  </div>
+</div></body></html>

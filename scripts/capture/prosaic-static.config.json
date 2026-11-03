@@ -96,6 +96,24 @@
       "deviceScaleFactor": 2,
       "transparent": true,
       "waitMs": 1000
+    },
+    {
+      "id": "translate",
+      "route": "/translate.html",
+      "file": "public/images/prosaic/translate.png",
+      "width": 1128,
+      "height": 560,
+      "deviceScaleFactor": 2,
+      "waitMs": 1500
+    },
+    {
+      "id": "company",
+      "route": "/company.html",
+      "file": "public/images/prosaic/company.png",
+      "width": 1128,
+      "height": 620,
+      "deviceScaleFactor": 2,
+      "waitMs": 1500
     }
   ],
   "shots": []
