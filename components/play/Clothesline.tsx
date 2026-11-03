@@ -51,10 +51,10 @@ const HANG_H = 128;         // a hung piece's height on desktop
 const HANG_H_SM = 92;       // on phones
 const MAX_W = 230, MAX_W_SM = 150;
 const GAP = 22;             // between pieces on the line
-const ROW_PITCH = 0.55;     // rope to rope, as a share of a piece's height: the next row is strung this much higher, IN FRONT
+const ROW_PITCH = 0.45;     // rope to rope, as a share of a piece's height: the next row is strung this much higher, IN FRONT
 const ROPE_SAG = 26;
 const TOP = 44;             // the first rope's ends, from the top of the line band
-const BASKET_W = 400, BASKET_H = 150, HANDLE = 78;
+const BASKET_W = 400, BASKET_H = 128, HANDLE = 78; // 128: eleven rows of wicker, two fewer than it had (Margaret, 2026-11-03)
 const FLOOR_VH = 0.93;      // the ground: the front hill's line, as a share of the window
 const FOLD = 0.55;          // a folded piece's size, as a share of its hung size
 const FADE = 28;            // the band's fade at either end
