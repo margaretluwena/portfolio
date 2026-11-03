@@ -86,6 +86,30 @@ positioning and `public/atlixdemo.mp4`; re-encoded with the repo's
 ffmpeg-static to `public/videos/atlix/demo.mp4` and `card.mp4`, on the
 study and the home card).
 
+## Three explorations, 2026-11-03
+
+- **The intro in dither.** `components/shell/DitherWordmark.tsx` samples
+  "MARGARET LUWENA" from its real face into a 14-row grid at the sky's
+  6:11 cell and draws it in the sky's glyphs on a canvas over the page:
+  the cells rise into place (assemble, ~1.1s), the real text crossfades
+  in and holds, then on the flight to the corner the cells follow the
+  moving wordmark's live rect, shedding and regathering, and settle into
+  the real text on landing. `app/page.tsx` drives the phases; the hidden
+  text lives on an inner span because Motion animates the shared-layout
+  element's own opacity. HOLD_MS is 2500. Reduced motion skips it all.
+- **The dog's frames** moved to `components/sky-field/dog-frames.mjs`:
+  run, sit, lie (head up, chin on paws), the spin's five views, the play
+  bow. Pets take turns (hop, spin, bow); after ~9s idle the dog lies down
+  and gets up when the ball moves or it is petted; 40% of returns end in
+  a spin. `npm run capture:dog` redraws the contact sheet at
+  `public/images/about/dog-frames.png`.
+- **Play is a clothesline** (`components/play/Clothesline.tsx`): the
+  pieces start in a basket, the filter (All plus each play collection's
+  title) lifts the matching ones onto the rope, pegged under its sag, in
+  as many rows as fit; hover sways a hung piece, click opens it large.
+  Groups come from the play works in `lib/works.ts`; finer tags are a
+  data edit away.
+
 ## Content still marked NEED (Margaret's to supply)
 
 - Prosaic Intelligence: open, featured on the home column after Atlix in
