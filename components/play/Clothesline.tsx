@@ -24,8 +24,13 @@ import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, u
   carries the scene and the hills up together.
 
   Geometry is computed, not laid out: the rope is a quadratic curve with
-  a little sag and every piece's hang point is a point on it. A piece
-  lives in the line group (hung) or the scene (folded); the move between
+  a little sag and every piece's hang point is a point on it. The rows
+  hang in DEPTH, not in a column: each later row is a line strung a
+  little higher behind the one in front, its pieces a touch smaller,
+  their tops tucked behind the front row and its rope and pegs showing
+  through the gaps (Margaret, 2026-11-03). The front row is drawn on
+  top. A piece lives in the line group (hung) or the scene (folded); the
+  move between
   them is a shared-layout flight on its `layoutId`. Reduced motion:
   pieces appear where they belong, nothing springs or sways.
 
@@ -46,7 +51,8 @@ const HANG_H = 128;         // a hung piece's height on desktop
 const HANG_H_SM = 92;       // on phones
 const MAX_W = 230, MAX_W_SM = 150;
 const GAP = 22;             // between pieces on the line
-const ROW_GAP = 84;         // between rows, rope to rope
+const ROW_PITCH = 0.55;     // rope to rope, as a share of a piece's height: the next row hangs BEHIND this one, its top tucked under
+const ROW_SHRINK = 0.92;    // each row back is a little smaller, for the depth
 const ROPE_SAG = 26;
 const TOP = 44;             // the first rope's ends, from the top of the line band
 const BASKET_W = 400, BASKET_H = 150, HANDLE = 78;
@@ -57,7 +63,7 @@ const FADE = 28;            // the band's fade at either end
 const hash = (s: string) => { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return ((h >>> 0) % 1000) / 1000; };
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
-type Placed = { item: PlayItem; w: number; h: number; x: number; y: number; rot: number; hung: boolean; delay: number; peg: number };
+type Placed = { item: PlayItem; w: number; h: number; x: number; y: number; rot: number; hung: boolean; delay: number; peg: number; row: number };
 
 function ropeY(rowTop: number, x: number, width: number) {
   const t = clamp(x / width, 0, 1);
@@ -158,27 +164,34 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   const { placed, rows, linesH } = useMemo(() => {
     const maxW = small ? MAX_W_SM : MAX_W;
     const hung = mounted ? items.filter((it) => filter === "All" || it.group === filter) : [];
-    // pack the hung pieces into rows, left to right
-    const rowsOf: { items: PlayItem[]; widths: number[]; total: number }[] = [];
+    // pack the hung pieces into rows, left to right; each row back is a
+    // little smaller than the one in front of it
+    const rowsOf: { items: PlayItem[]; widths: number[]; total: number; h: number }[] = [];
+    const sizeIn = (it: PlayItem, r: number) => { const hr = H * Math.pow(ROW_SHRINK, r); return { h: hr, w: Math.min(maxW * (hr / H), hr * (it.w / it.h)) }; };
     for (const it of hung) {
-      const w = Math.min(maxW, H * (it.w / it.h));
       const row = rowsOf[rowsOf.length - 1];
+      const { w } = sizeIn(it, Math.max(0, rowsOf.length - 1));
       if (row && row.total + GAP + w <= width) { row.items.push(it); row.widths.push(w); row.total += GAP + w; }
-      else rowsOf.push({ items: [it], widths: [w], total: w });
+      else { const next = sizeIn(it, rowsOf.length); rowsOf.push({ items: [it], widths: [next.w], total: next.w, h: next.h }); }
     }
     const placed: Placed[] = [];
     const sideOf = new Map<string, Placed>();
+    // the rows stack in depth: the front row's rope lowest, each row back
+    // strung ROW_PITCH of a piece higher, so its top hides behind the row
+    // in front and only its lower part shows
+    const pitch = H * ROW_PITCH;
+    const n = rowsOf.length;
     rowsOf.forEach((row, r) => {
-      const rowTop = TOP + r * (H + ROW_GAP);
+      const rowTop = TOP + (n - 1 - r) * pitch;
       let x = (width - row.total) / 2;
       row.items.forEach((it, i) => {
         const w = row.widths[i], cx = x + w / 2;
-        const p: Placed = { item: it, w, h: H, x: cx - w / 2, y: ropeY(rowTop, cx, width) + 8, rot: (hash(it.src) - 0.5) * 5, hung: true, delay: (r * 6 + i) * 0.06, peg: cx };
+        const p: Placed = { item: it, w, h: row.h, x: cx - w / 2, y: ropeY(rowTop, cx, width) + 8, rot: (hash(it.src) - 0.5) * 5, hung: true, delay: (r * 6 + i) * 0.06, peg: cx, row: r };
         placed.push(p); sideOf.set(it.src, p); x += w + GAP;
       });
     });
-    // the line's own height: its rows, in the band's coordinates
-    const linesH = rowsOf.length ? TOP + (rowsOf.length - 1) * (H + ROW_GAP) + H + 16 : TOP;
+    // the line's own height: the front row's bottom, in the band's coordinates
+    const linesH = n ? TOP + (n - 1) * pitch + 8 + H + 16 : TOP;
     // the rest sit in the basket, small and turned, stacked toward its
     // middle, folded over the rim: the tops show above the basket's
     // front, the rest is behind it (scene coordinates)
@@ -187,7 +200,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       const w = Math.min(maxW, H * (it.w / it.h)) * FOLD, h = H * FOLD;
       const spread = Math.min(rest.length - 1, 9) * 14;
       const cx = width / 2 + (rest.length > 1 ? (i / (rest.length - 1) - 0.5) * spread : 0) + (hash(it.src + "x") - 0.5) * 24;
-      placed.push({ item: it, w, h, x: cx - w / 2, y: rimY - h * 0.55 + hash(it.src + "y") * 18, rot: (hash(it.src + "r") - 0.5) * 28, hung: false, delay: i * 0.03, peg: 0 });
+      placed.push({ item: it, w, h, x: cx - w / 2, y: rimY - h * 0.55 + hash(it.src + "y") * 18, rot: (hash(it.src + "r") - 0.5) * 28, hung: false, delay: i * 0.03, peg: 0, row: 0 });
     });
     return { placed, rows: rowsOf.length, linesH };
   }, [items, filter, width, mounted, small, H, rimY]);
@@ -263,7 +276,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       const ln = new Grid(cw, ch, cols);
       const x0 = (poleL + 2) * cw, x1 = poleR * cw;
       for (let r = 0; r < Math.max(1, rows); r++) {
-        const y = TOP + r * (H + ROW_GAP);
+        const y = TOP + r * H * ROW_PITCH; // the back rows' ropes, highest first
         ln.plot((t) => { const x = x0 + t * (x1 - x0); return [x, ropeY(y, x, width)]; }, INK, Math.ceil(width / 2));
         const [, kr] = ln.at(x0, y);
         ln.set(poleL + 1, kr, "o", WOOD, true); ln.set(poleR, kr, "o", WOOD, true);
@@ -316,7 +329,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       initial={false}
       transition={{ layout: flight(p) }}
       className="absolute cursor-pointer"
-      style={{ left: p.x, top: p.y, width: p.w, height: p.h, zIndex: p.hung ? 2 : 3 }}
+      style={{ left: p.x, top: p.y, width: p.w, height: p.h, zIndex: p.hung ? 40 - p.row : 3 }}
       onClick={() => p.hung && setOpen(p.item)}
       role={p.hung ? "button" : undefined}
       tabIndex={p.hung ? 0 : -1}
@@ -350,7 +363,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   return (
     <div ref={scene} className="sticky top-0 h-screen w-full overflow-hidden" style={{ height: "100dvh" }}>
       {/* the filters: the line is the list, this is what you hang on it */}
-      <div ref={filtersRef} className="absolute left-0 right-0 flex flex-wrap gap-2" style={{ top: "17vh", zIndex: 6 }} role="group" aria-label="Hang">
+      <div ref={filtersRef} className="absolute left-0 right-0 flex flex-wrap justify-center gap-2" style={{ top: "17vh", zIndex: 6 }} role="group" aria-label="Hang">
         {["All", ...groups].map((g) => (
           <button
             key={g}
