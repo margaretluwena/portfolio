@@ -933,7 +933,7 @@ export const works: Work[] = [
       { label: "Timeline", value: "2025" },
       { label: "Disciplines", value: "Website Design, Logo Design, UI/UX Design, Framer Development" },
     ],
-    next: "mountaindew",
+    next: "mark", // Mountain Dew removed 2026-11-02
     category: "Productivity",
     year: "2025",
     role: "Designer",
@@ -950,39 +950,6 @@ export const works: Work[] = [
         type: "context",
         body: "I worked with Glance's founders as a designer on their team during TroyLabs' BUILD program. Most of my time went to the website and to rounds of logo exploration.\n\nThe site itself is no longer accessible, so what survives here is the logo process: the sketches and iterations that got us to the final mark.",
         media: { src: "/images/glance-content.png", alt: "Glance logo iterations" },
-      },
-    ],
-  },
-  {
-    slug: "mountaindew",
-    title: "Mountain Dew",
-    signal: "Avenues Consulting Group",
-    lede: "Bottle redesigns and brand strategy for Mountain Dew",
-    cover: { src: "/images/mountaindew-hero.png", alt: "Mountain Dew" },
-    credits: [
-      { label: "Role", value: "Design Consultant, Avenues Consulting Group" },
-      { label: "Timeline", value: "2024" },
-      { label: "Disciplines", value: "Product Design, Brand Strategy, Slide Deck" },
-    ],
-    next: "mark", // Ichioka and Nakao removed 2026-10-09; Prosaic moved up after Atlix 2026-11-02
-    category: "CPG",
-    year: "2024",
-    role: "Design Consultant",
-    comingSoon: true, // parked for now (Margaret, 2026-10-09)
-    coverArt: [
-      { src: "/images/mountaindew-hero.png", left: "-7.95%", top: "-24%", width: "115.90%", height: "124%" },
-    ],
-    blocks: [
-      {
-        type: "context",
-        body: "Mountain Dew came to Avenues Consulting Group as a client. On their team I spearheaded market research and strategy, bottle redesigns built around their new logo, and the final deck presented alongside my team.",
-      },
-      {
-        type: "artifactGrid",
-        media: [
-          { src: "/images/mountaindew-1.png", alt: "Mountain Dew slide deck preview" },
-          { src: "/images/mountaindew-2.png", alt: "Mountain Dew bottle redesigns" },
-        ],
       },
     ],
   },
