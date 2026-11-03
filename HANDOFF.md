@@ -114,8 +114,14 @@ study and the home card).
   `public/images/about/dog-frames.png`.
 - **Play is a clothesline** (`components/play/Clothesline.tsx`, a
   window-tall scene stuck to the top of `app/play/page.tsx`): two poles
-  planted on the sky's front hill (93vh), the basket on the ground
-  between them, the line strung between the poles above. The pieces
+  planted on the sky's front hill (93vh), the basket on the ground at
+  the RIGHT, a welcome line standing on the ground at the left ("Hey,
+  welcome to the playground! This is where (all) my smaller things
+  are, including (graphics) and (ui/ux) that didn't make it into my
+  main works :)") whose bracketed words are the filter pills, and the
+  line strung between the poles above. The play collections' titles
+  are the pill labels, lowercased: "Graphics" and "UI/UX" (renamed from
+  "Small Works", 2026-11-03). The pieces
   start in the basket; the filter (All plus each play collection's
   title) lifts the matching ones onto the rope, pegged under its sag,
   in as many rows as fit (128px tall on desktop, 92 on phones, so seven
@@ -123,8 +129,7 @@ study and the home card).
   is a line strung 0.45 of a piece higher and the higher line is IN
   FRONT, its pieces hanging over the tops of the row below, whose rope
   and pegs show through the gaps (Margaret, 2026-11-03). Hover sways a
-  hung piece, click opens it large. The filters sit centred above the
-  line. Groups come from the play works in `lib/works.ts`. The ground
+  hung piece, click opens it large. Groups come from the play works in `lib/works.ts`. The ground
   never moves: when the rows outgrow the window the LINE scrolls
   (wheel, trackpad, touch; a spring-eased MotionValue on the line group)
   inside a band that fades at its ends and stops with the last row just

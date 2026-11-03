@@ -15,7 +15,10 @@ import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, u
 
   The whole thing is a SCENE the height of the window, stuck to the top
   of the page: two poles planted on the front hill (93vh), the basket on
-  the ground between them, and the line strung between the poles above.
+  the ground at the right, a welcome line standing on the ground at the
+  left with the filters as pills inside its sentence ("This is where
+  (all) my smaller things are, including (graphics) and (ui/ux)...",
+  Margaret, 2026-11-03), and the line strung between the poles above.
   The ground never moves; when there are more rows than fit, the LINE
   scrolls (wheel, trackpad, touch) inside a band that ends just above
   the basket's handle, so no scroll puts a piece into the basket
@@ -58,6 +61,7 @@ const BASKET_W = 400, BASKET_H = 128, HANDLE = 78; // 128: eleven rows of wicker
 const FLOOR_VH = 0.93;      // the ground: the front hill's line, as a share of the window
 const FOLD = 0.55;          // a folded piece's size, as a share of its hung size
 const FADE = 28;            // the band's fade at either end
+const INSET = 48;           // the basket's and the welcome line's distance in from the poles
 
 const hash = (s: string) => { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return ((h >>> 0) % 1000) / 1000; };
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
@@ -125,8 +129,8 @@ const basketEdge = (bx: number, bw: number, k: number) => [bx - bw / 2 + 28 * k,
 export default function Clothesline({ items, groups }: { items: PlayItem[]; groups: string[] }) {
   const reduce = useReducedMotion();
   const scene = useRef<HTMLDivElement>(null);
-  const filtersRef = useRef<HTMLDivElement>(null);
-  const [size, setSize] = useState({ w: 0, h: 0, filtersH: 40 });
+  const descRef = useRef<HTMLParagraphElement>(null);
+  const [size, setSize] = useState({ w: 0, h: 0, descH: 0 });
   const [filter, setFilter] = useState<string>("All");
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState<PlayItem | null>(null);
@@ -137,9 +141,9 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
 
   useLayoutEffect(() => {
     const el = scene.current; if (!el) return;
-    const measure = () => setSize({ w: el.clientWidth, h: el.clientHeight, filtersH: filtersRef.current?.clientHeight ?? 40 });
+    const measure = () => setSize({ w: el.clientWidth, h: el.clientHeight, descH: descRef.current?.clientHeight ?? 0 });
     const ro = new ResizeObserver(measure);
-    ro.observe(el); if (filtersRef.current) ro.observe(filtersRef.current); measure();
+    ro.observe(el); if (descRef.current) ro.observe(descRef.current); measure();
     return () => ro.disconnect();
   }, []);
   // the first lift happens a beat after the page is in
@@ -153,11 +157,15 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   const small = width < 640;
   const H = small ? HANG_H_SM : HANG_H;
   const BW = Math.min(BASKET_W, Math.max(200, width - 90)); // between the poles on a phone
-  /* the ground, the basket, and the band the line scrolls in */
+  /* the ground, the basket at the right, the welcome line at the left
+     (above the basket on a phone), and the band the line scrolls in */
   const floorY = Math.round(vh * FLOOR_VH);
   const rimY = floorY - BASKET_H;
-  const lineTop = Math.round(vh * 0.17) + size.filtersH + 24;
-  const lineBottom = rimY - HANDLE - 12;
+  const bx = width - INSET - BW / 2;
+  const descBottom = small ? rimY - HANDLE - 10 : floorY;
+  const descTop = descBottom - size.descH;
+  const lineTop = Math.round(vh * 0.17);
+  const lineBottom = Math.min(rimY - HANDLE, size.descH ? descTop : rimY - HANDLE) - 12;
   const bandH = Math.max(0, lineBottom - lineTop);
 
   const { placed, rows, linesH } = useMemo(() => {
@@ -196,11 +204,11 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     rest.forEach((it, i) => {
       const w = Math.min(maxW, H * (it.w / it.h)) * FOLD, h = H * FOLD;
       const spread = Math.min(rest.length - 1, 9) * 14;
-      const cx = width / 2 + (rest.length > 1 ? (i / (rest.length - 1) - 0.5) * spread : 0) + (hash(it.src + "x") - 0.5) * 24;
+      const cx = bx + (rest.length > 1 ? (i / (rest.length - 1) - 0.5) * spread : 0) + (hash(it.src + "x") - 0.5) * 24;
       placed.push({ item: it, w, h, x: cx - w / 2, y: rimY - h * 0.55 + hash(it.src + "y") * 18, rot: (hash(it.src + "r") - 0.5) * 28, hung: false, delay: i * 0.03, peg: 0, row: 0 });
     });
     return { placed, rows: rowsOf.length, linesH };
-  }, [items, filter, width, mounted, small, H, rimY]);
+  }, [items, filter, width, mounted, small, H, rimY, bx]);
 
   /* the line's scroll: how far the rows have been pulled up, 0 to maxScroll,
      eased by a spring; the group under the band moves by it */
@@ -257,7 +265,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
         for (let r = capR + 1; r < footR; r++) { g.set(c, r, "|", WOOD); g.set(c + 1, r, "|", WOOD); }
         for (let d = -1; d <= 2; d++) { g.set(c + d, capR, "=", WOOD); g.set(c + d, footR, "=", WOOD); }
       }
-      const bx = width / 2, by = rimY;
+      const by = rimY;
       const [, r0] = g.at(bx, by), rN = Math.floor(floorY / ch);
       for (let r = r0 + 1; r < rN; r++) {
         const [l, rr] = basketEdge(bx, BW, (r - r0) / (rN - r0));
@@ -309,7 +317,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     render();
     if (document.fonts?.ready) document.fonts.ready.then(() => { raf = requestAnimationFrame(render); });
     return () => cancelAnimationFrame(raf);
-  }, [placed, rows, linesH, width, vh, H, font, BW, lineTop, rimY, floorY]);
+  }, [placed, rows, linesH, width, vh, H, font, BW, bx, lineTop, rimY, floorY]);
 
   const flight = (p: Placed) => reduce ? { duration: 0 } : p.hung
     ? { type: "spring" as const, stiffness: 110, damping: 15, mass: 0.9, delay: p.delay }
@@ -354,25 +362,37 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     </motion.div>
   );
 
+  /* a filter, as a pill inside the welcome line */
+  const pill = (g: string) => (
+    <button
+      key={g}
+      type="button"
+      aria-pressed={filter === g}
+      onClick={() => setFilter(g)}
+      className={`inline-block rounded-full border px-[9px] py-[1px] align-baseline lowercase leading-[1.3] transition-colors ${filter === g ? "border-ink bg-ink text-paper" : "border-black/[0.2] bg-white/70 text-ink/70 hover:text-ink"}`}
+    >
+      {g}
+    </button>
+  );
+  // "graphics and ui/ux", "graphics, ui/ux and zines": the collections, joined
+  const named = groups.flatMap((g, i) => [i === 0 ? null : i === groups.length - 1 ? " and " : ", ", pill(g)]);
+
   // the band's fade, at its top and just above the basket's handle
-  const mask = `linear-gradient(to bottom, transparent ${lineTop - FADE}px, #000 ${lineTop}px, #000 ${lineBottom}px, transparent ${lineBottom + FADE}px)`;
+  const mask = `linear-gradient(to bottom, transparent ${lineTop}px, #000 ${lineTop + FADE}px, #000 ${lineBottom - FADE}px, transparent ${lineBottom}px)`;
 
   return (
     <div ref={scene} className="sticky top-0 h-screen w-full overflow-hidden" style={{ height: "100dvh" }}>
-      {/* the filters: the line is the list, this is what you hang on it */}
-      <div ref={filtersRef} className="absolute left-0 right-0 flex flex-wrap justify-center gap-2" style={{ top: "17vh", zIndex: 6 }} role="group" aria-label="Hang">
-        {["All", ...groups].map((g) => (
-          <button
-            key={g}
-            type="button"
-            aria-pressed={filter === g}
-            onClick={() => setFilter(g)}
-            className={`rounded-full border px-[12px] py-[6px] text-label uppercase tracking-[0.06em] transition-colors ${filter === g ? "border-ink bg-ink text-paper" : "border-black/[0.12] bg-white/70 text-ink/60 hover:text-ink"}`}
-          >
-            {g}
-          </button>
-        ))}
-      </div>
+      {/* the welcome line, standing on the ground at the left; the filters
+          are the pills in its sentence: the line is the list, this is
+          what you hang on it */}
+      <p
+        ref={descRef}
+        className="absolute text-body text-ink"
+        style={{ left: small ? INSET : INSET + 8, right: small ? INSET : undefined, maxWidth: small ? undefined : 440, top: descTop, zIndex: 6 }}
+        role="group" aria-label="Hang"
+      >
+        Hey, welcome to the playground! This is where {pill("All")} my smaller things are, including {named} that didn{"\u2019"}t make it into my main works :)
+      </p>
 
       {/* the poles on the ground and the basket's back, in glyphs */}
       <canvas ref={sceneRef} className="pointer-events-none absolute left-0 top-0" aria-hidden style={{ zIndex: 1 }} />

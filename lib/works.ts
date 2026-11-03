@@ -988,7 +988,7 @@ export const works: Work[] = [
   },
   {
     slug: "smallworks",
-    title: "Small Works",
+    title: "UI/UX", // was "Small Works"; the Play page names it in its welcome line (Margaret, 2026-11-03)
     lede: "Projects from hackathons, design challenges, and class projects",
     credits: [
       { label: "Role", value: "Designer" },
