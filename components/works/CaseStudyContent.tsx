@@ -14,7 +14,7 @@ import { useEffect } from "react";
   study). One centered reading column, 56.4vw (1128/2000 on the mockup):
 
     hero          the cover, full column width, 1128:623
-    title row     the lede as the headline, the work's lockup right-aligned
+    title row     the lede as the headline, full width (no lockup since 2026-11-02)
     credits       four columns - Timeline / Role / Team / Disciplines -
                   blue labels over grey values
     sections      blue label ("Context") over large body copy (Blocks)
@@ -99,23 +99,12 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
         )}
       </motion.div>
 
-      {/* title row: headline left, lockup right */}
-      <motion.div
-        {...fade(isOverlay ? 0.4 : 0.35)}
-        className="mt-[6vh] flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10"
-      >
+      {/* title row: the lede as the headline, full width. The lockup that
+          sat right of it is gone (Margaret, 2026-11-02: "awkwardly placed");
+          the title text is the work's name for screen readers via the page
+          title, and the lockup still heads the home card. */}
+      <motion.div {...fade(isOverlay ? 0.4 : 0.35)} className="mt-[6vh]">
         <h1 className="study-title text-ink">{isNeed(work.lede) ? work.title : work.lede}</h1>
-        {work.wordmark ? (
-          /* eslint-disable-next-line @next/next/no-img-element -- local static SVG */
-          <img
-            src={work.wordmark}
-            alt={work.title}
-            className="block h-auto w-[max(96px,12.9%)] shrink-0 md:mb-[0.35em]"
-            style={work.wordmarkGlow ? { filter: work.wordmarkGlow } : undefined}
-          />
-        ) : (
-          <span className="wordmark text-corner shrink-0 text-ink">{work.title}</span>
-        )}
       </motion.div>
 
       {/* credits - four columns on desktop, two on phones */}

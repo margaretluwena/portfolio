@@ -60,6 +60,8 @@ export type Block =
       visualAfter?: number;
       /* a second visual, always at the end (the first one sits after a paragraph) */
       extraVisual?: Visual;
+      /* the visual beside the body, text left and visual right (Mark's Setup) */
+      visualSide?: boolean;
     }
   /* the outcome strip under the credits: three or four short facts */
   | { type: "stats"; items: { value: string; label: string; href?: string }[] }
@@ -72,7 +74,7 @@ export type Visual =
   | { kind: "animation"; name: "integration-snippet" | "before-after" | "research-funnel" | "report-vs-live"; caption: string }
   | { kind: "image"; media: Media; caption?: string }
   /* a row of images side by side, tops aligned, one caption for the row */
-  | { kind: "gallery"; media: Media[]; caption?: string }
+  | { kind: "gallery"; media?: Media[]; groups?: { label: string; media: Media[]; muted?: boolean }[]; caption?: string }
   | { kind: "slot"; note: string };
 
 export type Credit = { label: string; value: string };
@@ -196,8 +198,9 @@ export const works: Work[] = [
           /* the raise and the TIME listing are Mark's own announcements on x.com/thinkwithmark (links from Margaret, 2026-11-02) */
           "Mark is at [thinkwithmark.com](https://www.thinkwithmark.com), and [TIME named it one of the Best Inventions of 2026](https://x.com/thinkwithmark/status/2110796538045931919).",
         ],
-        visual: { kind: "image", media: { src: "/images/mark/app-share.png", alt: "Mark share screens: a quote on paper, in the app and ready to post" }, caption: "The share cards, the screen the whole app points at." },
-        visualAfter: 1,
+        /* the shipped screens in one phone beside the words (scripts/capture/mark/phone.html, 2026-11-02) */
+        visual: { kind: "video", src: "/videos/mark/phone.mp4", poster: "/images/mark/posters/phone.jpg", aspect: "420 / 760", caption: "The app as it shipped: home, the library, a note, and the three share cards." },
+        visualSide: true,
       },
       {
         type: "stats",
@@ -229,14 +232,25 @@ export const works: Work[] = [
         /* three of the V3.2 library structures (a Recent card over a category grid, a category as a list, a bare grid), then the two tabs that shipped in Demo V3.3 */
         visual: {
           kind: "gallery",
-          media: [
-            { src: "/images/mark/explore-library-recent.png", alt: "An early Notes screen: the latest line, then a grid of categories" },
-            { src: "/images/mark/explore-library-category.png", alt: "An early structure: one category opened as a list of lines" },
-            { src: "/images/mark/explore-library-grid.png", alt: "An early structure: categories as a bare grid of cards" },
-            { src: "/images/mark/library-categories.png", alt: "The library that shipped: Recent, Categories and Books tabs, categories as covers" },
-            { src: "/images/mark/library-books.png", alt: "The library that shipped: the Books tab, every line filed under its book" },
+          groups: [
+            {
+              label: "Didn't ship",
+              muted: true,
+              media: [
+                { src: "/images/mark/explore-library-recent.png", alt: "An early Notes screen: the latest line, then a grid of categories" },
+                { src: "/images/mark/explore-library-category.png", alt: "An early structure: one category opened as a list of lines" },
+                { src: "/images/mark/explore-library-grid.png", alt: "An early structure: categories as a bare grid of cards" },
+              ],
+            },
+            {
+              label: "Shipped",
+              media: [
+                { src: "/images/mark/library-categories.png", alt: "The library that shipped: Recent, Categories and Books tabs, categories as covers" },
+                { src: "/images/mark/library-books.png", alt: "The library that shipped: the Books tab, every line filed under its book" },
+              ],
+            },
           ],
-          caption: "Three of the structures I tried, then the Categories and Books tabs that shipped.",
+          caption: "Three structures that didn't ship, and the Categories and Books tabs that did.",
         },
       },
       {
@@ -244,23 +258,29 @@ export const works: Work[] = [
         title: "The share cards are built to be posted",
         rail: null,
         body: [
-          "A quote means very little to someone who hasn't read the book, and nobody posts something that looks like a screenshot. The first pass was exactly that: the quote on plain paper over a share sheet. Every time I made the cards quieter, they got more forgettable.",
-          "Decision: I went bold and Wrapped-style, with three styles to pick from: a signed letter in a yellow envelope, a stamped postcard and a sticky note with the line circled. [MAR: when each one is used]",
+          "A quote means very little to someone who hasn't read the book, and nobody posts something that looks like a screenshot. I started on paper, sketching what a share could even be: stats to scroll through and pick from, a library card with a tassel, a quote card you could edit before posting.",
+          "The first passes put the quote on plain paper, then on the book's cover. Every time I made the cards quieter, they got more forgettable.",
+          "Decision: I went bold and Wrapped-style, and curated three styles for the different ways you'd write a thought down: a letter to someone, a postcard, a sticky note. I had fun with this.",
           "What I learned: Restraint isn't always good taste; a card has to be worth being seen with, so personality beat polish.",
         ],
-        /* the V3.2 share sheet (the quote on plain paper) beside the three styles that shipped */
-        visual: {
-          kind: "gallery",
-          media: [
-            { src: "/images/mark/share-early.png", alt: "The quiet first share card: the quote on plain paper over a share sheet" },
-            { src: "/images/mark/share-envelope.jpg", alt: "Share style one: the quote on paper, signed, in a yellow envelope" },
-            { src: "/images/mark/share-postcard.jpg", alt: "Share style two: a postcard, the quote on the back with a stamp and postmark" },
-            { src: "/images/mark/share-sticky.jpg", alt: "Share style three: a yellow sticky note, the quote circled in blue" },
-          ],
-          caption: "The quiet first card, then the three that shipped: envelope, postcard, sticky note.",
-        },
+        /* the sketches sit with the paragraph that introduces them; the cards, early to shipped, close the section */
+        visual: { kind: "image", media: { src: "/images/mark/share-sketches.png", alt: "Hand-drawn share explorations: stat cards to scroll through, a library card with a tassel, a share quote with tap to edit" }, caption: "The share sketches: stats to pick from, a library card, and the quote card that became the three styles." },
         visualAfter: 0,
-        extraVisual: { kind: "image", media: { src: "/images/mark/share-sketches.png", alt: "Hand-drawn share explorations: stat cards to scroll through, a library card with a tassel, a share quote with tap to edit" }, caption: "The share sketches: stats to pick from, a library card, and the quote card that became the three styles." },
+        extraVisual: {
+          kind: "gallery",
+          groups: [
+            { label: "Earlier", muted: true, media: [{ src: "/images/mark/share-second.png", alt: "An earlier share card: the quote over the book's cover, in orange" }] },
+            {
+              label: "Shipped",
+              media: [
+                { src: "/images/mark/share-envelope.jpg", alt: "Share style one: the quote on paper, signed, in a yellow envelope" },
+                { src: "/images/mark/share-postcard.jpg", alt: "Share style two: a postcard, the quote on the back with a stamp and postmark" },
+                { src: "/images/mark/share-sticky.jpg", alt: "Share style three: a yellow sticky note, the quote circled in blue" },
+              ],
+            },
+          ],
+          caption: "The quote over the cover, then the three that shipped: a letter, a postcard, a sticky note.",
+        },
       },
       {
         type: "essay",
@@ -272,7 +292,7 @@ export const works: Work[] = [
           { num: "03", title: "Share", body: "Pick a style and post." },
         ],
         /* the swipe: the Figma screens in an iPhone, sliding from the library to the share cards and through their iterations (scripts/capture/mark, 2026-11-02) */
-        visual: { kind: "video", src: "/videos/mark/swipe.mp4", poster: "/images/mark/posters/swipe.jpg", aspect: "1128 / 700", caption: "From the library to a finished share card, through the share cards' iterations: paper, then the cover, then the letter, postcard and sticky note." },
+        visual: { kind: "video", src: "/videos/mark/swipe.mp4", poster: "/images/mark/posters/swipe.jpg", aspect: "1128 / 700", caption: "From the library to a finished share card: the letter, the postcard, the sticky note." },
         visualFirst: true,
       },
       {
@@ -282,7 +302,7 @@ export const works: Work[] = [
           {
             name: "Packaging",
             line: "Twenty rough concepts down to three, with yellow chosen last because it carried so much of the identity.",
-            media: { src: "/images/mark/packaging-sleeves-2-board.jpg", alt: "The packaging concept board: the narrowed sleeves laid out together" },
+            media: { src: "/images/mark/packaging-unitbox-1.jpg", alt: "Mark packaging, the last round: six sleeves with yellow on" },
           },
           {
             name: "Merch",
@@ -410,11 +430,21 @@ export const works: Work[] = [
         title: "The home screen only shows what people would pay for",
         rail: null,
         body: [
-          "I sorted everything from the calls into two lists, what makes the product usable and what makes it worth paying for. [MAR: the early versions]",
+          "I sorted everything from the calls into two lists, what makes the product usable and what makes it worth paying for. The early versions led with a sentence about last month's spend and three recommendation cards, first under the Slash name in orange, then as Traeco in green, with the spend breakdown and the at-a-glance numbers stacked below.",
           "Decision: Home shows savings, top recommendations and a spend breakdown, and everything else is one click deeper.",
           "What I learned: The list of what people would pay for is always shorter, and it makes the better product.",
         ],
-        visual: { kind: "animation", name: "before-after", caption: "Drag to compare my first iteration with the most recent one." },
+        /* the two early dashboards from the Traeco Revamp file's "dashboard old" section (exported 2026-11-02), then the slider */
+        visual: {
+          kind: "gallery",
+          media: [
+            { src: "/images/traeco/dashboard-v1-slash.png", alt: "The first dashboard, under the Slash name: you spent, you could save, three recommendation cards, a weekly bar chart, and the at-a-glance tiles" },
+            { src: "/images/traeco/dashboard-v2-first-traeco.png", alt: "The first Traeco dashboard: the same structure in the green, with the spend breakdown by team member" },
+          ],
+          caption: "The early versions: Slash, then the first Traeco.",
+        },
+        visualAfter: 0,
+        extraVisual: { kind: "animation", name: "before-after", caption: "Drag to compare my first iteration with the most recent one." },
       },
       {
         type: "essay",
@@ -446,7 +476,8 @@ export const works: Work[] = [
         title: "Building it myself",
         rail: "In code",
         body: [
-          "Traeco was the first product I built from scratch and shipped, and my first time using Claude Code. Seeing real data in it showed me quickly what was feasible and what only worked in Figma, and every component had to hold up for one agent or hundreds. [MAR: one example, such as a screen you redesigned once real data was in it, or a table or chart that had to hold for one agent and for hundreds]",
+          "Traeco was the first product I built from scratch and shipped, and my first time using Claude Code. Seeing real data in it showed me quickly what was feasible and what only worked in Figma, and every component had to hold up for one agent or hundreds.",
+          "It made me realise that the best designers know how to properly integrate AI into their workflow. Once I got comfortable, I was shipping ten times as much, exploring edge cases, changing and iterating faster than ever, and I had to teach myself how to scale, which I never really knew how to do before.",
         ],
       },
       {
@@ -494,6 +525,8 @@ export const works: Work[] = [
     blurb: "Brand and interface for a narrative intelligence platform",
     /* poster stand-in until the real export lands */
     cover: { src: "/images/covers/atlix-poster.png", alt: "Atlix cover" },
+    /* the study opens on the demo's own frame, the dashboard in its glow, rather than the card's video layer cropped to the hero (Margaret, 2026-11-02: "kinda ugly") */
+    hero: { src: "/images/atlix/posters/demo.jpg", alt: "The Atlix dashboard: what young Californians are talking about, as a grid of narrative cards" },
     credits: [
       { label: "Role", value: "Cofounder and design lead" },
       { label: "Timeline", value: "2026" },
@@ -540,9 +573,11 @@ export const works: Work[] = [
       },
       {
         type: "stats",
+        /* Margaret, 2026-11-02: the field and the standing, in her words */
         items: [
           { value: "Finalist", label: "Global Student Startup Competition, Seoul" },
-          { value: "First team", label: "to represent USC there" },
+          { value: "100+ teams", label: "from around the world, Harvard, Stanford and Cornell among them" },
+          { value: "First", label: "USC All Star Team at the competition" },
         ],
       },
       {
@@ -563,7 +598,7 @@ export const works: Work[] = [
           "Decision: Every card states one narrative in plain words and shows its source, so a researcher can check it in one click.",
           "What I learned: Research isn't a checkbox; every conversation made half the decisions for me.",
         ],
-        visual: { kind: "image", media: { src: "/images/atlix/card-close.png", alt: "One Atlix card up close: the narrative, its sentiment split, who is talking, and the sources it came from" }, caption: "One card: the narrative in plain words, its sentiment, who's talking, and the sources one click away." },
+        visual: { kind: "image", media: { src: "/images/atlix/card-close-framed.png", alt: "One Atlix card, set on a grey from the palette: the narrative, its sentiment split, who is talking, and the sources it came from" }, caption: "One card: the narrative in plain words, its sentiment, who's talking, and the sources one click away." },
       },
       {
         type: "essay",

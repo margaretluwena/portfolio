@@ -81,6 +81,10 @@
   ],
   "/images/atlix/brand-sheet.png": [
     2256,
+    1692
+  ],
+  "/images/atlix/card-close-framed.png": [
+    2256,
     1520
   ],
   "/images/atlix/card-close.png": [
@@ -283,6 +287,10 @@
     1280,
     720
   ],
+  "/images/mark/posters/phone.jpg": [
+    840,
+    1520
+  ],
   "/images/mark/posters/swipe.jpg": [
     2256,
     1400
@@ -310,6 +318,10 @@
   "/images/mark/share-screens.png": [
     1144,
     752
+  ],
+  "/images/mark/share-second.png": [
+    402,
+    874
   ],
   "/images/mark/share-sketches.png": [
     1853,
@@ -426,6 +438,14 @@
   "/images/traeco/dashboard-home.png": [
     1440,
     1559
+  ],
+  "/images/traeco/dashboard-v1-slash.png": [
+    1728,
+    1817
+  ],
+  "/images/traeco/dashboard-v2-first-traeco.png": [
+    1728,
+    1549
   ],
   "/images/traeco/dashboard.png": [
     2880,

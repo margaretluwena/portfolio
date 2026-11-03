@@ -373,27 +373,45 @@ function VisualView({ visual }: { visual: Visual }) {
   }
   if (visual.kind === "gallery") {
     /* a row of images, tops aligned, like a solution piece's gallery; phone
-       screens scale by height so five of them fit the column (2026-11-02) */
+       screens scale by height so five of them fit the column (2026-11-02).
+       With `groups`, the row splits into labelled runs, a muted run dimmed
+       and desaturated, so what did not ship reads apart from what did
+       (Margaret, 2026-11-02: "make it more obvious that these three didn't
+       work and the two did"). */
+    const row = (media: Media[], muted?: boolean) => (
+      <div className="grid grid-flow-col auto-cols-fr items-start gap-3 md:gap-4">
+        {media.map((m) => {
+          const [w, h] = SIZES[m.src] ?? [1200, 1600];
+          const tall = h > w * 1.15;
+          return (
+            <Image
+              key={m.src}
+              src={m.src}
+              alt={m.alt}
+              width={w}
+              height={h}
+              sizes="(max-width: 768px) 30vw, 14vw"
+              className={`block rounded-[4px] ${muted ? "opacity-45 grayscale" : ""}`}
+              style={tall ? { width: "auto", height: "auto", maxHeight: "44vh", maxWidth: "100%" } : { width: "100%", height: "auto" }}
+            />
+          );
+        })}
+      </div>
+    );
     return (
       <figure className="space-y-3">
-        <div className="grid grid-flow-col auto-cols-fr items-start gap-3 md:gap-5">
-          {visual.media.map((m) => {
-            const [w, h] = SIZES[m.src] ?? [1200, 1600];
-            const tall = h > w * 1.15;
-            return (
-              <Image
-                key={m.src}
-                src={m.src}
-                alt={m.alt}
-                width={w}
-                height={h}
-                sizes="(max-width: 768px) 30vw, 14vw"
-                className="block rounded-[4px]"
-                style={tall ? { width: "auto", height: "auto", maxHeight: "44vh", maxWidth: "100%" } : { width: "100%", height: "auto" }}
-              />
-            );
-          })}
-        </div>
+        {visual.groups ? (
+          <div className="grid gap-6 md:gap-8" style={{ gridTemplateColumns: visual.groups.map((g) => `${g.media.length}fr`).join(" ") }}>
+            {visual.groups.map((g) => (
+              <div key={g.label} className="space-y-3">
+                <div className={`text-label uppercase ${g.muted ? "text-ink/40" : "text-[var(--study-blue)]"}`}>{g.label}</div>
+                {row(g.media, g.muted)}
+              </div>
+            ))}
+          </div>
+        ) : (
+          row(visual.media ?? [])
+        )}
         <figcaption>{caption}</figcaption>
       </figure>
     );
@@ -415,6 +433,21 @@ const PARA_LABELS = ["Decision:", "What I learned:"] as const;
 function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
   const visual = block.visual && <VisualView visual={block.visual} />;
   const extra = block.extraVisual && <VisualView visual={block.extraVisual} />;
+  /* the visual beside the text (Mark's Setup: the phone on the right, the
+     words on the left; Margaret, 2026-11-02) */
+  if (block.visualSide && visual) {
+    return (
+      <section className="space-y-6">
+        <SectionLabel>{block.title}</SectionLabel>
+        <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,34%)] md:items-start md:gap-10">
+          <div className="space-y-6">
+            {block.body?.map((para, i) => <p key={i} className="study-body whitespace-pre-line text-ink"><Marked text={para} /></p>)}
+          </div>
+          <div>{visual}</div>
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="space-y-6">
       <SectionLabel>{block.title}</SectionLabel>
@@ -441,7 +474,8 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
         );
       })}
       {block.items && (
-        <ol className="grid gap-6 md:grid-cols-2 md:gap-8">
+        /* three items sit three up; otherwise two columns (Margaret, 2026-11-02: "optimize for 3 when it is 3") */
+        <ol className={`grid gap-6 md:gap-8 ${block.items.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2"}`}>
           {block.items.map((it) => (
             <li key={it.num} className="space-y-1 border-t border-hairline pt-3">
               <span className="text-label uppercase text-ink/40">{it.num}</span>
