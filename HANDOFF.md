@@ -114,8 +114,10 @@ study and the home card).
   Groups come from the play works in `lib/works.ts`; finer tags are a
   data edit away. The rope, pegs and basket are drawn in the sky's
   glyphs (9px Plex Mono on 11px rows) on two canvases: the back one
-  under the pieces (ropes stepping - to _, a peg `n` over `|` at each
-  hang point, the basket's `=` handle and dotted inside), the front one
+  under the pieces (a `||` pole with a `=` cap at either end, the ropes
+  running pole to pole and stepping - to _, an `o` knot where each ties
+  on, a peg `n` over `|` at each hang point, the basket's `=` handle and
+  dotted inside), the front one
   over the folded pieces (a white fill so they read as inside, a
   staggered `-|` wicker, `|` sides, the `(====)` rim).
 

@@ -26,7 +26,9 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
   hang point, the basket's handle and the dotted inside of its back. The
   front one, over the folded pieces, is the basket's front: a paper fill
   so the pieces read as inside it, a staggered wicker of - and | over it,
-  its slanted sides, and the rim.
+  its slanted sides, and the rim. A pole stands at either end (= cap, ||
+  post down to the basket's floor, an o knot where each rope ties on),
+  and the ropes run pole to pole.
 */
 
 export type PlayItem = { src: string; w: number; h: number; group: string; alt?: string };
@@ -174,10 +176,21 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       const H = small ? HANG_H_SM : HANG_H;
       const g = new Grid(cw, ch, cols);
 
-      // the ropes
+      // the poles at either end: a = cap, a || post down to the basket's
+      // floor, and an o knot on the inner face where each rope ties on
+      const poleL = 1, poleR = cols - 3; // the inner columns are poleL + 1 and poleR
+      const capR = Math.floor((TOP - 3 * ch) / ch), footR = Math.floor((basketTop + BASKET_H) / ch);
+      for (const c of [poleL, poleR]) {
+        for (let r = capR + 1; r <= footR; r++) { g.set(c, r, "|", WOOD); g.set(c + 1, r, "|", WOOD); }
+        for (let d = -1; d <= 2; d++) { g.set(c + d, capR, "=", WOOD); g.set(c + d, footR, "=", WOOD); }
+      }
+      // the ropes, pole to pole
+      const x0 = (poleL + 2) * cw, x1 = poleR * cw;
       for (let r = 0; r < Math.max(1, rows); r++) {
         const y = TOP + r * (H + ROW_GAP);
-        g.plot((t) => [t * width, ropeY(y, t * width, width)], INK, Math.ceil(width / 2));
+        g.plot((t) => { const x = x0 + t * (x1 - x0); return [x, ropeY(y, x, width)]; }, INK, Math.ceil(width / 2));
+        const [, kr] = g.at(x0, y);
+        g.set(poleL + 1, kr, "o", WOOD); g.set(poleR, kr, "o", WOOD);
       }
       // a peg on the rope at every hung piece
       for (const p of placed) {
