@@ -28,12 +28,10 @@ import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, u
 
   Geometry is computed, not laid out: the rope is a quadratic curve with
   a little sag and every piece's hang point is a point on it. The rows
-  hang in DEPTH, not in a column: each later row is a line strung a
-  little higher, and the higher line is the one IN FRONT, its pieces
-  hanging over the tops of the row below, whose rope and pegs show
-  through the gaps (Margaret, 2026-11-03: "the top line needs to be on
-  top"). A piece lives in the line group (hung) or the scene (folded);
-  the move between
+  hang in a column, each line strung just under the hem of the one
+  above, clear of it (Margaret, 2026-11-03, after trying them overlapped
+  in depth: "no more overlap"). A piece lives in the line group (hung)
+  or the scene (folded); the move between
   them is a shared-layout flight on its `layoutId`. Reduced motion:
   pieces appear where they belong, nothing springs or sways.
 
@@ -54,7 +52,7 @@ const HANG_H = 128;         // a hung piece's height on desktop
 const HANG_H_SM = 92;       // on phones
 const MAX_W = 230, MAX_W_SM = 150;
 const GAP = 22;             // between pieces on the line
-const ROW_PITCH = 0.32;     // rope to rope, as a share of a piece's height: the next row is strung this much higher, IN FRONT
+const ROW_GAP = 28;         // from a row's hem to the next rope below it: the lines hang clear of each other
 const ROPE_SAG = 26;
 const TOP = 44;             // the first rope's ends, from the top of the line band
 const BASKET_W = 400, BASKET_H = 128, HANDLE = 78; // 128: eleven rows of wicker, two fewer than it had (Margaret, 2026-11-03)
@@ -181,13 +179,12 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     }
     const placed: Placed[] = [];
     const sideOf = new Map<string, Placed>();
-    // the rows stack in depth: the first row's rope lowest, each later row
-    // strung ROW_PITCH of a piece higher and drawn in front, its pieces
-    // hanging over the tops of the row below
-    const pitch = H * ROW_PITCH;
+    // the rows run down the band, each rope ROW_GAP under the hem of the
+    // row above
+    const pitch = 8 + H + ROW_GAP;
     const n = rowsOf.length;
     rowsOf.forEach((row, r) => {
-      const rowTop = TOP + (n - 1 - r) * pitch;
+      const rowTop = TOP + r * pitch;
       let x = (width - row.total) / 2;
       row.items.forEach((it, i) => {
         const w = row.widths[i], cx = x + w / 2;
@@ -195,7 +192,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
         placed.push(p); sideOf.set(it.src, p); x += w + GAP;
       });
     });
-    // the line's own height: the front row's bottom, in the band's coordinates
+    // the line's own height: the last row's hem, in the band's coordinates
     const linesH = n ? TOP + (n - 1) * pitch + 8 + H + 16 : TOP;
     // the rest sit in the basket, small and turned, stacked toward its
     // middle, folded over the rim: the tops show above the basket's
@@ -281,7 +278,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       const ln = new Grid(cw, ch, cols);
       const x0 = (poleL + 2) * cw, x1 = poleR * cw;
       for (let r = 0; r < Math.max(1, rows); r++) {
-        const y = TOP + r * H * ROW_PITCH; // the back rows' ropes, highest first
+        const y = TOP + r * (8 + H + ROW_GAP);
         ln.plot((t) => { const x = x0 + t * (x1 - x0); return [x, ropeY(y, x, width)]; }, INK, Math.ceil(width / 2));
         const [, kr] = ln.at(x0, y);
         ln.set(poleL + 1, kr, "o", WOOD, true); ln.set(poleR, kr, "o", WOOD, true);
@@ -334,7 +331,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       initial={false}
       transition={{ layout: flight(p) }}
       className="absolute cursor-pointer"
-      style={{ left: p.x, top: p.y, width: p.w, height: p.h, zIndex: p.hung ? 2 + p.row : 3 }}
+      style={{ left: p.x, top: p.y, width: p.w, height: p.h, zIndex: p.hung ? 2 : 3 }}
       onClick={() => p.hung && setOpen(p.item)}
       role={p.hung ? "button" : undefined}
       tabIndex={p.hung ? 0 : -1}
