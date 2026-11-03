@@ -1,0 +1,55 @@
+{
+  "baseUrl": "file:///Users/margaretluwena/Portfolio/scripts/capture/prosaic",
+  "viewport": {
+    "width": 1128,
+    "height": 846,
+    "deviceScaleFactor": 2
+  },
+  "hideSelectors": [],
+  "cursor": {
+    "size": 22,
+    "speedPxPerSec": 650,
+    "minMoveMs": 420,
+    "holdBeforeClickMs": 220,
+    "clickRippleMs": 420,
+    "settleAfterClickMs": 140,
+    "fps": 30
+  },
+  "encode": {
+    "fps": 30,
+    "maxBytes": 3000000,
+    "crfLadder": [
+      22,
+      25,
+      28,
+      31,
+      34
+    ],
+    "preset": "slow"
+  },
+  "out": {
+    "videos": "public/videos/prosaic",
+    "posters": "public/images/prosaic/posters"
+  },
+  "stills": [
+    {
+      "id": "type-colour",
+      "route": "/type.html",
+      "file": "public/images/prosaic/type-colour.png",
+      "width": 1128,
+      "height": 846,
+      "deviceScaleFactor": 2,
+      "waitMs": 1500
+    },
+    {
+      "id": "phone-framed",
+      "route": "/phone.html",
+      "file": "public/images/prosaic/phone-framed.png",
+      "width": 560,
+      "height": 1000,
+      "deviceScaleFactor": 2,
+      "waitMs": 800
+    }
+  ],
+  "shots": []
+}

@@ -1,0 +1,45 @@
+<!doctype html>
+<!-- The type and colour sheet (Margaret, 2026-11-02: "where's the color"):
+     the three faces from the clone's own font files, the page colours from
+     docs/design-system.md, and the sixteen model colours from data/palette.json.
+     Built at 4:3 for the Around it strip. -->
+<html lang="en"><head><meta charset="utf-8" /><title>Prosaic type and colour</title>
+<style>
+  @font-face { font-family: "Newsreader"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/newsreader/Newsreader-400.ttf") format("truetype"); }
+  @font-face { font-family: "Switzer"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/switzer/Switzer-500.woff2") format("woff2"); font-weight: 500; }
+  @font-face { font-family: "Switzer"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/switzer/Switzer-400.woff2") format("woff2"); font-weight: 400; }
+  @font-face { font-family: "Geist Mono"; src: url("file:///Users/margaretluwena/Traeco/prosaic-intelligence/public/fonts/geist-mono/GeistMono-Variable.woff2") format("woff2-variations"); font-weight: 100 900; }
+  html, body { margin: 0; }
+  body { width: 1128px; height: 846px; background: #F7F4EF; color: #0B1215; position: relative; overflow: hidden; }
+  .type { position: absolute; left: 72px; right: 72px; top: 64px; display: grid; gap: 26px; }
+  .row { display: grid; grid-template-columns: 1fr auto; align-items: baseline; border-bottom: 1px solid rgba(11,18,21,0.12); padding-bottom: 18px; }
+  .row small { font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.14em; color: #4B4B4D; text-transform: uppercase; }
+  .serif { font-family: "Newsreader", serif; font-size: 58px; letter-spacing: -0.01em; text-transform: uppercase; }
+  .sans { font-family: "Switzer", sans-serif; font-size: 40px; font-weight: 500; letter-spacing: -0.01em; }
+  .mono { font-family: "Geist Mono", monospace; font-size: 36px; }
+  .colours { position: absolute; left: 72px; right: 72px; bottom: 64px; display: grid; gap: 14px; }
+  .page { display: grid; grid-template-columns: repeat(5, 1fr); height: 110px; border: 1px solid rgba(11,18,21,0.12); overflow: hidden; border-radius: 6px; }
+  .page div { position: relative; }
+  .page span { position: absolute; left: 12px; bottom: 10px; font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.1em; }
+  .models { display: grid; grid-template-columns: repeat(16, 1fr); height: 64px; border-radius: 6px; overflow: hidden; }
+  .cap { font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.14em; color: #4B4B4D; text-transform: uppercase; }
+</style></head>
+<body>
+  <div class="type">
+    <div class="row"><div class="serif">Prosaic Intelligence</div><small>Newsreader · the questions</small></div>
+    <div class="row"><div class="sans">Which AI is safest for</div><small>Switzer · the interface</small></div>
+    <div class="row"><div class="mono">0123456789 · 82 · 16 of 16</div><small>Geist Mono · every numeral</small></div>
+  </div>
+  <div class="colours">
+    <div class="cap">Paper, surface, charcoal, muted, and one signal blue</div>
+    <div class="page">
+      <div style="background:#F7F4EF"><span style="color:#4B4B4D">F7F4EF</span></div>
+      <div style="background:#E9E5E2"><span style="color:#4B4B4D">E9E5E2</span></div>
+      <div style="background:#0B1215"><span style="color:#F7F4EF">0B1215</span></div>
+      <div style="background:#4B4B4D"><span style="color:#F7F4EF">4B4B4D</span></div>
+      <div style="background:#2F6FBF"><span style="color:#F7F4EF">2F6FBF</span></div>
+    </div>
+    <div class="cap">Sixteen model colours, each checked for contrast against its label</div>
+    <div class="models"><div style="background:#9751D7"></div><div style="background:#A552B7"></div><div style="background:#7366D9"></div><div style="background:#5C4A7B"></div><div style="background:#39417D"></div><div style="background:#5272D8"></div><div style="background:#3284D0"></div><div style="background:#87A1BD"></div><div style="background:#0091CE"></div><div style="background:#1898B7"></div><div style="background:#0F919C"></div><div style="background:#17938B"></div><div style="background:#009E77"></div><div style="background:#2AA654"></div><div style="background:#81B83A"></div><div style="background:#E6CF3A"></div></div>
+  </div>
+</body></html>

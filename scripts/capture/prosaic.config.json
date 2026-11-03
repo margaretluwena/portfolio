@@ -14,7 +14,7 @@
   ],
   "cursor": {
     "size": 22,
-    "speedPxPerSec": 700,
+    "speedPxPerSec": 650,
     "minMoveMs": 420,
     "holdBeforeClickMs": 220,
     "clickRippleMs": 420,
@@ -99,53 +99,89 @@
       ],
       "waitMs": 3200,
       "note": "the bead field alone, at the card's shape, for the home card's background"
+    },
+    {
+      "id": "risks",
+      "route": "/",
+      "file": "public/images/prosaic/risks.png",
+      "width": 1128,
+      "height": 1000,
+      "deviceScaleFactor": 2,
+      "selector": "#risks",
+      "waitMs": 3000,
+      "note": "the seven risk categories, each with its chart"
+    },
+    {
+      "id": "weights-section",
+      "route": "/methodology",
+      "file": "public/images/prosaic/weights-section.png",
+      "width": 1128,
+      "height": 1000,
+      "deviceScaleFactor": 2,
+      "selector": "section:has(table.method-table.is-weights)",
+      "waitMs": 2500,
+      "note": "the weighting section of the methodology, heading and table"
     }
   ],
   "shots": [
     {
       "id": "home",
       "route": "/",
-      "posterAtMs": 2600,
+      "posterAtMs": 2400,
       "steps": [
         {
           "type": "wait",
-          "ms": 1400
+          "ms": 1200
         },
         {
           "type": "move",
-          "target": "@0.22,0.3"
+          "target": "@0.18,0.28"
         },
         {
           "type": "move",
-          "target": "@0.78,0.34"
+          "target": "@0.8,0.3"
         },
         {
           "type": "move",
-          "target": "@0.5,0.22"
+          "target": "@0.45,0.55"
+        },
+        {
+          "type": "move",
+          "target": "@0.62,0.2"
         },
         {
           "type": "wait",
-          "ms": 700
+          "ms": 500
         },
         {
           "type": "scroll",
           "target": ".chart-card",
-          "ms": 1400,
+          "ms": 1300,
           "block": "start"
         },
         {
-          "type": "wait",
-          "ms": 1100
-        },
-        {
-          "type": "scroll",
-          "target": "#why",
-          "ms": 1400,
-          "block": "start"
+          "type": "move",
+          "target": ".chart-bars .chart-col >> nth=0"
         },
         {
           "type": "wait",
-          "ms": 900
+          "ms": 800
+        },
+        {
+          "type": "move",
+          "target": ".chart-bars .chart-col >> nth=4"
+        },
+        {
+          "type": "wait",
+          "ms": 800
+        },
+        {
+          "type": "move",
+          "target": ".chart-bars .chart-col >> nth=10"
+        },
+        {
+          "type": "wait",
+          "ms": 800
         },
         {
           "type": "scroll",
@@ -154,29 +190,75 @@
           "block": "start"
         },
         {
+          "type": "move",
+          "target": "#risks article.block >> nth=0"
+        },
+        {
           "type": "wait",
-          "ms": 1400
+          "ms": 900
+        },
+        {
+          "type": "move",
+          "target": "#risks article.block >> nth=1"
+        },
+        {
+          "type": "wait",
+          "ms": 900
+        },
+        {
+          "type": "move",
+          "target": "#risks article.block >> nth=3"
+        },
+        {
+          "type": "wait",
+          "ms": 900
+        },
+        {
+          "type": "scroll",
+          "target": "footer.footer",
+          "ms": 1600,
+          "block": "start"
+        },
+        {
+          "type": "move",
+          "target": "@0.5,0.6"
+        },
+        {
+          "type": "wait",
+          "ms": 3200
         }
       ]
     },
     {
       "id": "use-case",
       "route": "/",
-      "posterAtMs": 3200,
+      "posterAtMs": 2200,
       "steps": [
-        {
-          "type": "wait",
-          "ms": 1400
-        },
         {
           "type": "scroll",
           "target": ".bead-selector",
-          "ms": 900,
+          "ms": 1,
           "block": "start"
         },
         {
           "type": "wait",
-          "ms": 500
+          "ms": 1100
+        },
+        {
+          "type": "move",
+          "target": ".chart-bars .chart-col >> nth=1"
+        },
+        {
+          "type": "wait",
+          "ms": 900
+        },
+        {
+          "type": "move",
+          "target": ".chart-bars .chart-col >> nth=6"
+        },
+        {
+          "type": "wait",
+          "ms": 900
         },
         {
           "type": "move",
@@ -187,7 +269,15 @@
         },
         {
           "type": "wait",
-          "ms": 2000
+          "ms": 1900
+        },
+        {
+          "type": "move",
+          "target": ".chart-bars .chart-col >> nth=2"
+        },
+        {
+          "type": "wait",
+          "ms": 900
         },
         {
           "type": "move",
@@ -198,7 +288,7 @@
         },
         {
           "type": "wait",
-          "ms": 2000
+          "ms": 1900
         },
         {
           "type": "move",
@@ -209,7 +299,15 @@
         },
         {
           "type": "wait",
-          "ms": 1800
+          "ms": 1500
+        },
+        {
+          "type": "move",
+          "target": ".chart-bars .chart-col >> nth=0"
+        },
+        {
+          "type": "wait",
+          "ms": 1200
         }
       ]
     }

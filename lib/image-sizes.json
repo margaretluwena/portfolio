@@ -379,6 +379,10 @@
     2000,
     1021
   ],
+  "/images/prosaic/phone-framed.png": [
+    1120,
+    2000
+  ],
   "/images/prosaic/phone.png": [
     780,
     1688
@@ -395,9 +399,21 @@
     920,
     588
   ],
+  "/images/prosaic/risks.png": [
+    1884,
+    2650
+  ],
+  "/images/prosaic/type-colour.png": [
+    2256,
+    1692
+  ],
   "/images/prosaic/type.png": [
     1600,
     1200
+  ],
+  "/images/prosaic/weights-section.png": [
+    1884,
+    1056
   ],
   "/images/prosaic/weights-table.png": [
     1884,

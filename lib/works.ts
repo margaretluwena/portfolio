@@ -679,8 +679,7 @@ export const works: Work[] = [
        that white gradient", "more of the website itself"). The placeholder
        scores at the foot of that screenshot sit under the full paper. */
     cover: { src: "/images/covers/prosaic-index.jpg", alt: "Prosaic Intelligence: the AI Safety Index header, beads on wires over paper" },
-    /* the study opens on the index header; the card below is the data */
-    hero: { src: "/images/covers/prosaic-index.jpg", alt: "Prosaic Intelligence: the AI Safety Index header, beads on wires over paper" },
+    /* the study opens on the card's own art, the chart over the bead field (Margaret, 2026-11-02: "use the one for the card's thumbnail") */
     cardBg: "#F7F4EF",
     cardFade: "linear-gradient(to bottom, rgba(247,244,239,0) 52%, #F7F4EF 86%)",
     /* the general-use chart card straight on, over the bead field alone
@@ -715,7 +714,7 @@ export const works: Work[] = [
           "There's no single safest AI, only the one that's safest for what you care about, so the site asks your question before it gives you an answer.",
         ],
         /* recorded from her build (scripts/capture/prosaic.config.json, 2026-11-02): the beads follow the pointer, then the page scrolls to the chart, the two cards and the risks */
-        visual: { kind: "video", src: "/videos/prosaic/home.mp4", poster: "/images/prosaic/posters/home.jpg", aspect: "1128 / 700", caption: "The index, top to bottom: the beads lean toward the pointer, then the chart, why it exists, and the seven risks." },
+        visual: { kind: "video", src: "/videos/prosaic/home.mp4", poster: "/images/prosaic/posters/home.jpg", aspect: "1128 / 700", caption: "The index, top to bottom: the beads lean toward the pointer, the bars answer it, the seven risk charts ripple, down to the foot of the page." },
       },
       {
         type: "stats",
@@ -730,11 +729,11 @@ export const works: Work[] = [
         title: "The problem",
         rail: "Problem",
         body: [
-          "Anantika had collected published safety results for sixteen AI products, from ChatGPT to Character AI, and the press was already interested. She needed a site by Sunday that anyone could understand and that would hold up to scrutiny, since it names real companies.",
-          "The brief fit on a page. An index that aggregates consumer AI safety benchmarks to compare how leading models behave across risks like encouraging self-harm, overstated advice, misinformation, bias and inappropriate content, turning fragmented evaluations into one consumer-facing view. Epic in its design and clear in what it said, because she was talking to major media outlets and it could be on the news by Monday. The comps were the model leaderboards, artificialanalysis.ai first, and the inspiration ran from Cognition's site to op.al and Information is Beautiful: tech, but warm and human with it.",
+          "Anantika had collected published safety results for sixteen AI products, from ChatGPT to Character AI, and was already talking to major media outlets. The brief fit on a page: an index that turns those fragmented evaluations into one consumer-facing view of which models are safer across the risks that can actually harm someone, epic in its design and clear in what it says, by Sunday, because it could be on the news by Monday. The comps were the model leaderboards, artificialanalysis.ai first; the inspiration ran from Cognition's site to op.al and Information is Beautiful, tech but warm and human with it. And it names real companies, so every number had to hold up.",
         ],
-        /* Anantika's sketch of the page, from Margaret (2026-11-02) */
+        /* Anantika's sketch of the page beside the words (Margaret, 2026-11-02: "pic on the right, text on the left") */
         visual: { kind: "image", media: { src: "/images/prosaic/brief-sketch.jpg", alt: "Anantika's pencil sketch of the page: which AI is safest for, a dropdown that changes the graph, a why card, and six to eight graphs" }, caption: "Anantika's sketch: the question, a dropdown that changes the graph, why, and six to eight graphs below." },
+        visualSide: true,
       },
       {
         type: "essay",
@@ -745,7 +744,7 @@ export const works: Work[] = [
           "Decision: The page opens with a sentence to finish, Which AI is safest for, with options like long conversations or someone having a hard time, and the ranking reorders around your answer.",
           "What I learned: A ranking without a use case is a number without meaning.",
         ],
-        visual: { kind: "video", src: "/videos/prosaic/use-case.mp4", poster: "/images/prosaic/posters/use-case.jpg", aspect: "1128 / 700", caption: "Finish the sentence and the sixteen bars re-rank: someone having a hard time, then looking things up, then everyday advice." },
+        visual: { kind: "video", src: "/videos/prosaic/use-case.mp4", poster: "/images/prosaic/posters/use-case.jpg", aspect: "1128 / 700", caption: "Hover a bar for its readout, then finish the sentence and the sixteen re-rank: someone having a hard time, looking things up, everyday advice." },
       },
       {
         type: "essay",
@@ -756,7 +755,7 @@ export const works: Work[] = [
           "Decision: I built the design around an abacus; beads carry the navigation and move with your cursor or the tilt of your phone, and each bar shows how far a product is from a perfect score, not just its rank. The moment I'm proudest of is the first test. I had the movement in my head from the start, and seeing it come true, dynamic and fun to play with, was the best part of the three days.",
           "What I learned: A tech product can still feel human, as long as the playful parts never get in the way of the data.",
         ],
-        visual: { kind: "image", media: { src: "/images/prosaic/general-use.jpg", alt: "General use: sixteen models as bars against the index average" }, caption: "Sixteen bars, the headroom to 100 in each one's own tint, and one line for the average." },
+        visual: { kind: "image", media: { src: "/images/prosaic/risks.png", alt: "The seven ways a model can fail you: a card per risk category, each with its own small chart of the top models" }, caption: "The seven ways a model can fail you, each with its own chart, and a page behind each." },
       },
       {
         type: "essay",
@@ -767,7 +766,7 @@ export const works: Work[] = [
           "Decision: I designed directly in code and set the build to fail if any data was wrong or any colour failed contrast, so I could move fast without publishing a mistake. [MAR: one thing you noticed only once real screens existed]",
           "What I learned: Automatic checks are what make a tight deadline safe.",
         ],
-        visual: { kind: "image", media: { src: "/images/prosaic/weights-table.png", alt: "The methodology's weighting table: each use case's share across the seven risk categories" }, caption: "The weights behind every use case, published on the methodology page. General use weights all seven equally." },
+        visual: { kind: "image", media: { src: "/images/prosaic/weights-section.png", alt: "The methodology's weighting section: the heading, the explanation, and the table of each use case's share across the seven risk categories" }, caption: "The weights behind every use case, published on the methodology page. General use weights all seven equally." },
       },
       {
         type: "essay",
@@ -779,15 +778,15 @@ export const works: Work[] = [
           { num: "03", title: "Methodology", body: "Where the data comes from and how scores are weighted." },
           { num: "04", title: "Company pages", body: "Each maker's products across all seven risks." },
         ],
-        visual: { kind: "image", media: { src: "/images/prosaic/phone.png", alt: "The index on a phone: the beads, the headline, the use-case pills and the chart card" }, caption: "On a phone, where most readers arrive from a news link." },
+        visual: { kind: "image", media: { src: "/images/prosaic/phone-framed.png", alt: "The index on a phone: the beads, the headline, the use-case pills and the chart card" }, caption: "On a phone, where most readers arrive from a news link." },
       },
       {
         type: "also",
         items: [
           {
             name: "Type and colour",
-            line: "Newsreader, Switzer and Geist Mono, with one blue on warm neutrals.",
-            media: { src: "/images/prosaic/type.png", alt: "The type sheet: Newsreader for the name, Switzer for the interface, Geist Mono for the numerals" },
+            line: "Newsreader, Switzer and Geist Mono; paper, charcoal and one signal blue, with sixteen model colours each checked for contrast.",
+            media: { src: "/images/prosaic/type-colour.png", alt: "The type and colour sheet: Newsreader, Switzer and Geist Mono over the page colours and the sixteen model colours" },
           },
           {
             name: "prosaicintelligence.ai",
