@@ -26,11 +26,11 @@ import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, u
   Geometry is computed, not laid out: the rope is a quadratic curve with
   a little sag and every piece's hang point is a point on it. The rows
   hang in DEPTH, not in a column: each later row is a line strung a
-  little higher behind the one in front, its pieces a touch smaller,
-  their tops tucked behind the front row and its rope and pegs showing
-  through the gaps (Margaret, 2026-11-03). The front row is drawn on
-  top. A piece lives in the line group (hung) or the scene (folded); the
-  move between
+  little higher, and the higher line is the one IN FRONT, its pieces
+  hanging over the tops of the row below, whose rope and pegs show
+  through the gaps (Margaret, 2026-11-03: "the top line needs to be on
+  top"). A piece lives in the line group (hung) or the scene (folded);
+  the move between
   them is a shared-layout flight on its `layoutId`. Reduced motion:
   pieces appear where they belong, nothing springs or sways.
 
@@ -51,8 +51,7 @@ const HANG_H = 128;         // a hung piece's height on desktop
 const HANG_H_SM = 92;       // on phones
 const MAX_W = 230, MAX_W_SM = 150;
 const GAP = 22;             // between pieces on the line
-const ROW_PITCH = 0.55;     // rope to rope, as a share of a piece's height: the next row hangs BEHIND this one, its top tucked under
-const ROW_SHRINK = 0.92;    // each row back is a little smaller, for the depth
+const ROW_PITCH = 0.55;     // rope to rope, as a share of a piece's height: the next row is strung this much higher, IN FRONT
 const ROPE_SAG = 26;
 const TOP = 44;             // the first rope's ends, from the top of the line band
 const BASKET_W = 400, BASKET_H = 150, HANDLE = 78;
@@ -164,21 +163,19 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   const { placed, rows, linesH } = useMemo(() => {
     const maxW = small ? MAX_W_SM : MAX_W;
     const hung = mounted ? items.filter((it) => filter === "All" || it.group === filter) : [];
-    // pack the hung pieces into rows, left to right; each row back is a
-    // little smaller than the one in front of it
-    const rowsOf: { items: PlayItem[]; widths: number[]; total: number; h: number }[] = [];
-    const sizeIn = (it: PlayItem, r: number) => { const hr = H * Math.pow(ROW_SHRINK, r); return { h: hr, w: Math.min(maxW * (hr / H), hr * (it.w / it.h)) }; };
+    // pack the hung pieces into rows, left to right
+    const rowsOf: { items: PlayItem[]; widths: number[]; total: number }[] = [];
     for (const it of hung) {
+      const w = Math.min(maxW, H * (it.w / it.h));
       const row = rowsOf[rowsOf.length - 1];
-      const { w } = sizeIn(it, Math.max(0, rowsOf.length - 1));
       if (row && row.total + GAP + w <= width) { row.items.push(it); row.widths.push(w); row.total += GAP + w; }
-      else { const next = sizeIn(it, rowsOf.length); rowsOf.push({ items: [it], widths: [next.w], total: next.w, h: next.h }); }
+      else rowsOf.push({ items: [it], widths: [w], total: w });
     }
     const placed: Placed[] = [];
     const sideOf = new Map<string, Placed>();
-    // the rows stack in depth: the front row's rope lowest, each row back
-    // strung ROW_PITCH of a piece higher, so its top hides behind the row
-    // in front and only its lower part shows
+    // the rows stack in depth: the first row's rope lowest, each later row
+    // strung ROW_PITCH of a piece higher and drawn in front, its pieces
+    // hanging over the tops of the row below
     const pitch = H * ROW_PITCH;
     const n = rowsOf.length;
     rowsOf.forEach((row, r) => {
@@ -186,7 +183,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       let x = (width - row.total) / 2;
       row.items.forEach((it, i) => {
         const w = row.widths[i], cx = x + w / 2;
-        const p: Placed = { item: it, w, h: row.h, x: cx - w / 2, y: ropeY(rowTop, cx, width) + 8, rot: (hash(it.src) - 0.5) * 5, hung: true, delay: (r * 6 + i) * 0.06, peg: cx, row: r };
+        const p: Placed = { item: it, w, h: H, x: cx - w / 2, y: ropeY(rowTop, cx, width) + 8, rot: (hash(it.src) - 0.5) * 5, hung: true, delay: (r * 6 + i) * 0.06, peg: cx, row: r };
         placed.push(p); sideOf.set(it.src, p); x += w + GAP;
       });
     });
@@ -329,7 +326,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       initial={false}
       transition={{ layout: flight(p) }}
       className="absolute cursor-pointer"
-      style={{ left: p.x, top: p.y, width: p.w, height: p.h, zIndex: p.hung ? 40 - p.row : 3 }}
+      style={{ left: p.x, top: p.y, width: p.w, height: p.h, zIndex: p.hung ? 2 + p.row : 3 }}
       onClick={() => p.hung && setOpen(p.item)}
       role={p.hung ? "button" : undefined}
       tabIndex={p.hung ? 0 : -1}

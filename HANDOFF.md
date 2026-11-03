@@ -120,11 +120,11 @@ study and the home card).
   title) lifts the matching ones onto the rope, pegged under its sag,
   in as many rows as fit (128px tall on desktop, 92 on phones, so seven
   or so share a line at 1440). The rows hang in DEPTH: each later row
-  is a line strung 0.55 of a piece higher BEHIND the one in front, its
-  pieces 8% smaller, their lower parts tucked behind the front row and
-  its rope and pegs showing through the gaps; the front row is drawn on
-  top (Margaret, 2026-11-03). Hover sways a hung piece, click opens it
-  large. The filters sit centred above the line. Groups come from the play works in `lib/works.ts`. The ground
+  is a line strung 0.55 of a piece higher and the higher line is IN
+  FRONT, its pieces hanging over the tops of the row below, whose rope
+  and pegs show through the gaps (Margaret, 2026-11-03). Hover sways a
+  hung piece, click opens it large. The filters sit centred above the
+  line. Groups come from the play works in `lib/works.ts`. The ground
   never moves: when the rows outgrow the window the LINE scrolls
   (wheel, trackpad, touch; a spring-eased MotionValue on the line group)
   inside a band that fades at its ends and stops with the last row just
