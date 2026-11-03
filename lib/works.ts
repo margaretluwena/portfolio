@@ -585,7 +585,7 @@ export const works: Work[] = [
         title: "The problem",
         rail: "Problem",
         body: [
-          "The competition asked teams to empower the next generation through social media, so we chose youth political engagement and tested the idea with local politicians first. [MAR: what they told you] The gap was timing; by the time a poll or report comes out, young people's conversation has already moved on.",
+          "The competition asked teams to empower the next generation through social media, so we chose youth political engagement and tested the idea with local politicians first. What they told us was that the hard part is pulling data from everywhere and aggregating it into something they can act on. The other gap was timing; by the time a poll or report comes out, young people's conversation has already moved on.",
         ],
         visual: { kind: "animation", name: "report-vs-live", caption: "A report lands months after its fieldwork. The card keeps moving." },
       },
