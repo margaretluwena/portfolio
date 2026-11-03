@@ -17,10 +17,15 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
   Geometry is computed, not laid out: the rope is a quadratic curve with
   a little sag and every piece's hang point is a point on it. The basket
-  is a STICKY layer at the end of the stage, pinned so its floor sits on
-  the front hill (93vh) while the line scrolls behind it, and scrolling
-  away with the stage's end. The poles' feet are in that layer too, so
-  they stand on the hill with it; their posts run on up the stage. A piece lives in whichever of the two it
+  is a STICKY layer in the stage's flow AFTER the rows, pinned so its
+  floor sits on the front hill (93vh) whenever the rows end above that
+  line, and scrolling away with the stage's end. When the rows run past
+  the hill line the basket simply follows them in the flow, entering
+  from below as you scroll and sticking once it reaches the hill: so no
+  scroll position ever has a hung piece behind it (Margaret, 2026-11-03:
+  the lowest row used to clip into the basket near the top of the
+  page). The poles' feet are in that layer too, so they stand on the
+  hill with it; their posts run on up the stage. A piece lives in whichever of the two it
   belongs to; the move between them is a shared-layout flight on its
   `layoutId` (Motion measures both in window space, so a piece lifts from
   the pinned basket to wherever its row is). Reduced motion: pieces
@@ -151,7 +156,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   const LAYER_H = FLOOR_Y + under;
   const BW = Math.min(BASKET_W, Math.max(200, width - 90)); // between the poles on a phone
 
-  const { placed, rows, height } = useMemo(() => {
+  const { placed, rows, height, linesH } = useMemo(() => {
     const maxW = small ? MAX_W_SM : MAX_W;
     const hung = mounted ? items.filter((it) => filter === "All" || it.group === filter) : [];
     // pack the hung pieces into rows, left to right
@@ -187,7 +192,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       const cx = width / 2 + (rest.length > 1 ? (i / (rest.length - 1) - 0.5) * spread : 0) + (hash(it.src + "x") - 0.5) * 24;
       placed.push({ item: it, w, h, x: cx - w / 2, y: RIM - h * 0.55 + hash(it.src + "y") * 18, rot: (hash(it.src + "r") - 0.5) * 28, hung: false, delay: i * 0.03, peg: 0 });
     });
-    return { placed, rows: rowsOf.length, height };
+    return { placed, rows: rowsOf.length, height, linesH };
   }, [items, filter, width, mounted, small, H, floorMin, LAYER_H]);
 
   /* the poles, ropes and pegs on the stage; the basket in its layer */
@@ -340,8 +345,10 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
         {/* the hung pieces */}
         {width > 0 && placed.filter((p) => p.hung).map(piece)}
 
-        {/* the basket layer: in the stage's flow, pinned so its floor sits
-            on the front hill, scrolling away with the stage's end */}
+        {/* the basket layer: in the stage's flow after the rows (the spacer
+            holds their height), pinned so its floor sits on the front hill
+            once the rows end above it, scrolling away with the stage's end */}
+        <div aria-hidden style={{ height: linesH }} />
         <div
           className="sticky w-full"
           style={{ top: `calc(${FLOOR_VH * 100}vh - ${FLOOR_Y}px)`, height: LAYER_H, zIndex: 5 }}

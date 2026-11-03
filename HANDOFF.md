@@ -118,9 +118,13 @@ study and the home card).
   as many rows as fit (128px tall on desktop, 92 on phones, so seven or
   so share a line at 1440); hover sways a hung piece, click opens it
   large. Groups come from the play works in `lib/works.ts`; finer tags
-  are a data edit away. The basket is a STICKY layer at the end of the
-  stage, pinned so its floor sits on the sky's front hill (93vh) while
-  the line scrolls behind it; the poles' feet are in that layer too. A
+  are a data edit away. The basket is a STICKY layer in the stage's
+  flow AFTER the rows (a spacer holds their height), pinned so its floor
+  sits on the sky's front hill (93vh) once the rows end above that line
+  and scrolling away with the stage's end; when the rows run past the
+  hill line it follows them in the flow, entering from below as you
+  scroll, so no scroll position puts a hung piece behind it (Margaret,
+  2026-11-03). The poles' feet are in that layer too. A
   piece lives in the stage (hung) or the layer (folded) and the move
   between them is a shared-layout flight on its `layoutId` (Motion
   measures both in window space). Everything structural is drawn in
