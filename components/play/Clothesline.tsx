@@ -22,7 +22,8 @@ import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, u
   The ground never moves; when there are more rows than fit, the LINE
   scrolls (wheel, trackpad, touch) inside a band that ends just above
   the basket's handle, so no scroll puts a piece into the basket
-  (Margaret, 2026-11-03), and the band fades at its ends. Scrolling past
+  (Margaret, 2026-11-03), and the band fades at an end only while the
+  line runs on past it. Scrolling past
   the line's end hands the wheel back to the page for the footer, which
   carries the scene and the hills up together.
 
@@ -374,8 +375,15 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   // "graphics and ui/ux", "graphics, ui/ux and zines": the collections, joined
   const named = groups.flatMap((g, i) => [i === 0 ? null : i === groups.length - 1 ? " and " : ", ", pill(g)]);
 
-  // the band's fade, at its top and just above the basket's handle
-  const mask = `linear-gradient(to bottom, transparent ${lineTop}px, #000 ${lineTop + FADE}px, #000 ${lineBottom - FADE}px, transparent ${lineBottom}px)`;
+  // the band's fades, only where the line runs on past an edge: the top one
+  // grows in as the line is pulled up, the bottom one goes as its end comes
+  // up to the basket's handle; a line that fits has none (Margaret saw the
+  // second row's hem fading into nothing, 2026-11-03)
+  const mask = useTransform(() => {
+    const v = eased.get();
+    const ft = clamp(v, 0, FADE), fb = clamp(maxScroll - v, 0, FADE);
+    return `linear-gradient(to bottom, transparent ${lineTop}px, #000 ${lineTop + ft}px, #000 ${lineBottom - fb}px, transparent ${lineBottom}px)`;
+  });
 
   return (
     <div ref={scene} className="sticky top-0 h-screen w-full overflow-hidden" style={{ height: "100dvh" }}>
