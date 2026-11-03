@@ -609,7 +609,7 @@ export const works: Work[] = [
         title: "Each card answers four questions",
         rail: null,
         body: [
-          "My first version had filters everywhere and charts on charts, and researchers couldn't tell what it was saying in the first few seconds. [MAR: the early versions]",
+          "My first version had filters everywhere and charts on charts, and researchers couldn't tell what it was saying in the first few seconds.",
           "Decision: Each card answers four things only: the topic, where it's happening, how fast it's growing and who's talking.",
           "What I learned: Cutting felt like losing something, but every field I removed made the grid look more sure of itself.",
         ],
