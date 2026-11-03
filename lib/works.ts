@@ -161,7 +161,7 @@ export const works: Work[] = [
     credits: [
       { label: "Role", value: "Product designer, TroyLabs BUILD" }, // one of the first (the doc, 2026-11-02)
       { label: "Timeline", value: "Fall 2025, eight weeks" },
-      { label: "Team", value: "Founder Eason Tang" },
+      { label: "Team", value: "Eason Tang, Charlotte Chang, Rehaan Anjaria, Peter Kreuter, Eric Park, Carter Davis" }, // Margaret, 2026-11-02
       { label: "Disciplines", value: "Product Design, UI/UX, Brand, Merchandise, Packaging, Pitch Deck" },
     ],
     /* poster stand-in until the real export lands */
