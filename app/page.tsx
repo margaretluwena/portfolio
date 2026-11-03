@@ -16,8 +16,11 @@ import { featuredWorks } from "@/lib/works";
      so no manual measuring.
   3. The rest of the main page reveals (staggered, inside PortfolioShell).
 
-  The intro plays once per session - returning to "/" via ABOUT goes straight
-  to the main page (sessionStorage gate, applied pre-paint).
+  The intro plays once per page load - returning to "/" from another page
+  within the app goes straight to the main page (a module-level flag, read
+  pre-paint). A reload plays it again; it used to be a sessionStorage gate,
+  which meant a tab saw it exactly once and every reload after that skipped
+  it (Margaret, 2026-11-03: "I don't see the intro at all").
 
   The old hero texture (InteractiveTexture, which collapsed to a 33vh band
   in step with the flight) is retired by the sky (2026-10-08); the component
@@ -33,7 +36,7 @@ import { featuredWorks } from "@/lib/works";
 const HOLD_MS = 2500; // the assembly takes ~1.1s, the name then holds ~1.2s
 const SKY_FONT_FALLBACK = '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
 const GESTURE = { duration: 1.1, ease: [0.7, 0, 0.2, 1] as const };
-const SEEN_KEY = "ml-intro-seen";
+let introSeen = false; // this page load has played the intro
 
 export default function Page() {
   const reduce = useReducedMotion();
@@ -54,16 +57,14 @@ export default function Page() {
   // a locked-down profile) used to throw here and take the whole page down
   // with it - nothing interactive, the ball dead (found 2026-10-21)
   useLayoutEffect(() => {
-    let seen = false;
-    try { seen = !!sessionStorage.getItem(SEEN_KEY); } catch {}
-    if (reduce || seen) { setPhase("main"); setIntroVisible(true); skipped.current = true; }
+    if (reduce || introSeen) { setPhase("main"); setIntroVisible(true); skipped.current = true; }
     else { setDither("assemble"); setCornerHidden(true); }
     try { const f = getComputedStyle(document.body).getPropertyValue("--font-sky").trim(); if (f) setSkyFont(`${f}, ${SKY_FONT_FALLBACK}`); } catch {}
   }, [reduce]);
 
   useEffect(() => {
     if (phase === "main") {
-      try { sessionStorage.setItem(SEEN_KEY, "1"); } catch {}
+      introSeen = true;
       // the flight: the cells follow the corner wordmark until it lands
       if (!skipped.current) { setIntroVisible(true); setDither("flight"); setCornerHidden(true); }
       return;

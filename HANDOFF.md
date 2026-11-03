@@ -97,6 +97,10 @@ study and the home card).
   the real text on landing. `app/page.tsx` drives the phases; the hidden
   text lives on an inner span because Motion animates the shared-layout
   element's own opacity. HOLD_MS is 2500. Reduced motion skips it all.
+  It plays once per PAGE LOAD (a module-level flag): a reload replays
+  it, returning to "/" from another page within the app skips it. It was
+  a sessionStorage gate before, which meant a tab saw it exactly once
+  and every reload after that skipped it (2026-11-03).
 - **The dog's frames** moved to `components/sky-field/dog-frames.mjs`:
   run, sit, lie (head up, chin on paws), the spin's five views, the play
   bow. Pets take turns (hop, spin, bow); after ~9s idle the dog lies down
@@ -108,7 +112,12 @@ study and the home card).
   title) lifts the matching ones onto the rope, pegged under its sag, in
   as many rows as fit; hover sways a hung piece, click opens it large.
   Groups come from the play works in `lib/works.ts`; finer tags are a
-  data edit away.
+  data edit away. The rope, pegs and basket are drawn in the sky's
+  glyphs (9px Plex Mono on 11px rows) on two canvases: the back one
+  under the pieces (ropes stepping - to _, a peg `n` over `|` at each
+  hang point, the basket's `=` handle and dotted inside), the front one
+  over the folded pieces (a white fill so they read as inside, a
+  staggered `-|` wicker, `|` sides, the `(====)` rim).
 
 ## Content still marked NEED (Margaret's to supply)
 

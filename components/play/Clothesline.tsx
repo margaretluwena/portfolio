@@ -18,6 +18,15 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
   a little sag, every piece's hang point is a point on it, and the basket
   is a stack of small, slightly turned copies behind the basket's front.
   Reduced motion: pieces appear where they belong, nothing springs or sways.
+
+  The rope, the pegs and the basket are drawn in the sky's own language
+  (Margaret, 2026-11-03): glyphs on the sky's cell grid (9px Plex Mono,
+  11px rows), on two canvases. The back one, under the pieces, carries the
+  ropes stepping from - to _ as they sag, a peg (n over |) at every
+  hang point, the basket's handle and the dotted inside of its back. The
+  front one, over the folded pieces, is the basket's front: a paper fill
+  so the pieces read as inside it, a staggered wicker of - and | over it,
+  its slanted sides, and the rim.
 */
 
 export type PlayItem = { src: string; w: number; h: number; group: string; alt?: string };
@@ -31,6 +40,50 @@ const ROPE_SAG = 26;
 const TOP = 110;            // the first rope's ends, from the top of the stage
 const BASKET_W = 400, BASKET_H = 150;
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+/* the sky's cell: its 9px mono face, rows 1.18 of that (sky-field.js) */
+const CELL_FONT = 9, CELL_H = 11;
+const SKY_FONT_FALLBACK = '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
+const INK = "#111", WOOD = "#8a7350", WICKER = "#b39a6b", INSIDE = "#d9c7a4";
+
+/* a sparse grid of glyphs; a later write to a cell replaces the earlier one */
+class Grid {
+  cells = new Map<number, { ch: string; color: string }>();
+  constructor(public cw: number, public ch: number, public cols: number) {}
+  set(c: number, r: number, ch: string, color: string) { if (c < 0 || r < 0 || c >= this.cols) return; this.cells.set(r * 100000 + c, { ch, color }); }
+  at(x: number, y: number) { return [Math.floor(x / this.cw), Math.floor(y / this.ch)] as const; }
+  /* a curve, one glyph per cell it crosses, picked by its slope there:
+     flat runs step from - to _ as the line drops through the cell (= all
+     the way when heavy), slants are / and \, the steep bits | */
+  plot(f: (t: number) => [number, number], color: string, n = 600, heavy = false) {
+    let prev = f(0);
+    for (let i = 1; i <= n; i++) {
+      const [x, y] = f(i / n), dx = x - prev[0], dy = y - prev[1];
+      const [c, r] = this.at(x, y);
+      const s = Math.abs(dx) < 1e-6 ? 99 : (dy / dx) * (this.cw / this.ch);
+      let ch: string;
+      if (Math.abs(s) > 2.2) ch = "|";
+      else if (Math.abs(s) > 0.28) ch = s > 0 ? "\\" : "/";
+      else if (heavy) ch = "=";
+      else ch = (y - r * this.ch) / this.ch < 0.5 ? "-" : "_";
+      this.set(c, r, ch, color);
+      prev = [x, y];
+    }
+  }
+  draw(ctx: CanvasRenderingContext2D) {
+    for (const [k, v] of this.cells) { ctx.fillStyle = v.color; ctx.fillText(v.ch, (k % 100000) * this.cw, Math.floor(k / 100000) * this.ch); }
+  }
+}
+
+function sizeCanvas(canvas: HTMLCanvasElement, w: number, h: number, font: string) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+  canvas.style.width = `${w}px`; canvas.style.height = `${h}px`;
+  const ctx = canvas.getContext("2d"); if (!ctx) return null;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.font = `${CELL_FONT}px ${font}`; ctx.textBaseline = "top";
+  return ctx;
+}
 
 const hash = (s: string) => { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return ((h >>> 0) % 1000) / 1000; };
 
@@ -48,6 +101,14 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   const [filter, setFilter] = useState<string>("All");
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState<PlayItem | null>(null);
+  const [font, setFont] = useState(SKY_FONT_FALLBACK);
+  const backRef = useRef<HTMLCanvasElement>(null);
+  const frontRef = useRef<HTMLCanvasElement>(null);
+
+  // the sky's face, resolved from <body> like the sky itself does
+  useEffect(() => {
+    try { const f = getComputedStyle(document.body).getPropertyValue("--font-sky").trim(); if (f) setFont(`${f}, ${SKY_FONT_FALLBACK}`); } catch {}
+  }, []);
 
   useLayoutEffect(() => {
     const el = stage.current; if (!el) return;
@@ -100,6 +161,66 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   const basketTop = height - BASKET_H - 60;
   const small = width < 640;
 
+  /* the ropes, pegs and basket, in glyphs */
+  useEffect(() => {
+    const back = backRef.current, front = frontRef.current;
+    if (!back || !front || width <= 0) return;
+    let raf = 0;
+    const render = () => {
+      const bctx = sizeCanvas(back, width, height, font), fctx = sizeCanvas(front, width, height, font);
+      if (!bctx || !fctx) return;
+      const cw = bctx.measureText("M").width || CELL_FONT * 0.6, ch = CELL_H;
+      const cols = Math.ceil(width / cw);
+      const H = small ? HANG_H_SM : HANG_H;
+      const g = new Grid(cw, ch, cols);
+
+      // the ropes
+      for (let r = 0; r < Math.max(1, rows); r++) {
+        const y = TOP + r * (H + ROW_GAP);
+        g.plot((t) => [t * width, ropeY(y, t * width, width)], INK, Math.ceil(width / 2));
+      }
+      // a peg on the rope at every hung piece
+      for (const p of placed) {
+        if (!p.hung) continue;
+        const [c, r] = g.at(p.peg, p.y - 8);
+        g.set(c, r - 1, "n", WOOD); g.set(c, r, "|", WOOD); g.set(c, r + 1, "|", WOOD);
+      }
+      // the basket's back: its inside, dotted, and the handle over it
+      const bx = width / 2, by = basketTop;
+      const [, r0] = g.at(bx, by), rN = Math.floor((by + BASKET_H) / ch);
+      for (let r = r0 + 1; r < rN; r++) {
+        const k = (r - r0) / (rN - r0), inset = 28 * k;
+        const c0 = Math.ceil((bx - BASKET_W / 2 + inset) / cw) + 1, c1 = Math.floor((bx + BASKET_W / 2 - inset) / cw) - 1;
+        for (let c = c0; c <= c1; c++) if ((c + r) % 2 === 0) g.set(c, r, ".", INSIDE);
+      }
+      g.plot((t) => { const x0 = bx - BASKET_W * 0.22, x1 = bx + BASKET_W * 0.22; const u = 1 - t; return [u * u * x0 + 2 * u * t * bx + t * t * x1, u * u * by + 2 * u * t * (by - 78) + t * t * by]; }, WOOD, 300, true);
+      g.draw(bctx);
+
+      // the basket's front: paper under a wicker, slanted sides, the rim
+      const f = new Grid(cw, ch, cols);
+      fctx.fillStyle = "#fff";
+      fctx.beginPath();
+      fctx.moveTo(bx - BASKET_W / 2, by); fctx.lineTo(bx - BASKET_W / 2 + 28, by + BASKET_H); fctx.lineTo(bx + BASKET_W / 2 - 28, by + BASKET_H); fctx.lineTo(bx + BASKET_W / 2, by); fctx.closePath(); fctx.fill();
+      for (let r = r0 + 1; r <= rN; r++) {
+        const k = (r - r0) / (rN - r0), inset = 28 * k;
+        const c0 = Math.ceil((bx - BASKET_W / 2 + inset) / cw), c1 = Math.floor((bx + BASKET_W / 2 - inset) / cw);
+        for (let c = c0; c <= c1; c++) {
+          const stake = (c + (r % 2 ? 2 : 0)) % 4 === 0;
+          f.set(c, r, r === rN ? "=" : stake ? "|" : "-", r === rN ? WOOD : WICKER);
+        }
+      }
+      f.plot((t) => [bx - BASKET_W / 2 + 28 * t, by + BASKET_H * t], WOOD, 200);
+      f.plot((t) => [bx + BASKET_W / 2 - 28 * t, by + BASKET_H * t], WOOD, 200);
+      { const cA = Math.floor((bx - BASKET_W / 2) / cw) - 1, cB = Math.ceil((bx + BASKET_W / 2) / cw) + 1;
+        for (let c = cA; c <= cB; c++) f.set(c, r0, c === cA ? "(" : c === cB ? ")" : "=", WOOD); }
+      f.draw(fctx);
+    };
+    // fonts may land after the first paint: draw now, and again once they are ready
+    render();
+    if (document.fonts?.ready) document.fonts.ready.then(() => { raf = requestAnimationFrame(render); });
+    return () => cancelAnimationFrame(raf);
+  }, [placed, rows, width, height, basketTop, small, font]);
+
   return (
     <div className="relative">
       {/* the filters: the line is the list, this is what you hang on it */}
@@ -118,37 +239,8 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       </div>
 
       <div ref={stage} className="relative w-full" style={{ height }}>
-        {/* the ropes, one per row, with the pegs */}
-        {width > 0 && (
-          <svg className="pointer-events-none absolute inset-0" width={width} height={height} aria-hidden>
-            <defs>
-              <pattern id="weave" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-                <rect width="10" height="10" fill="#e8dcc6" />
-                <path d="M0 5h10" stroke="#c9b58f" strokeWidth="2.2" />
-              </pattern>
-            </defs>
-            {Array.from({ length: Math.max(1, rows) }).map((_, r) => {
-              const y = TOP + r * ((small ? HANG_H_SM : HANG_H) + ROW_GAP);
-              return (
-                <g key={r}>
-                  <path d={`M0 ${y} Q ${width / 2} ${y + ROPE_SAG * 2} ${width} ${y}`} fill="none" stroke="#2b2b2b" strokeWidth="1.6" />
-                  <path d={`M0 ${y} Q ${width / 2} ${y + ROPE_SAG * 2} ${width} ${y}`} fill="none" stroke="#2b2b2b" strokeWidth="1" strokeDasharray="2 5" opacity="0.5" transform="translate(0 2)" />
-                </g>
-              );
-            })}
-            {placed.filter((p) => p.hung).map((p) => (
-              <g key={p.item.src} transform={`translate(${p.peg} ${p.y - 8}) rotate(${p.rot})`}>
-                <rect x="-4" y="-10" width="8" height="24" rx="2.5" fill="#d9c7a4" stroke="#8a7350" strokeWidth="1" />
-                <path d="M-4 2h8" stroke="#8a7350" strokeWidth="1" />
-              </g>
-            ))}
-            {/* the basket's back */}
-            <g transform={`translate(${width / 2} ${basketTop})`}>
-              <path d={`M${-BASKET_W / 2} 0 L${-BASKET_W / 2 + 28} ${BASKET_H} L${BASKET_W / 2 - 28} ${BASKET_H} L${BASKET_W / 2} 0 Z`} fill="#efe6d3" stroke="#8a7350" strokeWidth="1.2" />
-              <path d={`M${-BASKET_W * 0.22} 0 Q 0 -78 ${BASKET_W * 0.22} 0`} fill="none" stroke="#8a7350" strokeWidth="5" strokeLinecap="round" />
-            </g>
-          </svg>
-        )}
+        {/* the ropes, pegs and the basket's back, in glyphs, under the pieces */}
+        <canvas ref={backRef} className="pointer-events-none absolute left-0 top-0" aria-hidden />
 
         {/* the pieces */}
         {placed.map((p) => (
@@ -181,14 +273,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
         ))}
 
         {/* the basket's front, over the folded pieces */}
-        {width > 0 && (
-          <svg className="pointer-events-none absolute inset-0" width={width} height={height} aria-hidden style={{ zIndex: 4 }}>
-            <g transform={`translate(${width / 2} ${basketTop})`}>
-              <path d={`M${-BASKET_W / 2} 0 L${-BASKET_W / 2 + 28} ${BASKET_H} L${BASKET_W / 2 - 28} ${BASKET_H} L${BASKET_W / 2} 0 Z`} fill="url(#weave)" stroke="#8a7350" strokeWidth="1.2" />
-              <rect x={-BASKET_W / 2 - 6} y="-8" width={BASKET_W + 12} height="16" rx="6" fill="#d9c7a4" stroke="#8a7350" strokeWidth="1.2" />
-            </g>
-          </svg>
-        )}
+        <canvas ref={frontRef} className="pointer-events-none absolute left-0 top-0" aria-hidden style={{ zIndex: 4 }} />
       </div>
 
       {/* the piece, large */}
