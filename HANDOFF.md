@@ -97,6 +97,11 @@ study and the home card).
   the real text on landing. `app/page.tsx` drives the phases; the hidden
   text lives on an inner span because Motion animates the shared-layout
   element's own opacity. HOLD_MS is 2500. Reduced motion skips it all.
+  The cells are mapped onto the text's INK BOX, not its element: the
+  inner span's rect is the inline box (advance by ascent+descent,
+  transforms included) and the sampled ink offsets scale onto it, so
+  the glyphs sit on the letters at any size or mid-flight (they read as
+  "not lined up" before, 2026-11-03).
   It plays once per PAGE LOAD (a module-level flag): a reload replays
   it, returning to "/" from another page within the app skips it. It was
   a sessionStorage gate before, which meant a tab saw it exactly once
@@ -110,16 +115,23 @@ study and the home card).
 - **Play is a clothesline** (`components/play/Clothesline.tsx`): the
   pieces start in a basket, the filter (All plus each play collection's
   title) lifts the matching ones onto the rope, pegged under its sag, in
-  as many rows as fit; hover sways a hung piece, click opens it large.
-  Groups come from the play works in `lib/works.ts`; finer tags are a
-  data edit away. The rope, pegs and basket are drawn in the sky's
-  glyphs (9px Plex Mono on 11px rows) on two canvases: the back one
-  under the pieces (a `||` pole with a `=` cap at either end, the ropes
-  running pole to pole and stepping - to _, an `o` knot where each ties
-  on, a peg `n` over `|` at each hang point, the basket's `=` handle and
-  dotted inside), the front one
-  over the folded pieces (a white fill so they read as inside, a
-  staggered `-|` wicker, `|` sides, the `(====)` rim).
+  as many rows as fit (128px tall on desktop, 92 on phones, so seven or
+  so share a line at 1440); hover sways a hung piece, click opens it
+  large. Groups come from the play works in `lib/works.ts`; finer tags
+  are a data edit away. The basket is a STICKY layer at the end of the
+  stage, pinned so its floor sits on the sky's front hill (93vh) while
+  the line scrolls behind it; the poles' feet are in that layer too. A
+  piece lives in the stage (hung) or the layer (folded) and the move
+  between them is a shared-layout flight on its `layoutId` (Motion
+  measures both in window space). Everything structural is drawn in
+  the sky's glyphs (9px Plex Mono on 11px rows) on canvases: the stage
+  one under the hung pieces (a `||` pole with a `=` cap at either end,
+  the ropes running pole to pole and stepping - to _, an `o` knot where
+  each ties on, a peg `n` over `|` at each hang point), the layer's
+  back (the poles' lower run on `====` feet, with paper under each so
+  the stage's posts stop there, the basket's `=` handle and dotted
+  inside) and its front over the folded pieces (a white fill so they
+  read as inside, a staggered `-|` wicker, `|` sides, the `(====)` rim).
 
 ## Content still marked NEED (Margaret's to supply)
 

@@ -43,7 +43,16 @@ const hash = (a: number, b: number) => {
 };
 const smooth = (a: number, b: number, x: number) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 
-type Grid = { gw: number; gh: number; d: Float32Array; thr: Float32Array };
+type Grid = {
+  gw: number; gh: number; d: Float32Array; thr: Float32Array;
+  /* where the ink sits relative to the text's inline box, in the sample's
+     units: the box's advance width and its ascent+descent height, and the
+     ink's offset and size inside it. Scaled to the live span's rect each
+     frame, so the cells land on the letters whatever size or transform
+     the text is drawn at (the mismatch read as the name "not lined up",
+     Margaret, 2026-11-03) */
+  adv: number; asc: number; ix: number; iy: number; iw: number; ih: number;
+};
 
 /* sample the word's ink into a cell grid; the font comes from the element itself */
 function sample(el: HTMLElement, text: string): Grid | null {
@@ -64,6 +73,7 @@ function sample(el: HTMLElement, text: string): Grid | null {
   ctx.font = font; ctx.textBaseline = "alphabetic"; ctx.fillStyle = "#000";
   if ("letterSpacing" in ctx) (ctx as unknown as { letterSpacing: string }).letterSpacing = `${track}px`;
   const base = Math.round(size * 1.1);
+  const fba = m.fontBoundingBoxAscent || size * 0.9, fbd = m.fontBoundingBoxDescent || size * 0.25;
   ctx.fillText(text, size / 2, base);
   const img = ctx.getImageData(0, 0, w, h).data;
   // the ink's own box
@@ -80,7 +90,7 @@ function sample(el: HTMLElement, text: string): Grid | null {
     d[gy * gw + gx] = n ? sum / n / 255 : 0;
     thr[gy * gw + gx] = 0.55 * (BAYER[(gx & 3) + (gy & 3) * 4] / 16) + 0.45 * hash(gx * 7 + 1, gy * 13 + 3);
   }
-  return { gw, gh, d, thr };
+  return { gw, gh, d, thr, adv: m.width, asc: fba + fbd, ix: x0 - size / 2, iy: y0 - (base - fba), iw, ih };
 }
 
 export default function DitherWordmark({ mode, target, text, font, onAssembled, onResolved }: {
@@ -93,7 +103,7 @@ export default function DitherWordmark({ mode, target, text, font, onAssembled, 
   onResolved?: () => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const gridRef = useRef<Grid | null>(null);
+  const gridRef = useRef<{ el: HTMLElement; grid: Grid | null } | null>(null);
   const trail = useRef<{ x: number; y: number; w: number; h: number; t: number }[]>([]);
   const cb = useRef({ onAssembled, onResolved });
   cb.current = { onAssembled, onResolved };
@@ -117,9 +127,11 @@ export default function DitherWordmark({ mode, target, text, font, onAssembled, 
     fit();
     addEventListener("resize", fit);
 
+    // sampled once per element: the intro's hero and the corner text share
+    // a face and tracking, but each is measured on its own
     const ensureGrid = () => {
-      if (!gridRef.current) gridRef.current = sample(el, text);
-      return gridRef.current;
+      if (!gridRef.current || gridRef.current.el !== el) gridRef.current = { el, grid: sample(el, text) };
+      return gridRef.current.grid;
     };
 
     const frame = (now: number) => {
@@ -127,12 +139,13 @@ export default function DitherWordmark({ mode, target, text, font, onAssembled, 
       raf = requestAnimationFrame(frame);
       const g = ensureGrid();
       if (!g) return;
-      const r = el.getBoundingClientRect();
+      // the ink box: the inner span's rect is the text's inline box (its
+      // advance by the font's ascent+descent), transforms included, so
+      // the sampled ink offsets scale straight onto it
+      const r = (el.querySelector("span") ?? el).getBoundingClientRect();
       ctx.clearRect(0, 0, innerWidth, innerHeight);
-      // the ink box inside the element: the text's own cap height sits a
-      // little under the line box, so lean on the element's height ratio
-      const padY = r.height * 0.14;
-      const bx = r.left, by = r.top + padY, bw = r.width, bh = r.height - padY * 2;
+      const kx = r.width / g.adv, ky = r.height / g.asc;
+      const bx = r.left + g.ix * kx, by = r.top + g.iy * ky, bw = g.iw * kx, bh = g.ih * ky;
       const cellW = bw / g.gw, cellH = bh / g.gh;
       const fs = Math.max(4, cellH * 1.02);
       ctx.font = `500 ${fs}px ${font}`; ctx.textBaseline = "top"; ctx.textAlign = "center";
