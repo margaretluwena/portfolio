@@ -347,8 +347,9 @@ export const works: Work[] = [
     /* the green refresh (2026-10-29): the card sits on the dashboard's own
        near-black (--bg-app) and fades into its sidebar tone, with the new
        home on the laptop screen (scripts/capture: card-cover) */
-    cardBg: "#111214",
-    cardFade: "linear-gradient(to bottom, rgba(12,13,15,0), rgba(12,13,15,0.03) 37.5%, #0C0D0F 77.9%)",
+    /* a step lighter than the dashboard's near-black (Margaret, 2026-11-02: "lighten the Traeco card bg a little bit") */
+    cardBg: "#1E1F23",
+    cardFade: "linear-gradient(to bottom, rgba(24,25,29,0), rgba(24,25,29,0.03) 37.5%, #18191D 77.9%)",
     cardText: "light",
     // laptop chrome (140:695) under the floating dashboard (140:715); the
     // dashboard is sized a hair past the white display area so no white
@@ -651,16 +652,15 @@ export const works: Work[] = [
     /* the study opens on the index header; the card below is the data */
     hero: { src: "/images/covers/prosaic-index.jpg", alt: "Prosaic Intelligence: the AI Safety Index header, beads on wires over paper" },
     cardBg: "#F7F4EF",
-    cardFade: "linear-gradient(to bottom, rgba(247,244,239,0) 42%, #F7F4EF 80%)",
-    /* a dynamic still (Margaret, 2026-11-02: "more of the graphs and the
-       data"): the general-use chart card leans in from the lower left with
-       the Sycophancy risk card tucked behind it at the top right, both
-       captured from her build at 2x (scripts/capture/prosaic.config.json),
-       on the site's paper. Rotations like the Mark card's layers; the
-       chart's lower edge sits under the paper fade. */
+    cardFade: "linear-gradient(to bottom, rgba(247,244,239,0) 52%, #F7F4EF 86%)",
+    /* the general-use chart card straight on, over the bead field alone
+       (the hero with its text hidden, at the card's shape), both captured
+       from her build (scripts/capture/prosaic.config.json). Margaret,
+       2026-11-02: the leaning two-card version was "TOO dynamic"; "show the
+       graph straight on for now and have the beads in the background". */
     coverArt: [
-      { src: "/images/prosaic/risk-card.png", left: "59%", top: "3.5%", width: "44%", height: "40.3%", rotate: 3.2 },
-      { src: "/images/prosaic/chart-card.png", left: "1.5%", top: "23%", width: "86%", height: "67.4%", rotate: -3 },
+      { src: "/images/prosaic/beads.png", left: "0%", top: "0%", width: "100%", height: "100%" },
+      { src: "/images/prosaic/chart-card.png", left: "6%", top: "8.5%", width: "88%", height: "68.9%" },
     ],
     credits: [
       { label: "Timeline", value: "September 2026, three days" },

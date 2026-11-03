@@ -41,7 +41,7 @@ type Step =
   | { type: "click" }
   | { type: "scroll"; target: string; ms: number; block?: ScrollLogicalPosition };
 type Shot = { id: string; route: string; sidebarCollapsed?: boolean; posterAtMs: number; steps: Step[]; viewport?: { width: number; height: number } };
-type Still = { id: string; route: string; file: string; width: number; height: number; deviceScaleFactor: number; sidebarCollapsed?: boolean; fullPage?: boolean; selector?: string; waitMs: number; note?: string };
+type Still = { id: string; route: string; file: string; width: number; height: number; deviceScaleFactor: number; sidebarCollapsed?: boolean; fullPage?: boolean; selector?: string; hide?: string[]; waitMs: number; note?: string };
 type Config = {
   baseUrl: string;
   login?: { path: string; emailEnv: string; passwordEnv: string };
@@ -259,6 +259,7 @@ async function stills(which?: string) {
     const page = await ctx.newPage();
     await login(page);
     await page.goto(config.baseUrl + s.route, { waitUntil: "networkidle" });
+    if (s.hide?.length) await page.addStyleTag({ content: `${s.hide.join(",")}{visibility:hidden!important}` });
     await sleep(s.waitMs);
     await page.evaluate(() => { const c = document.getElementById("__capcursor"); if (c) c.remove(); });
     if (s.selector) await page.locator(s.selector).first().screenshot({ path: path.join(ROOT, s.file), type: "png" });

@@ -80,6 +80,25 @@
       "deviceScaleFactor": 2,
       "waitMs": 3000,
       "note": "the index on a phone"
+    },
+    {
+      "id": "beads",
+      "route": "/",
+      "file": "public/images/prosaic/beads.png",
+      "width": 1456,
+      "height": 1016,
+      "deviceScaleFactor": 1.5,
+      "hide": [
+        ".hero-masthead",
+        ".hero-title",
+        ".hero-subtitle",
+        ".hero-standfirst",
+        ".bead-selector-heading",
+        ".index-section",
+        ".home-section"
+      ],
+      "waitMs": 3200,
+      "note": "the bead field alone, at the card's shape, for the home card's background"
     }
   ],
   "shots": [
