@@ -113,7 +113,12 @@ study and the home card).
   a spin. `npm run capture:dog` redraws the contact sheet at
   `public/images/about/dog-frames.png`.
 - **Play is a clothesline** (`components/play/Clothesline.tsx`, a
-  window-tall scene stuck to the top of `app/play/page.tsx`): two poles
+  window-tall FIXED scene that rides up by `--sky-lift` exactly as the
+  sky does, so the poles and basket never leave the hills; `app/play/
+  page.tsx` makes its main 86vh so the footer's 14vh top margin puts
+  the footer band at the window's bottom edge and the first pixel of
+  scroll starts the lift; the large-piece modal is the scene's sibling,
+  clear of that transform): two poles
   planted on the sky's front hill (93vh), the basket on the ground at
   the RIGHT, a welcome line standing on the ground at the left ("Hey,
   welcome to the playground! This is where (all) my smaller things

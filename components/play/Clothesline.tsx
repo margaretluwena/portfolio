@@ -13,8 +13,13 @@ import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, u
   the rest drop back into the basket. Hovering a hung piece sets it
   swinging on its peg; clicking opens it large.
 
-  The whole thing is a SCENE the height of the window, stuck to the top
-  of the page: two poles planted on the front hill (93vh), the basket on
+  The whole thing is a SCENE the height of the window, a FIXED layer
+  that rides up by --sky-lift exactly as the sky does when the footer
+  scrolls in (the page is sized so the footer enters on the first pixel
+  of scroll), so the poles and the basket never leave the hills
+  (Margaret, 2026-11-03: "keep the poles and basket stuck to the
+  floor"; a sticky scene moved ahead of them through the footer's top
+  margin): two poles planted on the front hill (93vh), the basket on
   the ground at the right, a welcome line standing on the ground at the
   left with the filters as pills inside its sentence ("This is where
   (all) my smaller things are, including (graphics) and (ui/ux)...",
@@ -386,7 +391,13 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   });
 
   return (
-    <div ref={scene} className="sticky top-0 h-screen w-full overflow-hidden" style={{ height: "100dvh" }}>
+    <>
+    <div
+      ref={scene}
+      data-scene
+      className="fixed top-0 overflow-hidden"
+      style={{ left: "var(--margin-outer)", right: "var(--margin-outer)", height: "100dvh", transform: "translateY(calc(var(--sky-lift, 0px) * -1))", willChange: "transform" }}
+    >
       {/* the welcome line, standing on the ground at the left; the filters
           are the pills in its sentence: the line is the list, this is
           what you hang on it */}
@@ -415,7 +426,9 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       {width > 0 && placed.filter((p) => !p.hung).map(piece)}
       <canvas ref={frontRef} className="pointer-events-none absolute left-0 top-0" aria-hidden style={{ zIndex: 4 }} />
 
-      {/* the piece, large */}
+    </div>
+
+      {/* the piece, large: a sibling of the scene, clear of its lift transform */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -435,6 +448,6 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }

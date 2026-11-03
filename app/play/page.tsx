@@ -29,8 +29,11 @@ const groups = playWorks.map((w) => w.title);
 const items = playWorks.flatMap((w) => itemsOf(w.blocks, w.title));
 
 export default function PlayPage() {
+  // 86vh, not a full screen: the scene is a fixed layer, and the footer's
+  // 14vh top margin then puts its band at the window's bottom edge, so the
+  // first pixel of scroll starts lifting the hills, the scene with them
   return (
-    <main className="min-h-screen">
+    <main className="h-[86vh]">
       <PageEnter className="px-[var(--margin-outer)]">
         <h1 className="sr-only">Play</h1>
         <Clothesline items={items} groups={groups} />
