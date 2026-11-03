@@ -47,7 +47,8 @@
       "deviceScaleFactor": 2,
       "selector": ".chart-card",
       "waitMs": 3000,
-      "note": "the general-use chart card on its own, for the home card's layers"
+      "note": "the general-use chart card on its own, for the home card's layers",
+      "transparent": true
     },
     {
       "id": "risk-card",
