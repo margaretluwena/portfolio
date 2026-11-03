@@ -54,7 +54,7 @@ const HANG_H = 128;         // a hung piece's height on desktop
 const HANG_H_SM = 92;       // on phones
 const MAX_W = 230, MAX_W_SM = 150;
 const GAP = 22;             // between pieces on the line
-const ROW_PITCH = 0.45;     // rope to rope, as a share of a piece's height: the next row is strung this much higher, IN FRONT
+const ROW_PITCH = 0.32;     // rope to rope, as a share of a piece's height: the next row is strung this much higher, IN FRONT
 const ROPE_SAG = 26;
 const TOP = 44;             // the first rope's ends, from the top of the line band
 const BASKET_W = 400, BASKET_H = 128, HANDLE = 78; // 128: eleven rows of wicker, two fewer than it had (Margaret, 2026-11-03)
@@ -369,7 +369,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       type="button"
       aria-pressed={filter === g}
       onClick={() => setFilter(g)}
-      className={`inline-block rounded-full border px-[9px] py-[1px] align-baseline lowercase leading-[1.3] transition-colors ${filter === g ? "border-ink bg-ink text-paper" : "border-black/[0.2] bg-white/70 text-ink/70 hover:text-ink"}`}
+      className={`mx-[3px] inline-block rounded-full border px-[10px] py-[2px] align-baseline lowercase leading-[1.3] transition-colors ${filter === g ? "border-ink bg-ink text-paper" : "border-black/[0.2] bg-white/70 text-ink/70 hover:text-ink"}`}
     >
       {g}
     </button>
@@ -387,7 +387,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
           what you hang on it */}
       <p
         ref={descRef}
-        className="absolute text-body text-ink"
+        className="absolute text-body leading-[2.05] text-ink"
         style={{ left: small ? INSET : INSET + 8, right: small ? INSET : undefined, maxWidth: small ? undefined : 440, top: descTop, zIndex: 6 }}
         role="group" aria-label="Hang"
       >
