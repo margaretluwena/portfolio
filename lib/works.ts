@@ -683,7 +683,7 @@ export const works: Work[] = [
   {
     slug: "prosaic-intelligence",
     title: "Prosaic Intelligence",
-    signal: "16 AI products scored", // was "Built in three days" (Margaret, 2026-11-02)
+    signal: "Raised in 24 hours", // Margaret, 2026-11-02
     lede: "A public index of how safely sixteen popular AI products behave, so anyone can see which one is safest for what they use it for.",
     point: "There's no single safest AI, only the one that's safest for what you care about, so every page helps you ask your own question before it gives you an answer.",
     blurb: "A public index of how safely sixteen popular AI products behave, so anyone can see which one is safest for what they use it for.", // the one-sentence summary, tightened (2026-11-02)
