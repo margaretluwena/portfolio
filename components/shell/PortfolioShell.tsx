@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 import Image from "next/image";
 import { motion } from "motion/react";
 import WorksColumn from "@/components/works/WorksColumn";
@@ -35,7 +37,12 @@ export const socials = [
   // Instagram dropped 2026-10-13 (Shub's feedback); the mail glyph takes its place.
 ];
 
-export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { reveal: boolean; reduce: boolean; onWorksIndex?: (i: number) => void }) {
+export default function PortfolioShell({ reveal, reduce, onWorksIndex, wordmarkRef, wordmarkHidden, onWordmarkLanded }: {
+  reveal: boolean; reduce: boolean; onWorksIndex?: (i: number) => void;
+  /* the dithered intro (DitherWordmark, 2026-11-03) follows the corner wordmark's
+     live rect through its flight and hides the real text until it lands */
+  wordmarkRef?: React.Ref<HTMLParagraphElement>; wordmarkHidden?: boolean; onWordmarkLanded?: () => void;
+}) {
   // staggered entrance: fade + rise, sequenced after the wordmark lands (~1.1s flight)
   const enter = (delay: number) => ({
     initial: false as const,
@@ -71,11 +78,14 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex }: { revea
             {/* the wordmark lands HERE - shared layoutId with the intro; never faded */}
             {reveal && (
               <motion.p
+                ref={wordmarkRef}
                 layoutId="wordmark"
                 className="font-display text-name text-ink w-fit"
                 transition={{ layout: { duration: reduce ? 0 : 1.1, ease: [0.7, 0, 0.2, 1] } }}
+                onLayoutAnimationComplete={onWordmarkLanded}
               >
-                MARGARET LUWENA
+                {/* hidden on an inner span, not the motion element (see app/page.tsx) */}
+                <span style={{ opacity: wordmarkHidden ? 0 : 1, transition: "opacity 320ms ease" }}>MARGARET LUWENA</span>
               </motion.p>
             )}
 

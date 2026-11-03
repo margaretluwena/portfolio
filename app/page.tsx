@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import PortfolioShell from "@/components/shell/PortfolioShell";
+import DitherWordmark, { type DitherMode } from "@/components/shell/DitherWordmark";
 import { useNav } from "@/components/nav/NavContext";
 import { featuredWorks } from "@/lib/works";
 
@@ -21,9 +22,16 @@ import { featuredWorks } from "@/lib/works";
   The old hero texture (InteractiveTexture, which collapsed to a 33vh band
   in step with the flight) is retired by the sky (2026-10-08); the component
   stays parked in components/hero. Skip: click anywhere or press any key.
+
+  The dither (2026-11-03): the name first assembles out of the sky's own
+  glyphs, rising cell by cell into place, then the real text crossfades in
+  and holds; on the flight to the corner the cells follow the moving
+  wordmark, shedding and regathering, and settle into the real text on
+  landing (DitherWordmark). Reduced motion skips all of it, as before.
 */
 
-const HOLD_MS = 1900;
+const HOLD_MS = 2500; // the assembly takes ~1.1s, the name then holds ~1.2s
+const SKY_FONT_FALLBACK = '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
 const GESTURE = { duration: 1.1, ease: [0.7, 0, 0.2, 1] as const };
 const SEEN_KEY = "ml-intro-seen";
 
@@ -32,6 +40,14 @@ export default function Page() {
   const { setNav } = useNav();
   const [phase, setPhase] = useState<"intro" | "main">("intro");
   const [worksIndex, setWorksIndex] = useState(0);
+  /* the dither's phase, and whether the real text is showing in each spot */
+  const [dither, setDither] = useState<DitherMode>("off");
+  const [introVisible, setIntroVisible] = useState(false);
+  const [cornerHidden, setCornerHidden] = useState(false);
+  const [skyFont, setSkyFont] = useState(SKY_FONT_FALLBACK);
+  const introRef = useRef<HTMLHeadingElement>(null);
+  const cornerRef = useRef<HTMLParagraphElement>(null);
+  const skipped = useRef(false);
 
   // returning within the session? skip the intro before first paint.
   // Storage access is guarded: a browser that blocks it (private browsing,
@@ -40,12 +56,16 @@ export default function Page() {
   useLayoutEffect(() => {
     let seen = false;
     try { seen = !!sessionStorage.getItem(SEEN_KEY); } catch {}
-    if (reduce || seen) setPhase("main");
+    if (reduce || seen) { setPhase("main"); setIntroVisible(true); skipped.current = true; }
+    else { setDither("assemble"); setCornerHidden(true); }
+    try { const f = getComputedStyle(document.body).getPropertyValue("--font-sky").trim(); if (f) setSkyFont(`${f}, ${SKY_FONT_FALLBACK}`); } catch {}
   }, [reduce]);
 
   useEffect(() => {
     if (phase === "main") {
       try { sessionStorage.setItem(SEEN_KEY, "1"); } catch {}
+      // the flight: the cells follow the corner wordmark until it lands
+      if (!skipped.current) { setIntroVisible(true); setDither("flight"); setCornerHidden(true); }
       return;
     }
     const t = setTimeout(() => setPhase("main"), HOLD_MS);
@@ -58,6 +78,12 @@ export default function Page() {
   }, [phase]);
 
   const isMain = phase === "main";
+
+  // assembled: the real text fades in over the cells, which then clear
+  const onAssembled = () => { setIntroVisible(true); setTimeout(() => setDither((m) => (m === "assemble" ? "off" : m)), 260); };
+  // landed: the flicker settles, then the real corner text takes over
+  const onLanded = () => { if (!skipped.current) setDither((m) => (m === "flight" ? "resolve" : m)); };
+  const onResolved = () => { setCornerHidden(false); setTimeout(() => setDither("off"), 340); };
 
   // the nav pill lives in the root layout: hide it through the intro, then
   // hand it the live works index; release both when this page unmounts
@@ -90,17 +116,24 @@ export default function Page() {
       {!isMain && (
         <div className="fixed inset-0 z-20 grid place-items-center">
           <motion.h1
+            ref={introRef}
             layoutId="wordmark"
             className="wordmark text-hero text-ink whitespace-nowrap px-6 text-center"
             transition={{ layout: reduce ? { duration: 0 } : GESTURE }}
           >
-            MARGARET LUWENA
+            {/* the text itself is hidden on an inner span: Motion animates the
+                element's own opacity through a shared-layout swap, so a style
+                there would be overridden and the text ghosted under the dither */}
+            <span style={{ opacity: introVisible ? 1 : 0, transition: "opacity 260ms ease" }}>MARGARET LUWENA</span>
           </motion.h1>
         </div>
       )}
 
+      {/* the name in the sky's glyphs: assembling, in flight, settling */}
+      <DitherWordmark mode={dither} target={isMain ? cornerRef : introRef} text="MARGARET LUWENA" font={skyFont} onAssembled={onAssembled} onResolved={onResolved} />
+
       {/* main page underneath; renders the corner wordmark when revealed */}
-      <PortfolioShell reveal={isMain} reduce={!!reduce} onWorksIndex={setWorksIndex} />
+      <PortfolioShell reveal={isMain} reduce={!!reduce} onWorksIndex={setWorksIndex} wordmarkRef={cornerRef} wordmarkHidden={cornerHidden} onWordmarkLanded={onLanded} />
 
       {/* no footer on the home page: the works column just ends at Prosaic
           Intelligence (Margaret, 2026-10-09; the fourth card since 2026-11-02). SiteFooter's reveal mode is kept for
