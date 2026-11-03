@@ -1,0 +1,10 @@
+{
+  "baseUrl": "file:///Users/margaretluwena/Portfolio/scripts/capture/dog",
+  "viewport": { "width": 1128, "height": 900, "deviceScaleFactor": 2 },
+  "hideSelectors": [],
+  "cursor": { "size": 22, "speedPxPerSec": 900, "minMoveMs": 320, "holdBeforeClickMs": 220, "clickRippleMs": 420, "settleAfterClickMs": 140, "fps": 30 },
+  "encode": { "fps": 30, "maxBytes": 3000000, "crfLadder": [22, 25, 28, 31, 34], "preset": "slow" },
+  "out": { "videos": "public/videos/dog", "posters": "public/images/about" },
+  "stills": [ { "id": "frames", "route": "/frames.html", "file": "public/images/about/dog-frames.png", "width": 1128, "height": 900, "deviceScaleFactor": 2, "selector": "body", "waitMs": 800 } ],
+  "shots": []
+}
