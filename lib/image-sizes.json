@@ -323,6 +323,10 @@
     867,
     647
   ],
+  "/images/prosaic/chart-card.png": [
+    1884,
+    1030
+  ],
   "/images/prosaic/general-use.jpg": [
     2000,
     1099
@@ -335,9 +339,29 @@
     2000,
     1021
   ],
+  "/images/prosaic/phone.png": [
+    780,
+    1688
+  ],
+  "/images/prosaic/posters/home.jpg": [
+    2256,
+    1400
+  ],
+  "/images/prosaic/posters/use-case.jpg": [
+    2256,
+    1400
+  ],
+  "/images/prosaic/risk-card.png": [
+    920,
+    588
+  ],
   "/images/prosaic/type.png": [
     1600,
     1200
+  ],
+  "/images/prosaic/weights-table.png": [
+    1884,
+    530
   ],
   "/images/smallworks-1.webp": [
     1973,

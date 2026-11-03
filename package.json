@@ -9,7 +9,8 @@
     "lint": "next lint",
     "lint:dashes": "node scripts/check-dashes.mjs",
     "images": "node scripts/image-sizes.mjs",
-    "capture:traeco": "tsx scripts/capture/traeco.ts"
+    "capture:traeco": "CAPTURE_CONFIG=scripts/capture/traeco.config.json tsx scripts/capture/capture.ts",
+    "capture:prosaic": "CAPTURE_CONFIG=scripts/capture/prosaic.config.json tsx scripts/capture/capture.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.0.0",

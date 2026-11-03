@@ -90,8 +90,13 @@ study and the home card).
 
 - Prosaic Intelligence: open, featured on the home column after Atlix in
   Impeccable Chicken's old slot (2026-11-02); Impeccable Chicken stays on
-  the All Works page, parked. Team name is still hers. Never link her test
-  site.
+  the All Works page, parked. Founder Anantika Mannby (credited). She has
+  cleared the product numbers, so the charts may be shown, and the live
+  site prosaicintelligence.ai may be linked (it differs from Margaret's
+  build, which is what the footage shows). Footage and stills come from
+  her clone at ~/Traeco/prosaic-intelligence run on port 3200
+  (.claude/launch.json "prosaic-site") via `npm run capture:prosaic`. The
+  card is a layered still: the chart card over the Sycophancy risk card.
 - AANC and FoundHer House: removed from the data for now; she fills them
   in later.
 - Traeco: outreach-tracker media, brand sheet, deck spreads. Signal pill

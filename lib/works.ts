@@ -365,7 +365,7 @@ export const works: Work[] = [
        decision and a visual, what shipped, designing in code, around it,
        reflection. Her [MAR: ...] and [CHECK ...] notes are kept verbatim
        and render highlighted on the page until she fills them. Visuals:
-       recorded product footage (scripts/capture/traeco.ts) and three coded
+       recorded product footage (scripts/capture/capture.ts) and three coded
        animations (components/works/motion). */
     blocks: [
       {
@@ -626,10 +626,12 @@ export const works: Work[] = [
      (2026-11-02), over the preliminary study written the same day from the
      project's own record (README, NEXT, HANDOFF, docs/design-system, 92
      commits from 19 to 20 September 2026) and the "Mar <> Anantika" Figma
-     file. The type sheet is that file's "Font choice 1" frame. The site is
-     NEVER linked from here (her instruction); the index's scores are
-     generated placeholders, so no new screenshots of named products'
-     numbers. Unparked so she can read it; her [MAR] and [CHECK] slots
+     file. The type sheet is that file's "Font choice 1" frame. As of
+     2026-11-02 the founder, Anantika Mannby, has cleared the product
+     numbers for use, so the site's charts may be shown, and the live site
+     (prosaicintelligence.ai, which differs from Margaret's build) may be
+     linked. The footage and stills come from her build running locally
+     (scripts/capture/prosaic.config.json). Her [MAR] and [CHECK] slots
      render highlighted. Sits after Atlix in the index and on the home
      column, where Impeccable Chicken was (Margaret, 2026-11-02). ---- */
   {
@@ -646,12 +648,24 @@ export const works: Work[] = [
        that white gradient", "more of the website itself"). The placeholder
        scores at the foot of that screenshot sit under the full paper. */
     cover: { src: "/images/covers/prosaic-index.jpg", alt: "Prosaic Intelligence: the AI Safety Index header, beads on wires over paper" },
+    /* the study opens on the index header; the card below is the data */
+    hero: { src: "/images/covers/prosaic-index.jpg", alt: "Prosaic Intelligence: the AI Safety Index header, beads on wires over paper" },
     cardBg: "#F7F4EF",
     cardFade: "linear-gradient(to bottom, rgba(247,244,239,0) 42%, #F7F4EF 80%)",
+    /* a dynamic still (Margaret, 2026-11-02: "more of the graphs and the
+       data"): the general-use chart card leans in from the lower left with
+       the Sycophancy risk card tucked behind it at the top right, both
+       captured from her build at 2x (scripts/capture/prosaic.config.json),
+       on the site's paper. Rotations like the Mark card's layers; the
+       chart's lower edge sits under the paper fade. */
+    coverArt: [
+      { src: "/images/prosaic/risk-card.png", left: "59%", top: "3.5%", width: "44%", height: "40.3%", rotate: 3.2 },
+      { src: "/images/prosaic/chart-card.png", left: "1.5%", top: "23%", width: "86%", height: "67.4%", rotate: -3 },
+    ],
     credits: [
       { label: "Timeline", value: "September 2026, three days" },
       { label: "Role", value: "Designer and builder" },
-      { label: "Team", value: "NEED" }, // [CHECK: the founder's name]
+      { label: "Team", value: "Anantika Mannby, founder" },
       { label: "Scope", value: "Brand, web, data visualization, motion" },
     ],
     next: "mark", // wraps: Impeccable Chicken after it is parked
@@ -667,17 +681,18 @@ export const works: Work[] = [
         title: "Setup",
         rail: "Setup",
         body: [
-          "Prosaic Intelligence is a public index that scores how sixteen popular AI products handle safety, built so anyone can see which one is safest for what they use it for. I designed and built the whole site, including the brand, charts and motion, in three days with Claude Code, in September 2026, with [CHECK: the founder's name].",
+          "Prosaic Intelligence is a public index that scores how sixteen popular AI products handle safety, built so anyone can see which one is safest for what they use it for. I designed and built the whole site, including the brand, charts and motion, in three days with Claude Code, in September 2026, with its founder, Anantika Mannby.",
           "There's no single safest AI, only the one that's safest for what you care about, so the site asks your question before it gives you an answer.",
         ],
-        visual: { kind: "image", media: { src: "/images/prosaic/home.jpg", alt: "Prosaic Intelligence home: the serif lockup on a dark card over the dot-screen artwork" }, caption: "The home page. [MAR: a recording of it scrolling down would replace this still]" },
+        /* recorded from her build (scripts/capture/prosaic.config.json, 2026-11-02): the beads follow the pointer, then the page scrolls to the chart, the two cards and the risks */
+        visual: { kind: "video", src: "/videos/prosaic/home.mp4", poster: "/images/prosaic/posters/home.jpg", aspect: "1128 / 700", caption: "The index, top to bottom: the beads lean toward the pointer, then the chart, why it exists, and the seven risks." },
       },
       {
         type: "stats",
         items: [
           { value: "3 days", label: "from brief to a deployed site" },
           { value: "16 products, 7 risks", label: "on one scale, re-weighted by use case" },
-          { value: "23 pages", label: "with a full methodology; every chart colour passes contrast" },
+          { value: "prosaicintelligence.ai", label: "live", href: "https://prosaicintelligence.ai" },
         ],
       },
       {
@@ -698,7 +713,7 @@ export const works: Work[] = [
           "Decision: The page opens with a sentence to finish, Which AI is safest for, with options like long conversations or someone having a hard time, and the ranking reorders around your answer.",
           "What I learned: A ranking without a use case is a number without meaning.",
         ],
-        visual: { kind: "image", media: { src: "/images/prosaic/index-header.jpg", alt: "AI Safety Index: which AI is safest for, with the use-case pills" }, caption: "Finish the sentence and the index re-weights around your answer. [MAR: a recording of the ranking reordering would replace this still]" },
+        visual: { kind: "video", src: "/videos/prosaic/use-case.mp4", poster: "/images/prosaic/posters/use-case.jpg", aspect: "1128 / 700", caption: "Finish the sentence and the sixteen bars re-rank: someone having a hard time, then looking things up, then everyday advice." },
       },
       {
         type: "essay",
@@ -720,7 +735,7 @@ export const works: Work[] = [
           "Decision: I designed directly in code and set the build to fail if any data was wrong or any colour failed contrast, so I could move fast without publishing a mistake. [MAR: one thing you noticed only once real screens existed]",
           "What I learned: Automatic checks are what make a tight deadline safe.",
         ],
-        visual: { kind: "slot", note: "[MAR: the methodology page with its sources and weights tables]" },
+        visual: { kind: "image", media: { src: "/images/prosaic/weights-table.png", alt: "The methodology's weighting table: each use case's share across the seven risk categories" }, caption: "The weights behind every use case, published on the methodology page. General use weights all seven equally." },
       },
       {
         type: "essay",
@@ -732,7 +747,7 @@ export const works: Work[] = [
           { num: "03", title: "Methodology", body: "Where the data comes from and how scores are weighted." },
           { num: "04", title: "Company pages", body: "Each maker's products across all seven risks." },
         ],
-        visual: { kind: "slot", note: "[MAR: the index on a phone, since most readers arrive from a news link]" },
+        visual: { kind: "image", media: { src: "/images/prosaic/phone.png", alt: "The index on a phone: the beads, the headline, the use-case pills and the chart card" }, caption: "On a phone, where most readers arrive from a news link." },
       },
       {
         type: "also",
@@ -741,6 +756,12 @@ export const works: Work[] = [
             name: "Type and colour",
             line: "Newsreader, Switzer and Geist Mono, with one blue on warm neutrals.",
             media: { src: "/images/prosaic/type.png", alt: "The type sheet: Newsreader for the name, Switzer for the interface, Geist Mono for the numerals" },
+          },
+          {
+            name: "prosaicintelligence.ai",
+            href: "https://prosaicintelligence.ai",
+            line: "The site as it launched. The team took it on from the handoff, so what is live today differs from the build shown here.",
+            media: { src: "/images/prosaic/home.jpg", alt: "Prosaic Intelligence home: the serif lockup on a dark card over the dot-screen artwork" },
           },
           {
             name: "Handoff",

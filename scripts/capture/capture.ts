@@ -1,19 +1,23 @@
 /*
-  Records the Traeco case-study clips from the live dashboard (2026-10-29).
+  Records case-study clips and stills from a product running locally
+  (Traeco, 2026-10-29; made generic for Prosaic Intelligence, 2026-11-02).
 
-    npm run capture:traeco            all shots + the two stills
-    npm run capture:traeco -- hero    one shot by id
+    npm run capture:traeco             all of Traeco's shots and stills
+    npm run capture:traeco -- hero     one shot by id
+    npm run capture:prosaic            the same for Prosaic Intelligence
 
-  Everything that is timing or choreography lives in traeco.config.json:
-  cursor speed and pauses, each shot's steps, its poster frame, the encode
-  ladder. Edit the JSON and rerun. The dashboard and its mock API must be
-  up (see .claude/launch.json: traeco-mock-api, traeco-dashboard), and the
-  login comes from the env variables named in the config - never from this
-  file or the repo.
+  The script takes its config from CAPTURE_CONFIG (a path under
+  scripts/capture). Everything that is timing or choreography lives in that
+  JSON: cursor speed and pauses, each shot's steps, its poster frame, the
+  encode ladder. Edit the JSON and rerun. The product must be up (see
+  .claude/launch.json); a `login` block, when present, signs in with the
+  env variables it names, never from this file or the repo.
 
   Playwright draws no pointer, so a small cursor element is injected and
   moved with eased steps alongside page.mouse, with a ripple on click.
   Scrollbars, dev overlays and the demo switch are hidden before recording.
+  A step's target is a CSS selector, or "@x,y" as fractions of the viewport.
+  A still may name a `selector` to clip to that element (card layers).
   Output: H.264 mp4 (no audio, under the configured size) and a jpg poster
   taken at the configured moment rather than the first frame.
 */
@@ -27,7 +31,8 @@ import ffmpegPath from "ffmpeg-static";
 const ffmpeg = String(ffmpegPath);
 const ROOT = process.cwd();
 // the package is CommonJS, so the script runs as CJS under tsx: no top-level await here
-const config = JSON.parse(require("node:fs").readFileSync(path.join(ROOT, "scripts/capture/traeco.config.json"), "utf8")) as Config;
+const configPath = process.env.CAPTURE_CONFIG ?? "scripts/capture/traeco.config.json";
+const config = JSON.parse(require("node:fs").readFileSync(path.join(ROOT, configPath), "utf8")) as Config;
 
 type Step =
   | { type: "wait"; ms: number }
@@ -35,13 +40,13 @@ type Step =
   | { type: "move"; target: string }
   | { type: "click" }
   | { type: "scroll"; target: string; ms: number; block?: ScrollLogicalPosition };
-type Shot = { id: string; route: string; sidebarCollapsed: boolean; posterAtMs: number; steps: Step[]; viewport?: { width: number; height: number } };
-type Still = { id: string; route: string; file: string; width: number; height: number; deviceScaleFactor: number; sidebarCollapsed: boolean; fullPage?: boolean; waitMs: number; note?: string };
+type Shot = { id: string; route: string; sidebarCollapsed?: boolean; posterAtMs: number; steps: Step[]; viewport?: { width: number; height: number } };
+type Still = { id: string; route: string; file: string; width: number; height: number; deviceScaleFactor: number; sidebarCollapsed?: boolean; fullPage?: boolean; selector?: string; waitMs: number; note?: string };
 type Config = {
   baseUrl: string;
-  login: { path: string; emailEnv: string; passwordEnv: string };
+  login?: { path: string; emailEnv: string; passwordEnv: string };
   viewport: { width: number; height: number; deviceScaleFactor: number };
-  sidebarStorageKey: string;
+  sidebarStorageKey?: string;
   hideSelectors: string[];
   cursor: { size: number; speedPxPerSec: number; minMoveMs: number; holdBeforeClickMs: number; clickRippleMs: number; settleAfterClickMs: number; fps: number };
   encode: { fps: number; maxBytes: number; crfLadder: number[]; preset: string };
@@ -53,9 +58,9 @@ type Config = {
 };
 
 const only = process.argv[2];
-const email = process.env[config.login.emailEnv];
-const password = process.env[config.login.passwordEnv];
-if (!email || !password) {
+const email = config.login ? process.env[config.login.emailEnv] : undefined;
+const password = config.login ? process.env[config.login.passwordEnv] : undefined;
+if (config.login && (!email || !password)) {
   console.error(`Set ${config.login.emailEnv} and ${config.login.passwordEnv} in the environment (the dev workspace accepts any pair). Nothing is read from the repo.`);
   process.exit(1);
 }
@@ -68,8 +73,8 @@ const HIDE_CSS = `${config.hideSelectors.join(",")}{display:none!important}
 *::-webkit-scrollbar{display:none!important} *{scrollbar-width:none!important}`;
 
 async function prep(ctx: BrowserContext, collapsed: boolean) {
-  await ctx.addInitScript(({ css, key, collapsed, size }: { css: string; key: string; collapsed: boolean; size: number }) => {
-    try { localStorage.setItem(key, collapsed ? "1" : "0"); } catch {}
+  await ctx.addInitScript(({ css, key, collapsed, size }: { css: string; key?: string; collapsed: boolean; size: number }) => {
+    try { if (key) localStorage.setItem(key, collapsed ? "1" : "0"); } catch {}
     document.addEventListener("DOMContentLoaded", () => {
       const style = document.createElement("style"); style.textContent = css; document.head.appendChild(style);
       const c = document.createElement("div"); c.id = "__capcursor";
@@ -82,6 +87,7 @@ async function prep(ctx: BrowserContext, collapsed: boolean) {
 }
 
 async function login(page: Page) {
+  if (!config.login) return;
   await page.goto(config.baseUrl + config.login.path, { waitUntil: "networkidle" });
   await page.getByRole("textbox", { name: "Email" }).fill(email!);
   await page.getByRole("textbox", { name: "Password" }).fill(password!);
@@ -100,6 +106,11 @@ async function placeCursor(page: Page, x: number, y: number, show = true) {
 }
 
 async function resolveTarget(page: Page, target: string): Promise<{ x: number; y: number }> {
+  const frac = target.match(/^@([\d.]+),([\d.]+)$/);
+  if (frac) {
+    const vp = page.viewportSize() ?? config.viewport;
+    return { x: vp.width * Number(frac[1]), y: vp.height * Number(frac[2]) };
+  }
   if (target === "@peakBar") {
     // the tallest bar in the daily spend chart (the hit area is the svg; hovering its x shows the tip)
     const box = await page.evaluate(() => {
@@ -195,7 +206,7 @@ async function record(shot: Shot, tmp: string) {
     recordVideo: { dir: tmp, size: { width: vp.width, height: vp.height } },
     reducedMotion: "no-preference",
   });
-  await prep(ctx, shot.sidebarCollapsed);
+  await prep(ctx, !!shot.sidebarCollapsed);
   const page = await ctx.newPage();
   const recordingStart = Date.now(); // the video starts with the page; sign-in and navigation are trimmed off below
   await login(page);
@@ -244,13 +255,14 @@ async function stills(which?: string) {
   for (const s of config.stills) {
     if (which && which !== "stills" && which !== s.id) continue;
     const ctx = await browser.newContext({ viewport: { width: s.width, height: s.height }, deviceScaleFactor: s.deviceScaleFactor });
-    await prep(ctx, s.sidebarCollapsed);
+    await prep(ctx, !!s.sidebarCollapsed);
     const page = await ctx.newPage();
     await login(page);
     await page.goto(config.baseUrl + s.route, { waitUntil: "networkidle" });
     await sleep(s.waitMs);
     await page.evaluate(() => { const c = document.getElementById("__capcursor"); if (c) c.remove(); });
-    await page.screenshot({ path: path.join(ROOT, s.file), type: "png", fullPage: !!s.fullPage });
+    if (s.selector) await page.locator(s.selector).first().screenshot({ path: path.join(ROOT, s.file), type: "png" });
+    else await page.screenshot({ path: path.join(ROOT, s.file), type: "png", fullPage: !!s.fullPage });
     await ctx.close();
     done.push(s.file);
   }
@@ -262,7 +274,7 @@ async function stills(which?: string) {
 async function main() {
   await fs.mkdir(path.join(ROOT, config.out.videos), { recursive: true });
   await fs.mkdir(path.join(ROOT, config.out.posters), { recursive: true });
-  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "traeco-capture-"));
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "capture-"));
   const results: string[] = [];
   const stillIds = config.stills.map((s) => s.id);
   if (!only || only === "stills" || stillIds.includes(only)) { const files = await stills(only); results.push(`stills: ${files.join(", ")}`); }

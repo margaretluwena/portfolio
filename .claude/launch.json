@@ -35,6 +35,20 @@
         "3100"
       ],
       "port": 3100
+    },
+    {
+      "name": "prosaic-site",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/margaretluwena/Traeco/prosaic-intelligence",
+        "run",
+        "dev",
+        "--",
+        "-p",
+        "3200"
+      ],
+      "port": 3200
     }
   ]
 }
