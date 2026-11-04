@@ -123,7 +123,11 @@ export default function AboutInvolvement() {
           height (the stickers column) reached it, aspect-ratio would blow its width out */}
       <div className="mt-[5vh] grid gap-12 lg:grid-cols-[140px_minmax(0,1fr)] lg:gap-[4vw]">
         {/* stickers */}
-        <div role="tablist" aria-label="Involvements" className="relative flex items-center gap-7 lg:block lg:aspect-[150/478] lg:w-full lg:max-w-[140px]">
+        {/* below lg: three equal square cells, each sticker fitted inside and
+            centred, so the row lines up whatever the stickers' own shapes
+            (they were width-matched and height-varied, which read as
+            misaligned and clipped on a phone - Margaret, 2026-11-03) */}
+        <div role="tablist" aria-label="Involvements" className="relative flex items-center gap-5 lg:block lg:aspect-[150/478] lg:w-full lg:max-w-[140px]">
           {INVOLVEMENTS.map((i) => {
             const on = i.id === active;
             return (
@@ -137,9 +141,9 @@ export default function AboutInvolvement() {
                   setActive(i.id);
                   setFront(lead(i.photos.length));
                 }}
-                className="block lg:absolute focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-                style={md ? i.style : { width: 72 }}
-                animate={{ filter: on ? FULL : DIM_STICKER, scale: on ? 1 : 0.94, rotate: on ? 0 : -3 }}
+                className="flex items-center justify-center lg:block lg:absolute focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                style={md ? i.style : { width: 84, height: 84 }}
+                animate={{ filter: on ? FULL : DIM_STICKER, scale: on ? 1 : 0.94, rotate: on || !md ? 0 : -3 }}
                 whileHover={reduce ? undefined : { scale: on ? 1.03 : 0.98, filter: FULL }}
                 whileTap={reduce ? undefined : { scale: 0.96 }}
                 transition={spring}
@@ -149,9 +153,10 @@ export default function AboutInvolvement() {
                   alt=""
                   width={i.w}
                   height={i.w}
-                  className={`block h-auto w-full drop-shadow-[0_6px_14px_rgba(0,0,0,0.12)] ${
+                  className={`block drop-shadow-[0_6px_14px_rgba(0,0,0,0.12)] ${md ? "h-auto w-full" : "h-auto max-h-full w-auto max-w-full"} ${
                     i.round ? "rounded-full border-[4px] border-white" : ""
                   }`}
+                  style={md ? undefined : { maxHeight: 84 }}
                 />
               </motion.button>
             );

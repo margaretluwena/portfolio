@@ -41,7 +41,7 @@ in copy or code comments**, the build fails on them.
 | Image pixel sizes for true-aspect rendering | `lib/image-sizes.json` - regenerate with `npm run images` after adding images (macOS `sips`) |
 | Sky Field: Margaret's ASCII sky + fetch game. Added: pointer rain (over real cloud only, ~25deg to the left, sprouts flowers on all three hills where it lands), `onHover` / `onAction` hooks, speech bubble in characters beside the mouth on the side the dog faces, "throw the ball please!" after ~5s with no throw, the dog returns the ball to the LEFT (`ballX`), announces the running player total | `components/sky-field/sky-field.js` (engine), `SkyFrame.tsx` (dials, bubble lines, visit-scoped hints), `SkyFieldBackground.tsx` |
 | Player counter API: one count per browser's first throw, total read on every catch | `app/api/throws/route.ts` (KV REST when `KV_REST_API_URL` / `KV_REST_API_TOKEN` exist) |
-| About: blue card (tilt halved), mail left / socials right, pinned Work Experiences (22vh, top + bottom fades), involvement stickers + polaroid fan (two-up below lg) | `components/about/AboutCard.tsx`, `AboutExperience.tsx`, `AboutInvolvement.tsx` |
+| About: blue card (tilt halved), mail left / socials right, pinned Work Experiences (22vh, top + bottom fades), involvement stickers + polaroid fan (two-up below lg; below lg the stickers sit in three equal 84px cells, fitted and centred, no tilt, 2026-11-03) | `components/about/AboutCard.tsx`, `AboutExperience.tsx`, `AboutInvolvement.tsx` |
 | Footer: static, bottom of About / Works / Play only; one colophon line | `components/shell/SiteFooter.tsx`, `FooterSwitch.tsx` |
 | Socials: LinkedIn, X, mail (Instagram dropped) | `socials` + `EMAIL` in `PortfolioShell.tsx` |
 | OG card: the home page at card size (sky, pill, name, tagline, bio, two art-only cards, hills, ball, dog); Manrope fetched from Google Fonts at render | `app/opengraph-image.tsx` |
@@ -49,6 +49,12 @@ in copy or code comments**, the build fails on them.
 
 ## Conventions that bit us
 
+- **Never run `npm run build` while the dev server is up**: both write
+  `.next`, and the build left the running dev server answering every
+  route with "Internal Server Error" (2026-11-03). Stop it first, or
+  build with a separate `--outDir`/distDir. The dev server was restarted
+  that day through `.claude/launch.json` (`portfolio-redesign`), not
+  from Margaret's terminal.
 - Storage access must be guarded (`try { localStorage... } catch {}`): a
   browser that blocks storage threw inside React and killed the home page.
 - Figma exports of child/rotated nodes come flattened on the page's white;
@@ -173,7 +179,10 @@ study and the home card).
   The folded pieces lie across the basket's width in a shuffled order,
   each tilted and peeking over the rim by its own amount, clamped
   inside its edges. The basket narrows to fit between the poles on a
-  phone.
+  phone. Phones (under 640px, 2026-11-03): pieces hang at 100px and
+  shrink no further than 80, so the line scrolls instead of going tiny;
+  the gaps, row gap and first rope tighten (12 / 18 / 24); the welcome
+  line is secondary size at 1.9 line height.
 
 ## Content still marked NEED (Margaret's to supply)
 

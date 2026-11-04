@@ -61,16 +61,16 @@ import { AnimatePresence, animate, motion, motionValue, useMotionValue, useReduc
 export type PlayItem = { src: string; w: number; h: number; group: string; alt?: string };
 
 const HANG_H = 128;         // a hung piece's height on desktop
-const HANG_H_SM = 92;       // on phones
+const HANG_H_SM = 100;      // on phones
 const MAX_W = 230, MAX_W_SM = 150;
-const GAP = 22;             // between pieces on the line
-const ROW_GAP = 28;         // from a row's hem to the next rope below it: the lines hang clear of each other
+const GAP = 22, GAP_SM = 12;          // between pieces on the line
+const ROW_GAP = 28, ROW_GAP_SM = 18;  // from a row's hem to the next rope below it: the lines hang clear of each other
 const ROPE_SAG = 26;
-const TOP = 44;             // the first rope's ends, from the top of the line band
+const TOP = 44, TOP_SM = 24;          // the first rope's ends, from the top of the line band
 const BASKET_W = 320, BASKET_H = 106, HANDLE = 64; // smaller again (Margaret, 2026-11-03): nine rows of wicker
 const FLOOR_VH = 0.93;      // the ground: the front hill's line, as a share of the window
 const FOLD_H = 60, FOLD_H_SM = 46; // a folded piece's height in the basket
-const H_MIN = 72, H_MIN_SM = 56;    // how small the hung pieces may go to fit the band
+const H_MIN = 72, H_MIN_SM = 80;    // how small the hung pieces may go to fit the band (phones keep them readable and let the line scroll instead, 2026-11-03)
 const FADE = 28;            // the band's fade at either end
 const INSET = 30;           // the least the basket and the welcome line keep from the poles; they align to the nav pill's ends when it is wider
 /* the swing: a pendulum about a second long, lightly damped, pulled toward
@@ -209,6 +209,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   const { w: width, h: vh } = size;
   const small = width < 640;
   const H = small ? HANG_H_SM : HANG_H;
+  const gap = small ? GAP_SM : GAP, rowGap = small ? ROW_GAP_SM : ROW_GAP, top0 = small ? TOP_SM : TOP;
   const BW = Math.min(BASKET_W, Math.max(200, width - 90)); // between the poles on a phone
   /* the ground, the basket at the right, the welcome line at the left
      (above the basket on a phone), and the band the line scrolls in */
@@ -231,12 +232,12 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       for (const it of hung) {
         const w = Math.min(maxW, h * (it.w / it.h));
         const row = rowsOf[rowsOf.length - 1];
-        if (row && row.total + GAP + w <= width) { row.items.push(it); row.widths.push(w); row.total += GAP + w; }
+        if (row && row.total + gap + w <= width) { row.items.push(it); row.widths.push(w); row.total += gap + w; }
         else rowsOf.push({ items: [it], widths: [w], total: w });
       }
       // the rows run down the band, each rope ROW_GAP under the hem of the row above
-      const pitch = 8 + h + ROW_GAP;
-      const linesH = rowsOf.length ? TOP + (rowsOf.length - 1) * pitch + 8 + h + 16 : TOP;
+      const pitch = 8 + h + rowGap;
+      const linesH = rowsOf.length ? top0 + (rowsOf.length - 1) * pitch + 8 + h + 16 : top0;
       return { rowsOf, pitch, linesH };
     };
     // the pieces shrink, down to H_MIN, until every row fits the band: the
@@ -252,12 +253,12 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     const placed: Placed[] = [];
     const sideOf = new Map<string, Placed>();
     rowsOf.forEach((row, r) => {
-      const rowTop = TOP + r * pitch;
+      const rowTop = top0 + r * pitch;
       let x = (width - row.total) / 2;
       row.items.forEach((it, i) => {
         const w = row.widths[i], cx = x + w / 2;
         const p: Placed = { item: it, w, h: hFit, x: cx - w / 2, y: ropeY(rowTop, cx, width) + 8, rot: (hash(it.src) - 0.5) * 5, hung: true, delay: (r * 6 + i) * 0.06, peg: cx, row: r };
-        placed.push(p); sideOf.set(it.src, p); x += w + GAP;
+        placed.push(p); sideOf.set(it.src, p); x += w + gap;
       });
     });
     // the rest lie in the basket, laid across its width at odd depths and
@@ -287,7 +288,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       placed.push({ item: it, w, h, x: cx - w / 2, y: rimY - h * peek, rot, hung: false, delay: i * 0.03, peg: 0, row: 0 });
     });
     return { placed, rows: rowsOf.length, linesH, hFit };
-  }, [items, filter, width, mounted, small, H, rimY, bx, BW, bandH]);
+  }, [items, filter, width, mounted, small, H, gap, rowGap, top0, rimY, bx, BW, bandH]);
 
   /* the line's scroll: how far the rows have been pulled up, 0 to maxScroll,
      eased by a spring; the group under the band moves by it */
@@ -385,7 +386,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     const rp = ropes.current;
     while (rp.length > Math.max(1, rows) && !rp[rp.length - 1].live && rp[rp.length - 1].ext.get() < 0.001) rp.pop();
     for (let r = 0; r < Math.max(1, rows); r++) {
-      const y = TOP + r * (8 + hFit + ROW_GAP);
+      const y = top0 + r * (8 + hFit + rowGap);
       if (!rp[r]) { rp[r] = { y, ext: motionValue(reduce ? 1 : 0), live: true }; }
       rp[r].y = y;
       if (!rp[r].live || rp[r].ext.get() < 1) { rp[r].live = true; if (reduce) rp[r].ext.set(1); else animate(rp[r].ext, 1, { duration: 0.8, ease: [0.22, 1, 0.36, 1] }); }
@@ -472,7 +473,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     render();
     if (document.fonts?.ready) document.fonts.ready.then(() => { raf = requestAnimationFrame(render); });
     return () => { cancelAnimationFrame(raf); cancelAnimationFrame(raf2); unsubs.forEach((u) => u()); };
-  }, [placed, rows, linesH, width, vh, hFit, font, BW, bx, lineTop, rimY, floorY, reduce]);
+  }, [placed, rows, linesH, width, vh, hFit, font, BW, bx, lineTop, rimY, floorY, reduce, top0, rowGap]);
 
   const flight = (p: Placed) => reduce ? { duration: 0 } : p.hung
     ? { type: "spring" as const, stiffness: 110, damping: 15, mass: 0.9, delay: p.delay }
@@ -553,7 +554,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
           what you hang on it */}
       <p
         ref={descRef}
-        className="absolute text-body leading-[2.05] text-ink"
+        className={`absolute text-ink ${small ? "text-secondary leading-[1.9]" : "text-body leading-[2.05]"}`}
         style={{ left: textL, right: small ? INSET : undefined, maxWidth: small ? undefined : 440, top: descTop, zIndex: 6 }}
         role="group" aria-label="Hang"
       >
