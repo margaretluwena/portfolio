@@ -88,11 +88,11 @@ function labelFor(route: string): string {
   return "LOST"; // 404
 }
 
-/* a link underlines in from the left on hover (Margaret, 2026-11-03); the
-   page's own link holds the underline and is ink */
+/* the page's own link is ink (an underline that drew in on hover was tried
+   and dropped the same day, 2026-11-03) */
 const linkClass =
-  "relative text-ink/40 transition-colors duration-200 hover:text-ink focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink after:absolute after:left-0 after:-bottom-[3px] after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.22,1,0.36,1)] after:content-[''] hover:after:scale-x-100 focus-visible:after:scale-x-100";
-const activeClass = "text-ink after:scale-x-100";
+  "text-ink/40 transition-colors duration-200 hover:text-ink focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+const activeClass = "text-ink";
 
 export default function Nav() {
   const pathname = usePathname();

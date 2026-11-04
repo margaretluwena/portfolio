@@ -43,9 +43,10 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 const PHONES = [
   // upright, side by side with a sliver between (no tilt, no overlap: Margaret, 2026-11-03)
-  { src: "/images/mark/screen-home.png", cx: 31, delay: 0 },
-  { src: "/images/mark/screen-categories.png", cx: 50, delay: 70 },
-  { src: "/images/mark/screen-books.png", cx: 69, delay: 140 },
+  // the middle one lands a little higher than its neighbours
+  { src: "/images/mark/screen-home.png", cx: 31, delay: 0, lift: "group-hover:top-[24%]", rest: "top-[24%]" },
+  { src: "/images/mark/screen-categories.png", cx: 50, delay: 70, lift: "group-hover:top-[19%]", rest: "top-[19%]" },
+  { src: "/images/mark/screen-books.png", cx: 69, delay: 140, lift: "group-hover:top-[24%]", rest: "top-[24%]" },
 ];
 
 export function MarkPhones({ hover }: { hover: boolean }) {
@@ -54,15 +55,35 @@ export function MarkPhones({ hover }: { hover: boolean }) {
       {PHONES.map((p) => (
         <div
           key={p.src}
-          className={`absolute transition-[top] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${hover ? "top-[104%] group-hover:top-[22%]" : "top-[22%]"}`}
+          className={`absolute transition-[top] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${hover ? `top-[104%] ${p.lift}` : p.rest}`}
           style={{ left: `${p.cx - 8.5}%`, width: "17%", aspectRatio: "284 / 617", transitionDelay: `${p.delay}ms` }}
         >
-          {/* the bezel and screen, as scripts/capture/mark/phone.html draws them */}
-          <div className="absolute inset-0 rounded-[14%/6.5%] bg-[#0d0d0f] p-[2.5%] shadow-[0_18px_50px_rgba(0,0,0,0.18),0_2px_6px_rgba(0,0,0,0.12)]">
-            <div className="relative h-full w-full overflow-hidden rounded-[12%/5.6%] bg-[#f2f2f2]">
-              <Image src={p.src} alt="" fill sizes="12vw" className="object-cover object-top" />
+          {/* the frame, drawn like the titanium phone: a thin graphite rim with
+              a hairline highlight on its edge, a dark bezel inside it, and the
+              island at the top of the screen; the shadow is low and soft, so
+              it sits on the card instead of cutting into it (Margaret,
+              2026-11-03: the black frames read "harsh") */}
+          <div
+            className="absolute inset-0 rounded-[15.5%/7.1%]"
+            style={{
+              background: "linear-gradient(160deg, #5d5d62 0%, #3a3a3e 40%, #2b2b2f 100%)",
+              boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.22), 0 1px 2px rgba(0,0,0,0.18), 0 22px 44px rgba(0,0,0,0.13), 0 6px 14px rgba(0,0,0,0.08)",
+              padding: "2.6%",
+            }}
+          >
+            <div className="h-full w-full rounded-[13.3%/6.1%] bg-[#0c0c0e]" style={{ padding: "3.4%" }}>
+              <div className="relative h-full w-full overflow-hidden rounded-[10.5%/4.8%] bg-[#f2f2f2]">
+                <Image src={p.src} alt="" fill sizes="12vw" className="object-cover object-top" />
+                {/* the island */}
+                <div className="absolute left-1/2 -translate-x-1/2 rounded-full bg-[#0c0c0e]" style={{ top: "2.1%", width: "27%", height: "3.6%" }} />
+              </div>
             </div>
           </div>
+          {/* the side buttons: action and volume on the left, power on the right */}
+          <div className="absolute rounded-l-[2px] bg-[#4a4a4e]" style={{ left: "-1.4%", top: "17%", width: "1.6%", height: "3.2%" }} />
+          <div className="absolute rounded-l-[2px] bg-[#4a4a4e]" style={{ left: "-1.4%", top: "23.5%", width: "1.6%", height: "6%" }} />
+          <div className="absolute rounded-l-[2px] bg-[#4a4a4e]" style={{ left: "-1.4%", top: "31%", width: "1.6%", height: "6%" }} />
+          <div className="absolute rounded-r-[2px] bg-[#4a4a4e]" style={{ right: "-1.4%", top: "26%", width: "1.6%", height: "9%" }} />
         </div>
       ))}
     </div>
