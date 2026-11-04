@@ -21,17 +21,16 @@ import type { CoverLayer } from "@/lib/works";
     prefers-reduced-motion (autoplaying loops are a vestibular trigger -
     this branch is an OS accessibility setting, not a UI toggle, and stays).
 
-  THE MORPH RULE: a playing video never rides the layoutId flight. While
-  the route is off "/" (overlay opening/open) the video pauses under a
-  static poster image, and playback resumes about a second after returning,
-  once the flight has settled. No layoutId or flight logic lives here.
+  THE SETTLE RULE: the video starts about a second after the route it is
+  on has landed, under a static poster until then, so a page's entrance
+  never animates a decoding video. It used to play only on "/" (a relic
+  of the fly-to-centre morph, which is gone) and so sat still on the
+  works index (Margaret, 2026-11-04). No layoutId or flight logic lives
+  here.
 */
 
-/* Approximation, not real settle detection: the return flight is a 0.8s
-   tween, so resuming 1s after the route lands on "/" clears it. Revisit
-   with a proper onLayoutAnimationComplete hook after Sunday when the
-   interaction queue unfreezes. */
-const MORPH_SETTLE_MS = 1000;
+/* the page's entrance is a 0.5s fade plus the cards' rise; 1s clears it */
+const SETTLE_MS = 1000;
 
 export default function CardVideo({ layer }: { layer: CoverLayer }) {
   const reduce = useReducedMotion();
@@ -49,13 +48,10 @@ export default function CardVideo({ layer }: { layer: CoverLayer }) {
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  /* morph freeze via route state only - no flight internals touched */
+  /* the route landed: settle a second later, on any page */
   useEffect(() => {
-    if (pathname !== "/") {
-      setSettled(false);
-      return;
-    }
-    const t = setTimeout(() => setSettled(true), MORPH_SETTLE_MS);
+    setSettled(false);
+    const t = setTimeout(() => setSettled(true), SETTLE_MS);
     return () => clearTimeout(t);
   }, [pathname]);
 
@@ -100,7 +96,7 @@ export default function CardVideo({ layer }: { layer: CoverLayer }) {
         {layer.srcWebm && <source src={layer.srcWebm} type="video/webm" />}
         <source src={layer.src} type="video/mp4" />
       </video>
-      {/* during the flight the morph animates this still, not a decoding video */}
+      {/* through the page's entrance this still shows, not a decoding video */}
       {!settled && layer.poster && (
         <Image src={layer.poster} alt="" fill sizes="45vw" className="object-cover" />
       )}

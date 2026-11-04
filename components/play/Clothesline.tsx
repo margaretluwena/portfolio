@@ -600,6 +600,16 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
                 <Image src={open.src} alt={open.alt ?? ""} width={open.w} height={open.h} sizes="92vw" className="block h-full w-full rounded-[4px] object-contain shadow-[0_30px_80px_rgba(0,0,0,0.35)]" priority />
               </motion.div>
             </motion.div>
+            {/* the next two pieces either way, fetched at the modal's size
+                so the arrows do not wait on a load (Margaret, 2026-11-04:
+                "they take a second to load") */}
+            {gallery.length > 1 && (
+              <div aria-hidden className="pointer-events-none fixed h-px w-px overflow-hidden opacity-0" style={{ left: -9999, top: 0 }}>
+                {Array.from(new Set([-2, -1, 1, 2].map((d) => gallery[(gallery.indexOf(open) + d + gallery.length) % gallery.length]))).filter((it) => it !== open).map((it) => (
+                  <Image key={it.src} src={it.src} alt="" width={it.w} height={it.h} sizes="92vw" loading="eager" />
+                ))}
+              </div>
+            )}
             {gallery.length > 1 && (
               <>
                 {(["prev", "next"] as const).map((dir) => (
