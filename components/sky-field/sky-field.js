@@ -17,14 +17,58 @@ const DEFAULT_COLORS = {
 };
 
 const RAMPS = { dither: '.:-=+xX', ascii: '.-=+*#%', stars: '.·:+*', binary: '01' };
-import { DOG, DOGW, DOGH } from './dog-frames.mjs';
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 const TYPES = [{ h: ['\\V/'], s: 2 }, { h: ['(@)'], s: 2 }, { h: [' _ ', '(_)'], s: 2 }, { h: ['.*.'], s: 1 },
   { h: ['{o}'], s: 3 }, { h: [' , ', "'o'"], s: 2 }, { h: ['*'], s: 1 }, { h: ['vUv'], s: 2 }];
 const CENTERS = '@o*';
-// the dog's frames live in dog-frames.mjs (run, sit, lie, the spin's views, the play bow)
+// dog sprites face right (mirrored to face left): a filled side-view silhouette,
+// which is how a dog reads at this size - domed head, ear flap folded back over
+// the neck, the eye and mouth left as gaps, a long muzzle, tail up at the rear,
+// four legs (tucked, stretched, mid-stride, or folded under when sitting). '@' is fill.
+const DOG = {
+  run: [["                 @@@@@  ",
+       "   @@          @@@@@@@@ ",
+       "    @@        @@@@@@@@@@",
+       "     @@@@@@@@@@@@@ @@@@ ",
+       "      @@@@@@@@@@@@@@    ",
+       "      @@@@@@@@@@@@@@    ",
+       "      @@@      @@@@     ",
+       "     @@@@      @@@@     "],
+       ["                 @@@@@  ",
+       "   @@          @@@@@@@@ ",
+       "    @@        @@@@@@@@@@",
+       "     @@@@@@@@@@@@@ @@@@ ",
+       "      @@@@@@@@@@@@@@    ",
+       "      @@@@@@@@@@@@@@    ",
+       "     @@@        @@@@    ",
+       "   @@@@          @@@@   "],
+       ["                 @@@@@  ",
+       "   @@          @@@@@@@@ ",
+       "    @@        @@@@@@@@@@",
+       "     @@@@@@@@@@@@@ @@@@ ",
+       "      @@@@@@@@@@@@@@    ",
+       "      @@@@@@@@@@@@@@    ",
+       "      @@@       @@@@    ",
+       "     @@@@       @@@@    "]],
+  sit: [["                 @@@@@  ",
+       "   @@          @@@@@@@@ ",
+       "    @@        @@@@@@@@@@",
+       "     @@@@@@@@@@@@@ @@@@ ",
+       "      @@@@@@@@@@@@@@    ",
+       "      @@@@@@@@@@@@@@    ",
+       "     @@@@@     @@@@     ",
+       "    @@@@@@@    @@@@     "],
+       ["                 @@@@@  ",
+       "  @@           @@@@@@@@ ",
+       "   @@         @@@@@@@@@@",
+       "     @@@@@@@@@@@@@ @@@@ ",
+       "      @@@@@@@@@@@@@@    ",
+       "      @@@@@@@@@@@@@@    ",
+       "     @@@@@     @@@@     ",
+       "    @@@@@@@    @@@@     "]],
+};
 const MIRROR = { '/': '\\', '\\': '/', '(': ')', ')': '(', '<': '>', '>': '<' };
-const MOUTH = 3; // the mouth row, facing right (24x8 since 2026-10-08)
+const DOGW = 24, DOGH = 8, MOUTH = 3, EYE_COL = 20, EYE_ROW = 2; // 24x8 (was 30x10 - "slightly smaller", 2026-10-08)
 const INTERACTIVE = 'a,button,input,textarea,select,label,summary,[role="button"],[contenteditable],[data-sky-ignore]';
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
@@ -221,9 +265,7 @@ export function createSkyField(canvas, options = {}) {
 
   /* ---------- fetch game ---------- */
   const G = { t: 0, ball: { x: 0, y: 0, vx: 0, vy: 0, st: 'rest' },
-    /* trick: a spin or a play bow in progress ({ k, t, dur }); lie: seconds spent lying down, 0 when up */
-    dog: { x: -200, st: 'away', face: 1, moving: false, jump: 0, jv: 0, home: 0, woof: 0, say: '', sayT: 0, trick: null, lie: 0 },
-    pets: 0,
+    dog: { x: -200, st: 'away', face: 1, moving: false, jump: 0, jv: 0, home: 0, woof: 0, say: '', sayT: 0 },
     throws: null,
     grab: null, hist: [], shakes: [], lastDir: 0, met: false, labels: [], eyes: [], ballWig: 0, trail: [], dt: 0,
     throwsHere: 0, idle: 0, begged: 0, held: 0, heldAsk: 0, bub: { text: '', side: 0, x: null, y: null } };
@@ -265,14 +307,9 @@ export function createSkyField(canvas, options = {}) {
 
     if (d.jv || d.jump < 0) { d.jv += 900 * dt; d.jump += d.jv * dt; if (d.jump >= 0) { d.jump = 0; d.jv = 0; } }
     d.woof = Math.max(0, d.woof - dt); d.sayT = Math.max(0, d.sayT - dt);
-    // a trick runs its course, unless the ball is thrown mid-turn
-    if (d.trick) { d.trick.t += dt; if (d.trick.t >= d.trick.dur || d.st === 'chase') d.trick = null; }
     // a minute of sitting together with nothing happening: the dog brings it up again itself
     G.idle = d.st === 'wait' && b.st === 'rest' && !G.grab ? G.idle + dt : 0;
     if (G.idle === 0) G.begged = 0;
-    // nothing doing for a while: the dog lies down (2026-11-03). It gets up
-    // the moment the ball moves, or when it is petted
-    d.lie = G.idle > 9 && !d.trick ? d.lie + dt : 0;
     // the dog has come and nobody has thrown yet: after a few seconds it asks, and
     // asks again every so often until the first throw (Margaret, 2026-10-21)
     if (G.throwsHere === 0 && G.idle > 5 && (G.begged === 0 || G.idle - G.begged > 18) && d.sayT <= 0) {
@@ -300,9 +337,7 @@ export function createSkyField(canvas, options = {}) {
         else moveDog(d, b.x - f * (DOGW / 2) * cw, b.st === 'rest' ? 300 : 360, dt); }
     } else if (d.st === 'return') {
       if (moveDog(d, d.home, 260, dt)) { d.st = 'wait'; d.woof = 1.2;
-        b.st = 'flying'; b.x = clamp(mouthX(d) + d.face * cw, cw, W - cw); b.vx = d.face * 40; b.vy = -60;
-        // now and then, a spin of a victory lap after dropping the ball
-        if (Math.random() < 0.4) d.trick = { k: 'spin', t: 0, dur: 0.9 }; }
+        b.st = 'flying'; b.x = clamp(mouthX(d) + d.face * cw, cw, W - cw); b.vx = d.face * 40; b.vy = -60; }
     }
     if (b.st === 'carried') { b.x = mouthX(d) + d.face * cw; b.y = groundAt(d.x) - ch * (DOGH - MOUTH) + d.jump; }
   }
@@ -322,18 +357,7 @@ export function createSkyField(canvas, options = {}) {
     const d = G.dog, b = G.ball;
     if (d.st !== 'away') {
       const RUN = [0, 2, 1, 2], ph = Math.floor(G.t * 12) % 4; // stretched, mid, tucked, mid
-      // which frame: a trick in progress, lying down, running, or sitting (2026-11-03)
-      let spr, face = d.face;
-      if (d.trick && d.trick.k === 'spin') {
-        // the turn, eight steps through five views; the mirrored steps flip the face
-        const SPIN = [[DOG.sit[0], 1], [DOG.view.away, 1], [DOG.view.back, 1], [DOG.view.away, -1], [DOG.sit[0], -1], [DOG.view.toward, -1], [DOG.view.front, 1], [DOG.view.toward, 1]];
-        const [f, m] = SPIN[Math.min(7, Math.floor((d.trick.t / d.trick.dur) * 8))]; spr = f; face = d.face * m;
-      } else if (d.trick && d.trick.k === 'bow') {
-        const u = d.trick.t / d.trick.dur; spr = u < 0.12 || u > 0.88 ? DOG.sit[0] : DOG.bow[0];
-      } else if (d.lie > 0) {
-        // head up for the first stretch, then the chin on the paws, lifting it again now and then
-        const up = d.lie < 3 || (d.lie % 9) < 1.6; spr = DOG.lie[up ? 0 : 1];
-      } else spr = d.moving ? DOG.run[RUN[ph]] : DOG.sit[Math.floor(G.t * 4) % 2];
+      const spr = d.moving ? DOG.run[RUN[ph]] : DOG.sit[Math.floor(G.t * 4) % 2];
       const bob = d.moving && (ph & 1) ? -1 : 0; // the body lifts a row on the mid-stride frames
       const top = Math.floor(groundAt(d.x) / ch) - DOGH + Math.round(d.jump / ch) + bob;
       const left = Math.round(d.x / cw) - (DOGW >> 1);
@@ -347,13 +371,13 @@ export function createSkyField(canvas, options = {}) {
       for (let r = 0; r < DOGH; r++) { const line = spr[r];
         // clear the scenery behind the dog so its silhouette reads cleanly
         const t = line.trimEnd(), a = t.length - t.trimStart().length;
-        for (let q = a; q < t.length; q++) put(top + r, left + (face > 0 ? q : DOGW - 1 - q), ' ', 0);
-        for (let q = 0; q < DOGW; q++) { let g = face > 0 ? line[q] : line[DOGW - 1 - q]; if (!g || g === ' ') continue;
-          if (face < 0 && MIRROR[g]) g = MIRROR[g];
+        for (let q = a; q < t.length; q++) put(top + r, left + (d.face > 0 ? q : DOGW - 1 - q), ' ', 0);
+        for (let q = 0; q < DOGW; q++) { let g = d.face > 0 ? line[q] : line[DOGW - 1 - q]; if (!g || g === ' ') continue;
+          if (d.face < 0 && MIRROR[g]) g = MIRROR[g];
           const k = g === '@' ? 20 : 'o<>\''.includes(g) ? 21 : 22;
           if (dissolve) {
             // 0 at the tail, 1 at the nose: the rear sheds, the front is still gathering itself
-            const rel = face > 0 ? q / DOGW : 1 - q / DOGW, n = hash(q * 31 + fr * 7, r * 17 + fr);
+            const rel = d.face > 0 ? q / DOGW : 1 - q / DOGW, n = hash(q * 31 + fr * 7, r * 17 + fr);
             if (rel < 0.4 && n < 0.3 * (1 - rel / 0.4) + 0.06) { if (n < 0.14) G.trail.push({ r: top + r, c: left + q, age: 0 }); continue; }
             if (rel > 0.7 && n < 0.45) { smalls.push(top + r, left + q, '+', k); continue; }
           }
@@ -365,12 +389,10 @@ export function createSkyField(canvas, options = {}) {
       const dest = d.st === 'return' ? d.home + d.face * (DOGW / 2) * cw : mouthX(d);
       if (d.sayT > 0) G.labels.push({ text: d.say, x: d.x, y: (top - 1) * ch, bubble: true, at: mouthX(d), my: mouthY, face: d.face, dest });
       else if (d.woof > 0) G.labels.push({ text: 'woof!', x: d.x, y: (top - 1) * ch, bubble: true, at: mouthX(d), my: mouthY, face: d.face, dest });
-      // eyes: each frame names its eye cells; each gets a real eye - white, a pupil looking the
-      // way the dog faces (or straight out on the front views), shut on the resting frame, and a
-      // blink every few seconds
-      for (const [ecol, erow] of spr.eyes || []) {
-        const ec = left + (face > 0 ? ecol : DOGW - 1 - ecol);
-        G.eyes.push({ x: (ec + 0.5) * cw, y: (top + erow + 0.55) * ch, face: spr.front ? 0 : face, blink: !!spr.closed || G.t % 3.7 < 0.12 }); }
+      // eyes: the sprite's eye gap (EYE_ROW/EYE_COL facing right) gets a real eye - white, a pupil
+      // looking the way the dog faces, and a blink every few seconds
+      const ec = left + (d.face > 0 ? EYE_COL : DOGW - 1 - EYE_COL);
+      G.eyes.push({ x: (ec + 0.5) * cw, y: (top + EYE_ROW + 0.55) * ch, face: d.face, blink: G.t % 3.7 < 0.12 });
     }
     // the ball is drawn as a real circle after the grid (drawOverlay); it only wiggles here
     const wig = !G.met && b.st === 'rest' && G.t % 5 > 4.4 ? (Math.floor(G.t * 14) % 2 ? 1 : -1) : 0;
@@ -602,16 +624,7 @@ export function createSkyField(canvas, options = {}) {
   function onDown(e) {
     if (e.button > 0) return;
     if (P.game && !(e.target instanceof Element && e.target.closest(INTERACTIVE)) && !nearBall(pt(e)) && nearDog(pt(e))) {
-      // pet the dog (2026-11-03): lying down, it gets up with a woof; otherwise
-      // it takes turns - a hop, a spin, a play bow - and barks each time
-      const d = G.dog; d.woof = 1; action('pet');
-      if (d.lie > 0) { G.idle = 0; d.lie = 0; return; }
-      if (d.trick) return;
-      const k = G.pets++ % 3;
-      if (k === 0) { if (!d.jv) d.jv = -240; }
-      else if (k === 1) d.trick = { k: 'spin', t: 0, dur: 0.9 };
-      else d.trick = { k: 'bow', t: 0, dur: 1.1 };
-      return;
+      const d = G.dog; if (!d.jv) d.jv = -240; d.woof = 1; action('pet'); return; // pet the dog: it hops and barks
     }
     if (!canGrab(e)) return;
     e.preventDefault();

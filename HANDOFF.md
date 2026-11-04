@@ -109,12 +109,11 @@ study and the home card).
   it, returning to "/" from another page within the app skips it. It was
   a sessionStorage gate before, which meant a tab saw it exactly once
   and every reload after that skipped it (2026-11-03).
-- **The dog's frames** moved to `components/sky-field/dog-frames.mjs`:
-  run, sit, lie (head up, chin on paws), the spin's five views, the play
-  bow. Pets take turns (hop, spin, bow); after ~9s idle the dog lies down
-  and gets up when the ball moves or it is petted; 40% of returns end in
-  a spin. `npm run capture:dog` redraws the contact sheet at
-  `public/images/about/dog-frames.png`.
+- **The dog's new frames were REVERTED** (Margaret, 2026-11-03: "reverse
+  all changes to the dog so far, we can work on this later"). Commit
+  25f895c had moved its frames to `components/sky-field/dog-frames.mjs`
+  with a lie-down, a five-view spin and a play bow; `git revert` put
+  the dog back as it was. The commit is still in history to revisit.
 - **Play is a clothesline** (`components/play/Clothesline.tsx`, a
   window-tall FIXED scene that rides up by `--sky-lift` exactly as the
   sky does, so the poles and basket never leave the hills; `app/play/
