@@ -218,14 +218,23 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     const fh = small ? FOLD_H_SM : FOLD_H;
     const span = BW - 2 * 36;
     rest.forEach((it, i) => {
-      const h = fh, w = Math.min(fh * 1.9, h * (it.w / it.h));
+      const h = fh, rot = (hash(it.src + "r") - 0.5) * 28;
+      const peek = 0.15 + hash(it.src + "y") * 0.3; // how much shows above the rim
+      // the basket's sides taper in; at the depth this piece's hem reaches,
+      // this much of the rim's width is left, and the piece's TILTED box
+      // (corners and all) must fit inside it (Margaret, 2026-11-03: no
+      // piece may show outside the basket's outline)
+      const depth = h * (1 - peek);
+      const [l, rr] = basketEdge(bx, BW, Math.min(1, depth / BASKET_H));
+      const room = rr - l - 12;
+      const cos = Math.cos((rot * Math.PI) / 180), sin = Math.abs(Math.sin((rot * Math.PI) / 180));
+      let w = Math.min(fh * 1.9, h * (it.w / it.h));
+      w = Math.min(w, Math.max(24, (room - h * sin) / cos));
+      const half = (w / 2) * cos + (h / 2) * sin;
       // spread along the basket in a shuffled order, a little off each slot
       const slot = rest.length > 1 ? ((i * 7) % rest.length) / (rest.length - 1) : 0.5;
-      const [l, rr] = basketEdge(bx, BW, 0);
-      // kept inside the rim's ends with room for the tilt's corners
-      const cx = clamp(bx - span / 2 + slot * span + (hash(it.src + "x") - 0.5) * 30, l + w / 2 + 18, rr - w / 2 - 18);
-      const peek = 0.15 + hash(it.src + "y") * 0.4; // how much shows above the rim
-      placed.push({ item: it, w, h, x: cx - w / 2, y: rimY - h * peek, rot: (hash(it.src + "r") - 0.5) * 36, hung: false, delay: i * 0.03, peg: 0, row: 0 });
+      const cx = clamp(bx - span / 2 + slot * span + (hash(it.src + "x") - 0.5) * 30, l + 6 + half, rr - 6 - half);
+      placed.push({ item: it, w, h, x: cx - w / 2, y: rimY - h * peek, rot, hung: false, delay: i * 0.03, peg: 0, row: 0 });
     });
     return { placed, rows: rowsOf.length, linesH, hFit };
   }, [items, filter, width, mounted, small, H, rimY, bx, BW, bandH]);
