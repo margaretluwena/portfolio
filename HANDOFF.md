@@ -158,7 +158,10 @@ study and the home card).
   with a `=` cap and `====` feet at either end, the basket's `=` handle
   and dotted inside), the line's, which scrolls with the rows (ropes
   pole to pole stepping - to _, an `o` knot on paper where each ties on,
-  a peg `n` over `|` at each hang point), and the front's over the
+  a peg `n` over `|` at each hang point; each row's rope has an EXTENT
+  motion value, strung across from the left pole over 0.8s as the row
+  appears and pulled back over 0.6s as it goes, pegs and the right knot
+  arriving as the rope reaches them), and the front's over the
   folded pieces (a white fill so they read as inside, a staggered `-|`
   wicker, `|` sides, the `(====)` rim; 320 by 106, nine rows of wicker).
   The folded pieces lie across the basket's width in a shuffled order,

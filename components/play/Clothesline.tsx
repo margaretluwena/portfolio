@@ -157,6 +157,10 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   const swayOf = (src: string, base: number) => { let v = swayRef.current.get(src); if (!v) { v = motionValue(base); swayRef.current.set(src, v); } return v; };
   const sim = useRef<{ src: string; theta: number; omega: number }[]>([]);
   const push = useRef(new Map<string, number>());
+  /* each row's rope, with how far across it is strung (0 at the left pole,
+     1 tied to the right): a new row's rope runs across, a row that goes
+     pulls its rope back (Margaret, 2026-11-03) */
+  const ropes = useRef<{ y: number; ext: MotionValue<number>; live: boolean }[]>([]);
   const lineRef = useRef<HTMLCanvasElement>(null);
   const frontRef = useRef<HTMLCanvasElement>(null);
 
@@ -238,10 +242,9 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     // some are nearly down inside (scene coordinates)
     const rest = items.filter((it) => !sideOf.has(it.src));
     const fh = small ? FOLD_H_SM : FOLD_H;
-    const span = BW - 2 * 36;
     rest.forEach((it, i) => {
       const h = fh, rot = (hash(it.src + "r") - 0.5) * 28;
-      const peek = 0.15 + hash(it.src + "y") * 0.3; // how much shows above the rim
+      const peek = 0.15 + (i % 3) * 0.1 + hash(it.src + "y") * 0.1; // how much shows above the rim, staggered along the pile
       // the basket's sides taper in; at the depth this piece's hem reaches,
       // this much of the rim's width is left, and the piece's TILTED box
       // (corners and all) must fit inside it (Margaret, 2026-11-03: no
@@ -253,9 +256,11 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       let w = Math.min(fh * 1.9, h * (it.w / it.h));
       w = Math.min(w, Math.max(24, (room - h * sin) / cos));
       const half = (w / 2) * cos + (h / 2) * sin;
-      // spread along the basket in a shuffled order, a little off each slot
-      const slot = rest.length > 1 ? ((i * 7) % rest.length) / (rest.length - 1) : 0.5;
-      const cx = clamp(bx - span / 2 + slot * span + (hash(it.src + "x") - 0.5) * 30, l + 6 + half, rr - 6 - half);
+      // laid evenly along the basket, in order, a touch off each slot, so
+      // they never bunch in a corner (Margaret, 2026-11-03)
+      const lo = l + 6 + half, hi = rr - 6 - half;
+      const slot = rest.length > 1 ? i / (rest.length - 1) : 0.5;
+      const cx = clamp(lo + slot * Math.max(0, hi - lo) + (hash(it.src + "x") - 0.5) * 12, lo, hi);
       placed.push({ item: it, w, h, x: cx - w / 2, y: rimY - h * peek, rot, hung: false, delay: i * 0.03, peg: 0, row: 0 });
     });
     return { placed, rows: rowsOf.length, linesH, hFit };
@@ -351,10 +356,49 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   useEffect(() => {
     const sc = sceneRef.current, line = lineRef.current, front = frontRef.current;
     if (!sc || !line || !front || width <= 0 || vh <= 0) return;
-    let raf = 0;
+    let raf = 0, raf2 = 0;
+    // the ropes: one per row, strung across as the row appears, pulled back
+    // as it goes; a row that is gone keeps its rope until it has pulled back
+    const rp = ropes.current;
+    while (rp.length > Math.max(1, rows) && !rp[rp.length - 1].live && rp[rp.length - 1].ext.get() < 0.001) rp.pop();
+    for (let r = 0; r < Math.max(1, rows); r++) {
+      const y = TOP + r * (8 + hFit + ROW_GAP);
+      if (!rp[r]) { rp[r] = { y, ext: motionValue(reduce ? 1 : 0), live: true }; }
+      rp[r].y = y;
+      if (!rp[r].live || rp[r].ext.get() < 1) { rp[r].live = true; if (reduce) rp[r].ext.set(1); else animate(rp[r].ext, 1, { duration: 0.8, ease: [0.22, 1, 0.36, 1] }); }
+    }
+    for (let r = Math.max(1, rows); r < rp.length; r++) {
+      if (rp[r].live) { rp[r].live = false; if (reduce) rp[r].ext.set(0); else animate(rp[r].ext, 0, { duration: 0.6, ease: [0.4, 0, 0.8, 0.4] }); }
+    }
+    // the line: ropes pole to pole as far as each is strung, a knot on the
+    // pole where one ties on (paper under it, since the pole is on the
+    // canvas beneath), a peg at every hung piece the rope has reached
+    const drawLine = () => {
+      const lctx = sizeCanvas(line, width, linesH, font); if (!lctx) return;
+      const cw = lctx.measureText("M").width || CELL_FONT * 0.6, ch = CELL_H;
+      const cols = Math.ceil(width / cw), poleL = 1, poleR = cols - 3;
+      const ln = new Grid(cw, ch, cols);
+      const x0 = (poleL + 2) * cw, x1 = poleR * cw;
+      ropes.current.forEach((rope, r) => {
+        const e = clamp(rope.ext.get(), 0, 1); if (e <= 0) return;
+        const y = rope.y;
+        ln.plot((t) => { const x = x0 + t * e * (x1 - x0); return [x, ropeY(y, x, width)]; }, INK, Math.max(2, Math.ceil((width * e) / 2)));
+        const [, kr] = ln.at(x0, y);
+        ln.set(poleL + 1, kr, "o", WOOD, true);
+        if (e > 0.985) ln.set(poleR, kr, "o", WOOD, true);
+        for (const p of placed) {
+          if (!p.hung || p.row !== r || p.peg > x0 + e * (x1 - x0)) continue;
+          const [c, pr] = ln.at(p.peg, p.y - 8);
+          ln.set(c, pr - 1, "n", WOOD); ln.set(c, pr, "|", WOOD); ln.set(c, pr + 1, "|", WOOD);
+        }
+      });
+      ln.draw(lctx);
+    };
+    const schedule = () => { if (!raf2) raf2 = requestAnimationFrame(() => { raf2 = 0; drawLine(); }); };
+    const unsubs = ropes.current.map((rope) => rope.ext.on("change", schedule));
     const render = () => {
-      const sctx = sizeCanvas(sc, width, vh, font), lctx = sizeCanvas(line, width, linesH, font), fctx = sizeCanvas(front, width, vh, font);
-      if (!sctx || !lctx || !fctx) return;
+      const sctx = sizeCanvas(sc, width, vh, font), fctx = sizeCanvas(front, width, vh, font);
+      if (!sctx || !fctx) return;
       const cw = sctx.measureText("M").width || CELL_FONT * 0.6, ch = CELL_H;
       const cols = Math.ceil(width / cw);
       const poleL = 1, poleR = cols - 3; // the inner columns are poleL + 1 and poleR
@@ -376,23 +420,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       g.plot((t) => { const [l, rr] = basketEdge(bx, BW, 0); const xa = l + BW * 0.28, xb = rr - BW * 0.28, u = 1 - t; return [u * u * xa + 2 * u * t * bx + t * t * xb, u * u * by + 2 * u * t * (by - HANDLE) + t * t * by]; }, WOOD, 300, true);
       g.draw(sctx);
 
-      // the line: ropes pole to pole, a knot on the pole where each ties
-      // on (paper under it, since the pole is on the canvas beneath), a
-      // peg at every hung piece
-      const ln = new Grid(cw, ch, cols);
-      const x0 = (poleL + 2) * cw, x1 = poleR * cw;
-      for (let r = 0; r < Math.max(1, rows); r++) {
-        const y = TOP + r * (8 + hFit + ROW_GAP);
-        ln.plot((t) => { const x = x0 + t * (x1 - x0); return [x, ropeY(y, x, width)]; }, INK, Math.ceil(width / 2));
-        const [, kr] = ln.at(x0, y);
-        ln.set(poleL + 1, kr, "o", WOOD, true); ln.set(poleR, kr, "o", WOOD, true);
-      }
-      for (const p of placed) {
-        if (!p.hung) continue;
-        const [c, r] = ln.at(p.peg, p.y - 8);
-        ln.set(c, r - 1, "n", WOOD); ln.set(c, r, "|", WOOD); ln.set(c, r + 1, "|", WOOD);
-      }
-      ln.draw(lctx);
+      drawLine();
 
       // the basket's front: paper under a wicker, slanted sides, the rim
       const f = new Grid(cw, ch, cols);
@@ -420,8 +448,8 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     // fonts may land after the first paint: draw now, and again once they are ready
     render();
     if (document.fonts?.ready) document.fonts.ready.then(() => { raf = requestAnimationFrame(render); });
-    return () => cancelAnimationFrame(raf);
-  }, [placed, rows, linesH, width, vh, hFit, font, BW, bx, lineTop, rimY, floorY]);
+    return () => { cancelAnimationFrame(raf); cancelAnimationFrame(raf2); unsubs.forEach((u) => u()); };
+  }, [placed, rows, linesH, width, vh, hFit, font, BW, bx, lineTop, rimY, floorY, reduce]);
 
   const flight = (p: Placed) => reduce ? { duration: 0 } : p.hung
     ? { type: "spring" as const, stiffness: 110, damping: 15, mass: 0.9, delay: p.delay }
