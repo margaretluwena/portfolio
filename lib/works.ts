@@ -1004,8 +1004,6 @@ export const works: Work[] = [
       {
         type: "artifactGrid",
         media: [
-          { src: "/images/smallworks-1.webp", alt: "" },
-          { src: "/images/smallworks-2.webp", alt: "" },
           { src: "/images/smallworks-3.png", alt: "" },
           { src: "/images/smallworks-hero.png", alt: "" }, // the Momento gallery site: UI/UX, not graphics (Margaret, 2026-11-03)
         ],
