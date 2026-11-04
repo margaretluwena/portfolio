@@ -134,8 +134,15 @@ study and the home card).
   row fits the band, so the band's fade only ever shows past that
   floor). The rows run down the band, each rope
   28px under the hem of the row above, clear of it (an overlapped,
-  in-depth stacking was tried and dropped, 2026-11-03). Hover sways a
-  hung piece, click opens it large. Groups come from the play works in `lib/works.ts`. The ground
+  in-depth stacking was tried and dropped, 2026-11-03). Each hung piece
+  is a PENDULUM on its peg: one rAF loop integrates a damped swing per
+  piece, linked to its neighbours on the row (`LINK`) so a push spreads
+  along the rope, pushed by the pointer's sideways motion as it passes
+  (`PUSH`, capped, so brushing back and forth pumps it to ~20 degrees
+  and neighbours to ~9), and leaned on by a gust (`GUST`, a bell of
+  force sweeping the line at 900px/s) every six to fifteen seconds for
+  a few degrees of sway; angles go to one motion value per piece, no
+  re-renders. Reduced motion: static. Click opens a piece large. Groups come from the play works in `lib/works.ts`. The ground
   never moves: when the rows outgrow the window the LINE scrolls
   (wheel, trackpad, touch; a spring-eased MotionValue on the line group)
   inside a band that fades at its ends and stops with the last row just

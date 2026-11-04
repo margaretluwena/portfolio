@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
+import { AnimatePresence, animate, motion, motionValue, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue } from "motion/react";
 
 /*
   THE CLOTHESLINE (Play, 2026-11-03).
@@ -33,7 +33,13 @@ import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, u
   carries the scene and the hills up together.
 
   Geometry is computed, not laid out: the rope is a quadratic curve with
-  a little sag and every piece's hang point is a point on it. The rows
+  a little sag and every piece's hang point is a point on it. Each hung
+  piece is a little PENDULUM on its peg (Margaret, 2026-11-03): a damped
+  swing, linked to its neighbours on the rope so a push spreads along
+  the line, nudged by the pointer as it passes (its sideways motion is
+  the push, so brushing back and forth pumps the swing), and leaned on
+  by a GUST that travels across the line every six to fifteen seconds.
+  One frame loop writes every piece's angle to a motion value. The rows
   hang in a column, each line strung just under the hem of the one
   above, clear of it (Margaret, 2026-11-03, after trying them overlapped
   in depth: "no more overlap"). A piece lives in the line group (hung)
@@ -67,6 +73,10 @@ const FOLD_H = 60, FOLD_H_SM = 46; // a folded piece's height in the basket
 const H_MIN = 72, H_MIN_SM = 56;    // how small the hung pieces may go to fit the band
 const FADE = 28;            // the band's fade at either end
 const INSET = 48;           // the basket's and the welcome line's distance in from the poles
+/* the swing: a pendulum about a second long, lightly damped, pulled toward
+   its neighbours; the pointer's sideways motion is a push; a gust is a
+   bell of sideways force sweeping the line */
+const SWING_K = 42, SWING_C = 1.4, LINK = 14, OMEGA_MAX = 2.6, PUSH = 0.012, PUSH_MAX = 0.5, GUST = 2.4, GUST_W = 260, GUST_V = 900;
 
 const hash = (s: string) => { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return ((h >>> 0) % 1000) / 1000; };
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
@@ -141,6 +151,12 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   const [open, setOpen] = useState<PlayItem | null>(null);
   const [font, setFont] = useState(SKY_FONT_FALLBACK);
   const sceneRef = useRef<HTMLCanvasElement>(null);
+  /* every piece's angle, written by the swing loop (hung) or settled by a
+     spring (folded); the loop's state and the pointer's pending pushes */
+  const swayRef = useRef(new Map<string, MotionValue<number>>());
+  const swayOf = (src: string, base: number) => { let v = swayRef.current.get(src); if (!v) { v = motionValue(base); swayRef.current.set(src, v); } return v; };
+  const sim = useRef<{ src: string; theta: number; omega: number }[]>([]);
+  const push = useRef(new Map<string, number>());
   const lineRef = useRef<HTMLCanvasElement>(null);
   const frontRef = useRef<HTMLCanvasElement>(null);
 
@@ -275,6 +291,56 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     return () => { el.removeEventListener("wheel", onWheel); el.removeEventListener("touchstart", onTouchStart); el.removeEventListener("touchmove", onTouchMove); };
   }, [scrollLine, open]);
 
+  /* the swing loop */
+  useEffect(() => {
+    const folded = placed.filter((p) => !p.hung);
+    for (const p of folded) {
+      const v = swayOf(p.item.src, p.rot);
+      if (reduce) v.set(p.rot); else animate(v, p.rot, { type: "spring", stiffness: 120, damping: 14 });
+    }
+    const hung = placed.filter((p) => p.hung);
+    if (reduce) { for (const p of hung) swayOf(p.item.src, p.rot).set(p.rot); return; }
+    // a piece keeps its swing across a repack; one just lifted starts from
+    // the angle it lay at, and swings down to rest on its peg
+    const prev = new Map(sim.current.map((st) => [st.src, st]));
+    sim.current = hung.map((p) => {
+      const was = prev.get(p.item.src);
+      return was ?? { src: p.item.src, theta: ((swayOf(p.item.src, p.rot).get() - p.rot) * Math.PI) / 180, omega: 0 };
+    });
+    // the rope links a piece to the next and the previous on its row
+    const nb = hung.map((p, i) => [i > 0 && hung[i - 1].row === p.row ? i - 1 : -1, i < hung.length - 1 && hung[i + 1].row === p.row ? i + 1 : -1] as const);
+    let raf = 0, last = performance.now();
+    let gust: { t0: number; dir: number } | null = null;
+    let next = last + 2500 + Math.random() * 4000;
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      if (!gust && now > next) gust = { t0: now, dir: Math.random() < 0.5 ? 1 : -1 };
+      let front = 0, env = 0;
+      if (gust) {
+        const t = (now - gust.t0) / 1000, T = (width + 2 * GUST_W) / GUST_V;
+        if (t > T) { gust = null; next = now + 6000 + Math.random() * 9000; }
+        else { env = Math.sin((Math.PI * t) / T); front = gust.dir > 0 ? -GUST_W + GUST_V * t : width + GUST_W - GUST_V * t; }
+      }
+      const st = sim.current;
+      for (let i = 0; i < st.length; i++) {
+        const p = hung[i], me = st[i];
+        let a = -SWING_K * me.theta - SWING_C * me.omega;
+        const [l, r] = nb[i];
+        if (l >= 0) a += LINK * (st[l].theta - me.theta);
+        if (r >= 0) a += LINK * (st[r].theta - me.theta);
+        if (gust) { const d = (front - p.peg) / GUST_W; a += GUST * gust.dir * env * Math.exp(-d * d); }
+        const k = push.current.get(p.item.src);
+        if (k) { me.omega += k; push.current.delete(p.item.src); }
+        me.omega = clamp(me.omega + a * dt, -OMEGA_MAX, OMEGA_MAX);
+        me.theta += me.omega * dt;
+        swayOf(p.item.src, p.rot).set(p.rot + (me.theta * 180) / Math.PI);
+      }
+    };
+    raf = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(raf);
+  }, [placed, reduce, width]);
+
   /* the glyphs: poles and basket on the scene, ropes and pegs on the line */
   useEffect(() => {
     const sc = sceneRef.current, line = lineRef.current, front = frontRef.current;
@@ -372,14 +438,12 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       tabIndex={p.hung ? 0 : -1}
       aria-label={p.hung ? `Open ${p.item.alt || p.item.group}` : undefined}
       onKeyDown={(e) => { if (p.hung && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); setOpen(p.item); } }}
+      // the pointer's sideways motion over a hung piece pushes it
+      onPointerMove={(e) => { if (p.hung && !reduce) push.current.set(p.item.src, clamp((push.current.get(p.item.src) ?? 0) + e.movementX * PUSH, -PUSH_MAX, PUSH_MAX)); }}
     >
       <motion.div
         className="h-full w-full"
-        style={{ transformOrigin: "top center" }}
-        initial={false}
-        animate={{ rotate: p.rot }}
-        transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 120, damping: 14, delay: p.delay }}
-        whileHover={p.hung && !reduce ? { rotate: [p.rot, p.rot + 6, p.rot - 5, p.rot + 3, p.rot - 1, p.rot], transition: { duration: 1.4, ease: "easeInOut" } } : undefined}
+        style={{ transformOrigin: "top center", rotate: swayOf(p.item.src, p.rot) }}
       >
         <Image
           src={p.item.src}
