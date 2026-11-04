@@ -19,8 +19,11 @@ import { useEffect, useRef, type RefObject } from "react";
                element and redraws the cells inside it, shedding and
                regathering a few per frame like the dog in motion, and
                leaving a thinning trail where it has just been
-    resolve    on landing the flicker settles over ~350ms and the real
-               corner text fades in
+    resolve    on landing the flicker settles and the cells fade out over
+               ~380ms while the real corner text fades in underneath them
+               (the two used to overlap at full strength for a third of a
+               second, which read as the name going thick and then
+               snapping to the regular face - Margaret, 2026-11-03)
 
   The DOM text is kept in the tree the whole time (it is what Framer
   measures and moves); its opacity is what the host toggles. Reduced
@@ -190,7 +193,7 @@ export default function DitherWordmark({ mode, target, text, font, onAssembled, 
           if (n < 0.34 * flick) glyphD = dd * 0.35; // regathering: drawn small
         }
         const glyph = RAMP[Math.min(RAMP.length - 1, Math.floor(glyphD * (RAMP.length - 0.01)))];
-        ctx.globalAlpha = alpha * (0.72 + 0.28 * Math.min(1, dd * 1.6));
+        ctx.globalAlpha = alpha * (0.72 + 0.28 * Math.min(1, dd * 1.6)) * (mode === "resolve" ? 1 - settle : 1);
         ctx.fillText(glyph, bx + (gx + 0.5) * cellW, by + gy * cellH + dy);
       }
       ctx.globalAlpha = 1;

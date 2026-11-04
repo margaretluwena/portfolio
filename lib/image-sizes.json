@@ -3,6 +3,10 @@
     337,
     500
   ],
+  "/images/about/dog-frames.png": [
+    2256,
+    1756
+  ],
   "/images/about/lavalab/audience-choice.jpg": [
     1400,
     933
@@ -231,6 +235,10 @@
     402,
     874
   ],
+  "/images/mark/hero.jpg": [
+    2400,
+    1325
+  ],
   "/images/mark/home-reading-pattern.png": [
     402,
     874
@@ -302,6 +310,18 @@
   "/images/mark/reference-board.webp": [
     1344,
     638
+  ],
+  "/images/mark/screen-categories.png": [
+    402,
+    874
+  ],
+  "/images/mark/screen-home.png": [
+    402,
+    874
+  ],
+  "/images/mark/screen-share.png": [
+    402,
+    874
   ],
   "/images/mark/share-early.png": [
     402,

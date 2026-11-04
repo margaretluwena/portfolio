@@ -32,7 +32,7 @@ in copy or code comments**, the build fails on them.
 | Nav pill: dots for the works index on home; on a case study it lifts fully out past 160px of scroll and returns above; pinned everywhere else | `components/nav/Nav.tsx`, `NavContext.tsx` |
 | Page transitions: fade out, scroll to top, route; a 700ms safety net fires the route if the exit never reports back | `components/providers/PageTransition.tsx` |
 | Cursor bubble: a white pill off the pointer. `data-bubble="..."` on any element, or `setCursorBubble()` for the canvas. "Coming soon!" on parked cards; "Try shaking!" / "Pet me" on the ball and dog, each shown until done once per visit | `components/providers/CursorBubble.tsx`, `SkyFrame.tsx` |
-| Work cards: text title (no SVG lockups on cards), a `signal` pill ("Raised $3M+", "Audience Choice winner", ...), description slides in on hover; parked cards are inert | `components/works/WorkList.tsx`, `lib/works.ts` |
+| Work cards: text title (no SVG lockups on cards), a `signal` pill ("Raised $3M+", "Audience Choice winner", ...), description slides in on hover; parked cards are inert. Hover SCENES (2026-11-03, `components/works/CardHover.tsx`): Mark's three iPhone screens rise into the card fanned (CSS, group-hover); Traeco's dashboard opens as the product does (stat cards rebuilt in HTML at the capture's 3172x1960 pixel coordinates, scaled to the layer: count-ups, the budget meter, the savings figure, the "where it went" bars); Prosaic's chart bars grow up (paper curtains over the capture's bars shrinking to the top). `play` counts the hovers and replays. Reduced motion: at rest | `components/works/WorkList.tsx`, `CardHover.tsx`, `lib/works.ts` |
 | Case-study template: 56.4vw column; hero rises in (no card morph, no overlay route); blocks context / brief / problem / solution (pieces may carry a `gallery` row) / artifactGrid / lessons; landscape images fill the column flush left, tall ones sit beside their text flush right; Previous / Next walk the open studies; no footer | `components/works/CaseStudyContent.tsx`, `Blocks.tsx`, `app/works/[slug]/page.tsx` |
 | ASCII minimap (studies, md+): left gutter; track of 9px cells, sections fanned evenly down it, lens paced by section length on a spring, nearly flat between headers and swelling five wide on one, dithered ends; names beside it at the rail's spacing, active one slides right and turns ink; Return above; up-arrow pill below; native scrollbar hidden on studies | `components/works/AsciiScrollbar.tsx`, `Blocks.tsx` (SectionRail = Return only + phone Return pill), `app/globals.css` (`html.study-scroll`) |
 | Study type scale: body 16-22px, labels 15-22px medium in the project accent, headline 22-36px | `app/globals.css` (`.study-*`) |
@@ -101,7 +101,10 @@ study and the home card).
   inner span's rect is the inline box (advance by ascent+descent,
   transforms included) and the sampled ink offsets scale onto it, so
   the glyphs sit on the letters at any size or mid-flight (they read as
-  "not lined up" before, 2026-11-03).
+  "not lined up" before, 2026-11-03). On landing the cells FADE OUT as
+  the real corner text fades in under them; they used to overlap at
+  full strength for a third of a second, which read as the name going
+  thick and snapping back to the regular face.
   It plays once per PAGE LOAD (a module-level flag): a reload replays
   it, returning to "/" from another page within the app skips it. It was
   a sessionStorage gate before, which meant a tab saw it exactly once

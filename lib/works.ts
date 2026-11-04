@@ -166,6 +166,9 @@ export const works: Work[] = [
     ],
     /* poster stand-in until the real export lands */
     cover: { src: "/images/covers/mark-device.png", alt: "Mark device" },
+    /* the study opens on the product photo: the bookmark on its pad over a
+       MSCHF catalogue spread (Margaret's photo, 2026-11-03) */
+    hero: { src: "/images/mark/hero.jpg", alt: "The Mark bookmark on its charging pad, resting on an open blue catalogue spread" },
     next: "traeco",
     category: "AI Hardware",
     year: "2025",

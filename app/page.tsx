@@ -82,9 +82,9 @@ export default function Page() {
 
   // assembled: the real text fades in over the cells, which then clear
   const onAssembled = () => { setIntroVisible(true); setTimeout(() => setDither((m) => (m === "assemble" ? "off" : m)), 260); };
-  // landed: the flicker settles, then the real corner text takes over
-  const onLanded = () => { if (!skipped.current) setDither((m) => (m === "flight" ? "resolve" : m)); };
-  const onResolved = () => { setCornerHidden(false); setTimeout(() => setDither("off"), 340); };
+  // landed: the cells fade out as the real corner text fades in under them
+  const onLanded = () => { if (!skipped.current) { setDither((m) => (m === "flight" ? "resolve" : m)); setCornerHidden(false); } };
+  const onResolved = () => setDither("off");
 
   // the nav pill lives in the root layout: hide it through the intro, then
   // hand it the live works index; release both when this page unmounts

@@ -7,6 +7,8 @@ import { motion, useReducedMotion } from "motion/react";
 import { featuredWorks, type Work } from "@/lib/works";
 import Prox from "@/components/ui/Prox";
 import CardVideo from "@/components/works/CardVideo";
+import { MarkPhones, TraecoDashboard, ProsaicBars } from "@/components/works/CardHover";
+import { useState } from "react";
 
 /*
   The right-hand scrolling column. Each work is a card (Figma card frames,
@@ -35,7 +37,11 @@ import CardVideo from "@/components/works/CardVideo";
 
 /* the layered art (or cover image, or title tile) plus the fade into the
    text zone; fills a positioned parent of the card's 972/678 shape */
-export function CoverArt({ work, hover = true, sizes = "45vw", priority = false }: { work: Work; hover?: boolean; sizes?: string; priority?: boolean }) {
+export function CoverArt({ work, hover = true, sizes = "45vw", priority = false, play = 0 }: { work: Work; hover?: boolean; sizes?: string; priority?: boolean; play?: number }) {
+  /* the hover scenes (CardHover.tsx): a layer per product over its art;
+     the hero on a case study (hover=false) shows them at rest */
+  const under = work.slug === "traeco" ? <TraecoDashboard play={hover ? play : 0} /> : work.slug === "prosaic-intelligence" ? <ProsaicBars play={hover ? play : 0} /> : null;
+  const over = work.slug === "mark" ? <MarkPhones hover={hover} /> : null;
   return (
           <div
             className={`absolute inset-0 ${
@@ -74,6 +80,8 @@ export function CoverArt({ work, hover = true, sizes = "45vw", priority = false 
                           ) : (
                             <Image src={layer.src} alt="" fill sizes={sizes} className="object-contain" priority={priority} />
                           )}
+                          {/* the hover scene rides the layer it animates: Traeco's dashboard, Prosaic's chart */}
+                          {(layer.src === "/images/covers/traeco-dashboard.png" || layer.src === "/images/prosaic/chart-card.png") && under}
                         </div>
                       ))}
                     </div>
@@ -94,6 +102,7 @@ export function CoverArt({ work, hover = true, sizes = "45vw", priority = false 
                     className="absolute inset-0"
                     style={{ background: work.cardFade ?? "linear-gradient(to bottom, transparent, #fff 77.9%)" }}
                   />
+                  {over}
           </div>
   );
 }
@@ -104,6 +113,8 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
   /* unreachable studies (no case study yet, or parked) render the same
      card as a plain surface: no link, no shared-layout target */
   const inert = !!work.comingSoon;
+  /* counts the hovers: each one replays the card's hover scene (CardHover.tsx) */
+  const [play, setPlay] = useState(0);
   {
         /* load entrance: the visible cards rise from below in a stagger
            (Motion choreography: elements move at different times, not in
@@ -112,13 +123,14 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
            fully visible the moment they're scrolled to, so nothing the
            reader is about to interact with fades in on them. */
         /* the first card is the largest thing above the fold: its art loads eagerly */
-        const coverInner = <CoverArt work={work} hover={!work.comingSoon} priority={i === 0} />;
+        const coverInner = <CoverArt work={work} hover={!work.comingSoon} priority={i === 0} play={play} />;
 
         const card = (
             <motion.article
               aria-disabled={work.comingSoon || undefined}
               className="relative aspect-[972/678] w-full overflow-hidden rounded-[10px] border border-black/[0.09] shadow-[0_10px_50px_rgba(0,0,0,0.05)]"
               style={{ background: work.cardBg ?? "#fff" }}
+              onMouseEnter={() => setPlay((p) => p + 1)}
               initial={{ opacity: 0, y: 56 }}
               animate={reveal ? { opacity: 1, y: 0 } : undefined}
               transition={{
