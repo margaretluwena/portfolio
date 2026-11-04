@@ -120,7 +120,9 @@ study and the home card).
   scroll starts the lift; the large-piece modal is the scene's sibling,
   clear of that transform): two poles
   planted on the sky's front hill (93vh), the basket on the ground at
-  the RIGHT, a welcome line standing on the ground at the left ("Hey,
+  the RIGHT (its right end on the nav pill's right end), a welcome line
+  standing on the ground at the left (its left edge on the nav pill's
+  left end; both measured from the fixed <header> each resize) ("Hey,
   welcome to the playground! This is where (all) my smaller things
   are, including (graphics) and (ui/ux) that didn't make it into my
   main works :)") whose bracketed words are the filter pills, and the

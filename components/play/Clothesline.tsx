@@ -72,7 +72,7 @@ const FLOOR_VH = 0.93;      // the ground: the front hill's line, as a share of 
 const FOLD_H = 60, FOLD_H_SM = 46; // a folded piece's height in the basket
 const H_MIN = 72, H_MIN_SM = 56;    // how small the hung pieces may go to fit the band
 const FADE = 28;            // the band's fade at either end
-const INSET = 48;           // the basket's and the welcome line's distance in from the poles
+const INSET = 30;           // the least the basket and the welcome line keep from the poles; they align to the nav pill's ends when it is wider
 /* the swing: a pendulum about a second long, lightly damped, pulled toward
    its neighbours; the pointer's sideways motion is a push; a gust is a
    bell of sideways force sweeping the line */
@@ -145,7 +145,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   const reduce = useReducedMotion();
   const scene = useRef<HTMLDivElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
-  const [size, setSize] = useState({ w: 0, h: 0, descH: 0 });
+  const [size, setSize] = useState({ w: 0, h: 0, descH: 0, navL: 0, navR: 0 });
   const [filter, setFilter] = useState<string>("All");
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState<PlayItem | null>(null);
@@ -162,7 +162,12 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
 
   useLayoutEffect(() => {
     const el = scene.current; if (!el) return;
-    const measure = () => setSize({ w: el.clientWidth, h: el.clientHeight, descH: descRef.current?.clientHeight ?? 0 });
+    // the nav pill's ends, in the scene's coordinates: the welcome line
+    // starts on its left end and the basket ends on its right one
+    const measure = () => {
+      const r = el.getBoundingClientRect(), nav = document.querySelector("header")?.getBoundingClientRect();
+      setSize({ w: el.clientWidth, h: el.clientHeight, descH: descRef.current?.clientHeight ?? 0, navL: nav ? nav.left - r.left : 0, navR: nav ? nav.right - r.left : el.clientWidth });
+    };
     const ro = new ResizeObserver(measure);
     ro.observe(el); if (descRef.current) ro.observe(descRef.current); measure();
     return () => ro.disconnect();
@@ -182,7 +187,8 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
      (above the basket on a phone), and the band the line scrolls in */
   const floorY = Math.round(vh * FLOOR_VH);
   const rimY = floorY - BASKET_H;
-  const bx = width - INSET - BW / 2;
+  const textL = Math.max(INSET, size.navL);
+  const bx = Math.min(width - INSET, size.navR || width) - BW / 2;
   const descBottom = small ? rimY - HANDLE - 10 : floorY;
   const descTop = descBottom - size.descH;
   const lineTop = Math.round(vh * 0.17);
@@ -497,7 +503,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       <p
         ref={descRef}
         className="absolute text-body leading-[2.05] text-ink"
-        style={{ left: small ? INSET : INSET + 8, right: small ? INSET : undefined, maxWidth: small ? undefined : 440, top: descTop, zIndex: 6 }}
+        style={{ left: textL, right: small ? INSET : undefined, maxWidth: small ? undefined : 440, top: descTop, zIndex: 6 }}
         role="group" aria-label="Hang"
       >
         Hey, welcome to the playground! This is where {pill("All")} my smaller things are, including {named} that didn{"\u2019"}t make it into my main works :)
