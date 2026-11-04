@@ -61,9 +61,10 @@ const GAP = 22;             // between pieces on the line
 const ROW_GAP = 28;         // from a row's hem to the next rope below it: the lines hang clear of each other
 const ROPE_SAG = 26;
 const TOP = 44;             // the first rope's ends, from the top of the line band
-const BASKET_W = 400, BASKET_H = 128, HANDLE = 78; // 128: eleven rows of wicker, two fewer than it had (Margaret, 2026-11-03)
+const BASKET_W = 320, BASKET_H = 106, HANDLE = 64; // smaller again (Margaret, 2026-11-03): nine rows of wicker
 const FLOOR_VH = 0.93;      // the ground: the front hill's line, as a share of the window
-const FOLD = 0.55;          // a folded piece's size, as a share of its hung size
+const FOLD_H = 60, FOLD_H_SM = 46; // a folded piece's height in the basket
+const H_MIN = 72, H_MIN_SM = 56;    // how small the hung pieces may go to fit the band
 const FADE = 28;            // the band's fade at either end
 const INSET = 48;           // the basket's and the welcome line's distance in from the poles
 
@@ -172,46 +173,62 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   const lineBottom = Math.min(rimY - HANDLE, size.descH ? descTop : rimY - HANDLE) - 12;
   const bandH = Math.max(0, lineBottom - lineTop);
 
-  const { placed, rows, linesH } = useMemo(() => {
-    const maxW = small ? MAX_W_SM : MAX_W;
+  const { placed, rows, linesH, hFit } = useMemo(() => {
     const hung = mounted ? items.filter((it) => filter === "All" || it.group === filter) : [];
-    // pack the hung pieces into rows, left to right
-    const rowsOf: { items: PlayItem[]; widths: number[]; total: number }[] = [];
-    for (const it of hung) {
-      const w = Math.min(maxW, H * (it.w / it.h));
-      const row = rowsOf[rowsOf.length - 1];
-      if (row && row.total + GAP + w <= width) { row.items.push(it); row.widths.push(w); row.total += GAP + w; }
-      else rowsOf.push({ items: [it], widths: [w], total: w });
+    // pack the hung pieces into rows, left to right, at a given height
+    const pack = (h: number) => {
+      const maxW = (small ? MAX_W_SM : MAX_W) * (h / H);
+      const rowsOf: { items: PlayItem[]; widths: number[]; total: number }[] = [];
+      for (const it of hung) {
+        const w = Math.min(maxW, h * (it.w / it.h));
+        const row = rowsOf[rowsOf.length - 1];
+        if (row && row.total + GAP + w <= width) { row.items.push(it); row.widths.push(w); row.total += GAP + w; }
+        else rowsOf.push({ items: [it], widths: [w], total: w });
+      }
+      // the rows run down the band, each rope ROW_GAP under the hem of the row above
+      const pitch = 8 + h + ROW_GAP;
+      const linesH = rowsOf.length ? TOP + (rowsOf.length - 1) * pitch + 8 + h + 16 : TOP;
+      return { rowsOf, pitch, linesH };
+    };
+    // the pieces shrink, down to H_MIN, until every row fits the band: the
+    // band then has nothing to hide and no fade shows (Margaret, 2026-11-03:
+    // the second row's hem faded into the white). Past H_MIN the line scrolls.
+    let hFit = H, packed = pack(H);
+    const hMin = small ? H_MIN_SM : H_MIN;
+    for (let k = 0; k < 6 && bandH > 0 && packed.linesH > bandH && hFit > hMin; k++) {
+      hFit = Math.max(hMin, Math.floor(hFit * Math.min(0.96, bandH / packed.linesH)));
+      packed = pack(hFit);
     }
+    const { rowsOf, pitch, linesH } = packed;
     const placed: Placed[] = [];
     const sideOf = new Map<string, Placed>();
-    // the rows run down the band, each rope ROW_GAP under the hem of the
-    // row above
-    const pitch = 8 + H + ROW_GAP;
-    const n = rowsOf.length;
     rowsOf.forEach((row, r) => {
       const rowTop = TOP + r * pitch;
       let x = (width - row.total) / 2;
       row.items.forEach((it, i) => {
         const w = row.widths[i], cx = x + w / 2;
-        const p: Placed = { item: it, w, h: H, x: cx - w / 2, y: ropeY(rowTop, cx, width) + 8, rot: (hash(it.src) - 0.5) * 5, hung: true, delay: (r * 6 + i) * 0.06, peg: cx, row: r };
+        const p: Placed = { item: it, w, h: hFit, x: cx - w / 2, y: ropeY(rowTop, cx, width) + 8, rot: (hash(it.src) - 0.5) * 5, hung: true, delay: (r * 6 + i) * 0.06, peg: cx, row: r };
         placed.push(p); sideOf.set(it.src, p); x += w + GAP;
       });
     });
-    // the line's own height: the last row's hem, in the band's coordinates
-    const linesH = n ? TOP + (n - 1) * pitch + 8 + H + 16 : TOP;
-    // the rest sit in the basket, small and turned, stacked toward its
-    // middle, folded over the rim: the tops show above the basket's
-    // front, the rest is behind it (scene coordinates)
+    // the rest lie in the basket, laid across its width at odd depths and
+    // tilts, each folded over the rim by its own amount: some peek out,
+    // some are nearly down inside (scene coordinates)
     const rest = items.filter((it) => !sideOf.has(it.src));
+    const fh = small ? FOLD_H_SM : FOLD_H;
+    const span = BW - 2 * 36;
     rest.forEach((it, i) => {
-      const w = Math.min(maxW, H * (it.w / it.h)) * FOLD, h = H * FOLD;
-      const spread = Math.min(rest.length - 1, 9) * 14;
-      const cx = bx + (rest.length > 1 ? (i / (rest.length - 1) - 0.5) * spread : 0) + (hash(it.src + "x") - 0.5) * 24;
-      placed.push({ item: it, w, h, x: cx - w / 2, y: rimY - h * 0.55 + hash(it.src + "y") * 18, rot: (hash(it.src + "r") - 0.5) * 28, hung: false, delay: i * 0.03, peg: 0, row: 0 });
+      const h = fh, w = Math.min(fh * 1.9, h * (it.w / it.h));
+      // spread along the basket in a shuffled order, a little off each slot
+      const slot = rest.length > 1 ? ((i * 7) % rest.length) / (rest.length - 1) : 0.5;
+      const [l, rr] = basketEdge(bx, BW, 0);
+      // kept inside the rim's ends with room for the tilt's corners
+      const cx = clamp(bx - span / 2 + slot * span + (hash(it.src + "x") - 0.5) * 30, l + w / 2 + 18, rr - w / 2 - 18);
+      const peek = 0.15 + hash(it.src + "y") * 0.4; // how much shows above the rim
+      placed.push({ item: it, w, h, x: cx - w / 2, y: rimY - h * peek, rot: (hash(it.src + "r") - 0.5) * 36, hung: false, delay: i * 0.03, peg: 0, row: 0 });
     });
-    return { placed, rows: rowsOf.length, linesH };
-  }, [items, filter, width, mounted, small, H, rimY, bx]);
+    return { placed, rows: rowsOf.length, linesH, hFit };
+  }, [items, filter, width, mounted, small, H, rimY, bx, BW, bandH]);
 
   /* the line's scroll: how far the rows have been pulled up, 0 to maxScroll,
      eased by a spring; the group under the band moves by it */
@@ -284,7 +301,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       const ln = new Grid(cw, ch, cols);
       const x0 = (poleL + 2) * cw, x1 = poleR * cw;
       for (let r = 0; r < Math.max(1, rows); r++) {
-        const y = TOP + r * (8 + H + ROW_GAP);
+        const y = TOP + r * (8 + hFit + ROW_GAP);
         ln.plot((t) => { const x = x0 + t * (x1 - x0); return [x, ropeY(y, x, width)]; }, INK, Math.ceil(width / 2));
         const [, kr] = ln.at(x0, y);
         ln.set(poleL + 1, kr, "o", WOOD, true); ln.set(poleR, kr, "o", WOOD, true);
@@ -310,8 +327,11 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
           f.set(c, r, r === rN ? "=" : stake ? "|" : "-", r === rN ? WOOD : WICKER);
         }
       }
-      f.plot((t) => [basketEdge(bx, BW, t)[0], by + BASKET_H * t], WOOD, 200);
-      f.plot((t) => [basketEdge(bx, BW, t)[1], by + BASKET_H * t], WOOD, 200);
+      // the sides: a | at each row's edge, stepping in with the taper
+      for (let r = r0 + 1; r <= rN; r++) {
+        const [l, rr] = basketEdge(bx, BW, (r - r0) / (rN - r0));
+        f.set(Math.ceil(l / cw) - 1, r, "|", WOOD); f.set(Math.floor(rr / cw) + 1, r, "|", WOOD);
+      }
       { const [l, rr] = basketEdge(bx, BW, 0); const cA = Math.floor(l / cw) - 1, cB = Math.ceil(rr / cw) + 1;
         for (let c = cA; c <= cB; c++) f.set(c, r0, c === cA ? "(" : c === cB ? ")" : "=", WOOD); }
       f.draw(fctx);
@@ -320,7 +340,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
     render();
     if (document.fonts?.ready) document.fonts.ready.then(() => { raf = requestAnimationFrame(render); });
     return () => cancelAnimationFrame(raf);
-  }, [placed, rows, linesH, width, vh, H, font, BW, bx, lineTop, rimY, floorY]);
+  }, [placed, rows, linesH, width, vh, hFit, font, BW, bx, lineTop, rimY, floorY]);
 
   const flight = (p: Placed) => reduce ? { duration: 0 } : p.hung
     ? { type: "spring" as const, stiffness: 110, damping: 15, mass: 0.9, delay: p.delay }

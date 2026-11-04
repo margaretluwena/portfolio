@@ -130,7 +130,9 @@ study and the home card).
   start in the basket; the filter (All plus each play collection's
   title) lifts the matching ones onto the rope, pegged under its sag,
   in as many rows as fit (128px tall on desktop, 92 on phones, so seven
-  or so share a line at 1440). The rows run down the band, each rope
+  or so share a line at 1440; they shrink, down to 72 / 56, until every
+  row fits the band, so the band's fade only ever shows past that
+  floor). The rows run down the band, each rope
   28px under the hem of the row above, clear of it (an overlapped,
   in-depth stacking was tried and dropped, 2026-11-03). Hover sways a
   hung piece, click opens it large. Groups come from the play works in `lib/works.ts`. The ground
@@ -149,8 +151,11 @@ study and the home card).
   pole to pole stepping - to _, an `o` knot on paper where each ties on,
   a peg `n` over `|` at each hang point), and the front's over the
   folded pieces (a white fill so they read as inside, a staggered `-|`
-  wicker, `|` sides, the `(====)` rim). The basket narrows to fit
-  between the poles on a phone.
+  wicker, `|` sides, the `(====)` rim; 320 by 106, nine rows of wicker).
+  The folded pieces lie across the basket's width in a shuffled order,
+  each tilted and peeking over the rim by its own amount, clamped
+  inside its edges. The basket narrows to fit between the poles on a
+  phone.
 
 ## Content still marked NEED (Margaret's to supply)
 
