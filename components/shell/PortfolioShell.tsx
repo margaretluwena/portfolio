@@ -8,6 +8,7 @@ import WorksColumn from "@/components/works/WorksColumn";
 import RotatingTitle from "@/components/shell/RotatingTitle";
 import StickerWord from "@/components/shell/StickerWord";
 import Prox from "@/components/ui/Prox";
+import MailLink from "@/components/ui/MailLink";
 
 /*
   MAIN PAGE.
@@ -116,17 +117,8 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex, wordmarkR
                   (Shub's feedback, 2026-10-13); same glyph as the About row */}
               <li>
                 <Prox maxScale={1.12} radius={55}>
-                  <a
-                    href={`mailto:${EMAIL}`}
-                    aria-label={`Email ${EMAIL}`}
-                    title={EMAIL}
-                    className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-                  >
-                    <svg width="26" height="24" viewBox="0 0 26 24" fill="none" aria-hidden>
-                      <rect x="1.5" y="4" width="23" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
-                      <path d="M2.5 6.5 13 13.5 23.5 6.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </a>
+                  {/* a click copies the address; the envelope becomes a check for a second (MailLink) */}
+                  <MailLink email={EMAIL} className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink" />
                 </Prox>
               </li>
             </motion.ul>

@@ -20,6 +20,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { motion, useMotionTemplate, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 import { socials } from "@/components/shell/PortfolioShell";
+import MailLink from "@/components/ui/MailLink";
 
 const EMAIL = "luwena@usc.edu";
 
@@ -80,12 +81,7 @@ function ContactRow() {
   return (
     <ul className="mt-[22px] flex w-[min(620px,86vw)] items-center gap-5">
       <li className="mr-auto">
-        <a href={`mailto:${EMAIL}`} aria-label={`Email ${EMAIL}`} title={EMAIL} className={link}>
-          <svg width="26" height="24" viewBox="0 0 26 24" fill="none" aria-hidden>
-            <rect x="1.5" y="4" width="23" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
-            <path d="M2.5 6.5 13 13.5 23.5 6.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </a>
+        <MailLink email={EMAIL} className={link} />
       </li>
       {socials.map((s) => (
         <li key={s.label}>

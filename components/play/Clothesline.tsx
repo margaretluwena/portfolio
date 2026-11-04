@@ -149,6 +149,29 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
   const [filter, setFilter] = useState<string>("All");
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState<PlayItem | null>(null);
+  /* opening a hung piece: it jolts on its peg first (Margaret, 2026-11-03:
+     "pegs that squeak"), then opens large a beat later */
+  const pick = (p: Placed) => {
+    if (!p.hung) return;
+    if (reduce) { setOpen(p.item); return; }
+    push.current.set(p.item.src, (hash(p.item.src + "k") < 0.5 ? 1 : -1) * 1.1);
+    setTimeout(() => setOpen(p.item), 170);
+  };
+  /* the pieces on the line, in order, for the modal to walk */
+  const gallery = useMemo(() => (mounted ? items.filter((it) => filter === "All" || it.group === filter) : []), [items, filter, mounted]);
+  const step = useCallback((d: number) => {
+    setOpen((cur) => { if (!cur || gallery.length < 2) return cur; const i = gallery.indexOf(cur); return gallery[(i + d + gallery.length) % gallery.length]; });
+  }, [gallery]);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") { e.preventDefault(); step(1); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); step(-1); }
+      else if (e.key === "Escape") setOpen(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, step]);
   const [font, setFont] = useState(SKY_FONT_FALLBACK);
   const sceneRef = useRef<HTMLCanvasElement>(null);
   /* every piece's angle, written by the swing loop (hung) or settled by a
@@ -467,11 +490,11 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       transition={{ layout: flight(p) }}
       className="absolute cursor-pointer"
       style={{ left: p.x, top: p.y, width: p.w, height: p.h, zIndex: p.hung ? 2 : 3 }}
-      onClick={() => p.hung && setOpen(p.item)}
+      onClick={() => pick(p)}
       role={p.hung ? "button" : undefined}
       tabIndex={p.hung ? 0 : -1}
       aria-label={p.hung ? `Open ${p.item.alt || p.item.group}` : undefined}
-      onKeyDown={(e) => { if (p.hung && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); setOpen(p.item); } }}
+      onKeyDown={(e) => { if (p.hung && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); pick(p); } }}
       // the pointer's sideways motion over a hung piece pushes it
       onPointerMove={(e) => { if (p.hung && !reduce) push.current.set(p.item.src, clamp((push.current.get(p.item.src) ?? 0) + e.movementX * PUSH, -PUSH_MAX, PUSH_MAX)); }}
     >
@@ -555,23 +578,59 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
 
     </div>
 
-      {/* the piece, large: a sibling of the scene, clear of its lift transform */}
+      {/* the piece, large: a sibling of the scene, clear of its lift
+          transform. Arrows and the keyboard walk the hung pieces, dots
+          below show how many and which (Margaret, 2026-11-03) */}
       <AnimatePresence>
         {open && (
           <motion.div
             className="fixed inset-0 z-50 grid place-items-center bg-black/55 p-6"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
             onClick={() => setOpen(null)}
-            role="dialog" aria-modal="true" aria-label={open.alt || open.group}
+            role="dialog" aria-modal="true" aria-label={`${open.alt || open.group}, ${gallery.indexOf(open) + 1} of ${gallery.length}`}
           >
             <motion.div
               initial={reduce ? false : { scale: 0.92, y: 12 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, opacity: 0 }}
               transition={{ type: "spring", stiffness: 220, damping: 22 }}
-              className="max-h-[86vh] max-w-[92vw]"
-              style={{ aspectRatio: `${open.w} / ${open.h}`, width: `min(92vw, calc(86vh * ${open.w / open.h}))` }}
+              className="max-h-[80vh] max-w-[88vw]"
+              style={{ aspectRatio: `${open.w} / ${open.h}`, width: `min(88vw, calc(80vh * ${open.w / open.h}))` }}
             >
-              <Image src={open.src} alt={open.alt ?? ""} width={open.w} height={open.h} sizes="92vw" className="block h-full w-full rounded-[4px] object-contain shadow-[0_30px_80px_rgba(0,0,0,0.35)]" priority />
+              <motion.div key={open.src} className="h-full w-full" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.22 }}>
+                <Image src={open.src} alt={open.alt ?? ""} width={open.w} height={open.h} sizes="92vw" className="block h-full w-full rounded-[4px] object-contain shadow-[0_30px_80px_rgba(0,0,0,0.35)]" priority />
+              </motion.div>
             </motion.div>
+            {gallery.length > 1 && (
+              <>
+                {(["prev", "next"] as const).map((dir) => (
+                  <button
+                    key={dir}
+                    type="button"
+                    aria-label={dir === "prev" ? "Previous piece" : "Next piece"}
+                    onClick={(e) => { e.stopPropagation(); step(dir === "prev" ? -1 : 1); }}
+                    className={`absolute top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md transition-[background-color,transform] duration-200 hover:bg-white/25 active:scale-95 ${dir === "prev" ? "left-4 md:left-8" : "right-4 md:right-8"}`}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden style={{ transform: dir === "prev" ? "scaleX(-1)" : undefined }}>
+                      <path d="M6 3l6 6-6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                ))}
+                <div className="absolute inset-x-0 bottom-6 flex justify-center gap-[7px]" role="tablist" aria-label="Pieces">
+                  {gallery.map((it, i) => (
+                    <button
+                      key={it.src}
+                      type="button"
+                      role="tab"
+                      aria-selected={it === open}
+                      aria-label={`Piece ${i + 1}`}
+                      onClick={(e) => { e.stopPropagation(); setOpen(it); }}
+                      className="grid h-5 w-5 place-items-center"
+                    >
+                      <span className={`block h-[6px] rounded-full bg-white transition-[width,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${it === open ? "w-[18px] opacity-100" : "w-[6px] opacity-40 hover:opacity-70"}`} />
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

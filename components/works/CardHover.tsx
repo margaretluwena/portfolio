@@ -11,8 +11,8 @@ import { motion, useReducedMotion } from "motion/react";
   product's own motion:
 
     Mark      three iPhone screens (home, the library by category, the
-              library by book) rise from below the card's middle, fanned,
-              one after the other, and sink back when the pointer leaves.
+              library by book) rise from below the card's middle, upright
+              and side by side, one after the other, and sink back when the pointer leaves.
               At rest they sit entirely under the card's bottom edge
               (top: 100%, clipped), so nothing shows until the hover
               (Margaret, 2026-11-03). CSS only: `top` on group-hover with
@@ -42,9 +42,10 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 /* ---------- Mark: the screens rise ---------- */
 
 const PHONES = [
-  { src: "/images/mark/screen-home.png", cx: 36, rot: -8, delay: 0 },
-  { src: "/images/mark/screen-categories.png", cx: 50, rot: 0, delay: 70 },
-  { src: "/images/mark/screen-books.png", cx: 64, rot: 8, delay: 140 },
+  // upright, side by side with a sliver between (no tilt, no overlap: Margaret, 2026-11-03)
+  { src: "/images/mark/screen-home.png", cx: 31, delay: 0 },
+  { src: "/images/mark/screen-categories.png", cx: 50, delay: 70 },
+  { src: "/images/mark/screen-books.png", cx: 69, delay: 140 },
 ];
 
 export function MarkPhones({ hover }: { hover: boolean }) {
@@ -54,7 +55,7 @@ export function MarkPhones({ hover }: { hover: boolean }) {
         <div
           key={p.src}
           className={`absolute transition-[top] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${hover ? "top-[104%] group-hover:top-[22%]" : "top-[22%]"}`}
-          style={{ left: `${p.cx - 8.5}%`, width: "17%", aspectRatio: "284 / 617", transitionDelay: `${p.delay}ms`, rotate: `${p.rot}deg`, transformOrigin: "50% 100%" }}
+          style={{ left: `${p.cx - 8.5}%`, width: "17%", aspectRatio: "284 / 617", transitionDelay: `${p.delay}ms` }}
         >
           {/* the bezel and screen, as scripts/capture/mark/phone.html draws them */}
           <div className="absolute inset-0 rounded-[14%/6.5%] bg-[#0d0d0f] p-[2.5%] shadow-[0_18px_50px_rgba(0,0,0,0.18),0_2px_6px_rgba(0,0,0,0.12)]">
