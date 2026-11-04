@@ -44,9 +44,9 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const PHONES = [
   // upright, side by side with a sliver between (no tilt, no overlap: Margaret, 2026-11-03)
   // the middle one lands a little higher than its neighbours
-  { src: "/images/mark/screen-home.png", cx: 31, delay: 0, lift: "group-hover:top-[24%]", rest: "top-[24%]" },
-  { src: "/images/mark/screen-categories.png", cx: 50, delay: 70, lift: "group-hover:top-[19%]", rest: "top-[19%]" },
-  { src: "/images/mark/screen-books.png", cx: 69, delay: 140, lift: "group-hover:top-[24%]", rest: "top-[24%]" },
+  { src: "/images/mark/screen-home.png", cx: 31, delay: 0, lift: "group-hover:top-[20%]", rest: "top-[20%]" },
+  { src: "/images/mark/screen-categories.png", cx: 50, delay: 70, lift: "group-hover:top-[15%]", rest: "top-[15%]" },
+  { src: "/images/mark/screen-books.png", cx: 69, delay: 140, lift: "group-hover:top-[20%]", rest: "top-[20%]" },
 ];
 
 export function MarkPhones({ hover }: { hover: boolean }) {
@@ -56,7 +56,7 @@ export function MarkPhones({ hover }: { hover: boolean }) {
         <div
           key={p.src}
           className={`absolute transition-[top] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${hover ? `top-[104%] ${p.lift}` : p.rest}`}
-          style={{ left: `${p.cx - 8.5}%`, width: "17%", aspectRatio: "284 / 617", transitionDelay: `${p.delay}ms` }}
+          style={{ left: `${p.cx - 8.5}%`, width: "17%", aspectRatio: "284 / 617", transitionDelay: `${p.delay}ms`, opacity: 0.95 /* a touch lighter against the card (Margaret, 2026-11-03) */ }}
         >
           {/* the frame, drawn like the titanium phone: a thin graphite rim with
               a hairline highlight on its edge, a dark bezel inside it, and the
