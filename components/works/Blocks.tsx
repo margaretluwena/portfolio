@@ -154,7 +154,9 @@ const isPortrait = (media: Media) => {
 /* ---------- blocks ---------- */
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <h2 className="study-label">{children}</h2>;
+  /* a section's heading is a sentence that tells the story, set large in ink
+     (feedback, 2026-11-04: someone should get the project from the titles) */
+  return <h2 className="study-heading max-w-[28ch] text-ink">{children}</h2>;
 }
 
 function ContextBlock({ block }: { block: Extract<Block, { type: "context" }> }) {
@@ -455,7 +457,7 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
      words on the left; Margaret, 2026-11-02) */
   if (block.visualSide && visual) {
     return (
-      <section className="space-y-6">
+      <section className="space-y-8">
         <SectionLabel>{block.title}</SectionLabel>
         <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,34%)] md:items-start md:gap-10">
           <div className="space-y-6">
@@ -467,7 +469,7 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
     );
   }
   return (
-    <section className="space-y-6">
+    <section className="space-y-8">
       <SectionLabel>{block.title}</SectionLabel>
       {block.visualFirst && visual}
       {block.body?.map((para, i) => {
@@ -476,12 +478,17 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
         const after = block.visualAfter === i && visual ? <div className="pt-2 pb-8">{visual}</div> : null;
         /* a real box per paragraph (display: contents swallowed the section's
            vertical rhythm, so every gap collapsed; Margaret, 2026-10-29) */
+        /* the decision and the lesson are CALLOUT boxes in the study's accent
+           (feedback, 2026-11-04: turn key points into callouts) */
         return label ? (
-          <div key={i} className="space-y-6">
-            <div className="grid gap-2 border-t border-hairline pt-4 md:grid-cols-[120px_minmax(0,1fr)] md:gap-8">
-              <span className="text-label uppercase text-ink/50">{label.slice(0, -1)}</span>
-              <p className="study-body text-ink"><Marked text={text} /></p>
-            </div>
+          <div key={i} className="space-y-7">
+            <aside
+              className="rounded-[8px] border px-5 py-4 md:px-6 md:py-5"
+              style={{ background: "color-mix(in srgb, var(--study-blue) 6%, white)", borderColor: "color-mix(in srgb, var(--study-blue) 28%, transparent)" }}
+            >
+              <span className="text-label uppercase tracking-[0.06em] text-[var(--study-blue)]">{label.slice(0, -1)}</span>
+              <p className="study-body mt-2 font-medium text-ink"><Marked text={text} /></p>
+            </aside>
             {after}
           </div>
         ) : (
@@ -525,7 +532,7 @@ function StatsBlock({ block }: { block: Extract<Block, { type: "stats" }> }) {
     <ul className="grid gap-6 md:grid-cols-3 md:gap-8">
       {block.items.map((it) => (
         <li key={it.label} className="space-y-1 border-t border-hairline pt-3">
-          <div className="study-body font-medium text-ink">
+          <div className="text-[clamp(24px,2vw,36px)] font-medium leading-none tracking-[-0.015em] text-ink">
             {it.href ? (
               <a href={it.href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink">{it.value}</a>
             ) : it.value}
@@ -608,7 +615,7 @@ function WipBlock({ block }: { block: Extract<Block, { type: "wip" }> }) {
 
 export function Blocks({ work }: { work: Work }) {
   return (
-    <div className="space-y-[10vh]">
+    <div className="space-y-[14vh]">
       {visibleBlocks(work).map((b, i) => {
         const id = `block-${i}-${b.type}`;
         switch (b.type) {

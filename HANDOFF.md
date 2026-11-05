@@ -37,7 +37,7 @@ in copy or code comments**, the build fails on them.
 | Work cards: text title (no SVG lockups on cards), a `signal` pill ("Raised $3M+", "Audience Choice winner", ...), description slides in on hover; parked cards are inert. Hover SCENES (2026-11-03, `components/works/CardHover.tsx`): Mark's three iPhone screens (home, library by category, library by book) rise from under the card's middle, upright and side by side, the middle one landing a little higher (15% vs 20% from the top), at 95% opacity, parked at top: 104% at rest so nothing shows (CSS, group-hover); the frames are drawn in CSS as titanium phones (a graphite rim with a hairline highlight, a dark bezel, the island, side buttons, a low soft shadow); Traeco's dashboard opens as the product does (stat cards rebuilt in HTML at the capture's 3172x1960 pixel coordinates, scaled to the layer: count-ups, the budget meter, the savings figure, the "where it went" bars); Prosaic's chart bars grow up (paper curtains over the capture's bars shrinking to the top). `play` counts the hovers and replays. Reduced motion: at rest | `components/works/WorkList.tsx`, `CardHover.tsx`, `lib/works.ts` |
 | Case-study template: 56.4vw column; hero rises in (no card morph, no overlay route); blocks context / brief / problem / solution (pieces may carry a `gallery` row) / artifactGrid / lessons; landscape images fill the column flush left, tall ones sit beside their text flush right; Previous / Next walk the open studies; no footer | `components/works/CaseStudyContent.tsx`, `Blocks.tsx`, `app/works/[slug]/page.tsx` |
 | ASCII minimap (studies, md+): left gutter; track of 9px cells, sections fanned evenly down it, lens paced by section length on a spring, nearly flat between headers and swelling five wide on one, dithered ends; names beside it at the rail's spacing, active one slides right and turns ink; Return above; up-arrow pill below; native scrollbar hidden on studies | `components/works/AsciiScrollbar.tsx`, `Blocks.tsx` (SectionRail = Return only + phone Return pill), `app/globals.css` (`html.study-scroll`) |
-| Study type scale: body 16-22px, labels 15-22px medium in the project accent, headline 22-36px | `app/globals.css` (`.study-*`) |
+| Study type scale (2026-11-04, on feedback: titles bigger, body smaller, more air): title 30-52px, section headings 24-40px medium ink (`.study-heading`, each a sentence that tells the story), labels 13-16px in the project accent (credits), body 15-18px at 1.55; sections 14vh apart. "Decision:" and "What I learned:" paragraphs render as CALLOUT boxes tinted with the accent | `app/globals.css` (`.study-*`), `components/works/Blocks.tsx` |
 | Works data: slugs, credits, `signal`, blocks, cover art geometry (`rotate` / `crop`), `hero`, `accent`; `comingSoon` parks a work (redirects home, card inert) | `lib/works.ts` |
 | Image pixel sizes for true-aspect rendering | `lib/image-sizes.json` - regenerate with `npm run images` after adding images (macOS `sips`) |
 | Sky Field: Margaret's ASCII sky + fetch game. Added: pointer rain (over real cloud only, ~25deg to the left, sprouts flowers on all three hills where it lands), `onHover` / `onAction` hooks, speech bubble in characters beside the mouth on the side the dog faces, "throw the ball please!" after ~5s with no throw, the dog returns the ball to the LEFT (`ballX`), announces the running player total | `components/sky-field/sky-field.js` (engine), `SkyFrame.tsx` (dials, bubble lines, visit-scoped hints), `SkyFieldBackground.tsx` |
@@ -75,7 +75,22 @@ in copy or code comments**, the build fails on them.
   yellow) plus Merch; the share piece carries a `gallery` of the three
   share styles. Don't put those images back in the artifact grid.
 
-## Case-study copy: the Google Doc leads (2026-11-02)
+## Case-study copy: the Google Doc leads (2026-11-02), the site shows a CUT of it (2026-11-04)
+
+On 2026-11-04 feedback ("replace Setup and Problem with headline phrases
+that tell the story; make the titles bigger, the body smaller, open the
+spacing; cut paragraphs, turn key points into callouts; focus each study
+on one highlight and save the full process for presentations") the four
+studies in `lib/works.ts` were cut to one highlight each: Mark the share
+cards, Traeco the recommendations that show quality holds, Atlix the
+card that answers four questions, Prosaic the use case before the
+ranking. Every section heading is now a sentence. The dropped sections
+(Mark's library exploration, Traeco's two-lines setup and early
+dashboards and "Building it myself", Atlix's separate research section,
+Prosaic's build checks, three page-type sections and "Why it matters")
+are in git before commit "Case studies: ..." of that day, and the Google
+Doc still holds the full process for presentations.
+
 
 Margaret's "Case Studies" Google Doc (Mark, Traeco, Atlix, Prosaic
 Intelligence) is the canonical copy; the four studies in `lib/works.ts`
