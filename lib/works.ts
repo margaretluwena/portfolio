@@ -193,18 +193,18 @@ export const works: Work[] = [
       },
     ],
     blocks: [
-      /* Cut to one highlight, the share cards (feedback, 2026-11-04: focus
-         each study on one highlight, cut paragraphs, titles that tell the
-         story). The library exploration (three early structures, the two
-         tabs that shipped) came out; it is in git before this commit. */
+      /* every section heading is a sentence that tells the story (feedback, 2026-11-04); the full process stays on the page (Margaret, 2026-11-05: the one-highlight cut was reversed for now) */
       {
         type: "essay",
         title: "A bookmark that saves every line you underline",
         rail: "Setup",
         body: [
-          "Mark's bookmark saves a line the moment you underline it, and the app holds what it saves. I joined Eason Tang's team through TroyLabs' BUILD program as one of the first product designers, for eight weeks in fall 2025, and designed the library and the share cards.",
+          "Mark's bookmark saves a line the moment you underline it, and the app holds what it saves. Eason Tang built it through TroyLabs' BUILD program, and I joined as one of the first product designers for eight weeks in fall 2025. I explored how the app should hold notes and books, then designed the share cards that carry a line from the page to someone's feed.",
+          "The screen that mattered most was the one that leaves the app. A line only brings in new readers if someone is proud to post it.",
+          /* the raise and the TIME listing are Mark's own announcements on x.com/thinkwithmark (links from Margaret, 2026-11-02) */
           "Mark is at [thinkwithmark.com](https://www.thinkwithmark.com), and [TIME named it one of the Best Inventions of 2026](https://x.com/thinkwithmark/status/2110796538045931919).",
         ],
+        /* the shipped screens in one phone beside the words (scripts/capture/mark/phone.html, 2026-11-02) */
         visual: { kind: "video", src: "/videos/mark/phone.mp4", poster: "/images/mark/posters/phone.jpg", aspect: "420 / 760", caption: "The app as it shipped: home, the library, a note, and the three share cards." },
         visualSide: true,
       },
@@ -221,19 +221,55 @@ export const works: Work[] = [
         title: "A saved line only mattered to the person who saved it",
         rail: "Problem",
         body: [
-          "Capture was already solved. Eason wanted reading to feel as shareable as Spotify Wrapped, which left two questions: how to get readers back to their lines, and how to get anyone else to care about them.",
+          "Mark's bookmark saves a line the moment you underline it, so capture was already solved. The harder part was what came next: a saved line only mattered to the person who saved it, and Eason wanted reading to feel as shareable as Spotify Wrapped. That left the app with two questions, how to get readers coming back to their lines and how to get anyone else to care about them.",
         ],
+        /* her screenshot of the Figma reference board (2026-11-02): camera rolls of underlined pages, library cards, shelves */
         visual: { kind: "image", media: { src: "/images/mark/reference-board.webp", alt: "The reference board: photos of underlined pages and book dedications saved to camera rolls, library cards, and shelves" }, caption: "How people kept lines before Mark: a camera roll of underlined pages." },
       },
       {
         type: "essay",
-        title: "Nobody posts something that looks like a screenshot",
-        rail: "Share cards",
+        title: "The library is organised the way people actually read",
+        rail: "Decisions",
         body: [
-          "A quote means little to someone who hasn't read the book. I started on paper: stats to scroll through, a library card with a tassel, a quote card you could edit before posting. The first passes put the quote on plain paper, then on the book's cover, and every time the cards got quieter they got more forgettable.",
-          "Decision: Bold and Wrapped-style, in three styles for the ways you'd write a thought down: a letter to someone, a postcard, a sticky note.",
-          "What I learned: Restraint isn't always good taste. A card has to be worth being seen with, so personality beat polish.",
+          "Mark had books, highlights and handwritten notes, which is more than most reading apps hold, so I spent the first few weeks trying different ways to structure them. The first was close to a bookshelf, your books on shelves the way they sit at home. It looked the part, and that was the problem: it was stylised in a way nothing else in the app was, it added friction, and Eason didn't like it. The second was simpler, bento-style library cards that put the book itself first, and that is where most of the iterating happened.",
+          "Decision: Any line can be found by book, by category or by the note written beside it, and every line stays with its note so you remember why it mattered.",
+          "What I learned: I couldn't find the right structure on paper. It only became obvious once I put it into action and started designing and building.",
         ],
+        /* three of the V3.2 library structures (a Recent card over a category grid, a category as a list, a bare grid), then the two tabs that shipped in Demo V3.3 */
+        visual: {
+          kind: "gallery",
+          groups: [
+            {
+              label: "",
+              muted: true,
+              media: [
+                { src: "/images/mark/explore-library-recent.png", alt: "An early Notes screen: the latest line, then a grid of categories" },
+                { src: "/images/mark/explore-library-category.png", alt: "An early structure: one category opened as a list of lines" },
+                { src: "/images/mark/explore-library-grid.png", alt: "An early structure: categories as a bare grid of cards" },
+              ],
+            },
+            {
+              label: "",
+              media: [
+                { src: "/images/mark/library-categories.png", alt: "The library that shipped: Recent, Categories and Books tabs, categories as covers" },
+                { src: "/images/mark/library-books.png", alt: "The library that shipped: the Books tab, every line filed under its book" },
+              ],
+            },
+          ],
+          caption: "Three structures that didn't ship, and the Categories and Books tabs that did.",
+        },
+      },
+      {
+        type: "essay",
+        title: "Nobody posts something that looks like a screenshot",
+        rail: null,
+        body: [
+          "A quote means very little to someone who hasn't read the book, and nobody posts something that looks like a screenshot. I started on paper, sketching what a share could even be: stats to scroll through and pick from, a library card with a tassel, a quote card you could edit before posting.",
+          "The first passes put the quote on plain paper, then on the book's cover. Every time I made the cards quieter, they got more forgettable.",
+          "Decision: I went bold and Wrapped-style, and curated three styles for the different ways you'd write a thought down: a letter to someone, a postcard, a sticky note. I had fun with this.",
+          "What I learned: Restraint isn't always good taste; a card has to be worth being seen with, so personality beat polish.",
+        ],
+        /* the sketches sit with the paragraph that introduces them; the cards, early to shipped, close the section */
         visual: { kind: "image", media: { src: "/images/mark/share-sketches.png", alt: "Hand-drawn share explorations: stat cards to scroll through, a library card with a tassel, a share quote with tap to edit" }, caption: "The share sketches: stats to pick from, a library card, and the quote card that became the three styles." },
         visualAfter: 0,
         extraVisual: {
@@ -261,6 +297,7 @@ export const works: Work[] = [
           { num: "02", title: "Note detail", body: "The line next to what you thought about it." },
           { num: "03", title: "Share", body: "Pick a style and post." },
         ],
+        /* the swipe: the Figma screens in an iPhone, sliding from the library to the share cards and through their iterations (scripts/capture/mark, 2026-11-02) */
         visual: { kind: "video", src: "/videos/mark/swipe.mp4", poster: "/images/mark/posters/swipe.jpg", aspect: "1128 / 700", caption: "From the library to a finished share card: the letter, the postcard, the sticky note." },
         visualFirst: true,
       },
@@ -289,7 +326,7 @@ export const works: Work[] = [
         type: "essay",
         title: "Next time, real readers sooner",
         rail: "Looking back",
-        body: ["Most of my assumptions came from my own reading, and I'm not the only user of this product. Putting the screens in front of readers early would have let me iterate faster and land sooner."],
+        body: ["I'd spend much more time testing these screens in front of real readers. A lot of my assumptions came from my own reading, and I'm not the only user of this product. Putting it in front of people would have let me iterate much faster and reach a final product much sooner."],
       },
     ],
   },
@@ -353,21 +390,16 @@ export const works: Work[] = [
        recorded product footage (scripts/capture/capture.ts) and three coded
        animations (components/works/motion). */
     blocks: [
-      /* Cut to one highlight, recommendations that show quality holds
-         (feedback, 2026-11-04). The two-lines setup animation, the early
-         dashboards gallery and "Building it myself" came out; in git before
-         this commit. */
+      /* every section heading is a sentence that tells the story (feedback, 2026-11-04); the full process stays on the page (Margaret, 2026-11-05: the one-highlight cut was reversed for now) */
       {
         type: "essay",
         title: "Teams could see what their agents cost. Nothing told them what to change.",
         rail: "Setup",
         body: [
-          "Traeco shows teams what their AI agents cost and recommends how to spend less without the agents getting worse. I was cofounder and CPO with Mehek Mandal, Kyna Rochlani and Sania Gupta, and as the only designer I designed and built the product, the design system and the website, and shipped all of it to production.",
-          "We found the idea when our own agents started costing more every week. Fifty-plus calls across eleven industries narrowed to teams running agents, who all said the same thing: not urgent yet, but it will be. It isn't only startups; Uber [exhausted its entire 2026 AI coding budget by April](https://finance.yahoo.com/markets/stocks/articles/uber-stock-drops-reportedly-caps-190100595.html).",
+          "Traeco is a dashboard that shows teams what their AI agents cost and recommends how to spend less without the agents getting worse. I was cofounder and CPO with Mehek Mandal, Kyna Rochlani and Sania Gupta, and as the only designer I designed and built the product, the design system and the website, and shipped all of it to production.",
+          "Showing teams what they could save was easy. Getting them to act meant proving their agents wouldn't get worse.",
         ],
         visual: { kind: "video", src: "/videos/traeco/hero.mp4", poster: "/images/traeco/posters/hero.jpg", aspect: "1440 / 900", caption: "The dashboard home: savings available, then the top recommendations." },
-        visualAfter: 0,
-        extraVisual: { kind: "animation", name: "research-funnel", caption: "Fifty-plus calls across eleven industries, narrowing to agentic AI." },
       },
       {
         type: "stats",
@@ -379,24 +411,60 @@ export const works: Work[] = [
       },
       {
         type: "essay",
-        title: "Nobody acts on a recommendation they don't trust",
-        rail: "Recommendations",
+        title: "Everyone knew it would be urgent. Nobody was in pain yet.",
+        rail: "Problem",
         body: [
-          "Recommendations set us apart, and they made people nervous: if a cheaper setup made an agent worse, that was on us. So we tracked quality on every agent and tested each change on a slice of live traffic before it rolled out.",
-          "Decision: Each recommendation shows cost, quality and confidence side by side, and a team can try it on part of the traffic before switching fully. Quality next to cost is what took the hesitation out of our first users and partners.",
-          "What I learned: A recommendation is only as useful as people's trust in it.",
+          "We were 50+ calls into looking for a startup idea across 11 industries when our own AI agents started costing us more every week. We narrowed the rest of our research to teams using agents and kept hearing the same thing: it wasn't urgent yet, but everyone knew it would be. Plenty of tools showed what agents had spent, but almost none we found told you what to change.",
+          /* the public proof the doc asks for, with its source (re-verified 2026-10-29: Uber's cap as reported in April 2026) */
+          "It isn't only startups. Uber [exhausted its entire 2026 AI coding budget by April](https://finance.yahoo.com/markets/stocks/articles/uber-stock-drops-reportedly-caps-190100595.html) and now caps engineers at $1,500 a month per tool.",
         ],
-        visual: { kind: "video", src: "/videos/traeco/recommendations.mp4", poster: "/images/traeco/posters/recommendations.jpg", caption: "Open a recommendation to see what it saves, what it does to quality and how sure the judge is, then try it on part of the traffic." },
+        visual: { kind: "animation", name: "research-funnel", caption: "Fifty-plus calls across eleven industries, narrowing to agentic AI." },
+        visualAfter: 0,
+      },
+      {
+        type: "essay",
+        title: "Setup takes two lines of code",
+        rail: "Decisions",
+        body: [
+          "Since nobody was in pain yet, nobody would sit through a long setup.",
+          /* verified in the repo (2026-11-02): traeco.init() and traeco.wrap() are the whole integration; the dashboard's hero eyebrow reads "Savings available" whenever there are savings */
+          "Decision: The integration is two lines of code, and savings available sits at the top of the dashboard, so the first thing a team sees is money they can get back instead of a bill.",
+          "What I learned: When a problem isn't urgent yet, every setup step is a reason to say no.",
+        ],
+        visual: { kind: "animation", name: "integration-snippet", caption: "Add two lines around an existing client and the first dashboard view fills in from the traces." },
       },
       {
         type: "essay",
         title: "The home screen only shows what people would pay for",
-        rail: "Home",
+        rail: null,
         body: [
-          "I sorted everything from the calls into two lists, what makes the product usable and what makes it worth paying for, and the second list is the home screen: savings available, the top recommendations, where the spend went. Everything else is one click deeper, and setup is two lines of code.",
+          "I sorted everything from the calls into two lists, what makes the product usable and what makes it worth paying for. The early versions led with a sentence about last month's spend and three recommendation cards, first under the Slash name in orange, then as Traeco in green, with the spend breakdown and the at-a-glance numbers stacked below.",
+          "Decision: Home shows savings, top recommendations and a spend breakdown, and everything else is one click deeper.",
           "What I learned: The list of what people would pay for is always shorter, and it makes the better product.",
         ],
-        visual: { kind: "animation", name: "before-after", caption: "Drag to compare my first iteration with the most recent one." },
+        /* the two early dashboards from the Traeco Revamp file's "dashboard old" section (exported 2026-11-02), then the slider */
+        visual: {
+          kind: "gallery",
+          media: [
+            { src: "/images/traeco/dashboard-v1-slash.png", alt: "The first dashboard, under the Slash name: you spent, you could save, three recommendation cards, a weekly bar chart, and the at-a-glance tiles" },
+            { src: "/images/traeco/dashboard-v2-first-traeco.png", alt: "The first Traeco dashboard: the same structure in the green, with the spend breakdown by team member" },
+          ],
+          caption: "The early versions: Slash, then the first Traeco.",
+        },
+        visualAfter: 0,
+        extraVisual: { kind: "animation", name: "before-after", caption: "Drag to compare my first iteration with the most recent one." },
+      },
+      {
+        type: "essay",
+        title: "Nobody acts on a recommendation they don't trust",
+        rail: null,
+        body: [
+          /* the testing line is drafted from the repo's own record (the SDK's shadow evaluation, AUDIT.md trace 3): a slice of live calls re-run against the candidate model, three judge votes with randomised order, numbers only */
+          "Recommendations were what set us apart, and they also made people nervous; if a cheaper setup made an agent worse, that was on us. So we tracked quality on every agent and tested each change before it rolled out.",
+          "Decision: Each recommendation shows cost, quality and confidence side by side, and teams can try it on a small share of traffic before switching fully. Quality next to cost is what removed much of the stigma and the early hesitation from the first users and partners we worked with.",
+          "What I learned: A recommendation is only as useful as people's trust in it.",
+        ],
+        visual: { kind: "video", src: "/videos/traeco/recommendations.mp4", poster: "/images/traeco/posters/recommendations.jpg", caption: "Open a recommendation to see what it saves, what it does to quality and how sure the judge is, then try it on part of the traffic." },
       },
       {
         type: "essay",
@@ -406,9 +474,19 @@ export const works: Work[] = [
           { num: "01", title: "Home", body: "Savings, top recommendations and spend." },
           { num: "02", title: "Recommendations", body: "Cost, quality and confidence, with the option to test before committing." },
           { num: "03", title: "Agent detail", body: "Six weeks of quality history for each agent." },
+          /* what the repo has (checked 2026-10-29): per-agent budgets on the API, defaults of a 2% judge-preference drop, 2% faithfulness drop, zero structure drop and 200ms of p95 latency, alert-only on breach; no settings screen yet */
           { num: "04", title: "Quality budgets", body: "Limits a team sets once on how far quality may slip, and the product holds every change to them. Set through the API today; the settings screen is next." },
         ],
         visual: { kind: "video", src: "/videos/traeco/drilldown.mp4", poster: "/images/traeco/posters/drilldown.jpg", caption: "Drilling from a recommendation into one agent's six-week quality history." },
+      },
+      {
+        type: "essay",
+        title: "The first product I built from scratch and shipped",
+        rail: "In code",
+        body: [
+          "Traeco was the first product I built from scratch and shipped, and my first time using Claude Code. Seeing real data in it showed me quickly what was feasible and what only worked in Figma, and every component had to hold up for one agent or hundreds.",
+          "It made me realise that the best designers know how to properly integrate AI into their workflow. Once I got comfortable, I was shipping ten times as much, exploring edge cases, changing and iterating faster than ever, and I had to teach myself how to scale, which I never really knew how to do before.",
+        ],
       },
       {
         type: "also",
@@ -435,9 +513,7 @@ export const works: Work[] = [
         type: "essay",
         title: "I wish we had found this idea sooner",
         rail: "Looking back",
-        body: [
-          "Traeco was the first product I built from scratch and shipped, and my first time designing in code with Claude Code; once I got comfortable I was shipping ten times as much. I enjoyed the earlier explorations and the industries they took us through, but getting here sooner would have let me sit with the product and flesh it out properly.",
-        ],
+        body: ["I wish we had spent more time on this one idea. I enjoyed the earlier explorations and the industries they took us through, chip manufacturing for startups among them, but getting here sooner would have let me sit with the product and flesh it out properly."],
       },
     ],
   },
@@ -492,21 +568,22 @@ export const works: Work[] = [
       },
     ],
     blocks: [
-      /* Cut to one highlight, the card that answers four questions (feedback,
-         2026-11-04). The separate "summaries first" section folded into it;
-         in git before this commit. */
+      /* every section heading is a sentence that tells the story (feedback, 2026-11-04); the full process stays on the page (Margaret, 2026-11-05: the one-highlight cut was reversed for now) */
       {
         type: "essay",
-        title: "By the time a report lands, the conversation has moved on",
+        title: "Researchers already had more information than they could read",
         rail: "Setup",
         body: [
-          "Atlix shows what young Californians are saying about politics online, in real time, for advocacy groups and policy researchers. I researched how policy teams work, then designed the dashboard, brand and pitch deck, as cofounder and design lead in 2026 with David Han, Vishnu Kadaba, Kirti Subramanian and Eric Ye.",
-          "Local politicians told us the hard part is pulling data from everywhere into something they can act on, and that by the time a poll or report comes out, young people's conversation has moved on. We came out of the final in Seoul as finalists, with design partners in Taiwan and the Government of Telangana.",
+          "Atlix is a dashboard that shows what young Californians are saying about politics online, in real time, for advocacy groups and policy researchers. I researched how policy teams work, then designed the dashboard, brand and pitch deck, as cofounder and design lead in 2026 with David Han, Vishnu Kadaba, Kirti Subramanian and Eric Ye.",
+          "Researchers already had more information than they could read, so most of the design work was deciding what to leave out.",
+          "We came out of the final in Seoul as finalists, with design partners in Taiwan and the Government of Telangana.",
         ],
-        visual: { kind: "animation", name: "report-vs-live", caption: "A report lands months after its fieldwork. The card keeps moving." },
+        visual: { kind: "image", media: { src: "/images/atlix/dashboard.png", alt: "The Atlix dashboard: filters on the left, a sort row, and a grid of narrative cards" }, caption: "The dashboard card grid." },
+        visualAfter: 1,
       },
       {
         type: "stats",
+        /* Margaret, 2026-11-02: the field and the standing, in her words */
         items: [
           { value: "Finalist", label: "Global Student Startup Competition, Seoul" },
           { value: "100+ teams", label: "from around the world, Harvard, Stanford and Cornell among them" },
@@ -515,16 +592,35 @@ export const works: Work[] = [
       },
       {
         type: "essay",
-        title: "Each card answers four questions, and shows its source",
-        rail: "Cards",
+        title: "By the time a report lands, the conversation has moved on",
+        rail: "Problem",
         body: [
-          "Before opening Figma I spent weeks reading the reports policy teams already use and talking to researchers. They didn't want another data tool to dig through; they wanted summaries they could trust. My first version still had filters everywhere and charts on charts, and researchers couldn't tell what it was saying in the first few seconds.",
-          "Decision: Every card states one narrative in plain words and answers four things only: the topic, where it's happening, how fast it's growing and who's talking, with its sources one click away.",
-          "What I learned: Cutting felt like losing something, but every field I removed made the grid look more sure of itself.",
+          "The competition asked teams to empower the next generation through social media, so we chose youth political engagement and tested the idea with local politicians first. What they told us was that the hard part is pulling data from everywhere and aggregating it into something they can act on. The other gap was timing; by the time a poll or report comes out, young people's conversation has already moved on.",
+        ],
+        visual: { kind: "animation", name: "report-vs-live", caption: "A report lands months after its fieldwork. The card keeps moving." },
+      },
+      {
+        type: "essay",
+        title: "Summaries come first, with the source always visible",
+        rail: "Decisions",
+        body: [
+          "Before opening Figma, I spent weeks reading the reports policy teams already use and talking to researchers and advocacy groups. They didn't want another data tool to dig through; they wanted summaries they could trust.",
+          "Decision: Every card states one narrative in plain words and shows its source, so a researcher can check it in one click.",
+          "What I learned: Research isn't a checkbox; every conversation made half the decisions for me.",
         ],
         visual: { kind: "image", media: { src: "/images/atlix/card-close-framed.png", alt: "One Atlix card, set on a grey from the palette: the narrative, its sentiment split, who is talking, and the sources it came from" }, caption: "One card: the narrative in plain words, its sentiment, who's talking, and the sources one click away." },
-        visualAfter: 0,
-        extraVisual: {
+      },
+      {
+        type: "essay",
+        title: "Each card answers four questions",
+        rail: null,
+        body: [
+          "My first version had filters everywhere and charts on charts, and researchers couldn't tell what it was saying in the first few seconds.",
+          "Decision: Each card answers four things only: the topic, where it's happening, how fast it's growing and who's talking.",
+          "What I learned: Cutting felt like losing something, but every field I removed made the grid look more sure of itself.",
+        ],
+        /* the first version rebuilt from her description (scripts/capture/atlix/busy.html), greying as it scrolls in, beside the final grid */
+        visual: {
           kind: "gallery",
           groups: [
             { label: "", muted: true, media: [{ src: "/images/atlix/dashboard-busy.png", alt: "The busy first version: filters down the left, a row of six numbers, three charts, and cards crowded with tags, sparklines and meters" }] },
@@ -542,6 +638,7 @@ export const works: Work[] = [
           { num: "02", title: "Sorting", body: "Most pressing, volume, or fastest growing." },
           { num: "03", title: "Cards", body: "One narrative each, with its source." },
         ],
+        /* the product demo from the atlix-landing repo (public/atlixdemo.mp4, 32s, 1872x1080 at 60fps, 15MB), re-encoded to 1440 wide, 30fps, 1.9MB (2026-11-02) */
         visual: { kind: "video", src: "/videos/atlix/demo.mp4", poster: "/images/atlix/posters/demo.jpg", aspect: "1440 / 830", caption: "The demo: the feed, filtering by region and issue, and a narrative opened to its sources." },
       },
       {
@@ -560,6 +657,7 @@ export const works: Work[] = [
           {
             name: "Design system",
             line: "Ink, card and line, one amber, Inter with a mono for the data.",
+            /* rendered from the product's own tokens (scripts/capture/atlix/brand.html, 2026-11-02) */
             media: { src: "/images/atlix/brand-sheet.png", alt: "The Atlix brand sheet: the wordmark, six swatches, Inter and a mono, the pills and source tags" },
           },
         ],
@@ -568,7 +666,7 @@ export const works: Work[] = [
         type: "essay",
         title: "We went after the big names first",
         rail: "Looking back",
-        body: ["Our design partners in Taiwan and Telangana were big names, but we would have made far more of an impact working with as many small politicians as we could and iterating on the product with them before going for the big ones."],
+        body: ["One of the first pieces of feedback we got was that we were frying fish too large. Our design partners in Taiwan and Telangana were big names, but we would have made far more of an impact by working with as many small politicians as we could and iterating on the product with them before going for the big ones."],
       },
     ],
   },
@@ -630,20 +728,17 @@ export const works: Work[] = [
     comingSoon: false, // unparked 2026-11-02 so Margaret can read the draft on the site; the site itself stays unlinked
     accent: "#2f6fbf", // the index's signal blue, the one pressable colour on the site
     blocks: [
-      /* Cut to one highlight, the use case before the ranking (feedback,
-         2026-11-04). The build checks, the three page-type sections, Why
-         it matters and their visuals folded into one What shipped list;
-         in git before this commit. */
+      /* every section heading is a sentence that tells the story (feedback, 2026-11-04); the full process stays on the page (Margaret, 2026-11-05: the one-highlight cut was reversed for now) */
       {
         type: "essay",
         title: "There is no single safest AI",
         rail: "Setup",
         body: [
           "Prosaic Intelligence is a public index that scores how safely popular AI products behave on the risks everyday users face. I designed and built the site, including the brand, charts, motion and every page type, in three days with Claude Code, in September 2026, with Anantika Mannby, Harsh Patel and Keegan Wang.",
-          "[About two billion people use AI](https://menlovc.com/perspective/2026-the-state-of-consumer-ai/) for homework, health, money and relationships, and OpenAI has said [around 1.2 million people a week](https://decrypt.co/346513/openai-reveals-1-million-chatgpt-users-discuss-suicide-weekly) show signs of suicidal intent in ChatGPT conversations. Researchers test for these risks, but the results sit in papers most people will never read. Anantika had collected them and wanted one independent place to compare them, by Sunday.",
+          "There's no single safest AI, only the one that's safest for what you care about, so every page helps you ask your own question before it gives you an answer.",
         ],
         visual: { kind: "video", src: "/videos/prosaic/home.mp4", poster: "/images/prosaic/posters/home.jpg", aspect: "1128 / 700", caption: "The index, top to bottom: the beads lean toward the pointer, the bars answer it, the seven risk charts ripple, down to the foot of the page." },
-        visualAfter: 0,
+        visualAfter: 1,
       },
       {
         type: "stats",
@@ -655,21 +750,35 @@ export const works: Work[] = [
       },
       {
         type: "essay",
-        title: "Finish the sentence, and the ranking reorders around you",
-        rail: "Use case",
+        title: "Two billion people use AI, and the safety results sit in papers",
+        rail: "Problem",
         body: [
-          "A single safest-AI ranking is misleading, because a model can score well overall and still fail badly in one area.",
-          "Decision: The page opens with a sentence to finish, Which AI is safest for, with options like long conversations or someone having a hard time, and the sixteen bars re-rank around your answer.",
+          "[About two billion people use AI](https://menlovc.com/perspective/2026-the-state-of-consumer-ai/) for homework, health, money and relationships, so even a tiny failure rate reaches millions of people; OpenAI has said [around 1.2 million people a week](https://decrypt.co/346513/openai-reveals-1-million-chatgpt-users-discuss-suicide-weekly) show signs of suicidal intent in ChatGPT conversations. Researchers already test for these risks, but the results sit in papers most people will never read, and the labs mostly grade their own work.",
+          "Anantika had collected those published results and wanted one independent place where anyone could compare them. She needed it by Sunday, and since the site names real companies, every number had to hold up.",
+        ],
+        visual: { kind: "image", media: { src: "/images/prosaic/brief-sketch.jpg", alt: "Anantika's pencil sketch of the page: which AI is safest for, a dropdown that changes the graph, a why card, and six to eight graphs" }, caption: "Anantika's sketch: the question, a dropdown that changes the graph, why, and six to eight graphs below." },
+        visualSide: true,
+        /* illustrative rows in the shape of published results, beside the index view (scripts/capture/prosaic/translate.html) */
+        extraVisual: { kind: "image", media: { src: "/images/prosaic/translate.png", alt: "A raw table of published benchmark results, each on its own scale, beside the index view that puts them on one scale" }, caption: "What the site translates: published results, each on its own scale, into one chart. Illustrative rows." },
+      },
+      {
+        type: "essay",
+        title: "Readers pick their use case before they see a ranking",
+        rail: "Decisions",
+        body: [
+          "A single safest AI ranking is misleading, because a model can score well overall and still fail badly in one area.",
+          "Decision: The page opens with a sentence to finish, Which AI is safest for, with options like long conversations or someone having a hard time, and the ranking reorders around your answer.",
           "What I learned: A ranking without a use case is a number without meaning.",
         ],
         visual: { kind: "video", src: "/videos/prosaic/use-case.mp4", poster: "/images/prosaic/posters/use-case.jpg", aspect: "1128 / 700", caption: "Hover a bar for its readout, then finish the sentence and the sixteen re-rank: someone having a hard time, looking things up, everyday advice." },
       },
       {
         type: "essay",
-        title: "An abacus, not a dashboard",
-        rail: "Abacus",
+        title: "The site feels like a measuring tool, not an app",
+        rail: null,
         body: [
-          "Safety data about real companies has to feel precise, and the founder wanted something people would talk about. So the design is built around an abacus: beads carry the navigation and move with your cursor or the tilt of your phone, and each bar shows how far a product is from a perfect score, not just its rank. Seeing the movement come true on the first test was the best part of the three days.",
+          "The founder wanted something people would talk about, but safety data about real companies also needs to feel precise.",
+          "Decision: I built the design around an abacus; beads carry the navigation and move with your cursor or the tilt of your phone, and each bar shows how far a product is from a perfect score, not just its rank. The moment I'm proudest of is the first test. I had the movement in my head from the start, and seeing it come true, dynamic and fun to play with, was the best part of the three days.",
           "What I learned: A tech product can still feel human, as long as the playful parts never get in the way of the data.",
         ],
         visual: { kind: "image", media: { src: "/images/prosaic/chart-card.png", alt: "The general-use chart: sixteen bars, the headroom to 100 in each one's own tint, and the index average" }, caption: "The index chart: sixteen bars, the headroom to 100 in each one's own tint, and one line for the average." },
@@ -677,17 +786,65 @@ export const works: Work[] = [
       },
       {
         type: "essay",
+        title: "The build checks every number",
+        rail: null,
+        body: [
+          "Every score had to trace back to a source and every page had to work on a phone, with one person building in three days.",
+          "Decision: I designed directly in code and set the build to fail if any data was wrong or any colour failed contrast, so I could move fast without publishing a mistake. What I noticed once real screens existed is, for one, that it is hard. This is a good example of designing for something with this much data, and of how to package that data so it is digestible for the average consumer.",
+          "What I learned: Automatic checks are what make a tight deadline safe.",
+        ],
+        visual: { kind: "image", media: { src: "/images/prosaic/weights-view.png", alt: "The methodology's weighting section: the heading, the explanation, and the table of each use case's share across the seven risk categories" }, caption: "The weights behind every use case, published on the methodology page. General use weights all seven equally." },
+      },
+      {
+        type: "essay",
         title: "Every page answers the next question",
         rail: "Pages",
         body: [
-          "Readers arrive with one question and leave with three: which AI is safest, why, and what about the one I use. Each page type answers the next one in that chain, and the build fails if any number or any colour's contrast is wrong, so nothing ships by mistake.",
+          "Most readers arrive with one question and leave with three: which AI is safest, why, and what about the one I use. I designed each page type to answer the next question in that chain.",
         ],
-        items: [
-          { num: "01", title: "Risk pages", body: "Seven risks, each from its score to the evidence: the chart, the benchmarks and their weights, real conversations, and the limits stated plainly." },
-          { num: "02", title: "Company pages", body: "Is the AI I use safe? One bar per risk for each of a maker's models, so the weak category stands out." },
-          { num: "03", title: "Methodology", body: "Where the data comes from, how scores are weighted, what isn't measured, and a changelog so nothing moves quietly." },
+        visual: { kind: "image", media: { src: "/images/prosaic/two-phones.png", alt: "The index on a phone, at the top and further down at the seven risk cards" }, caption: "On a phone, where most readers arrive from a news link." },
+      },
+      {
+        type: "essay",
+        title: "Risk pages go from a score to the evidence behind it",
+        rail: null,
+        body: [
+          "Each of the seven risks, from mental and emotional safety to misinformation, has its own page in the same order: what it measures, the ranked chart, the benchmarks behind it and how they're weighted, real conversations marked as handled well or poorly, and what the score can't tell you.",
+          "Decision: A score never appears without its evidence; you can flip the chart from safety rate to failure rate, read the actual transcripts, and see the limits stated plainly, such as the fact that these are simulated conversations rather than real-world outcomes.",
         ],
+        /* recorded from her build: the self-harm and crisis page, chart to limits (scripts/capture/prosaic.config.json) */
         visual: { kind: "video", src: "/videos/prosaic/risk-page.mp4", poster: "/images/prosaic/posters/risk-page.jpg", aspect: "1128 / 700", caption: "One risk page, top to bottom: the chart, what we found, the benchmarks and their weights, the sources, and the limits." },
+      },
+      {
+        type: "essay",
+        title: "Company pages answer: is the AI I use safe?",
+        rail: null,
+        body: [
+          "Most people don't think in benchmarks; they think in the app on their phone. Each company page lists that maker's models, with an overall score and a score for each of the seven risks, and every risk links back to its own page.",
+          "Decision: I laid company pages out by model, so a reader can see where one company's products are strong and weak at a glance.",
+        ],
+        visual: { kind: "image", media: { src: "/images/prosaic/company-openai.png", alt: "OpenAI's company page: one model, scored in each of the seven risk categories" }, caption: "A company page: one bar per risk, so the weak category stands out." },
+        extraVisual: { kind: "image", media: { src: "/images/prosaic/company.png", alt: "A company page laid out by model, with the weakest risk of each model outlined" }, caption: "Laid out by model, with each model's weakest risk outlined. Illustrative scores." },
+      },
+      {
+        type: "essay",
+        title: "The methodology shows the work",
+        rail: null,
+        body: [
+          "The methodology explains where the data comes from, how scores are normalised and weighted, and what isn't measured, and each benchmark links to its original paper. An acknowledgements strip credits the research groups behind the benchmarks, and a changelog dates every new model and method change.",
+          "Decision: Nothing changes quietly; if a score moves, a reader can see when and why.",
+        ],
+        visual: { kind: "video", src: "/videos/prosaic/methodology.mp4", poster: "/images/prosaic/posters/methodology.jpg", aspect: "1128 / 700", caption: "The methodology, top to bottom: what the index is, where the data comes from, how categories are weighted, what is not measured." },
+      },
+      {
+        type: "essay",
+        title: "Patterns that were buried in separate papers",
+        rail: "Why",
+        body: [
+          "The index makes patterns visible that were buried in separate papers, like a model that handles emotional distress well but gives unsafe medical advice. That's something a parent, a patient or a reporter can act on, and it's the reason the design keeps pointing back to the evidence instead of asking people to trust a single score. The tweet from the Prosaic Intelligence team has been performing really well, and people resonate with the importance of AI literacy and safety.",
+        ],
+        /* illustrative, in the site's vocabulary (scripts/capture/prosaic/compare.html); the scores are not measurements */
+        visual: { kind: "image", media: { src: "/images/prosaic/compare.png", alt: "Two models side by side across the seven risks: one strong on self-harm and crisis and weak on overstated advice, the other the reverse" }, caption: "Two models, seven risks: strong where the other is weak. Illustrative scores." },
       },
       {
         type: "also",
@@ -715,7 +872,8 @@ export const works: Work[] = [
         title: "Three days, real consequences",
         rail: "Looking back",
         body: [
-          "I narrowed down early and went from lo-fi to hi-fi fast; with more time I would have explored more iterations, and I wish I could have stayed with the team longer. I'm proud of the result.",
+          "This was a mini hackathon with real consequences, and it was interesting to see the whole breadth of what I could do in exactly three days. The subject matters, consumer safety in an industry as expansive and fast-moving as AI, and looking back I wish I could have committed to working with the team for longer. It's a really great team.",
+          "I also wish I had explored many more iterations of the site. I narrowed it down early and went from lo-fi to hi-fi fast, and with more time the outcome would have been better still. I'm proud of the result, and I think the founders liked it.",
         ],
       },
     ],

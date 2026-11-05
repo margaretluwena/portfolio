@@ -75,21 +75,16 @@ in copy or code comments**, the build fails on them.
   yellow) plus Merch; the share piece carries a `gallery` of the three
   share styles. Don't put those images back in the artifact grid.
 
-## Case-study copy: the Google Doc leads (2026-11-02), the site shows a CUT of it (2026-11-04)
+## Case-study copy: the Google Doc leads (2026-11-02)
 
-On 2026-11-04 feedback ("replace Setup and Problem with headline phrases
-that tell the story; make the titles bigger, the body smaller, open the
-spacing; cut paragraphs, turn key points into callouts; focus each study
-on one highlight and save the full process for presentations") the four
-studies in `lib/works.ts` were cut to one highlight each: Mark the share
-cards, Traeco the recommendations that show quality holds, Atlix the
-card that answers four questions, Prosaic the use case before the
-ranking. Every section heading is now a sentence. The dropped sections
-(Mark's library exploration, Traeco's two-lines setup and early
-dashboards and "Building it myself", Atlix's separate research section,
-Prosaic's build checks, three page-type sections and "Why it matters")
-are in git before commit "Case studies: ..." of that day, and the Google
-Doc still holds the full process for presentations.
+2026-11-04 feedback ("replace Setup and Problem with headline phrases
+that tell the story; titles bigger, body smaller, open the spacing; key
+points as callouts; one highlight per study") was applied in full that
+day, then on 2026-11-05 Margaret reversed the one-highlight cut for
+now: every section is back, with the sentence headings, the new type
+scale and the callout boxes kept. Commit 3acb431 holds the cut version
+(Mark the share cards, Traeco the recommendations, Atlix the card,
+Prosaic the use case) if she wants it back.
 
 
 Margaret's "Case Studies" Google Doc (Mark, Traeco, Atlix, Prosaic
