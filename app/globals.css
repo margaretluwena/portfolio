@@ -99,11 +99,18 @@ body {
    viewport, at a gentler slope and a lower ceiling */
 /* 2026-11-04, on feedback: titles bigger, body smaller, more air. The
    section headings are now full sentences that tell the story (.study-heading,
-   ink, large); .study-label stays for the small blue eyebrows (credits). */
+   ink, large); .study-label stays for the small blue eyebrows (credits).
+   One scale for everything on a study (2026-11-08, "make things
+   consistent"): title, heading (in the study's accent, which Margaret
+   liked), lead (the point line), body, small (captions and supporting
+   lines), label (the accent eyebrows). Uppercase tags use the site's
+   text-label token. */
 .study-title   { font-size: clamp(30px, 2.7vw, 52px); line-height: 1.08; letter-spacing: -0.02em; }
-.study-heading { font-size: clamp(24px, 2.05vw, 40px); line-height: 1.15; letter-spacing: -0.015em; font-weight: 500; }
-.study-label   { font-size: clamp(13px, 1vw, 16px); line-height: 1.3; font-weight: 500; color: var(--study-blue); }
+.study-heading { font-size: clamp(24px, 2.05vw, 40px); line-height: 1.15; letter-spacing: -0.015em; font-weight: 500; color: var(--study-blue); }
+.study-lead    { font-size: clamp(17px, 1.25vw, 22px); line-height: 1.4; letter-spacing: -0.005em; }
 .study-body    { font-size: clamp(15px, 1vw, 18px); line-height: 1.55; }
+.study-small   { font-size: clamp(13px, 0.95vw, 16px); line-height: 1.45; }
+.study-label   { font-size: clamp(13px, 1vw, 16px); line-height: 1.3; font-weight: 500; color: var(--study-blue); }
 
 /* a case study hides the native scrollbar: AsciiScrollbar draws its own (md+) */
 @media (min-width: 768px) {

@@ -156,7 +156,7 @@ const isPortrait = (media: Media) => {
 function SectionLabel({ children }: { children: React.ReactNode }) {
   /* a section's heading is a sentence that tells the story, set large in ink
      (feedback, 2026-11-04: someone should get the project from the titles) */
-  return <h2 className="study-heading max-w-[28ch] text-ink">{children}</h2>;
+  return <h2 className="study-heading max-w-[28ch]">{children}</h2>;
 }
 
 function ContextBlock({ block }: { block: Extract<Block, { type: "context" }> }) {
@@ -216,7 +216,7 @@ function SolutionBlock({ block }: { block: Extract<Block, { type: "solution" }> 
             {isNeed(piece.caption) ? (
               <NeedText label="caption" lines={2} className="max-w-[62ch]" />
             ) : (
-              <p className="max-w-[48ch] text-[clamp(15px,1.05vw,19px)] leading-[1.45] text-ink/75">{piece.caption}</p>
+              <p className="study-body max-w-[48ch] text-ink/70">{piece.caption}</p>
             )}
           </div>
         );
@@ -282,7 +282,7 @@ function BriefBlock({ block }: { block: Extract<Block, { type: "brief" }> }) {
           <h4 className="text-label uppercase text-ink/50">Goals</h4>
           <ul className="mt-3 space-y-2">
             {block.goals.map((g) => (
-              <li key={g} className="border-t border-hairline pt-2 text-body text-ink">{g}</li>
+              <li key={g} className="study-body border-t border-hairline pt-2 text-ink">{g}</li>
             ))}
           </ul>
         </div>
@@ -290,7 +290,7 @@ function BriefBlock({ block }: { block: Extract<Block, { type: "brief" }> }) {
           <h4 className="text-label uppercase text-ink/50">What I did</h4>
           <ul className="mt-3 space-y-2">
             {block.did.map((d) => (
-              <li key={d} className="border-t border-hairline pt-2 text-body text-ink">{d}</li>
+              <li key={d} className="study-body border-t border-hairline pt-2 text-ink">{d}</li>
             ))}
           </ul>
         </div>
@@ -308,7 +308,7 @@ function LessonsBlock({ block }: { block: Extract<Block, { type: "lessons" }> })
           <li key={it.title} className="space-y-2 border-t border-hairline pt-4">
             <span className="text-label uppercase text-ink/40">{String(i + 1).padStart(2, "0")}</span>
             <h3 className="study-body font-medium text-ink">{it.title}</h3>
-            <p className="text-body text-ink/70">{it.body}</p>
+            <p className="study-body text-ink/70">{it.body}</p>
           </li>
         ))}
       </ol>
@@ -356,7 +356,7 @@ function VisualView({ visual }: { visual: Visual }) {
     );
   }
   /* captions carry [MAR] notes too (a recording to replace a still), so they go through Marked (2026-11-02) */
-  const caption = "caption" in visual && visual.caption ? <p className="text-[clamp(13px,0.95vw,16px)] leading-[1.45] text-ink/55"><Marked text={visual.caption} /></p> : null;
+  const caption = "caption" in visual && visual.caption ? <p className="study-small text-ink/55"><Marked text={visual.caption} /></p> : null;
   if (visual.kind === "video") {
     return (
       <figure className="space-y-3">
@@ -505,7 +505,7 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
             <li key={it.num} className="space-y-1 border-t border-hairline pt-3">
               <span className="text-label uppercase text-ink/40">{it.num}</span>
               <h3 className="study-body font-medium text-ink">{it.title}</h3>
-              <p className="text-body text-ink/70"><Marked text={it.body} /></p>
+              <p className="study-body text-ink/70"><Marked text={it.body} /></p>
             </li>
           ))}
         </ol>
@@ -566,10 +566,10 @@ function AlsoBlock({ block }: { block: Extract<Block, { type: "also" }> }) {
                 <Image src={it.media.src} alt={it.media.alt} fill sizes="(max-width: 768px) 92vw, 18vw" className="object-cover" />
               )}
             </div>
-            <h3 className="text-body font-medium text-ink">
+            <h3 className="study-body font-medium text-ink">
               {it.href ? <a href={it.href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink">{it.name}</a> : it.name}
             </h3>
-            <p className="text-[clamp(14px,0.95vw,17px)] leading-[1.45] text-ink/65">{it.line}</p>
+            <p className="study-small text-ink/60">{it.line}</p>
           </li>
         ))}
       </ul>
@@ -603,7 +603,7 @@ function ArtifactGridBlock({ block }: { block: Extract<Block, { type: "artifactG
 function WipBlock({ block }: { block: Extract<Block, { type: "wip" }> }) {
   /* one quiet line - no box, no icon, no emphasis */
   return (
-    <p className="text-secondary text-ink/50">
+    <p className="study-small text-ink/50">
       This study is being written. For the full story in the meantime,{" "}
       <a href={`mailto:${block.email}`} className="underline underline-offset-4 hover:text-ink">
         {block.email}

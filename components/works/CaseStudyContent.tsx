@@ -106,7 +106,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
       <motion.div {...fade(isOverlay ? 0.4 : 0.35)} className="mt-[6vh] space-y-5">
         <h1 className="study-title text-ink">{isNeed(work.lede) ? work.title : work.lede}</h1>
         {/* "The point": the study's one bold line, from the doc (2026-11-02) */}
-        {work.point && <p className="study-body font-medium text-ink"><span className="text-[var(--study-blue)]">The point. </span>{work.point}</p>}
+        {work.point && <p className="study-lead font-medium text-ink"><span className="text-[var(--study-blue)]">The point. </span>{work.point}</p>}
       </motion.div>
 
       {/* credits - four columns on desktop, two on phones */}
@@ -117,7 +117,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
         {credits.map((c) => (
           <div key={c.label}>
             <dt className="study-label">{c.label}</dt>
-            <dd className="mt-2 text-body text-ink/60">{c.value}</dd>
+            <dd className="study-body mt-2 text-ink/60">{c.value}</dd>
           </div>
         ))}
       </motion.dl>
