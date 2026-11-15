@@ -130,8 +130,8 @@ export default function SiteFooter({ mode = "static" }: { mode?: "reveal" | "sta
         reveal ? "fixed inset-x-0 bottom-0 z-30 pb-[clamp(10px,2.5vh,28px)] pt-[clamp(14px,4vh,44px)]" : "relative mt-[14vh] gap-[8vh] pb-[5vh] pt-[6vh]"
       } flex flex-col justify-between border-t border-hairline bg-white/75 px-[var(--inset)] md:pr-[calc(100vw-var(--align-r))] text-body text-ink backdrop-blur-xl`}
     >
-      {/* the site's grid (Michelle Liu, 2026-11-14): the name at --inset, the links at --col-right, the contact column halfway from there to --align-r; every column reads left to right, none right-aligned */}
-      <div className="grid gap-8 md:grid-cols-[calc(var(--col-right)-var(--inset))_1fr_1fr] md:gap-0">
+      {/* two ends (Margaret, 2026-11-14): who and where on the left at --inset, how to reach her on the right, ending at --align-r where the nav's text ends. The page links moved to the bottom row. */}
+      <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
         {/* who / where / when */}
         <div>
           <p className="font-display text-name text-ink">MARGARET LUWENA</p>
@@ -140,22 +140,13 @@ export default function SiteFooter({ mode = "static" }: { mode?: "reveal" | "sta
           <Clock zone="Asia/Jakarta" place="Jakarta, ID" className="mt-1" />
         </div>
 
-        {/* the site */}
-        <nav aria-label="Footer" className="flex flex-col gap-1.5">
-          {links.map((l) => (
-            <TransitionLink key={l.href} href={l.href} className={`w-fit ${link}`}>
-              {l.label}
-            </TransitionLink>
-          ))}
-        </nav>
-
         {/* reach */}
-        <div>
+        <div className="md:text-right">
           <p className="text-ink/45">Let&apos;s chat!</p>
-          <a href={`mailto:${EMAIL}`} className={`mt-1.5 block w-fit text-ink ${link.replace("text-ink/45 ", "")}`}>
+          <a href={`mailto:${EMAIL}`} className={`mt-1.5 block w-fit text-ink md:ml-auto ${link.replace("text-ink/45 ", "")}`}>
             {EMAIL}
           </a>
-          <ul className="mt-5 flex items-center gap-4">
+          <ul className="mt-5 flex items-center gap-4 md:justify-end">
             {socials.map((s) => (
               <li key={s.label}>
                 <a
@@ -175,7 +166,16 @@ export default function SiteFooter({ mode = "static" }: { mode?: "reveal" | "sta
 
       {/* colophon */}
       {/* colophon: the one line ("Designed in Figma. Built with Claude Code." dropped, Margaret 2026-10-20) */}
-      <div className="pt-3 text-center leading-relaxed">
+      <div className="flex flex-col gap-3 pt-3 leading-relaxed md:flex-row md:items-baseline md:justify-between">
+        {/* the page links, in the nav's own form: one row, joined by + */}
+        <nav aria-label="Footer" className="text-label uppercase">
+          {links.map((l, i) => (
+            <span key={l.href}>
+              {i > 0 && <span className="mx-2 select-none text-ink/25">+</span>}
+              <TransitionLink href={l.href} className={link}>{l.label}</TransitionLink>
+            </span>
+          ))}
+        </nav>
         <p className="text-label uppercase tracking-[0.08em] text-ink/40">
           © {new Date().getFullYear()} Margaret Luwena{BUILT && <> · Last updated {BUILT}</>}
         </p>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
+import PhoneFrame from "@/components/works/PhoneFrame";
 
 /*
   THE CARDS COME ALIVE ON HOVER (Margaret, 2026-11-03).
@@ -44,9 +45,9 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const PHONES = [
   // upright, side by side with a sliver between (no tilt, no overlap: Margaret, 2026-11-03)
   // the middle one lands a little higher than its neighbours
-  { src: "/images/mark/screen-home.png", cx: 31, delay: 0, lift: "md:group-hover:top-[20%]", rest: "top-[20%]", idle: "top-[31%]" },
-  { src: "/images/mark/screen-categories.png", cx: 50, delay: 70, lift: "md:group-hover:top-[15%]", rest: "top-[15%]", idle: "top-[26%]" },
-  { src: "/images/mark/screen-books.png", cx: 69, delay: 140, lift: "md:group-hover:top-[20%]", rest: "top-[20%]", idle: "top-[31%]" },
+  { src: "/images/mark/screen-home.png", cx: 31, delay: 0, lift: "md:group-hover:top-[14%]", rest: "top-[20%]", idle: "top-[6%] md:top-[22%]" },
+  { src: "/images/mark/screen-categories.png", cx: 50, delay: 70, lift: "md:group-hover:top-[9%]", rest: "top-[15%]", idle: "top-[2%] md:top-[17%]" },
+  { src: "/images/mark/screen-books.png", cx: 69, delay: 140, lift: "md:group-hover:top-[14%]", rest: "top-[20%]", idle: "top-[6%] md:top-[22%]" },
 ];
 
 export function MarkPhones({ hover }: { hover: boolean }) {
@@ -56,34 +57,12 @@ export function MarkPhones({ hover }: { hover: boolean }) {
         <div
           key={p.src}
           className={`absolute transition-[top] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${hover ? `${p.idle} ${p.lift}` /* on the card the screens are already up, so the UI shows without a hover (Michelle Liu, 2026-11-14); the hover lifts them the rest of the way */ : p.rest}`}
-          style={{ left: `${p.cx - 8.5}%`, width: "17%", aspectRatio: "284 / 617", transitionDelay: `${p.delay}ms`, opacity: 0.95 /* a touch lighter against the card (Margaret, 2026-11-03) */ }}
+          style={{ left: `${p.cx - 8.5}%`, width: "17%", aspectRatio: "430 / 902", transitionDelay: `${p.delay}ms`, opacity: 0.95 /* a touch lighter against the card (Margaret, 2026-11-03) */ }}
         >
-          {/* the frame, drawn like the titanium phone: a thin graphite rim with
-              a hairline highlight on its edge, a dark bezel inside it, and the
-              island at the top of the screen; the shadow is low and soft, so
-              it sits on the card instead of cutting into it (Margaret,
-              2026-11-03: the black frames read "harsh") */}
-          <div
-            className="absolute inset-0 rounded-[15.5%/7.1%]"
-            style={{
-              background: "linear-gradient(160deg, #5d5d62 0%, #3a3a3e 40%, #2b2b2f 100%)",
-              boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.22), 0 1px 2px rgba(0,0,0,0.18), 0 22px 44px rgba(0,0,0,0.13), 0 6px 14px rgba(0,0,0,0.08)",
-              padding: "2.6%",
-            }}
-          >
-            <div className="h-full w-full rounded-[13.3%/6.1%] bg-[#0c0c0e]" style={{ padding: "3.4%" }}>
-              <div className="relative h-full w-full overflow-hidden rounded-[10.5%/4.8%] bg-[#f2f2f2]">
-                <Image src={p.src} alt="" fill sizes="12vw" className="object-cover object-top" />
-                {/* the island */}
-                <div className="absolute left-1/2 -translate-x-1/2 rounded-full bg-[#0c0c0e]" style={{ top: "2.1%", width: "27%", height: "3.6%" }} />
-              </div>
-            </div>
-          </div>
-          {/* the side buttons: action and volume on the left, power on the right */}
-          <div className="absolute rounded-l-[2px] bg-[#4a4a4e]" style={{ left: "-1.4%", top: "17%", width: "1.6%", height: "3.2%" }} />
-          <div className="absolute rounded-l-[2px] bg-[#4a4a4e]" style={{ left: "-1.4%", top: "23.5%", width: "1.6%", height: "6%" }} />
-          <div className="absolute rounded-l-[2px] bg-[#4a4a4e]" style={{ left: "-1.4%", top: "31%", width: "1.6%", height: "6%" }} />
-          <div className="absolute rounded-r-[2px] bg-[#4a4a4e]" style={{ right: "-1.4%", top: "26%", width: "1.6%", height: "9%" }} />
+          {/* the shared phone mockup (components/works/PhoneFrame.tsx, 2026-11-14) */}
+          <PhoneFrame className="w-full">
+            <Image src={p.src} alt="" fill sizes="12vw" className="object-cover object-top" />
+          </PhoneFrame>
         </div>
       ))}
     </div>

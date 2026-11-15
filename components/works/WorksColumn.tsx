@@ -32,7 +32,7 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
   const y = useMotionValue(0);
   const settle = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  function onWheel(e: React.WheelEvent) {
+  function pull(deltaY: number) {
     if (reduce) return;
     const el = scroller.current;
     if (!el) return;
@@ -45,13 +45,13 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
     const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
     const cur = y.get();
 
-    const pulling = (atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0) || cur !== 0;
+    const pulling = (atTop && deltaY < 0) || (atBottom && deltaY > 0) || cur !== 0;
     if (!pulling) return;
 
     y.stop(); // wheeling mid-springback must take over, not fight the spring
 
     // normalize notchy mouse wheels (trackpads stream small deltas already)
-    const d = Math.sign(e.deltaY) * Math.min(Math.abs(e.deltaY), 60);
+    const d = Math.sign(deltaY) * Math.min(Math.abs(deltaY), 60);
     // progressive resistance: generous at rest, asymptotic near full stretch
     const give = 0.26 * Math.pow(1 - Math.min(1, Math.abs(cur) / MAX_STRETCH), 1.4);
     const next = Math.max(-MAX_STRETCH, Math.min(MAX_STRETCH, cur - d * give));
@@ -62,6 +62,9 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
       animate(y, 0, { type: "spring", stiffness: 200, damping: 15 }); // springs past 0 - the bounce
     }, 90);
   }
+
+  const pullRef = useRef(pull);
+  pullRef.current = pull;
 
   /* card tops in scroll coordinates, from the live layout (offsetTop would
      depend on which ancestor counts as offsetParent under the transform) */
@@ -149,6 +152,11 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
   useEffect(() => {
     const el = scroller.current;
     if (!el) return;
+/* The forwarded wheel moves the column directly and then runs the same
+       rubber band as a wheel over the column, so both sides behave alike and
+       pulling past either end stretches and springs back. (An eased version,
+       tried the same day, kept a loop running that pinned the column and
+       fought native scrolling on the right; removed.) */
     const forward = (e: WheelEvent) => {
       if (e.ctrlKey || e.defaultPrevented) return;           // pinch-zoom, or someone else took it
       if (el.scrollHeight <= el.clientHeight) return;        // not its own scroller
@@ -157,9 +165,15 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
       taken.current = true;                                  // the visitor has taken over the auto-cycle
       stopCycle.current?.();
       el.scrollTop += e.deltaY * unit;
+      pullRef.current(e.deltaY * unit);
     };
     window.addEventListener("wheel", forward, { passive: true });
-    return () => window.removeEventListener("wheel", forward);
+    /* the PAGE itself must not move: with nothing to scroll, a wheel over the
+       left column made the browser rubber-band the whole document, and the
+       name and bio rode up and down with it (Margaret, 2026-11-14). Only the
+       cards scroll and only the cards bounce. */
+    document.documentElement.classList.add("home-lock");
+    return () => { window.removeEventListener("wheel", forward); document.documentElement.classList.remove("home-lock"); };
   }, []);
 
   // live index: the work whose card is nearest 40% down the viewport
@@ -207,7 +221,7 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
   return (
     <div
       ref={scroller}
-      onWheel={onWheel}
+      onWheel={(e) => pull(e.deltaY)}
       onScroll={onScroll}
       tabIndex={0}
       aria-label="Selected works"

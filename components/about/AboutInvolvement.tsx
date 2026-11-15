@@ -149,6 +149,7 @@ export default function AboutInvolvement() {
                 transition={spring}
               >
                 <Image
+                  draggable={false} /* a press-and-drag pulled a ghost of the sticker off the page (Margaret, 2026-11-14) */
                   src={i.sticker}
                   alt=""
                   width={i.w}

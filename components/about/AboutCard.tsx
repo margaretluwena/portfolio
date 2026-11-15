@@ -61,9 +61,9 @@ function CardFace() {
         src="/images/about/card-mark.svg"
         alt=""
         aria-hidden
-        className="pointer-events-none absolute bottom-[4%] right-[2%] w-[48%] opacity-30"
+        className="pointer-events-none absolute bottom-[4%] right-[2%] w-[48%] opacity-60"
       />
-      <div className="relative space-y-[1em] text-[14px] leading-normal text-ink">
+      <div className="relative space-y-[1em] text-[14px] leading-normal text-white">
         {CARD_COPY.map((p) => (
           <p key={p.slice(0, 24)}>{p}</p>
         ))}
@@ -143,7 +143,7 @@ export default function AboutCard() {
           onMouseMove={onMove}
           onMouseEnter={() => tilting && setHovered(true)}
           onMouseLeave={onLeave}
-          className="relative w-[min(620px,86vw)] overflow-hidden rounded-[5px] border border-black/[0.06] bg-[#F7F4EF] px-[6.3%] py-[4.5%]" /* cream with ink text, the blue kept in the signature mark behind it: white on the blue was harder to read on a light site (Michelle Liu, 2026-11-14) */
+          className="relative w-[min(620px,86vw)] overflow-hidden rounded-[5px] bg-[#0f28e0] px-[6.3%] py-[4.5%]"
           style={{
             rotateX: tilting ? rx : 0,
             rotateY: tilting ? ry : 0,

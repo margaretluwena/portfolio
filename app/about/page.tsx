@@ -32,7 +32,7 @@ export default function AboutPage() {
         <div className="mt-[7vh]">
           <AboutMarquee />
         </div>
-        <div className="mt-[4vh]">
+        <div className="mt-[14vh]"> {/* more room under the photo strip (Margaret, 2026-11-14) */}
           <AboutExperience />
         </div>
         <div className="mt-[4vh]">

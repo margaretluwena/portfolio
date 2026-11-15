@@ -655,7 +655,8 @@ export function createSkyField(canvas, options = {}) {
     // it as hard", Margaret, 2026-10-21; same rule for mouse and touch)
     if (Math.abs(mdx) > 4) { G.held = 0; const dir = Math.sign(mdx);
       if (G.lastDir && dir !== G.lastDir) { G.shakes.push(now); G.shakes = G.shakes.filter((t) => now - t < 1500);
-        if (G.shakes.length >= 2) { G.shakes = []; summon(); action('shake'); } }
+        // one change of direction is enough now (Margaret, 2026-11-14: "much easier to trigger the dog")
+        if (G.shakes.length >= 1) { G.shakes = []; summon(); action('shake'); } }
       G.lastDir = dir; }
     b.x = nx; b.y = ny; G.hist.push({ x: nx, y: ny, t: now }); if (G.hist.length > 8) G.hist.shift();
   }
@@ -668,6 +669,10 @@ export function createSkyField(canvas, options = {}) {
     if (sp > max) { vx *= max / sp; vy *= max / sp; }
     b.vx = vx; b.vy = vy; b.st = 'flying';
     const d = G.dog;
+    // no shake needed: throwing or flinging the ball calls the dog too. Any
+    // release with real speed counts (a gentle drop does not), and the dog
+    // runs in to wherever the ball lands (Margaret, 2026-11-14)
+    if (d.st === 'away' && sp > 220) { summon(); action('shake'); }
     // any release is a throw to the dog - a drop right next to it included
     // the dog brings the ball back to the LEFT of the field, where it started, so what it
     // says lands in open space rather than behind the cards (Margaret, 2026-10-21)

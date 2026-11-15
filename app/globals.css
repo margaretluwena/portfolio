@@ -34,7 +34,7 @@
      full-screen wordmark (text-hero), which is an animation, not text. */
   --type-small: 13px;
   --type-base: 16px;
-  --type-large: 28px;
+  --type-large: 24px;   /* 28 read as too big against 16 and 13 (Margaret, 2026-11-14) */
   --type-label: var(--type-small);     /* nav, counter, tags, captions */
   --type-name: var(--type-base);       /* MARGARET LUWENA in the nav pill and footer */
   --type-display: var(--type-base);    /* the line under the name */
@@ -69,6 +69,7 @@
 @media (max-width: 767px) {
   :root {
     --inset: 24px;
+    --type-label: 12px;   /* phones: the nav pill has to seat the name and three links on one line; at 13px they touched (2026-11-14) */
   }
 }
 
@@ -112,23 +113,48 @@ body {
 /* 2026-11-14: the fluid clamps are gone; a study uses the site's three
    exact sizes. Title and heading share the large size and differ by
    colour and weight; lead and body share the base size. */
-.study-title   { font-size: var(--type-large); line-height: 1.12; letter-spacing: -0.02em; }
-.study-heading { font-size: var(--type-large); line-height: 1.15; letter-spacing: -0.015em; font-weight: 500; color: var(--study-blue); }
+.study-title   { font-size: var(--type-large); line-height: 1.15; letter-spacing: -0.02em; font-weight: 500; } /* the page title outranks the section headings by weight and ink, at the same size */
+.study-heading { font-size: var(--type-large); line-height: 1.2; letter-spacing: -0.015em; font-weight: 400; color: hsl(var(--ink)); } /* ink, not the accent (2026-11-14: too many colours) */
 .study-lead    { font-size: var(--type-base); line-height: 1.45; font-weight: 500; }
-.study-body    { font-size: var(--type-base); line-height: 1.55; }
+.study-body    { font-size: var(--type-base); line-height: 1.6; }
 .study-small   { font-size: var(--type-small); line-height: 1.45; }
-.study-label   { font-size: var(--type-small); line-height: 1.3; font-weight: 500; color: var(--study-blue); }
+/* ONE label style for a study: small, grey, sentence case. It names the
+   section over each heading, and labels credits, stats, list numbers and
+   the lesson. The accent now colours links only. (Margaret, 2026-11-14,
+   after Rachel Chen's studies: grey label, dark heading, grey body, visual.) */
+.study-label   { font-size: var(--type-small); line-height: 1.3; font-weight: 400; color: hsl(var(--ink) / 0.5); }
 
 /* a study's images open large on click (Lightbox) and cannot be dragged off the page (Michelle Liu, 2026-11-14) */
 .study-zoom section img { cursor: zoom-in; -webkit-user-drag: none; user-select: none; }
 .study-zoom section a img, .study-zoom section button img, .study-zoom [data-no-zoom] img { cursor: inherit; }
 
-/* links carry weight, not an underline (Michelle Liu, 2026-11-14) */
-.text-link { font-weight: 700; color: hsl(var(--ink)); text-decoration: none; transition: opacity 200ms; }
+/* the panel behind every case-study visual: Margaret's photo of light on a
+   concrete wall, under a flat wash of the wall's own taupe that takes its
+   contrast down so the bright patches do not compete with what sits in
+   front. (Her linen texture was tried in its place on 2026-11-14 and she
+   went back to the wall the same day; the linen is kept at
+   /images/mark/stage-linen.jpg.) */
+.study-stage {
+  background:
+    linear-gradient(rgba(146, 139, 127, 0.62), rgba(146, 139, 127, 0.62)),
+    url("/images/mark/stage-wall.webp") center / cover no-repeat;
+}
+/* a wide capture on the stage: rounded, lifted off the wall a little */
+.study-stage-media { overflow: hidden; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.18), 0 24px 48px rgba(0,0,0,0.22), 0 6px 14px rgba(0,0,0,0.12); }
+.study-stage-media img, .study-stage-media video { border-radius: 0 !important; display: block; }
+
+/* the small line over a section heading that says which section this is.
+   Body size in the study's accent: at 13px grey it read as a stray caption
+   and sat too close to the heading (Margaret, 2026-11-14). */
+.study-kicker { font-size: var(--type-base); line-height: 1.3; color: var(--study-blue); }
+
+/* links carry colour, not an underline (Michelle Liu, 2026-11-14) */
+/* colour, not weight: bold read as heavy (Margaret, 2026-11-14). The site blue, or a study's own accent inside a study */
+.text-link { color: var(--study-blue); text-decoration: none; transition: opacity 200ms; }
 .text-link:hover, .text-link:focus-visible { opacity: 0.6; }
 
 /* a case study hides the native scrollbar: AsciiScrollbar draws its own (md+) */
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   html.study-scroll { scrollbar-width: none; }
   html.study-scroll::-webkit-scrollbar { display: none; }
 }
@@ -149,6 +175,11 @@ body {
 /* internal scroll column without a visible scrollbar (works column) */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* home, md+: the document neither scrolls nor rubber-bands (WorksColumn sets the class) */
+@media (min-width: 768px) {
+  html.home-lock, html.home-lock body { overflow: hidden; overscroll-behavior: none; }
+}
 
 /* Desktop works column: its own fixed scroll context. Below 768px the
    class is inert - normal document flow, no nested scroll.

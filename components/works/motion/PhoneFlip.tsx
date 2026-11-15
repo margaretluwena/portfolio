@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useInView, useReducedMotion } from "motion/react";
+import PhoneFrame from "@/components/works/PhoneFrame";
 
 /*
   MARK, SETUP: one phone that stays put while its screens change
@@ -29,7 +30,7 @@ const SCREENS: { shot: string; art?: string; name: string }[] = [
   { shot: "07-share-envelope.png", art: "style-postcard.png", name: "Share: a postcard" },
   { shot: "07-share-envelope.png", art: "style-sticky.png", name: "Share: a sticky note" },
 ];
-const DWELL = 1900;
+const DWELL = 2200;
 
 export default function PhoneFlip() {
   const reduce = useReducedMotion();
@@ -48,20 +49,10 @@ export default function PhoneFlip() {
       ref={ref}
       role="img"
       aria-label="The Mark app in a phone: home, the library by category and by book, a note, and the three share cards"
-      className="grid w-full place-items-center rounded-[4px] bg-[#f6f5f1] py-[9%]"
+      className="study-stage flex w-full flex-col items-center gap-7 rounded-[6px] px-4 py-12 md:py-16"
     >
-      {/* the frame: the same titanium phone as the home card (CardHover) */}
-      <div
-        className="relative w-[62%] rounded-[15.5%/7.1%]"
-        style={{
-          aspectRatio: "284 / 617",
-          background: "linear-gradient(160deg, #5d5d62 0%, #3a3a3e 40%, #2b2b2f 100%)",
-          boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.22), 0 1px 2px rgba(0,0,0,0.18), 0 22px 44px rgba(0,0,0,0.13), 0 6px 14px rgba(0,0,0,0.08)",
-          padding: "2.6%",
-        }}
-      >
-        <div className="h-full w-full rounded-[13.3%/6.1%] bg-[#0c0c0e]" style={{ padding: "3.4%" }}>
-          <div className="relative h-full w-full overflow-hidden rounded-[10.5%/4.8%] bg-[#f2f2f2]">
+      {/* the shared phone mockup (components/works/PhoneFrame.tsx); the width is capped, since 62% of the full column would be a 470px phone */}
+      <PhoneFrame className="w-[min(62%,240px)]">
             {SCREENS.map((s, k) => {
               /* the current screen sits in place; the ones before it have left
                  to the left, the ones after wait on the right */
@@ -90,9 +81,14 @@ export default function PhoneFlip() {
                 </div>
               );
             })}
-            {/* the island */}
-            <div className="absolute left-1/2 -translate-x-1/2 rounded-full bg-[#0c0c0e]" style={{ top: "2.1%", width: "27%", height: "3.6%" }} />
-          </div>
+      </PhoneFrame>
+      {/* which screen this is, and where it sits in the seven */}
+      <div className="flex flex-col items-center gap-3" aria-hidden>
+        <p className="study-label !text-white/85">{SCREENS[i].name}</p>
+        <div className="flex items-center gap-[6px]">
+          {SCREENS.map((sc, k) => (
+            <span key={sc.name} className={`block h-[5px] rounded-full bg-white transition-[width,opacity] duration-300 ${k === i ? "w-[16px] opacity-90" : "w-[5px] opacity-40"}`} />
+          ))}
         </div>
       </div>
     </div>

@@ -11,6 +11,7 @@ import BeforeAfterSlider from "@/components/works/motion/BeforeAfterSlider";
 import ResearchFunnel from "@/components/works/motion/ResearchFunnel";
 import ReportVsLive from "@/components/works/motion/ReportVsLive";
 import PhoneFlip from "@/components/works/motion/PhoneFlip";
+import PhoneFrame from "@/components/works/PhoneFrame";
 import { indexWorks } from "@/lib/works";
 import Prox from "@/components/ui/Prox";
 import { TransitionLink } from "@/components/providers/PageTransition";
@@ -157,7 +158,7 @@ const isPortrait = (media: Media) => {
 function SectionLabel({ children }: { children: React.ReactNode }) {
   /* a section's heading is a sentence that tells the story, set large in ink
      (feedback, 2026-11-04: someone should get the project from the titles) */
-  return <h2 className="study-heading max-w-[28ch]">{children}</h2>;
+  return <h2 className="study-heading">{children}</h2>;
 }
 
 function ContextBlock({ block }: { block: Extract<Block, { type: "context" }> }) {
@@ -357,12 +358,13 @@ function VisualView({ visual }: { visual: Visual }) {
     );
   }
   /* captions carry [MAR] notes too (a recording to replace a still), so they go through Marked (2026-11-02) */
-  const caption = "caption" in visual && visual.caption ? <p className="study-small text-ink/55"><Marked text={visual.caption} /></p> : null;
+  const caption = "caption" in visual && visual.caption ? <p className="study-small text-ink/50"><Marked text={visual.caption} /></p> : null;
   if (visual.kind === "video") {
     return (
       <figure className="space-y-3">
-        <StudyVideo src={visual.src} poster={visual.poster} aspect={visual.aspect ?? "1128 / 623"} label={visual.caption} />
-        <figcaption>{caption}</figcaption>
+        {/* recordings stand on their own again; the wall behind them was tried and taken back the same day (Margaret, 2026-11-14: "dont do the backgrounds as of yet"). Only phone mockups and cut-outs sit on the stage. */}
+        <StudyVideo src={visual.src} poster={visual.poster} aspect={visual.aspect ?? "1128 / 623"} label={visual.caption || "Recorded product footage"} />
+        {caption && <figcaption>{caption}</figcaption>}
       </figure>
     );
   }
@@ -371,7 +373,7 @@ function VisualView({ visual }: { visual: Visual }) {
     return (
       <figure className="space-y-3">
         <Comp />
-        <figcaption>{caption}</figcaption>
+        {caption && <figcaption>{caption}</figcaption>}
       </figure>
     );
   }
@@ -385,8 +387,18 @@ function VisualView({ visual }: { visual: Visual }) {
     /* a muted run turns grey as it scrolls into view, one image after the
        next, and stays grey (Margaret, 2026-11-02: "animate it turning grey
        when you scroll"); reduced motion renders it grey from the start */
-    const row = (media: Media[], muted?: boolean) => (
-      <div className="grid grid-flow-col auto-cols-fr items-start gap-3 md:gap-4">
+    /* a row of nothing but phone screens packs them side by side from the left at a readable height, instead of one small screen per equal column with empty space between (2026-11-14: bigger visuals) */
+    const cutout = !!visual.cutout;
+    const allTall = (media: Media[]) => media.every((m) => { const [w, h] = SIZES[m.src] ?? [1200, 1600]; return h > w * 1.15; });
+    /* a row of tall screens: every image keeps its own shape and all of them come out the SAME height. Each item's share of the row is its width-to-height ratio, so they scale together when the column narrows; a fixed pixel height here squashed them sideways on a narrow window (found 2026-11-14). The row is capped so that height tops out at TALL_H. */
+    const TALL_H = cutout ? 300 : 400, TALL_GAP = 40;
+    /* a screenshot goes in the phone mockup, so its share of the row is the mockup's shape; a cut-out keeps its own */
+    const ratio = (m: Media) => { if (!cutout) return 430 / 902; const [w, h] = SIZES[m.src] ?? [1200, 1600]; return w / h; };
+    const rowMax = (media: Media[]) => TALL_H * media.reduce((n, m) => n + ratio(m), 0) + TALL_GAP * (media.length - 1);
+    const row = (media: Media[], muted?: boolean, grouped?: boolean) => {
+      const stage = allTall(media);
+      const items = (
+        <>
         {media.map((m, i) => {
           const [w, h] = SIZES[m.src] ?? [1200, 1600];
           const tall = h > w * 1.15;
@@ -396,9 +408,9 @@ function VisualView({ visual }: { visual: Visual }) {
               alt={m.alt}
               width={w}
               height={h}
-              sizes="(max-width: 768px) 30vw, 14vw"
-              className="block rounded-[4px]"
-              style={tall ? { width: "auto", height: "auto", maxHeight: "44vh", maxWidth: "100%" } : { width: "100%", height: "auto" }}
+              sizes="(max-width: 768px) 45vw, 20vw"
+              className={`block ${tall && stage ? (cutout ? "h-auto w-full" : "absolute inset-0 h-full w-full object-cover object-top") : "rounded-[4px]"}`}
+              style={tall ? (stage ? undefined : { width: "auto", height: "auto", maxHeight: "44vh", maxWidth: "100%" }) : { width: "100%", height: "auto" }}
             />
           );
           return muted ? (
@@ -414,11 +426,22 @@ function VisualView({ visual }: { visual: Visual }) {
               {img}
             </motion.div>
           ) : (
-            <div key={m.src}>{img}</div>
+            <div key={m.src} className={stage ? "w-full" : undefined} style={stage ? { flex: `${Math.round(ratio(m) * 1000)} 1 0%` } /* x1000: grow factors that sum to less than 1 only hand out part of the row, which left a lone screen at under half its size */ : undefined}>{stage && !cutout ? <PhoneFrame className="w-full">{img}</PhoneFrame> : img}</div>
           );
         })}
-      </div>
-    );
+        </>
+      );
+      return stage ? (
+        /* phone screens are tall and narrow: set from the left they left most of the column empty beside them (Margaret, 2026-11-14). They sit centred on a stage as wide as the column, in the same paper tone as the phone animation, with room around them. */
+        <div className="study-stage rounded-[6px] px-4 py-8 md:px-8 md:py-16">
+          <div className={`mx-auto grid grid-cols-2 gap-3 md:flex md:gap-10 ${cutout ? "items-end" : "items-start"}`} style={{ maxWidth: rowMax(media) }}>
+            {items}
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-flow-col auto-cols-fr items-start gap-3 md:gap-4">{items}</div>
+      );
+    };
     return (
       <figure className="space-y-3">
         {visual.groups ? (
@@ -426,7 +449,7 @@ function VisualView({ visual }: { visual: Visual }) {
             {visual.groups.map((g, gi) => (
               <div key={g.label || gi} className="space-y-3">
                 {g.label && <div className={`text-label uppercase ${g.muted ? "text-ink/40" : "text-[var(--study-blue)]"}`}>{g.label}</div>}
-                {row(g.media, g.muted)}
+                {row(g.media, g.muted, true)}
               </div>
             ))}
           </div>
@@ -456,13 +479,21 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
   const extra = block.extraVisual && <VisualView visual={block.extraVisual} />;
   /* the visual beside the text (Mark's Setup: the phone on the right, the
      words on the left; Margaret, 2026-11-02) */
+  /* what section this is, in grey over the heading: the group's own label, or the rail's name for it */
+  const kicker = block.eyebrow ?? (typeof block.rail === "string" ? block.rail : null);
+  const head = (
+    <header className="space-y-3">
+      {kicker && <p className="study-kicker">{kicker}</p>}
+      <SectionLabel>{block.title}</SectionLabel>
+    </header>
+  );
   if (block.visualSide && visual) {
     return (
-      <section className="space-y-8">
-        <SectionLabel>{block.title}</SectionLabel>
+      <section className="space-y-6">
+        {head}
         <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,34%)] md:items-start md:gap-10">
           <div className="space-y-6">
-            {block.body?.map((para, i) => <p key={i} className="study-body whitespace-pre-line text-ink"><Marked text={para} /></p>)}
+            {block.body?.map((para, i) => <p key={i} className="study-body whitespace-pre-line text-ink/70"><Marked text={para} /></p>)}
           </div>
           <div>{visual}</div>
         </div>
@@ -470,8 +501,8 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
     );
   }
   return (
-    <section className="space-y-8">
-      <SectionLabel>{block.title}</SectionLabel>
+    <section className="space-y-6">
+      {head}
       {block.visualFirst && visual}
       {block.body?.map((para, i) => {
         const label = PARA_LABELS.find((l) => para.startsWith(l));
@@ -481,20 +512,27 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
            vertical rhythm, so every gap collapsed; Margaret, 2026-10-29) */
         /* the decision and the lesson are CALLOUT boxes in the study's accent
            (feedback, 2026-11-04: turn key points into callouts) */
+        /* the closing "Next time" line is an ordinary paragraph at the body size: a smaller size here made four sizes in one short section (Margaret, 2026-11-14) */
+        if (para.startsWith("Next time:")) {
+          return (
+<p key={i} className="study-body text-ink/70">
+              <span className="text-ink">Next time, </span>
+              <Marked text={para.slice("Next time:".length).trim()} />
+            </p>
+          );
+        }
         return label ? (
           <div key={i} className="space-y-7">
-            <aside
-              className="max-w-[72ch] rounded-[8px] border px-5 py-4 md:px-6 md:py-5"
-              style={{ background: "color-mix(in srgb, var(--study-blue) 6%, white)", borderColor: "color-mix(in srgb, var(--study-blue) 28%, transparent)" }}
-            >
-              <span className="text-label uppercase tracking-[0.06em] text-[var(--study-blue)]">{label.slice(0, -1)}</span>
-              <p className="study-body mt-2 font-medium text-ink"><Marked text={text} /></p>
-            </aside>
+{/* the lesson: the same grey label, the sentence in ink behind a hairline. The tinted accent boxes are gone (2026-11-14: fewer colours). */}
+            <div className="border-l border-ink/20 pl-4">
+              <p className="study-label">{label.slice(0, -1)}</p>
+              <p className="study-body mt-1 text-ink"><Marked text={text} /></p>
+            </div>
             {after}
           </div>
         ) : (
           <div key={i} className="space-y-6">
-            <p className="study-body max-w-[72ch] whitespace-pre-line text-ink"><Marked text={text} /></p>
+            <p className="study-body whitespace-pre-line text-ink/70"><Marked text={text} /></p>
             {after}
           </div>
         );
@@ -504,7 +542,7 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
         <ol className={`grid gap-6 md:gap-8 ${block.items.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2"}`}>
           {block.items.map((it) => (
             <li key={it.num} className="space-y-1 border-t border-hairline pt-3">
-              <span className="text-label uppercase text-ink/40">{it.num}</span>
+              <span className="study-label">{it.num}</span>
               <h3 className="study-body font-medium text-ink">{it.title}</h3>
               <p className="study-body text-ink/70"><Marked text={it.body} /></p>
             </li>
@@ -516,7 +554,7 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
           {block.parts.map((pt) => (
             <div key={pt.title} className="space-y-2">
               <h3 className="study-body font-medium text-ink">{pt.title}</h3>
-              <p className="study-body text-ink"><Marked text={pt.body} /></p>
+              <p className="study-body text-ink/70"><Marked text={pt.body} /></p>
             </div>
           ))}
         </div>
@@ -538,7 +576,7 @@ function StatsBlock({ block }: { block: Extract<Block, { type: "stats" }> }) {
               <a href={it.href} target="_blank" rel="noopener noreferrer" className="text-link">{it.value}</a>
             ) : it.value}
           </div>
-          <div className="text-label uppercase text-ink/50">{it.label}</div>
+          <div className="study-label">{it.label}</div>
         </li>
       ))}
     </ul>
@@ -554,7 +592,7 @@ function AlsoBlock({ block }: { block: Extract<Block, { type: "also" }> }) {
   return (
     <section className="space-y-6">
       <SectionLabel>{RAIL_NAMES.also}</SectionLabel>
-      {block.intro && <p className="study-body text-ink">{block.intro}</p>}
+      {block.intro && <p className="study-body text-ink/70">{block.intro}</p>}
       <ul className="grid gap-6 pt-2 md:grid-cols-3 md:gap-8">
         {items.map((it) => (
           <li key={it.name} className="space-y-3">
@@ -570,7 +608,7 @@ function AlsoBlock({ block }: { block: Extract<Block, { type: "also" }> }) {
             <h3 className="study-body font-medium text-ink">
               {it.href ? <a href={it.href} target="_blank" rel="noopener noreferrer" className="text-link">{it.name}</a> : it.name}
             </h3>
-            <p className="study-small text-ink/60">{it.line}</p>
+            <p className="study-small text-ink/50">{it.line}</p>
           </li>
         ))}
       </ul>
@@ -616,7 +654,7 @@ function WipBlock({ block }: { block: Extract<Block, { type: "wip" }> }) {
 
 export function Blocks({ work }: { work: Work }) {
   return (
-    <div className="space-y-[14vh]">
+    <div className="space-y-[120px]"> {/* a new chapter gets clear air; a continuation (below) sits at half that */}
       {visibleBlocks(work).map((b, i) => {
         const id = `block-${i}-${b.type}`;
         switch (b.type) {
@@ -633,7 +671,8 @@ export function Blocks({ work }: { work: Work }) {
           case "also":
             return <div key={id} id={id}><AlsoBlock block={b} /></div>;
           case "essay":
-            return <div key={id} id={id}><EssayBlock block={b} /></div>;
+            /* a section that continues the one above it (no rail entry of its own) sits closer to it than a new chapter does, so a group reads as a group */
+            return <div key={id} id={id} className={b.rail === null && i > 0 ? "!mt-[72px]" : undefined}><EssayBlock block={b} /></div>;
           case "stats":
             return <div key={id} id={id}><StatsBlock block={b} /></div>;
           case "artifactGrid":
@@ -708,7 +747,7 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
     <>
     {/* phones: the minimap is hidden and the nav pill leaves on scroll, so the
         Return arrow sits pinned at the bottom-left once the page has scrolled */}
-    <motion.div {...reveal} className="fixed bottom-[max(16px,env(safe-area-inset-bottom))] left-[var(--inset)] z-40 md:hidden">
+    <motion.div {...reveal} className="fixed bottom-[max(16px,env(safe-area-inset-bottom))] left-[var(--inset)] z-40 lg:hidden">
       {onReturn ? (
         <button type="button" onClick={onReturn} aria-label="Return" className={phoneBare}>
           {returnLabel}
@@ -721,7 +760,7 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
     </motion.div>
     <nav
       aria-label="Case study"
-      className="fixed left-[var(--inset)] top-[21vh] z-30 hidden md:block"
+      className="fixed left-[var(--inset)] top-[21vh] z-30 hidden lg:block"
     >
       {onReturn ? (
         <button type="button" onClick={onReturn} aria-label="Return" className={railBare}>

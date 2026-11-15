@@ -46,7 +46,7 @@ function Rows() {
   return (
     <ol>
       {EXPERIENCES.map((e) => (
-        <li key={e.org} className="grid grid-cols-2 gap-x-6 border-t border-hairline py-5 first:border-t-0 first:pt-0">
+        <li key={e.org} className="grid grid-cols-2 gap-x-6 py-7 first:pt-0" /* no rules between rows, more air instead (Margaret, 2026-11-14) */>
           {/* the company carries the weight; the role sits lighter beside it
               (Michelle Liu, 2026-11-14: they were the same size and weight) */}
           <p className="text-body font-bold text-ink">{e.org}</p>

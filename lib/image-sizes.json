@@ -3,10 +3,6 @@
     337,
     500
   ],
-  "/images/about/dog-frames.png": [
-    2256,
-    1756
-  ],
   "/images/about/lavalab/audience-choice.jpg": [
     1400,
     933
@@ -235,6 +231,42 @@
     402,
     874
   ],
+  "/images/mark/flip/01-home.png": [
+    402,
+    874
+  ],
+  "/images/mark/flip/02-categories.png": [
+    402,
+    874
+  ],
+  "/images/mark/flip/03-books.png": [
+    402,
+    874
+  ],
+  "/images/mark/flip/04-note.png": [
+    644,
+    1400
+  ],
+  "/images/mark/flip/07-share-envelope.png": [
+    402,
+    874
+  ],
+  "/images/mark/flip/style-envelope.webp": [
+    600,
+    851
+  ],
+  "/images/mark/flip/style-postcard.png": [
+    588,
+    823
+  ],
+  "/images/mark/flip/style-sticky-tight.png": [
+    418,
+    848
+  ],
+  "/images/mark/flip/style-sticky.png": [
+    560,
+    983
+  ],
   "/images/mark/hero.jpg": [
     2400,
     1325
@@ -258,6 +290,10 @@
   "/images/mark/library-books.png": [
     402,
     874
+  ],
+  "/images/mark/library-bookshelf.png": [
+    804,
+    1748
   ],
   "/images/mark/library-categories.png": [
     402,
@@ -311,15 +347,15 @@
     1344,
     638
   ],
+  "/images/mark/screen-books.png": [
+    402,
+    874
+  ],
   "/images/mark/screen-categories.png": [
     402,
     874
   ],
   "/images/mark/screen-home.png": [
-    402,
-    874
-  ],
-  "/images/mark/screen-share.png": [
     402,
     874
   ],

@@ -66,9 +66,8 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
       /* phones: the column runs between the same insets as every other
          page - 56.4vw of a 375px screen was a 212px reading column, which
          read as confined (Margaret, 2026-10-21) */
-      /* lg+: 70vw, up from 56.4vw, so the UI in the visuals is large enough to read (Michelle Liu, 2026-11-14); prose keeps its own measure (Blocks) */
-      /* md+ (Michelle Liu, 2026-11-14, full review): the column no longer centres itself. The rail's labels start at --inset, where the nav's text starts, and the column runs from just right of them to --align-r, where the nav's text ends. */
-      className="study-zoom mx-auto w-[calc(100%-2*var(--inset))] md:mx-0 md:ml-[max(20vw,calc(var(--inset)+136px))] md:mr-[calc(100vw-var(--align-r))] md:w-auto"
+      /* md+ (Michelle Liu, 2026-11-14, full review): the column no longer centres itself. The rail's labels start at --inset, where the nav's text starts, and the column runs to --align-r, where the nav's text ends. It starts at 28vw: at 20vw it read as too big and too close to the rail (Margaret, same day). */
+      className="study-zoom mx-auto w-[calc(100%-2*var(--inset))] max-w-[760px] lg:mx-0 lg:ml-[max(28vw,calc(var(--inset)+200px))] lg:mr-[calc(100vw-var(--align-r))] lg:w-auto" /* below lg (phones AND tablets) there is no side rail: the column is centred between the page insets, so a 768px tablet is not left with a 390px column beside a 280px rail. 760px: text and visuals share one width and one left edge, like the reference (2026-11-14); click a visual to see it large */
       ref={column}
       style={work.accent ? ({ "--study-blue": work.accent } as React.CSSProperties) : undefined}
     >
@@ -111,7 +110,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
       <motion.div {...fade(isOverlay ? 0.4 : 0.35)} className="mt-[6vh] space-y-5">
         <h1 className="study-title text-ink">{isNeed(work.lede) ? work.title : work.lede}</h1>
         {/* "The point": the study's one bold line, from the doc (2026-11-02) */}
-        {work.point && <p className="study-lead font-medium text-ink"><span className="text-[var(--study-blue)]">The point. </span>{work.point}</p>}
+        {/* "The point." line removed from under the title (Margaret, 2026-11-14: it felt arbitrary). Each study says the same sentence again as the second paragraph of its Setup section, a screen below, so here it was a repeat. The `point` field stays in lib/works.ts. */}
       </motion.div>
 
       {/* credits - four columns on desktop, two on phones */}
@@ -122,7 +121,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
         {credits.map((c) => (
           <div key={c.label}>
             <dt className="study-label">{c.label}</dt>
-            <dd className="study-body mt-2 text-ink/60">{c.value}</dd>
+            <dd className="study-body mt-1 text-ink/70">{c.value}</dd>
           </div>
         ))}
       </motion.dl>

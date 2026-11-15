@@ -128,7 +128,7 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
         const card = (
             <motion.article
               aria-disabled={work.comingSoon || undefined}
-              className="relative aspect-[972/678] w-full overflow-hidden rounded-[10px] shadow-[0_10px_50px_rgba(0,0,0,0.07)]" /* no border on any card: the 1px ink edge showed on the light cards and vanished on the dark ones (Michelle Liu, 2026-11-14) */
+              className={`relative aspect-[972/678] w-full overflow-hidden rounded-[10px] border shadow-[0_10px_50px_rgba(0,0,0,0.05)] ${work.cardText === "light" ? "border-white/[0.16]" : "border-black/[0.09]"}`} /* every card keeps its outline; a dark card gets a light one so it shows (Margaret, 2026-11-14) */
               style={{ background: work.cardBg ?? "#fff" }}
               onMouseEnter={() => setPlay((p) => p + 1)}
               initial={{ opacity: 0, y: 56 }}
@@ -157,26 +157,28 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
               <div
                 className="absolute inset-x-0 bottom-[5.9%] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:translate-y-[30px] md:group-hover:translate-y-0"
               >
-                <div className="flex items-end justify-between gap-4 px-[4.6%]">
+                <div className="flex items-center justify-between gap-4 px-[4.6%]"> {/* centred on one line: with items-end the title, year and pill each sat on a different bottom edge */}
                   {/* every card titles itself in text now - the SVG lockups made
                       the set read as four brands and three names (Shub, Margaret
                       2026-10-20). The lockups still head the case studies. */}
                   <Prox baseOpacity={0.9} maxScale={1} radius={120}>
                     {/* a step up from the name token (Margaret, 2026-10-20: "larger") */}
-                    <span className={`font-display text-[length:var(--type-base)] leading-none tracking-[-0.02em] xl:text-[length:var(--type-large)] ${work.cardText === "light" ? "text-white" : "text-ink"}`}>{work.title}</span>
+                    <span className={`font-display text-[length:var(--type-base)] whitespace-nowrap leading-none tracking-[-0.02em] xl:text-[length:var(--type-large)] ${work.cardText === "light" ? "text-white" : "text-ink"}`}>{work.title}</span>
                   </Prox>
-                  {/* the year, beside the title (Michelle Liu, 2026-11-14) */}
-                  <span className={`mr-auto pb-[2px] text-label tabular-nums ${work.cardText === "light" ? "text-white/55" : "text-ink/50"}`}>{work.year}</span>
                   {/* the signal pill: one fact about the team or the scale (Shub's feedback, 2026-10-09) */}
+                  {/* the year sits on the right with the signal pill, not against the title (Margaret, 2026-11-14) */}
+                  <span className="flex h-[30px] min-w-0 flex-1 flex-wrap items-center justify-end gap-x-3 overflow-hidden"> {/* the title never wraps. On a card too narrow for both, the pill drops to a second line that this 30px-tall box hides, so it disappears whole instead of being cut to "RAISE..." (2026-11-14) */}
+                  <span className={`flex h-[30px] items-center text-label tabular-nums ${work.cardText === "light" ? "text-white/55" : "text-ink/50"}`}>{work.year}</span>
                   {work.signal && (
                     <span
-                      className={`max-w-[64%] shrink-0 truncate rounded-full border px-[10px] py-[5px] text-label uppercase tracking-[0.06em] backdrop-blur-sm ${
+                      className={`shrink-0 whitespace-nowrap rounded-full border max-md:hidden px-[10px] py-[5px] text-label uppercase tracking-[0.06em] backdrop-blur-sm ${
                         work.cardText === "light" ? "border-white/15 bg-white/10 text-white/70" : "border-black/[0.08] bg-white/70 text-ink/60"
                       }`}
                     >
                       {work.signal}
                     </span>
                   )}
+                  </span>
                 </div>
                 <p
                   className={`mt-[6px] w-[95.4%] pl-[4.6%] text-secondary max-md:line-clamp-2 md:h-[24px] md:w-[82%] md:truncate transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 ${
@@ -186,6 +188,17 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
                   {work.blurb ?? (work.lede === "NEED" ? "" : work.lede)}
                 </p>
               </div>
+
+              {/* phones: the pill sits in the card's top corner. Beside the title and the year it was cut to "RAISED I..." on a 327px card (2026-11-14) */}
+              {work.signal && (
+                <span
+                  className={`absolute right-[4%] top-[5%] rounded-full border px-[9px] py-[4px] text-label uppercase tracking-[0.06em] backdrop-blur-sm md:hidden ${
+                    work.cardText === "light" ? "border-white/15 bg-white/10 text-white/80" : "border-black/[0.08] bg-white/80 text-ink/60"
+                  }`}
+                >
+                  {work.signal}
+                </span>
+              )}
 
               {/* "Coming soon": on pointer devices the cursor bubble says it, so
                   the card itself stays clean (Margaret, 2026-10-09). Below md it

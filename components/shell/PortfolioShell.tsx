@@ -78,6 +78,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex, wordmarkR
           {/* identity group - anchored once at 24.2vh, then FIXED px gaps so
               the name/tagline/icons rhythm doesn't stretch with viewport
               height (separate vh anchors read as uneven spacing) */}
+          {/* back at 24.2vh (Margaret, 2026-11-14, later the same day: the top-of-card alignment pulled the name too far from the bio). The bio now follows 132px below, a fixed gap, so name, role, icons and bio read as one block. */}
           <div className="md:absolute md:top-[24.2vh]">
             {/* the wordmark lands HERE - shared layoutId with the intro; never faded */}
             {reveal && (
@@ -98,12 +99,13 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex, wordmarkR
                 2026-11-14: the rotation made it unclear what she does). The
                 wording is her own first title, approved 2026-11-14;
                 RotatingTitle.tsx stays parked. */}
-            <motion.div {...enter(0.55)} className="mt-[8px]">
-              <p className="font-body text-display font-medium text-ink">{TAGLINE}</p>
+            <motion.div {...enter(0.55)} className="mt-[6px]">
+              {/* what she is: the one line a recruiter needs first, so it is full ink and medium weight, stronger than the bio below it */}
+              <p className="font-body text-display font-medium leading-none text-ink">{TAGLINE}</p>
             </motion.div>
 
             {/* small and grey so the work gets the first click (same review) */}
-            <motion.ul {...enter(0.68)} className="mt-[14px] flex items-center gap-[12px] text-ink">
+            <motion.ul {...enter(0.68)} className="mt-[16px] flex items-center gap-[12px] text-ink">
               {socials.map((s) => (
                 <li key={s.label} className="opacity-40 transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100"> {/* the grey is on each item: the list's own opacity belongs to the entrance animation */}
                   <Prox maxScale={1.12} radius={55}>
@@ -137,7 +139,8 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex, wordmarkR
           <motion.div
             {...enter(0.8)}
             data-bio
-            className="mt-12 max-w-[min(340px,100%)] space-y-6 text-body text-ink md:absolute md:top-[46vh] md:mt-0"
+            /* supporting copy, a step back in grey, a fixed 132px under the group's top (the group is ~90px tall, so ~40px of air) */
+            className="mt-12 max-w-[min(340px,100%)] space-y-6 text-body text-ink/70 md:absolute md:top-[calc(24.2vh+132px)] md:mt-0"
           >
             {/* Margaret's copy (2026-10-20), verbatim but for "a design" ->
                 "a designer" (a dictation slip, flagged to her). Venture links
@@ -153,7 +156,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex, wordmarkR
                 href="https://traeco.dev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-link"
+                className="text-ink transition-opacity duration-200 hover:opacity-60" /* darker than the grey around it, not blue: a bright link here pulled the eye off the work */
               >
                 Traeco
               </a>
@@ -168,7 +171,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex, wordmarkR
                 href="https://www.troylabs.vc"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-link"
+                className="text-ink transition-opacity duration-200 hover:opacity-60" /* darker than the grey around it, not blue: a bright link here pulled the eye off the work */
               >
                 BUILD, USC’s premier student-run startup accelerator
               </a>
