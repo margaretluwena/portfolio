@@ -128,7 +128,7 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
         const card = (
             <motion.article
               aria-disabled={work.comingSoon || undefined}
-              className="relative aspect-[972/678] w-full overflow-hidden rounded-[10px] border border-black/[0.09] shadow-[0_10px_50px_rgba(0,0,0,0.05)]"
+              className="relative aspect-[972/678] w-full overflow-hidden rounded-[10px] shadow-[0_10px_50px_rgba(0,0,0,0.07)]" /* no border on any card: the 1px ink edge showed on the light cards and vanished on the dark ones (Michelle Liu, 2026-11-14) */
               style={{ background: work.cardBg ?? "#fff" }}
               onMouseEnter={() => setPlay((p) => p + 1)}
               initial={{ opacity: 0, y: 56 }}
@@ -155,7 +155,7 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
                   description slides in under it. Below md there is no hover,
                   so the description is always out. */}
               <div
-                className="absolute inset-x-0 bottom-[5.9%] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:translate-y-[28px] md:group-hover:translate-y-0"
+                className="absolute inset-x-0 bottom-[5.9%] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:translate-y-[30px] md:group-hover:translate-y-0"
               >
                 <div className="flex items-end justify-between gap-4 px-[4.6%]">
                   {/* every card titles itself in text now - the SVG lockups made
@@ -163,12 +163,14 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
                       2026-10-20). The lockups still head the case studies. */}
                   <Prox baseOpacity={0.9} maxScale={1} radius={120}>
                     {/* a step up from the name token (Margaret, 2026-10-20: "larger") */}
-                    <span className={`font-display text-[clamp(1.25rem,1.75vw,1.875rem)] leading-none tracking-[-0.02em] ${work.cardText === "light" ? "text-white" : "text-ink"}`}>{work.title}</span>
+                    <span className={`font-display text-[length:var(--type-base)] leading-none tracking-[-0.02em] xl:text-[length:var(--type-large)] ${work.cardText === "light" ? "text-white" : "text-ink"}`}>{work.title}</span>
                   </Prox>
+                  {/* the year, beside the title (Michelle Liu, 2026-11-14) */}
+                  <span className={`mr-auto pb-[2px] text-label tabular-nums ${work.cardText === "light" ? "text-white/55" : "text-ink/50"}`}>{work.year}</span>
                   {/* the signal pill: one fact about the team or the scale (Shub's feedback, 2026-10-09) */}
                   {work.signal && (
                     <span
-                      className={`max-w-[46%] shrink-0 truncate rounded-full border px-[10px] py-[5px] text-label uppercase tracking-[0.06em] backdrop-blur-sm ${
+                      className={`max-w-[64%] shrink-0 truncate rounded-full border px-[10px] py-[5px] text-label uppercase tracking-[0.06em] backdrop-blur-sm ${
                         work.cardText === "light" ? "border-white/15 bg-white/10 text-white/70" : "border-black/[0.08] bg-white/70 text-ink/60"
                       }`}
                     >
@@ -177,7 +179,7 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
                   )}
                 </div>
                 <p
-                  className={`mt-[6px] h-[22px] w-[82%] truncate pl-[4.6%] text-secondary transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 ${
+                  className={`mt-[6px] w-[95.4%] pl-[4.6%] text-secondary max-md:line-clamp-2 md:h-[24px] md:w-[82%] md:truncate transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 ${
                     work.cardText === "light" ? "text-white/50" : "text-ink-50"
                   }`}
                 >

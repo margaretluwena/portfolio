@@ -16,9 +16,9 @@ export const metadata: Metadata = { title: "Works", description: "Every project:
 export default function WorksIndex() {
   return (
     <main className="min-h-screen">
-      <PageEnter className="px-[max(24px,4.16vw)] pt-[17.5vh] pb-[12vh]">
+      <PageEnter className="px-[var(--inset)] pt-[17.5vh] pb-[12vh] md:pr-[calc(100vw-var(--align-r))]" /* between the nav's text edges, two cards to a row (2026-11-14; was 4.16vw margins, three to a row) */>
         <h1 className="sr-only">Works</h1>
-        <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-[0.9vw]">
+        <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-[2vw]">
           {indexWorks.map((w, i) => (
             <li key={w.slug} data-work={w.slug}>
               <WorkCard work={w} index={i} />

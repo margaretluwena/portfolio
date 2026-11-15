@@ -4,7 +4,11 @@ import AboutExperience from "@/components/about/AboutExperience";
 import AboutInvolvement from "@/components/about/AboutInvolvement";
 import { PageEnter } from "@/components/providers/PageTransition";
 
-export const metadata: Metadata = { title: "About" };
+export const metadata: Metadata = {
+  title: "About",
+  description:
+    "About Margaret Luwena: cofounder and CPO at Traeco, running BUILD at TroyLabs, and a designer who ships her own work. Bio, work experience, and what she is involved with at USC.",
+};
 
 /*
   ABOUT - canonical route (/contact redirects here). Blue bio card with
@@ -21,6 +25,7 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen">
       <PageEnter className="pt-[17vh]">
+        <h1 className="sr-only">About</h1>
         <div className="px-[var(--margin-outer)]">
           <AboutCard />
         </div>

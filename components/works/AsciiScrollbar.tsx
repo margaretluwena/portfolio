@@ -167,7 +167,7 @@ export default function AsciiScrollbar({ sections = [] }: { sections?: Section[]
 
   return (
     <div
-      className="fixed bottom-[18vh] left-[calc(var(--inset)*0.18)] top-[26vh] z-30 hidden transition-opacity duration-500 md:block"
+      className="fixed bottom-[18vh] left-[calc(var(--inset)-72px)] /* the labels sit 72px in, so they start at --inset, under the nav's text (2026-11-14) */ top-[26vh] z-30 hidden transition-opacity duration-500 md:block"
       style={{ fontFamily: "var(--font-sky), ui-monospace, Menlo, monospace", opacity: ready ? 1 : 0, pointerEvents: ready ? "auto" : "none" }}
       aria-hidden={!ready}
     >

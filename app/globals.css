@@ -27,11 +27,19 @@
      Fixed px on purpose: type must NOT scale with the viewport (20px on the
      2164 artboard would render 13px at 1440 - unreadable for a bio). The only
      size change is the one-notch step-down at the mobile breakpoint below. */
-  --type-label: 13px;       /* nav, CONTACT, counter (italic variant) - 20px on artboard */
-  --type-name: 17px;        /* MARGARET LUWENA - Nohemi, -0.02em - 26px on artboard */
-  --type-display: 26px;     /* "is a design engineer" - body face italic, tracking 0 - 40px on artboard */
-  --type-body: 16px;        /* bio paragraphs - body face, lh 1.45 - 20px on artboard */
-  --type-secondary: 15px;   /* card descriptions - body face, lh 1.45, ink-50 */
+  /* THREE sizes for the whole site, exact px (Michelle Liu's review,
+     2026-11-14: "at most 2 or 3 font sizes"): small 13, body 16, large 28.
+     The older token names stay so nothing has to be renamed; each now
+     resolves to one of the three. The only exception is the intro's
+     full-screen wordmark (text-hero), which is an animation, not text. */
+  --type-small: 13px;
+  --type-base: 16px;
+  --type-large: 28px;
+  --type-label: var(--type-small);     /* nav, counter, tags, captions */
+  --type-name: var(--type-base);       /* MARGARET LUWENA in the nav pill and footer */
+  --type-display: var(--type-base);    /* the line under the name */
+  --type-body: var(--type-base);       /* bio paragraphs - lh 1.45 */
+  --type-secondary: var(--type-base);  /* card descriptions - lh 1.45, ink-50 */
 
   /* ---- Layout (MAIN PAGE) ----
      Viewport-relative on purpose: margins and columns scale, type doesn't.
@@ -61,10 +69,6 @@
 @media (max-width: 767px) {
   :root {
     --inset: 24px;
-    --type-label: 12px;
-    --type-name: 16px;
-    --type-display: 22px;
-    --type-body: 15px;
   }
 }
 
@@ -105,12 +109,23 @@ body {
    liked), lead (the point line), body, small (captions and supporting
    lines), label (the accent eyebrows). Uppercase tags use the site's
    text-label token. */
-.study-title   { font-size: clamp(30px, 2.7vw, 52px); line-height: 1.08; letter-spacing: -0.02em; }
-.study-heading { font-size: clamp(24px, 2.05vw, 40px); line-height: 1.15; letter-spacing: -0.015em; font-weight: 500; color: var(--study-blue); }
-.study-lead    { font-size: clamp(17px, 1.25vw, 22px); line-height: 1.4; letter-spacing: -0.005em; }
-.study-body    { font-size: clamp(15px, 1vw, 18px); line-height: 1.55; }
-.study-small   { font-size: clamp(13px, 0.95vw, 16px); line-height: 1.45; }
-.study-label   { font-size: clamp(13px, 1vw, 16px); line-height: 1.3; font-weight: 500; color: var(--study-blue); }
+/* 2026-11-14: the fluid clamps are gone; a study uses the site's three
+   exact sizes. Title and heading share the large size and differ by
+   colour and weight; lead and body share the base size. */
+.study-title   { font-size: var(--type-large); line-height: 1.12; letter-spacing: -0.02em; }
+.study-heading { font-size: var(--type-large); line-height: 1.15; letter-spacing: -0.015em; font-weight: 500; color: var(--study-blue); }
+.study-lead    { font-size: var(--type-base); line-height: 1.45; font-weight: 500; }
+.study-body    { font-size: var(--type-base); line-height: 1.55; }
+.study-small   { font-size: var(--type-small); line-height: 1.45; }
+.study-label   { font-size: var(--type-small); line-height: 1.3; font-weight: 500; color: var(--study-blue); }
+
+/* a study's images open large on click (Lightbox) and cannot be dragged off the page (Michelle Liu, 2026-11-14) */
+.study-zoom section img { cursor: zoom-in; -webkit-user-drag: none; user-select: none; }
+.study-zoom section a img, .study-zoom section button img, .study-zoom [data-no-zoom] img { cursor: inherit; }
+
+/* links carry weight, not an underline (Michelle Liu, 2026-11-14) */
+.text-link { font-weight: 700; color: hsl(var(--ink)); text-decoration: none; transition: opacity 200ms; }
+.text-link:hover, .text-link:focus-visible { opacity: 0.6; }
 
 /* a case study hides the native scrollbar: AsciiScrollbar draws its own (md+) */
 @media (min-width: 768px) {

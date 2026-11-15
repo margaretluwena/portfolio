@@ -71,7 +71,7 @@ export type Block =
    a plain image, or a slot still to be filled */
 export type Visual =
   | { kind: "video"; src: string; poster: string; caption: string; aspect?: string }
-  | { kind: "animation"; name: "integration-snippet" | "before-after" | "research-funnel" | "report-vs-live"; caption: string }
+  | { kind: "animation"; name: "integration-snippet" | "before-after" | "research-funnel" | "report-vs-live" | "mark-phone"; caption: string }
   | { kind: "image"; media: Media; caption?: string }
   /* a row of images side by side, tops aligned, one caption for the row */
   | { kind: "gallery"; media?: Media[]; groups?: { label: string; media: Media[]; muted?: boolean }[]; caption?: string }
@@ -205,7 +205,8 @@ export const works: Work[] = [
           "Mark is at [thinkwithmark.com](https://www.thinkwithmark.com), and [TIME named it one of the Best Inventions of 2026](https://x.com/thinkwithmark/status/2110796538045931919).",
         ],
         /* the shipped screens in one phone beside the words (scripts/capture/mark/phone.html, 2026-11-02) */
-        visual: { kind: "video", src: "/videos/mark/phone.mp4", poster: "/images/mark/posters/phone.jpg", aspect: "420 / 760", caption: "The app as it shipped: home, the library, a note, and the three share cards." },
+        /* 2026-11-14: one static phone whose screens change, drawn live (components/works/motion/PhoneFlip.tsx), in place of the recording of phones sliding past (/videos/mark/phone.mp4, kept on disk) */
+        visual: { kind: "animation", name: "mark-phone", caption: "The app as it shipped: home, the library, a note, and the three share cards." },
         visualSide: true,
       },
       {
@@ -216,12 +217,27 @@ export const works: Work[] = [
           { value: "8,000", label: "on the waitlist while I worked on it" },
         ],
       },
+      /* the finished UI comes second, before the problem and the process (Michelle Liu, 2026-11-14: lead with finished work) */
+      {
+        type: "essay",
+        title: "Any line, findable by book, category or note, and ready to post",
+        rail: "Shipped",
+        items: [
+          { num: "01", title: "Library", body: "Every line, findable by book, category or note." },
+          { num: "02", title: "Note detail", body: "The line next to what you thought about it." },
+          { num: "03", title: "Share", body: "Pick a style and post." },
+        ],
+        /* the swipe: the Figma screens in an iPhone, sliding from the library to the share cards and through their iterations (scripts/capture/mark, 2026-11-02) */
+        visual: { kind: "video", src: "/videos/mark/swipe.mp4", poster: "/images/mark/posters/swipe.jpg", aspect: "1128 / 700", caption: "From the library to a finished share card: the letter, the postcard, the sticky note." },
+        visualFirst: true,
+      },
       {
         type: "essay",
         title: "A saved line only mattered to the person who saved it",
         rail: "Problem",
         body: [
-          "Mark's bookmark saves a line the moment you underline it, so capture was already solved. The harder part was what came next: a saved line only mattered to the person who saved it, and Eason wanted reading to feel as shareable as Spotify Wrapped. That left the app with two questions, how to get readers coming back to their lines and how to get anyone else to care about them.",
+          /* the problem comes first, in one sentence (Chris, 2026-11-14: "it takes 2 sentences to get to the problem"); wording approved by Margaret the same day */
+          "How do you get readers to come back to the lines they saved, and get anyone else to care about them? The bookmark already handled saving, and Eason wanted what came after to feel as shareable as Spotify Wrapped.",
         ],
         /* her screenshot of the Figma reference board (2026-11-02): camera rolls of underlined pages, library cards, shelves */
         visual: { kind: "image", media: { src: "/images/mark/reference-board.webp", alt: "The reference board: photos of underlined pages and book dedications saved to camera rolls, library cards, and shelves" }, caption: "How people kept lines before Mark: a camera roll of underlined pages." },
@@ -231,8 +247,11 @@ export const works: Work[] = [
         title: "The library is organised the way people actually read",
         rail: "Decisions",
         body: [
-          "Mark had books, highlights and handwritten notes, which is more than most reading apps hold, so I spent the first few weeks trying different ways to structure them. The first was close to a bookshelf, your books on shelves the way they sit at home. It looked the part, and that was the problem: it was stylised in a way nothing else in the app was, it added friction, and Eason didn't like it. The second was simpler, bento-style library cards that put the book itself first, and that is where most of the iterating happened.",
-          "Decision: Any line can be found by book, by category or by the note written beside it, and every line stays with its note so you remember why it mattered.",
+          /* one step per paragraph: the question, the first try, the second, what shipped (Chris, 2026-11-14: "im so confused reading this"); wording approved by Margaret the same day */
+          "Mark holds three things: books, the lines you highlight in them, and the notes you write beside those lines. I spent the first few weeks working out how the library should arrange them.",
+          "I tried a bookshelf first, with books on shelves the way they sit at home. It was more stylised than anything else in the app and slower to use, and Eason didn't like it.",
+          "Then I tried simpler cards in a grid that put the book itself first. Most of the iterating happened there.",
+          "Decision: The library shipped with three tabs, Recent, Categories and Books. Any line can be found by book, by category or by the note written beside it, and every line stays with its note so you remember why it mattered.",
           "What I learned: I couldn't find the right structure on paper. It only became obvious once I put it into action and started designing and building.",
         ],
         /* three of the V3.2 library structures (a Recent card over a category grid, a category as a list, a bare grid), then the two tabs that shipped in Demo V3.3 */
@@ -287,19 +306,6 @@ export const works: Work[] = [
           ],
           caption: "The quote over the cover, then the three that shipped: a letter, a postcard, a sticky note.",
         },
-      },
-      {
-        type: "essay",
-        title: "Any line, findable by book, category or note, and ready to post",
-        rail: "Shipped",
-        items: [
-          { num: "01", title: "Library", body: "Every line, findable by book, category or note." },
-          { num: "02", title: "Note detail", body: "The line next to what you thought about it." },
-          { num: "03", title: "Share", body: "Pick a style and post." },
-        ],
-        /* the swipe: the Figma screens in an iPhone, sliding from the library to the share cards and through their iterations (scripts/capture/mark, 2026-11-02) */
-        visual: { kind: "video", src: "/videos/mark/swipe.mp4", poster: "/images/mark/posters/swipe.jpg", aspect: "1128 / 700", caption: "From the library to a finished share card: the letter, the postcard, the sticky note." },
-        visualFirst: true,
       },
       {
         type: "also",
@@ -409,6 +415,21 @@ export const works: Work[] = [
           { value: "traeco.dev", label: "shipped to production", href: "https://traeco.dev" },
         ],
       },
+      /* the finished UI comes second, before the problem and the process (Michelle Liu, 2026-11-14: lead with finished work) */
+      {
+        type: "essay",
+        title: "A dashboard that pays for itself",
+        rail: "Shipped",
+        items: [
+          { num: "01", title: "Home", body: "Savings, top recommendations and spend." },
+          { num: "02", title: "Recommendations", body: "Cost, quality and confidence, with the option to test before committing." },
+          { num: "03", title: "Agent detail", body: "Six weeks of quality history for each agent." },
+          /* what the repo has (checked 2026-10-29): per-agent budgets on the API, defaults of a 2% judge-preference drop, 2% faithfulness drop, zero structure drop and 200ms of p95 latency, alert-only on breach; no settings screen yet */
+          { num: "04", title: "Quality budgets", body: "Limits a team sets once on how far quality may slip, and the product holds every change to them. Set through the API today; the settings screen is next." },
+        ],
+        visual: { kind: "video", src: "/videos/traeco/drilldown.mp4", poster: "/images/traeco/posters/drilldown.jpg", caption: "Drilling from a recommendation into one agent's six-week quality history." },
+        visualFirst: true,
+      },
       {
         type: "essay",
         title: "Everyone knew it would be urgent. Nobody was in pain yet.",
@@ -465,19 +486,6 @@ export const works: Work[] = [
           "What I learned: A recommendation is only as useful as people's trust in it.",
         ],
         visual: { kind: "video", src: "/videos/traeco/recommendations.mp4", poster: "/images/traeco/posters/recommendations.jpg", caption: "Open a recommendation to see what it saves, what it does to quality and how sure the judge is, then try it on part of the traffic." },
-      },
-      {
-        type: "essay",
-        title: "A dashboard that pays for itself",
-        rail: "Shipped",
-        items: [
-          { num: "01", title: "Home", body: "Savings, top recommendations and spend." },
-          { num: "02", title: "Recommendations", body: "Cost, quality and confidence, with the option to test before committing." },
-          { num: "03", title: "Agent detail", body: "Six weeks of quality history for each agent." },
-          /* what the repo has (checked 2026-10-29): per-agent budgets on the API, defaults of a 2% judge-preference drop, 2% faithfulness drop, zero structure drop and 200ms of p95 latency, alert-only on breach; no settings screen yet */
-          { num: "04", title: "Quality budgets", body: "Limits a team sets once on how far quality may slip, and the product holds every change to them. Set through the API today; the settings screen is next." },
-        ],
-        visual: { kind: "video", src: "/videos/traeco/drilldown.mp4", poster: "/images/traeco/posters/drilldown.jpg", caption: "Drilling from a recommendation into one agent's six-week quality history." },
       },
       {
         type: "essay",
@@ -590,6 +598,20 @@ export const works: Work[] = [
           { value: "First", label: "USC All Star Team at the competition" },
         ],
       },
+      /* the finished UI comes second, before the problem and the process (Michelle Liu, 2026-11-14: lead with finished work) */
+      {
+        type: "essay",
+        title: "A feed you can filter, sort and check",
+        rail: "Shipped",
+        items: [
+          { num: "01", title: "Filters", body: "Region and issue." },
+          { num: "02", title: "Sorting", body: "Most pressing, volume, or fastest growing." },
+          { num: "03", title: "Cards", body: "One narrative each, with its source." },
+        ],
+        /* the product demo from the atlix-landing repo (public/atlixdemo.mp4, 32s, 1872x1080 at 60fps, 15MB), re-encoded to 1440 wide, 30fps, 1.9MB (2026-11-02) */
+        visual: { kind: "video", src: "/videos/atlix/demo.mp4", poster: "/images/atlix/posters/demo.jpg", aspect: "1440 / 830", caption: "The demo: the feed, filtering by region and issue, and a narrative opened to its sources." },
+        visualFirst: true,
+      },
       {
         type: "essay",
         title: "By the time a report lands, the conversation has moved on",
@@ -628,18 +650,6 @@ export const works: Work[] = [
           ],
           caption: "The first version, and the grid that shipped.",
         },
-      },
-      {
-        type: "essay",
-        title: "A feed you can filter, sort and check",
-        rail: "Shipped",
-        items: [
-          { num: "01", title: "Filters", body: "Region and issue." },
-          { num: "02", title: "Sorting", body: "Most pressing, volume, or fastest growing." },
-          { num: "03", title: "Cards", body: "One narrative each, with its source." },
-        ],
-        /* the product demo from the atlix-landing repo (public/atlixdemo.mp4, 32s, 1872x1080 at 60fps, 15MB), re-encoded to 1440 wide, 30fps, 1.9MB (2026-11-02) */
-        visual: { kind: "video", src: "/videos/atlix/demo.mp4", poster: "/images/atlix/posters/demo.jpg", aspect: "1440 / 830", caption: "The demo: the feed, filtering by region and issue, and a narrative opened to its sources." },
       },
       {
         type: "also",
@@ -979,17 +989,17 @@ export const works: Work[] = [
       {
         type: "artifactGrid",
         media: [
-          { src: "/images/graphics-hero.webp", alt: "" },
-          { src: "/images/graphics-2.webp", alt: "" },
-          { src: "/images/graphics-3.webp", alt: "" },
-          { src: "/images/graphics-4.webp", alt: "" },
-          { src: "/images/graphics-5.png", alt: "" },
-          { src: "/images/graphics-6.png", alt: "" },
+          { src: "/images/graphics-hero.webp", alt: "Express Yourself poster: a blue 3D character in oversized glasses with star eyes and a taped-on number 5" },
+          { src: "/images/graphics-2.webp", alt: "444 film poster: a screaming figure in red and cream over a dark field, Santa Monica 2023" },
+          { src: "/images/graphics-3.webp", alt: "Warung Asis flyer: an illustrated plate of rice, vegetables and soup for an Indonesian food night at USC" },
+          { src: "/images/graphics-4.webp", alt: "Zsiga wordmark beside an illustrated girl in a lab coat and goggles pouring green liquid" },
+          { src: "/images/graphics-5.png", alt: "TroyLabs DEMO 2025 poster: a blue envelope with a QR code among torn paper notes" },
+          { src: "/images/graphics-6.png", alt: "Two Instagram posts for DEMO 2025 styled as a text message thread on a phone" },
         ],
       },
       {
         type: "artifactGrid",
-        media: [{ src: "/images/graphics-7.png", alt: "" }],
+        media: [{ src: "/images/graphics-7.png", alt: "A strip of TroyLabs event graphics: Launch, Catena, Viola, Tuna Machines, Midweek Mixers and Revisent" }],
       },
     ],
   },
@@ -1011,8 +1021,8 @@ export const works: Work[] = [
       {
         type: "artifactGrid",
         media: [
-          { src: "/images/smallworks-3.png", alt: "" },
-          { src: "/images/smallworks-hero.png", alt: "" }, // the Momento gallery site: UI/UX, not graphics (Margaret, 2026-11-03)
+          { src: "/images/smallworks-3.png", alt: "Momento screens: homepage, a vinyl record menu, the main feature, settings, about and gallery" },
+          { src: "/images/smallworks-hero.png", alt: "Momento gallery page: photo cards with dates on an orange gradient" }, // the Momento gallery site: UI/UX, not graphics (Margaret, 2026-11-03)
         ],
       },
     ],

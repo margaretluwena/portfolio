@@ -10,6 +10,7 @@ import IntegrationSnippet from "@/components/works/motion/IntegrationSnippet";
 import BeforeAfterSlider from "@/components/works/motion/BeforeAfterSlider";
 import ResearchFunnel from "@/components/works/motion/ResearchFunnel";
 import ReportVsLive from "@/components/works/motion/ReportVsLive";
+import PhoneFlip from "@/components/works/motion/PhoneFlip";
 import { indexWorks } from "@/lib/works";
 import Prox from "@/components/ui/Prox";
 import { TransitionLink } from "@/components/providers/PageTransition";
@@ -85,7 +86,7 @@ export function NeedText({ label, lines = 1, className = "" }: { label: string; 
 
 const SIZES = imageSizes as unknown as Record<string, [number, number]>;
 
-function MediaView({ media, sizes = "(max-width: 768px) 92vw, 56vw" }: { media: Media; sizes?: string }) {
+function MediaView({ media, sizes = "(max-width: 768px) 92vw, 70vw" }: { media: Media; sizes?: string }) {
   if (media.embed) {
     return (
       <div className="aspect-video w-full overflow-hidden bg-placeholder/40">
@@ -331,7 +332,7 @@ export function Marked({ text }: { text: string }) {
         const link = part.match(LINK_RE);
         if (link) {
           return (
-            <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink">{link[1]}</a>
+            <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer" className="text-link">{link[1]}</a>
           );
         }
         return part.startsWith("[MAR") || part.startsWith("[CHECK") ? (
@@ -366,7 +367,7 @@ function VisualView({ visual }: { visual: Visual }) {
     );
   }
   if (visual.kind === "animation") {
-    const Comp = visual.name === "integration-snippet" ? IntegrationSnippet : visual.name === "before-after" ? BeforeAfterSlider : visual.name === "report-vs-live" ? ReportVsLive : ResearchFunnel;
+    const Comp = visual.name === "mark-phone" ? PhoneFlip : visual.name === "integration-snippet" ? IntegrationSnippet : visual.name === "before-after" ? BeforeAfterSlider : visual.name === "report-vs-live" ? ReportVsLive : ResearchFunnel;
     return (
       <figure className="space-y-3">
         <Comp />
@@ -483,7 +484,7 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
         return label ? (
           <div key={i} className="space-y-7">
             <aside
-              className="rounded-[8px] border px-5 py-4 md:px-6 md:py-5"
+              className="max-w-[72ch] rounded-[8px] border px-5 py-4 md:px-6 md:py-5"
               style={{ background: "color-mix(in srgb, var(--study-blue) 6%, white)", borderColor: "color-mix(in srgb, var(--study-blue) 28%, transparent)" }}
             >
               <span className="text-label uppercase tracking-[0.06em] text-[var(--study-blue)]">{label.slice(0, -1)}</span>
@@ -493,7 +494,7 @@ function EssayBlock({ block }: { block: Extract<Block, { type: "essay" }> }) {
           </div>
         ) : (
           <div key={i} className="space-y-6">
-            <p className="study-body whitespace-pre-line text-ink"><Marked text={text} /></p>
+            <p className="study-body max-w-[72ch] whitespace-pre-line text-ink"><Marked text={text} /></p>
             {after}
           </div>
         );
@@ -532,9 +533,9 @@ function StatsBlock({ block }: { block: Extract<Block, { type: "stats" }> }) {
     <ul className="grid gap-6 md:grid-cols-3 md:gap-8">
       {block.items.map((it) => (
         <li key={it.label} className="space-y-1 border-t border-hairline pt-3">
-          <div className="text-[clamp(24px,2vw,36px)] font-medium leading-none tracking-[-0.015em] text-ink">
+          <div className="text-[length:var(--type-large)] font-medium leading-none tracking-[-0.015em] text-ink">
             {it.href ? (
-              <a href={it.href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink">{it.value}</a>
+              <a href={it.href} target="_blank" rel="noopener noreferrer" className="text-link">{it.value}</a>
             ) : it.value}
           </div>
           <div className="text-label uppercase text-ink/50">{it.label}</div>
@@ -567,7 +568,7 @@ function AlsoBlock({ block }: { block: Extract<Block, { type: "also" }> }) {
               )}
             </div>
             <h3 className="study-body font-medium text-ink">
-              {it.href ? <a href={it.href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink">{it.name}</a> : it.name}
+              {it.href ? <a href={it.href} target="_blank" rel="noopener noreferrer" className="text-link">{it.name}</a> : it.name}
             </h3>
             <p className="study-small text-ink/60">{it.line}</p>
           </li>
@@ -605,7 +606,7 @@ function WipBlock({ block }: { block: Extract<Block, { type: "wip" }> }) {
   return (
     <p className="study-small text-ink/50">
       This study is being written. For the full story in the meantime,{" "}
-      <a href={`mailto:${block.email}`} className="underline underline-offset-4 hover:text-ink">
+      <a href={`mailto:${block.email}`} className="text-link">
         {block.email}
       </a>
       .
@@ -720,7 +721,7 @@ export function SectionRail({ work, onReturn }: { work: Work; onReturn?: () => v
     </motion.div>
     <nav
       aria-label="Case study"
-      className="fixed left-[calc(var(--inset)*0.18+72px)] top-[21vh] z-30 hidden md:block"
+      className="fixed left-[var(--inset)] top-[21vh] z-30 hidden md:block"
     >
       {onReturn ? (
         <button type="button" onClick={onReturn} aria-label="Return" className={railBare}>

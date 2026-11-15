@@ -49,7 +49,7 @@ export default function Page() {
   const [cornerHidden, setCornerHidden] = useState(false);
   const [skyFont, setSkyFont] = useState(SKY_FONT_FALLBACK);
   const introRef = useRef<HTMLHeadingElement>(null);
-  const cornerRef = useRef<HTMLParagraphElement>(null);
+  const cornerRef = useRef<HTMLHeadingElement>(null);
   const skipped = useRef(false);
 
   // returning within the session? skip the intro before first paint.

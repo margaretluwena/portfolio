@@ -7,7 +7,8 @@ import type { Work } from "@/lib/works";
 import { Blocks, SectionRail, NextWork, isNeed, HIDE_NEEDS, railEntries } from "@/components/works/Blocks";
 import { CoverArt } from "@/components/works/WorkList";
 import AsciiScrollbar from "@/components/works/AsciiScrollbar";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import Lightbox from "@/components/works/Lightbox";
 
 /*
   The case-study body - Margaret's 2026-10-08 template (general for every
@@ -41,6 +42,7 @@ const CREDIT_ORDER = ["Timeline", "Role", "Team", "Disciplines"];
 export default function CaseStudyContent({ work, variant }: { work: Work; variant: "page" | "overlay" }) {
   const isOverlay = variant === "overlay";
   const router = useRouter();
+  const column = useRef<HTMLDivElement>(null);
 
   /* the ASCII scrollbar stands in for the native one while a study is up */
   useEffect(() => {
@@ -64,7 +66,10 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
       /* phones: the column runs between the same insets as every other
          page - 56.4vw of a 375px screen was a 212px reading column, which
          read as confined (Margaret, 2026-10-21) */
-      className="mx-auto w-[calc(100%-2*var(--inset))] md:w-[min(56.4vw,92vw)]"
+      /* lg+: 70vw, up from 56.4vw, so the UI in the visuals is large enough to read (Michelle Liu, 2026-11-14); prose keeps its own measure (Blocks) */
+      /* md+ (Michelle Liu, 2026-11-14, full review): the column no longer centres itself. The rail's labels start at --inset, where the nav's text starts, and the column runs from just right of them to --align-r, where the nav's text ends. */
+      className="study-zoom mx-auto w-[calc(100%-2*var(--inset))] md:mx-0 md:ml-[max(20vw,calc(var(--inset)+136px))] md:mr-[calc(100vw-var(--align-r))] md:w-auto"
+      ref={column}
       style={work.accent ? ({ "--study-blue": work.accent } as React.CSSProperties) : undefined}
     >
       {/* hero - the shared element. A work's own `hero` image wins; else
@@ -79,10 +84,10 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
         style={work.coverArt && !work.hero ? { background: work.cardBg ?? "#fff" } : undefined}
       >
         {work.hero && work.hero.src !== "NEED" ? (
-          <Image src={work.hero.src} alt={work.hero.alt} fill sizes="(max-width: 768px) 92vw, 56vw" className="object-cover" priority />
+          <Image src={work.hero.src} alt={work.hero.alt} fill sizes="(max-width: 768px) 92vw, 70vw" className="object-cover" priority />
         ) : work.coverArt ? (
           <div className="absolute inset-x-0 top-1/2 aspect-[972/678] -translate-y-1/2">
-            <CoverArt work={work} hover={false} sizes="(max-width: 768px) 92vw, 56vw" />
+            <CoverArt work={work} hover={false} sizes="(max-width: 768px) 92vw, 70vw" />
           </div>
         ) : (
           work.cover &&
@@ -91,7 +96,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
               src={work.cover.src}
               alt={work.cover.alt}
               fill
-              sizes="(max-width: 768px) 92vw, 56vw"
+              sizes="(max-width: 768px) 92vw, 70vw"
               className="object-cover"
               priority
             />
@@ -128,6 +133,7 @@ export default function CaseStudyContent({ work, variant }: { work: Work; varian
         <SectionRail work={work} onReturn={isOverlay ? () => router.back() : undefined} />
         <Blocks work={work} />
         <NextWork slug={work.slug} />
+        <Lightbox scope={column} />
       </section>
     </div>
   );

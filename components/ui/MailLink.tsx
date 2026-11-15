@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from "react";
   through to mailto: as before. The address stays in the aria-label and
   title, so it is still readable and still a link.
 */
-export default function MailLink({ email, className }: { email: string; className: string }) {
+export default function MailLink({ email, className, size = 24 }: { email: string; className: string; size?: number }) {
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
@@ -27,7 +27,7 @@ export default function MailLink({ email, className }: { email: string; classNam
   return (
     <a href={`mailto:${email}`} aria-label={`Email ${email}`} title={email} className={className} data-bubble={copied ? "Copied!" : "Copy email"} onClick={onClick}>
       <span className="sr-only" aria-live="polite">{copied ? "Copied" : ""}</span>
-      <svg width="26" height="24" viewBox="0 0 26 24" fill="none" aria-hidden>
+      <svg width={(size * 26) / 24} height={size} viewBox="0 0 26 24" fill="none" aria-hidden>
         <g style={{ opacity: copied ? 0 : 1, transition: "opacity 180ms" }}>
           <rect x="1.5" y="4" width="23" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
           <path d="M2.5 6.5 13 13.5 23.5 6.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />

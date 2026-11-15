@@ -99,6 +99,7 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
   }, []);
   // auto-cycle until the visitor takes over
   const taken = useRef(false);
+  const stopCycle = useRef<(() => void) | null>(null); // halts a cycle glide already in flight
   const hovering = useRef(false);
   useEffect(() => {
     const el = scroller.current;
@@ -125,6 +126,7 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
       const target = Math.min(tops[next].top - tops[0].top, el.scrollHeight - el.clientHeight);
       const ctrl = animate(el.scrollTop, target, { duration: 0.9, ease: [0.22, 1, 0.36, 1], onUpdate: (v) => { el.scrollTop = v; } });
       stop = () => ctrl.stop();
+      stopCycle.current = stop;
     };
     const id = setInterval(tick, CYCLE_MS);
     return () => {
@@ -138,6 +140,27 @@ export default function WorksColumn({ onIndex, reveal = true }: { onIndex?: (i: 
       el.removeEventListener("pointerleave", out);
     };
   }, [reveal, reduce]);
+
+  /* the column is a fixed scroller on the right, so a wheel over the name,
+     the bio or the sky scrolled nothing and the page felt stuck (Michelle
+     Liu, 2026-11-14). Any wheel that lands outside the column is handed to
+     it, so the home page scrolls from anywhere. Phones are in normal flow
+     (no scroller of its own) and need nothing. */
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+    const forward = (e: WheelEvent) => {
+      if (e.ctrlKey || e.defaultPrevented) return;           // pinch-zoom, or someone else took it
+      if (el.scrollHeight <= el.clientHeight) return;        // not its own scroller
+      if (e.target instanceof Node && el.contains(e.target)) return; // already scrolling natively
+      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? el.clientHeight : 1;
+      taken.current = true;                                  // the visitor has taken over the auto-cycle
+      stopCycle.current?.();
+      el.scrollTop += e.deltaY * unit;
+    };
+    window.addEventListener("wheel", forward, { passive: true });
+    return () => window.removeEventListener("wheel", forward);
+  }, []);
 
   // live index: the work whose card is nearest 40% down the viewport
   function onScroll() {

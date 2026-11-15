@@ -27,7 +27,7 @@ import { getWork } from "@/lib/works";
   away, so the nav leads the page change rather than trailing it.
 
   Everything is --type-label (13px, +0.06em, uppercase). Interactable text
-  (name, links) rests at ink/40 and comes up to full ink on hover/focus
+  (name, links) rests at ink/60 and comes up to full ink on hover/focus
   (Margaret, 2026-10-08 - a real hover, not the proximity fade); the
   contextual label is not a control and stays at ink/70. Home state (hidden
   during the intro, live counter) comes from NavContext; subpage labels
@@ -91,7 +91,7 @@ function labelFor(route: string): string {
 /* the page's own link is ink (an underline that drew in on hover was tried
    and dropped the same day, 2026-11-03) */
 const linkClass =
-  "text-ink/40 transition-colors duration-200 hover:text-ink focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+  "relative text-ink/60 transition-colors duration-200 after:absolute after:-inset-x-1.5 after:-inset-y-3 after:content-[''] hover:text-ink focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
 const activeClass = "text-ink";
 
 export default function Nav() {
@@ -130,7 +130,8 @@ export default function Nav() {
       transition={{ duration: reduce ? 0 : 0.45, ease: "easeOut" }}
     />
     <motion.header
-      className="fixed left-[var(--inset)] right-[var(--inset)] top-[6.36vh] z-40 md:right-[calc(100vw-var(--align-r))]"
+      /* md+: the pill is 19px wider on each side (its 18px padding + 1px edge), so the TEXT inside starts at --inset and ends at --align-r, on the same lines as the name and the cards (Michelle Liu, 2026-11-14) */
+      className="fixed left-[var(--inset)] right-[var(--inset)] top-[6.36vh] z-40 md:left-[calc(var(--inset)-19px)] md:right-[calc(100vw-var(--align-r)-19px)]"
       initial={false}
       animate={{ opacity: hidden || away ? 0 : 1, y: away ? "-320%" : "0%" }} /* -320%: clear of the top edge from 6.36vh down, with margin */
       transition={{

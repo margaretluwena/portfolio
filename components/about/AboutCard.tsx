@@ -19,7 +19,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { motion, useMotionTemplate, useMotionValue, useReducedMotion, useSpring } from "motion/react";
-import { socials } from "@/components/shell/PortfolioShell";
+import { socials, ICON } from "@/components/shell/PortfolioShell";
 import MailLink from "@/components/ui/MailLink";
 
 const EMAIL = "luwena@usc.edu";
@@ -61,9 +61,9 @@ function CardFace() {
         src="/images/about/card-mark.svg"
         alt=""
         aria-hidden
-        className="pointer-events-none absolute bottom-[4%] right-[2%] w-[48%] opacity-60"
+        className="pointer-events-none absolute bottom-[4%] right-[2%] w-[48%] opacity-30"
       />
-      <div className="relative space-y-[1em] text-[14px] leading-normal text-white">
+      <div className="relative space-y-[1em] text-[14px] leading-normal text-ink">
         {CARD_COPY.map((p) => (
           <p key={p.slice(0, 24)}>{p}</p>
         ))}
@@ -81,12 +81,12 @@ function ContactRow() {
   return (
     <ul className="mt-[22px] flex w-[min(620px,86vw)] items-center gap-5">
       <li className="mr-auto">
-        <MailLink email={EMAIL} className={link} />
+        <MailLink email={EMAIL} size={ICON} className={link} />
       </li>
       {socials.map((s) => (
         <li key={s.label}>
           <a href={s.href} aria-label={s.label} target="_blank" rel="noreferrer" className={link}>
-            <Image src={s.icon} alt="" width={24} height={24} className="w-auto" style={{ height: 24 / s.ink }} />
+            <Image src={s.icon} alt="" width={ICON} height={ICON} className="w-auto" style={{ height: ICON / s.ink }} />
           </a>
         </li>
       ))}
@@ -143,7 +143,7 @@ export default function AboutCard() {
           onMouseMove={onMove}
           onMouseEnter={() => tilting && setHovered(true)}
           onMouseLeave={onLeave}
-          className="relative w-[min(620px,86vw)] overflow-hidden rounded-[5px] bg-[#0f28e0] px-[6.3%] py-[4.5%]"
+          className="relative w-[min(620px,86vw)] overflow-hidden rounded-[5px] border border-black/[0.06] bg-[#F7F4EF] px-[6.3%] py-[4.5%]" /* cream with ink text, the blue kept in the signature mark behind it: white on the blue was harder to read on a light site (Michelle Liu, 2026-11-14) */
           style={{
             rotateX: tilting ? rx : 0,
             rotateY: tilting ? ry : 0,

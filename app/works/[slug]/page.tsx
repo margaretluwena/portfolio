@@ -14,7 +14,31 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const work = getWork(slug);
   if (!work || work.comingSoon) return {};
-  return { title: work.title, description: work.lede === "NEED" ? undefined : work.lede };
+  const description = work.lede === "NEED" ? undefined : work.lede;
+  /* a pasted link previews as the project, not the site: its own title,
+     lede and hero (falls back to the site-wide card when a study has no hero) */
+  const image = work.hero ?? work.cover;
+  const images = image && image.src !== "NEED" ? [{ url: image.src, alt: image.alt || work.title }] : undefined;
+  return {
+    title: work.title,
+    description,
+    alternates: { canonical: `/works/${work.slug}` },
+    openGraph: {
+      title: `${work.title} · Margaret Luwena`,
+      description,
+      url: `/works/${work.slug}`,
+      siteName: "Margaret Luwena",
+      type: "article",
+      ...(images ? { images } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      creator: "@marluwena",
+      title: `${work.title} · Margaret Luwena`,
+      description,
+      ...(images ? { images } : {}),
+    },
+  };
 }
 
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -28,7 +52,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   if (!work) {
     return (
       <main className="grid min-h-screen place-items-center text-body-lg">
-        <p>Not found. <Link href="/" className="underline">Back home</Link></p>
+        <p>Not found. <Link href="/" className="text-link">Back home</Link></p>
       </main>
     );
   }

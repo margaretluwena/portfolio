@@ -5,7 +5,6 @@ import type React from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import WorksColumn from "@/components/works/WorksColumn";
-import RotatingTitle from "@/components/shell/RotatingTitle";
 import StickerWord from "@/components/shell/StickerWord";
 import Prox from "@/components/ui/Prox";
 import MailLink from "@/components/ui/MailLink";
@@ -29,7 +28,11 @@ import MailLink from "@/components/ui/MailLink";
 /* `ink` = how much of each PNG's height the glyph actually fills (LinkedIn
    is edge to edge, X and Instagram carry transparent padding) - the
    rendered height is divided by it so all three glyphs read the same size */
+/* one icon size for the home column, the footer and the About row (Michelle Liu, 2026-11-14) */
+export const ICON = 18;
 export const EMAIL = "luwena@usc.edu";
+/* approved by Margaret, 2026-11-14 */
+const TAGLINE = "is a product designer";
 
 export const socials = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/margaretluwena/", icon: "/assets/icon-linkedin.png", ink: 0.993 },
@@ -42,7 +45,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex, wordmarkR
   reveal: boolean; reduce: boolean; onWorksIndex?: (i: number) => void;
   /* the dithered intro (DitherWordmark, 2026-11-03) follows the corner wordmark's
      live rect through its flight and hides the real text until it lands */
-  wordmarkRef?: React.Ref<HTMLParagraphElement>; wordmarkHidden?: boolean; onWordmarkLanded?: () => void;
+  wordmarkRef?: React.Ref<HTMLHeadingElement>; wordmarkHidden?: boolean; onWordmarkLanded?: () => void;
 }) {
   // staggered entrance: fade + rise, sequenced after the wordmark lands (~1.1s flight)
   const enter = (delay: number) => ({
@@ -78,47 +81,50 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex, wordmarkR
           <div className="md:absolute md:top-[24.2vh]">
             {/* the wordmark lands HERE - shared layoutId with the intro; never faded */}
             {reveal && (
-              <motion.p
+              <motion.h1
                 ref={wordmarkRef}
                 layoutId="wordmark"
-                className="font-display text-name text-ink w-fit"
+                className="font-display text-large text-ink w-fit whitespace-nowrap"
                 transition={{ layout: { duration: reduce ? 0 : 1.1, ease: [0.7, 0, 0.2, 1] } }}
                 onLayoutAnimationComplete={onWordmarkLanded}
               >
                 {/* hidden on an inner span, not the motion element (see app/page.tsx) */}
                 <span style={{ opacity: wordmarkHidden ? 0 : 1, transition: "opacity 320ms ease" }}>MARGARET LUWENA</span>
-              </motion.p>
+              </motion.h1>
             )}
 
             {/* tagline - body face italic (Figma 128:507 specs Inter Italic), NOT Nohemi */}
-            <motion.div {...enter(0.55)} className="mt-[6px]">
-              <p className="font-body text-display italic leading-tight">
-                <RotatingTitle active={reveal} />
-              </p>
+            {/* one static line in place of the rotating titles (Michelle Liu,
+                2026-11-14: the rotation made it unclear what she does). The
+                wording is her own first title, approved 2026-11-14;
+                RotatingTitle.tsx stays parked. */}
+            <motion.div {...enter(0.55)} className="mt-[8px]">
+              <p className="font-body text-display font-medium text-ink">{TAGLINE}</p>
             </motion.div>
 
-            <motion.ul {...enter(0.68)} className="mt-[14px] flex items-center gap-[14px]">
+            {/* small and grey so the work gets the first click (same review) */}
+            <motion.ul {...enter(0.68)} className="mt-[14px] flex items-center gap-[12px] text-ink">
               {socials.map((s) => (
-                <li key={s.label}>
+                <li key={s.label} className="opacity-40 transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100"> {/* the grey is on each item: the list's own opacity belongs to the entrance animation */}
                   <Prox maxScale={1.12} radius={55}>
                     <a
                       href={s.href}
                       aria-label={s.label}
                       target="_blank"
                       rel="noreferrer"
-                      className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                      className="relative block after:absolute after:-inset-[10px] after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
                     >
-                      <Image src={s.icon} alt="" width={24} height={24} className="w-auto" style={{ height: 24 / s.ink }} />
+                      <Image src={s.icon} alt="" width={ICON} height={ICON} className="w-auto" style={{ height: ICON / s.ink }} />
                     </a>
                   </Prox>
                 </li>
               ))}
               {/* mail, so the address is reachable from the home page itself
                   (Shub's feedback, 2026-10-13); same glyph as the About row */}
-              <li>
+              <li className="opacity-40 transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100">
                 <Prox maxScale={1.12} radius={55}>
                   {/* a click copies the address; the envelope becomes a check for a second (MailLink) */}
-                  <MailLink email={EMAIL} className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink" />
+                  <MailLink email={EMAIL} size={ICON} className="relative block after:absolute after:-inset-[10px] after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink" />
                 </Prox>
               </li>
             </motion.ul>
@@ -147,7 +153,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex, wordmarkR
                 href="https://traeco.dev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
+                className="text-link"
               >
                 Traeco
               </a>
@@ -162,7 +168,7 @@ export default function PortfolioShell({ reveal, reduce, onWorksIndex, wordmarkR
                 href="https://www.troylabs.vc"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
+                className="text-link"
               >
                 BUILD, USC’s premier student-run startup accelerator
               </a>

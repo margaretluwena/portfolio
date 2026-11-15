@@ -32,16 +32,18 @@ const config: Config = {
            Source: Figma 128:503 (live frame). Display is INTER italic at
            tracking 0 (Figma 128:507) — Nohemi is for MARGARET LUWENA only. */
         "label": ["var(--type-label)", { lineHeight: "normal", letterSpacing: "0.06em" }],      // + uppercase at point of use
+        "large": ["var(--type-large)", { lineHeight: "1.1", letterSpacing: "-0.03em" }],  // the name on the home page, card titles
         "name": ["var(--type-name)", { lineHeight: "normal", letterSpacing: "-0.02em" }],
         "display": ["var(--type-display)", { lineHeight: "normal", letterSpacing: "0" }],
         "body": ["var(--type-body)", { lineHeight: "1.45" }],
         "secondary": ["var(--type-secondary)", { lineHeight: "1.45" }],
 
-        /* Legacy fluid sizes — still used by non-main pages (contact, works,
+        /* (2026-11-14: these three now resolve to the site's exact sizes, no clamps)
+           Legacy fluid sizes — still used by non-main pages (contact, works,
            play, resume, 404, case studies). Do not use on the main page. */
-        "corner": ["clamp(1rem, 1.45vw, 1.5625rem)", { lineHeight: "1", letterSpacing: "-0.05em" }],
-        "title": ["clamp(1.75rem, 2.3vw, 2.5rem)", { lineHeight: "1.1" }],
-        "body-lg": ["clamp(1rem, 1.45vw, 1.5625rem)", { lineHeight: "1.35" }],
+        "corner": ["var(--type-base)", { lineHeight: "1", letterSpacing: "-0.05em" }],
+        "title": ["var(--type-large)", { lineHeight: "1.1" }],
+        "body-lg": ["var(--type-base)", { lineHeight: "1.35" }],
         // intro MARGARET LUWENA. The 9vw cap is for phones only: at 375px the
         // 2.5rem floor wrapped the name onto two lines, which then morphed into
         // the one-line corner wordmark (Margaret, 2026-10-21). From 768px up

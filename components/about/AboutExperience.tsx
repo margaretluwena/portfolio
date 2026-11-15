@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useReducedMotion } from "motion/react";
 
 /*
   WORK EXPERIENCES (Figma "About" 221:520, rows 270:711-731; 2026-10-08).
@@ -44,29 +42,19 @@ const EXPERIENCES: Experience[] = [
   { org: "Indonesia Defence Services", roles: [{ title: "Business Analyst Intern", dates: "May 2023 - August 2023" }] },
 ];
 
-const WINDOW_VH = 58; // the visible slice of the list while pinned
-const TOP_VH = 22;    // where the pinned block starts - clear of the nav pill (14 sat too close to it, Margaret 2026-10-09)
-const TOP_FADE = 7;     // % of the window: the fade over rows leaving through the top (once scrolled)
-const BOTTOM_FADE = 18; // % of the window: the fade over rows waiting below
-const BLOCK_VH = TOP_VH + WINDOW_VH + 3; // the pinned block is only as tall as its content, so the
-                                          // page releases right under the last row (no empty tail)
-
 function Rows() {
   return (
     <ol>
       {EXPERIENCES.map((e) => (
-        <li key={e.org} className="grid grid-cols-[1fr_auto] gap-x-6 py-[3.2vh] first:pt-0">
-          {/* the org; with a second role, a hairline drops from under the name
-              to the bottom of the roles stack (the frame's "Line 76") */}
-          <div className="flex flex-col">
-            <p className="text-body-lg text-ink">{e.org}</p>
-            {e.roles.length > 1 && <span aria-hidden className="ml-[0.4ch] mt-3 w-px flex-1 bg-hairline" />}
-          </div>
-          <div className="text-right">
+        <li key={e.org} className="grid grid-cols-2 gap-x-6 border-t border-hairline py-5 first:border-t-0 first:pt-0">
+          {/* the company carries the weight; the role sits lighter beside it
+              (Michelle Liu, 2026-11-14: they were the same size and weight) */}
+          <p className="text-body font-bold text-ink">{e.org}</p>
+          <div>
             {e.roles.map((r, i) => (
-              <div key={r.title} className={i > 0 ? "mt-[3.2vh]" : ""}>
-                <p className="text-body-lg text-ink">{r.title}</p>
-                <p className="mt-1 text-body text-ink/45">{r.dates}</p>
+              <div key={r.title} className={i > 0 ? "mt-4" : ""}>
+                <p className="text-body text-ink/70">{r.title}</p>
+                <p className="mt-0.5 text-label text-ink/45">{r.dates}</p>
               </div>
             ))}
           </div>
@@ -76,97 +64,14 @@ function Rows() {
   );
 }
 
+/* 2026-11-14 (Michelle Liu): the pinned scroll window is gone; the list is
+   flat and scrolls with the page. Its two columns sit on the home page's
+   grid: the heading at --inset, the rows from --col-right to --align-r. */
 export default function AboutExperience() {
-  const reduce = useReducedMotion();
-  const outer = useRef<HTMLElement>(null);
-  const list = useRef<HTMLDivElement>(null);
-  const [travel, setTravel] = useState(0);
-
-  // how far the rows must move: list height minus the window they show through
-  useLayoutEffect(() => {
-    const el = list.current;
-    if (!el) return;
-    const measure = () => setTravel(Math.max(0, el.scrollHeight - window.innerHeight * (WINDOW_VH / 100)));
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, []);
-
-  // progress through the pinned stretch -> the rows' offset, 1:1 with the wheel
-  useEffect(() => {
-    const sec = outer.current, el = list.current;
-    if (!sec || !el || !travel) return;
-    const win = el.parentElement as HTMLElement | null;
-    const onScroll = () => {
-      const start = sec.getBoundingClientRect().top + window.scrollY;
-      const p = Math.min(1, Math.max(0, (window.scrollY - start) / travel));
-      el.style.transform = `translate3d(0, ${-p * travel}px, 0)`;
-      /* a top fade appears as rows leave through the top (Margaret, 2026-10-09):
-         none at rest, grown to 7% of the window over the first ~60px of travel -
-         well short of the 18% bottom fade */
-      if (win) {
-        const top = Math.min(TOP_FADE, (p * travel) / 60 * TOP_FADE);
-        const mask = `linear-gradient(to bottom, transparent, #000 ${top.toFixed(2)}%, #000 ${100 - BOTTOM_FADE}%, transparent)`;
-        win.style.maskImage = mask;
-        win.style.webkitMaskImage = mask;
-      }
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [travel]);
-
-  const heading = <h2 className="study-title text-ink">Work Experiences</h2>;
-
-  if (reduce) {
-    return (
-      <section className="grid gap-10 px-[var(--inset)] md:grid-cols-[1fr_1.3fr] md:pr-[calc(100vw-var(--align-r))]">
-        {heading}
-        <Rows />
-      </section>
-    );
-  }
-
   return (
-    <>
-      {/* phones: in flow */}
-      <section className="px-[var(--inset)] md:hidden">
-        {heading}
-        <div className="mt-8">
-          <Rows />
-        </div>
-      </section>
-
-      {/* desktop: pinned */}
-      <section ref={outer} className="relative hidden md:block" style={{ height: `calc(${BLOCK_VH}vh + ${travel}px)` }}>
-        <div
-          className="sticky top-0 grid grid-cols-[1fr_1.3fr] gap-10 px-[var(--inset)] pr-[calc(100vw-var(--align-r))]"
-          style={{ height: `${BLOCK_VH}vh`, paddingTop: `${TOP_VH}vh` }}
-        >
-          {heading}
-          <div
-            className="overflow-hidden"
-            style={{
-              height: `${WINDOW_VH}vh`,
-              /* the first row sits on the heading's baseline: pad by the two line-heights' difference */
-              paddingTop: "calc(1.15 * clamp(22px, 2.2vw, 44px) - 1.35 * clamp(1rem, 1.45vw, 1.5625rem))",
-              /* at rest, rows fade out only at the bottom, where they wait to scroll in;
-                 the scroll handler adds the shorter top fade once they move */
-              maskImage: `linear-gradient(to bottom, #000 ${100 - BOTTOM_FADE}%, transparent)`,
-              WebkitMaskImage: `linear-gradient(to bottom, #000 ${100 - BOTTOM_FADE}%, transparent)`,
-            }}
-          >
-            <div ref={list} className="pb-[8vh] will-change-transform">
-              <Rows />
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
+    <section className="grid gap-8 px-[var(--inset)] md:grid-cols-[calc(var(--col-right)-var(--inset))_1fr] md:gap-0 md:pr-[calc(100vw-var(--align-r))]">
+      <h2 className="study-title text-ink">Work Experiences</h2>
+      <Rows />
+    </section>
   );
 }

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { TransitionLink } from "@/components/providers/PageTransition";
-import { socials } from "@/components/shell/PortfolioShell";
+import { socials, ICON } from "@/components/shell/PortfolioShell";
 
 /*
   Site footer (Margaret's references, 2026-10-08): a proper closing block
@@ -128,9 +128,10 @@ export default function SiteFooter({ mode = "static" }: { mode?: "reveal" | "sta
       style={reveal ? { height } : undefined}
       className={`${
         reveal ? "fixed inset-x-0 bottom-0 z-30 pb-[clamp(10px,2.5vh,28px)] pt-[clamp(14px,4vh,44px)]" : "relative mt-[14vh] gap-[8vh] pb-[5vh] pt-[6vh]"
-      } flex flex-col justify-between border-t border-hairline bg-white/75 px-[var(--inset)] text-body text-ink backdrop-blur-xl`}
+      } flex flex-col justify-between border-t border-hairline bg-white/75 px-[var(--inset)] md:pr-[calc(100vw-var(--align-r))] text-body text-ink backdrop-blur-xl`}
     >
-      <div className="grid gap-8 md:grid-cols-[1fr_auto_auto] md:gap-x-20 md:gap-y-0">
+      {/* the site's grid (Michelle Liu, 2026-11-14): the name at --inset, the links at --col-right, the contact column halfway from there to --align-r; every column reads left to right, none right-aligned */}
+      <div className="grid gap-8 md:grid-cols-[calc(var(--col-right)-var(--inset))_1fr_1fr] md:gap-0">
         {/* who / where / when */}
         <div>
           <p className="font-display text-name text-ink">MARGARET LUWENA</p>
@@ -140,7 +141,7 @@ export default function SiteFooter({ mode = "static" }: { mode?: "reveal" | "sta
         </div>
 
         {/* the site */}
-        <nav aria-label="Footer" className="flex flex-col gap-1.5 md:items-end md:text-right">
+        <nav aria-label="Footer" className="flex flex-col gap-1.5">
           {links.map((l) => (
             <TransitionLink key={l.href} href={l.href} className={`w-fit ${link}`}>
               {l.label}
@@ -149,12 +150,12 @@ export default function SiteFooter({ mode = "static" }: { mode?: "reveal" | "sta
         </nav>
 
         {/* reach */}
-        <div className="md:text-right">
+        <div>
           <p className="text-ink/45">Let&apos;s chat!</p>
-          <a href={`mailto:${EMAIL}`} className={`mt-1.5 block w-fit text-ink md:ml-auto ${link.replace("text-ink/45 ", "")}`}>
+          <a href={`mailto:${EMAIL}`} className={`mt-1.5 block w-fit text-ink ${link.replace("text-ink/45 ", "")}`}>
             {EMAIL}
           </a>
-          <ul className="mt-5 flex items-center gap-4 md:justify-end">
+          <ul className="mt-5 flex items-center gap-4">
             {socials.map((s) => (
               <li key={s.label}>
                 <a
@@ -164,7 +165,7 @@ export default function SiteFooter({ mode = "static" }: { mode?: "reveal" | "sta
                   rel="noreferrer"
                   className="block opacity-45 transition-opacity duration-200 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
                 >
-                  <Image src={s.icon} alt="" width={22} height={22} className="w-auto" style={{ height: 22 / s.ink }} />
+                  <Image src={s.icon} alt="" width={ICON} height={ICON} className="w-auto" style={{ height: ICON / s.ink }} />
                 </a>
               </li>
             ))}
