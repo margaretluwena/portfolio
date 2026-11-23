@@ -14,12 +14,34 @@ const DEFAULT_COLORS = {
   ballRim: '#cde23a', ballSeam: '#fbfdf0', hint: '#1b1b1b',
   rain: '#aab9d6', // pointer weather (2026-10-20): the raindrops, kept subtle
   trail: '#8d8d8d',
+  /* 2026-11-23, "more variation and depth of shade": the open sky runs through six blues,
+     deepest at the top and thinning to a pale lavender where it fades out; cloud undersides
+     run through four greys; and the tops of clouds that face the light carry a few warm specks */
+  skyRamp: ['#263b6e', '#38518a', '#4e6894', '#6f88b3', '#9aabca', '#c2c2d9'],
+  cloudRamp: ['#d3d7dd', '#bcc2cb', '#a2a9b5', '#8790a0'],
+  cloudLit: '#d9b979',
+  /* flowers get a lighter tint of each petal colour, and leaves a lighter green than their stems.
+     (A run of tones and heavier texture for the hills was tried the same day and taken out:
+     Margaret, "the green bits look like lint on a carpet", and the dog lost its contrast.) */
+  petalsLight: ['#f0a3c2', '#f0a48c', '#9dbbe4', '#ecca6b'],
+  leaf: '#9bb878',
+  bird: '#1f2433', // flocks that cross the sky
 };
 
-const RAMPS = { dither: '.:-=+xX', ascii: '.-=+*#%', stars: '.·:+*', binary: '01' };
+// `rich` (the default since 2026-11-23) has nine steps where `dither` had seven, so density changes more gradually and the
+// deepest sky is a heavier glyph; the wave '~' is kept out of the ramp so it only ever means a cirrus streak
+const RAMPS = { rich: '.·:-=+*xX#', dither: '.:-=+xX', ascii: '.-=+*#%', stars: '.·:+*', binary: '01' };
+const SHADE_RAMP = '.·:-=+x'; // cloud undersides: the same idea, stopping short of the heaviest glyph
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 const TYPES = [{ h: ['\\V/'], s: 2 }, { h: ['(@)'], s: 2 }, { h: [' _ ', '(_)'], s: 2 }, { h: ['.*.'], s: 1 },
-  { h: ['{o}'], s: 3 }, { h: [' , ', "'o'"], s: 2 }, { h: ['*'], s: 1 }, { h: ['vUv'], s: 2 }];
+  { h: ['{o}'], s: 3 }, { h: [' , ', "'o'"], s: 2 }, { h: ['*'], s: 1 }, { h: ['vUv'], s: 2 },
+  // 2026-11-23, more shapes: a tall spike, a sunburst, a bud, a wide daisy, a tulip on a long stem
+  { h: ['.', 'x', 'X'], s: 2 }, { h: ['\\|/', '-o-'], s: 3 }, { h: ['°'], s: 2 }, { h: ['<@>'], s: 2 }, { h: ['\\W/'], s: 3 },
+  // and two large heads, so the field has something the size of the sky's masses
+  { h: [' .-. ', '( @ )', " '-' "], s: 3 }, { h: [' \\|/ ', '--@--', ' /|\\ '], s: 4 }];
+/* a bird seen side-on from far off, three cells wide: wings up, level, down, level. Far flocks
+   are one small cell each. */
+const BIRD = ['\\v/', '-v-', '/^\\', '-v-'], BIRD_FAR = 'v-^-';
 const CENTERS = '@o*';
 // dog sprites face right (mirrored to face left): a filled side-view silhouette,
 // which is how a dog reads at this size - domed head, ear flap folded back over
@@ -81,7 +103,8 @@ function mulberry(a) {
 export function createSkyField(canvas, options = {}) {
   const ctx = canvas.getContext('2d');
   const P = {
-    cellSize: 9, wind: 1, cover: 0.55, depth: 0.85, flowers: 1, hills: 1, bumps: 1, hillTexture: 1, ramp: 'dither',
+    cellSize: 9, wind: 1, cover: 0.55, depth: 0.85, flowers: 1, hills: 1, bumps: 1, hillTexture: 1, ramp: 'rich', birds: false, // flocks are built but off for now (Margaret, 2026-11-23: "get rid of the birds for now")
+   
     onThrow: null, onCount: null, onHover: null, onAction: null, pointerFx: true,
     seed: (Math.random() * 1e6) | 0, game: true, hint: 'shake me', ballX: 0.62, maxFps: 30,
     fontFamily: '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
@@ -94,16 +117,31 @@ export function createSkyField(canvas, options = {}) {
     COLORS = [null, C.sky, C.skyDense, C.cloudShade, C.cloudShadeDeep, C.farRidge, C.farTexture,
       C.domeRidge, C.domeRidge, C.domeShadow, C.domeLit, C.frontRidge, C.frontRidge, C.grass, C.ground,
       ...C.petals.slice(0, 4), C.flowerCenter, C.poodle, C.poodleFace, C.poodleLegs, C.ballRim, C.ballSeam, C.hint, C.trail,
-      C.rain];
+      C.rain, ...C.skyRamp.slice(0, 6), ...C.cloudRamp.slice(0, 4), C.cloudLit,
+      ...C.petalsLight.slice(0, 4), C.leaf, C.bird];
   }
   buildPalette();
-  const PETAL = 15, CENTER = 19, STEM = 13, TRAIL = 26, RAIN = 27;
+  const PETAL = 15, CENTER = 19, STEM = 13, TRAIL = 26, RAIN = 27, SKY0 = 28, NSKY = 6, CLOUD0 = 34, LIT = 38;
+  const PLIGHT = 39, LEAF = 43, BIRDK = 44;
 
   const reduceMotion = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   let W = 0, H = 0, cols = 0, rows = 0, cw = 6, ch = 11;
   let chars = [], col = new Uint8Array(0), hillCh = [], hillCol = new Uint8Array(0), skyLimit = new Int16Array(0);
+  let petals = [];
+  /* flocks (Margaret, 2026-11-23, after a photo of a swallow's flight path): every now and
+     then a handful of birds crosses the sky in a loose V, swooping along a shallow wave. Each
+     flaps in bursts and glides between them. Some flocks are far off: smaller and slower.
+     Reduced motion has none. */
+  let flocks = [], nextFlock = 5;
+  function spawnFlock() {
+    const dir = Math.random() < 0.5 ? 1 : -1, n = 4 + ((Math.random() * 6) | 0), far = Math.random() < 0.35, birds = [];
+    for (let k = 0; k < n; k++) { const side = k % 2 ? 1 : -1, rank = Math.ceil(k / 2);
+      birds.push({ dx: -rank * (far ? 2.2 : 3.6) * (0.85 + Math.random() * 0.4), dy: side * rank * (far ? 0.6 : 1) * (0.8 + Math.random() * 0.5) + (Math.random() - 0.5) * 0.8, ph: Math.random() * 6.28, rate: 7 + Math.random() * 3 }); }
+    flocks.push({ x: dir > 0 ? -3 : cols + 3, dir, y: 4 + Math.random() * Math.max(2, rows * 0.5 * P.depth * 0.8), v: (far ? 15 : 25) + Math.random() * 6,
+      amp: 1.5 + Math.random() * 2.5, k: 0.018 + Math.random() * 0.02, ph: Math.random() * 6.28, far, birds, tail: n * 3 + 6 });
+  }
   let frontTop = new Int16Array(0), frontTopF = null, domeTop = new Int16Array(0), farTop = new Int16Array(0), flowers = [];
-  let seed = P.seed | 0, T = 0, last = 0, dirty = true, raf = 0, destroyed = false, drift = 0, F = null;
+  let seed = P.seed | 0, T = 0, last = 0, dirty = true, raf = 0, destroyed = false, drift = 0, F = null, F2 = null;
   /* Motion style (2026-10-08, after the ostrich clip): things in motion are
      not solid. Cloud edges and a moving dog shed and regather their cells -
      some drop out for a frame, some render at a smaller glyph size - so the
@@ -139,7 +177,7 @@ export function createSkyField(canvas, options = {}) {
     let t = TYPES[0]; for (const k of TYPES) if (k.s + k.h.length < t.s + t.h.length) t = k; // the smallest tuft
     const base = frontTop[cc] + 3 + ((Math.random() * span) | 0);
     if (base - (t.h.length + t.s) + 1 <= frontTop[cc]) return;
-    flowers.push({ c: cc, base, t, petal: PETAL + ((Math.random() * 4) | 0), phase: Math.random() * 6.28, leaf: 0, grow: 0 });
+    flowers.push({ c: cc, base, t, petal: PETAL + ((Math.random() * 4) | 0), phase: Math.random() * 6.28, leaf: 0, grow: 0, light: Math.random() < 0.3 });
     sprouts++;
   }
   const SMALL = 0.68; // small-glyph scale
@@ -157,10 +195,22 @@ export function createSkyField(canvas, options = {}) {
     for (let i = 0; i < o; i++) { s += a * vnoise(x * f + i * 17.3, y * f - i * 9.1); n += a; f *= 2.03; a *= 0.5; } return s / n; }
   // warped fbm gives billowing, irregular cloud shapes that are wider than they are tall
   function cloudField(px, py) {
-    const x = px / 320 - drift, y = py / 115;
+    const x = px / 215 - drift * 1.4, y = py / 82; // smaller, more numerous clouds (2026-11-23; was 320 by 115)
     const wx = fbm(x * 0.6 + T * 0.02, y * 0.45, 2), wy = fbm(x * 0.6 + 5.2, y * 0.45 - T * 0.015, 2);
     return fbm(x + 2.6 * (wx - 0.5), y + 1.2 * (wy - 0.5) + T * 0.008, 5);
   }
+
+  /* a second, far layer of cloud (2026-11-23): larger, softer shapes that drift at under half
+     the speed of the near clouds, so the two slide past each other. It never blanks the sky;
+     it thins it and shifts its tone, which is what gives the blue its depth. */
+  function farField(px, py) {
+    const x = px / 560 - drift * 0.42 + 40.5, y = py / 190 + 9.3;
+    return fbm(x, y + T * 0.004, 3);
+  }
+  /* high, thin streaks: noise stretched far along the wind, moving faster than everything else */
+  function cirrus(px, py) { return vnoise(px / 620 - drift * 2.1 + 7.7, py / 22 + 3.1); }
+  // gusts that run across the field: the flowers bow as one passes
+  function gustAt(px, py) { return smooth(0.6, 0.85, vnoise(px / 300 - T * 0.33 * P.wind + 5.9, py / 90 + 4.4)); }
 
   function resize() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -247,7 +297,7 @@ export function createSkyField(canvas, options = {}) {
 
   function buildFlowers() {
     const rng = mulberry(seed ^ 0x9e3779b9);
-    flowers = []; sprouts = 0; backSprouts = []; const taken = new Set();
+    flowers = []; sprouts = 0; backSprouts = []; petals = []; const taken = new Set();
     const n = Math.round(cols * P.flowers * 0.16); let tries = 0;
     while (flowers.length < n && tries++ < n * 25) {
       const c = 2 + ((rng() * (cols - 4)) | 0);
@@ -259,7 +309,7 @@ export function createSkyField(canvas, options = {}) {
       for (let r = base - hgt; r <= base + 1 && ok; r++) for (let cc = c - 3; cc <= c + 3; cc++) if (taken.has(r * cols + cc)) { ok = false; break; }
       if (!ok) continue;
       for (let r = base - hgt; r <= base; r++) for (let cc = c - 2; cc <= c + 2; cc++) taken.add(r * cols + cc);
-      flowers.push({ c, base, t, petal: PETAL + ((rng() * 4) | 0), phase: rng() * 6.28, leaf: rng() < 0.55 ? (rng() < 0.5 ? -1 : 1) : 0 });
+      flowers.push({ c, base, t, petal: PETAL + ((rng() * 4) | 0), phase: rng() * 6.28, leaf: rng() < 0.55 ? (rng() < 0.5 ? -1 : 1) : 0, light: rng() < 0.3 });
     }
   }
 
@@ -500,14 +550,23 @@ export function createSkyField(canvas, options = {}) {
     if (!cols) return;
     chars = hillCh.slice(); col.set(hillCol); smalls = [];
     const ramp = RAMPS[P.ramp] || RAMPS.dither, rl = ramp.length, skyH = rows * 0.5;
-    const th = 0.64 - P.cover * 0.18; drift = T * P.wind * 0.035;
+    /* the wind breathes: the drift never stops or reverses, but it runs up to a quarter faster
+       and slower over a minute or so, so the sky is not one constant slide */
+    const th = 0.625 - P.cover * 0.18; drift = (T + 3.2 * Math.sin(T * 0.075) + 1.1 * Math.sin(T * 0.19 + 1.3)) * P.wind * 0.035;
     // sample the cloud field once per frame on a half-width grid, with 3 extra rows above for the light test
     const LIFT = 3, hc = (cols >> 1) + 2; let maxSky = 0; for (const v of skyLimit) if (v > maxSky) maxSky = v;
     if (!F || F.length !== (rows + LIFT) * hc) F = new Float32Array((rows + LIFT) * hc);
     for (let r = -LIFT; r < Math.min(rows, maxSky); r++) { const py = r * ch + ch / 2, o = (r + LIFT) * hc;
       for (let k = 0; k < hc; k++) F[o + k] = cloudField(k * 2 * cw + cw / 2, py); }
     const field = (r, c) => { const o = (r + LIFT) * hc, k = c >> 1; return c & 1 ? (F[o + k] + F[o + k + 1]) * 0.5 : F[o + k]; };
+    // the far layer, sampled on the same half-width grid, only for the rows where open sky is drawn
+    const skyRows = Math.min(maxSky, Math.ceil(skyH * P.depth * 1.35) + 2), skySpan = Math.max(1, skyH * P.depth * 1.35);
+    if (!F2 || F2.length !== rows * hc) F2 = new Float32Array(rows * hc);
+    for (let r = 0; r < skyRows; r++) { const py = r * ch + ch / 2, o = r * hc;
+      for (let k = 0; k < hc; k++) F2[o + k] = farField(k * 2 * cw + cw / 2, py); }
+    const farAt = (r, c) => { const o = r * hc, k = c >> 1; return c & 1 ? (F2[o + k] + F2[o + k + 1]) * 0.5 : F2[o + k]; };
     const cf = Math.floor(T * 4); // cloud-rim flicker frame (4/s - slower reads calmer)
+    const tw = Math.floor(T * 1.4); // the open sky's shimmer frame: slower still
     for (let r = 0; r < rows; r++) {
       const gy = r / skyH, dens = 1 - smooth(0.3, P.depth * 1.35, gy);
       const prof = (1 - smooth(-0.15, 0.2, gy)) * 0.1 + smooth(0.55, 1.05, gy) * 0.22;
@@ -515,37 +574,73 @@ export function createSkyField(canvas, options = {}) {
         if (r >= skyLimit[c]) continue;
         const i = r * cols + c, b = (BAYER[(r & 3) * 4 + (c & 3)] + 0.5) / 16;
         const D = field(r, c) - th - prof;
-        let cov = 0, sh = 0;
+        let cov = 0, sh = 0, crest = 0;
         if (D > -0.04) { cov = smooth(-0.025, 0.06, D);
           const Da = field(r - LIFT, c) - th - prof, core = smooth(0.05, 0.22, D);
+          crest = D - Da; // positive where the cloud thins toward the top: its sunlit crest
           // undersides, where the cloud thickens toward the top, fall into the cloud's own shadow
           sh = cov * clamp((Da - D) * 5, 0, 1) * (0.62 - core * 0.12); }
-        const open = dens * (1 - cov), lv = open * rl + (b - 0.5) * 0.9, ls = sh * rl * 1.6 + (b - 0.5) * 0.9;
-        if (lv >= 0.5) { chars[i] = ramp[Math.min(rl - 1, Math.floor(lv - 0.5))]; col[i] = open > 0.62 ? 2 : 1; }
-        else if (ls >= 0.5) { chars[i] = ramp[Math.min(rl - 1, Math.floor(ls - 0.5))]; col[i] = sh > 0.25 ? 4 : 3; }
+        /* contrast (Margaret, 2026-11-23: "more of an impact", "the big blocks look suffocating"):
+           the sky is heaviest and darkest only well away from any cloud, and thins and pales
+           through the whole ramp as it nears one, so every cloud sits in a soft halo; and the
+           far layer now opens real white gaps, so there are more clouds and smaller masses */
+        const halo = smooth(0, 0.13, -D);
+        let open = dens * (1 - cov) * (0.3 + 0.7 * halo), fv = 0.5, streak = 0;
+        if (open > 0.01 && r < skyRows) {
+          fv = farAt(r, c);
+          open *= 1 - 0.94 * smooth(0.57, 0.68, fv);
+          if (open > 0.12) { streak = smooth(0.7, 0.86, cirrus(c * cw, r * ch)); open *= 1 - 0.45 * streak; } // and the streaks comb through it
+        }
+        const lv = open * rl + (b - 0.5) * 0.9, ls = sh * SHADE_RAMP.length * 1.6 + (b - 0.5) * 0.9;
+        if (lv >= 0.5) {
+          let gi = Math.min(rl - 1, Math.floor(lv - 0.5));
+          // shimmer: now and then a cell steps one glyph lighter or heavier for a beat
+          if (!reduceMotion) { const n = hash(c * 3 + tw * 7, r * 5 - tw * 3); if (n < 0.035) gi = Math.max(0, gi - 1); else if (n > 0.97) gi = Math.min(rl - 1, gi + 1); }
+          let g = ramp[gi];
+          if (streak > 0.35 && (g === '=' || g === '-' || g === ':' || g === '+')) g = '~'; // the streaks are drawn as waves
+          chars[i] = g;
+          /* tone: deepest at the top, paler toward the fade, with the far layer bending the
+             bands into contours (no per-cell dither here: long same-coloured runs draw fast) */
+          const t = (r / skySpan) * 0.62 - 0.06 + (fv - 0.5) * 1.35 + streak * 0.14 + (1 - halo) * 0.3;
+          col[i] = SKY0 + clamp(Math.floor(t * NSKY + 0.5), 0, NSKY - 1);
+        }
+        else if (ls >= 0.5) { chars[i] = SHADE_RAMP[Math.min(SHADE_RAMP.length - 1, Math.floor(ls - 0.5))]; col[i] = CLOUD0 + (sh > 0.4 ? 3 : sh > 0.27 ? 2 : sh > 0.15 ? 1 : 0); }
+        // the crest of a cloud, where it faces the light from the upper left: a few warm specks
+        else if (cov > 0.5 && cov < 0.97 && crest > 0.03 && b < 0.2 && hash(c + 77, r + 31) < 0.6) { chars[i] = b < 0.07 ? "'" : '·'; col[i] = LIT; }
         // the soft rim of a cloud (where cover is still forming) flickers: some cells drop out for a
         // frame, others render small, and the pattern walks with time so the edge looks wind-torn
         if (!reduceMotion && cov > 0.02 && cov < 0.45 && col[i]) {
           const n = hash(c * 5 + cf * 3, r * 9 + cf);
           if (n < 0.07) { chars[i] = ' '; col[i] = 0; }
           else if (n < 0.28) { smalls.push(r, c, chars[i], col[i]); chars[i] = ' '; col[i] = 0; } }
-        else if (cov < 0.05 && dens < 0.12 && hash(c, r + 999) < 0.014 * Math.max(0, 1 - gy)) { chars[i] = '.'; col[i] = 1; }
+        else if (cov < 0.05 && dens < 0.12 && hash(c, r + 999) < 0.014 * Math.max(0, 1 - gy)) { chars[i] = '.'; col[i] = SKY0 + 3; }
       }
     }
     const put = (r, c, s, k) => { if (r < 0 || r >= rows || c < 0 || c >= cols) return; const i = r * cols + c; chars[i] = s; col[i] = k; };
     for (const f of flowers) {
-      const s = Math.sin(T * 1.6 + f.phase + f.c * 0.05) * (0.4 + P.wind * 0.3);
+      // each flower nods on its own, and bows with the gust as it passes
+      const gu = reduceMotion ? 0 : gustAt(f.c * cw, f.base * ch);
+      const s = Math.sin(T * 1.6 + f.phase + f.c * 0.05) * (0.4 + P.wind * 0.3) + gu * 0.9;
       const lean = s > 0.45 ? 1 : s < -0.45 ? -1 : 0, shift = s > 0.95 ? 1 : s < -0.95 ? -1 : 0;
       let r = f.base;
       const g = f.grow == null ? 1 : (f.grow = Math.min(1, f.grow + frameDt * 1.6)), stemN = Math.ceil(f.t.s * Math.min(1, g * 1.25));
       for (let k = 0; k < stemN; k++, r--) { const top = k === f.t.s - 1;
         put(r, f.c, top && lean > 0 ? '/' : top && lean < 0 ? '\\' : '|', STEM);
-        if (k === 0 && f.leaf) put(r, f.c + f.leaf, f.leaf < 0 ? '\\' : '/', STEM); }
+        if (k === 0 && f.leaf) put(r, f.c + f.leaf, f.leaf < 0 ? '\\' : '/', LEAF); }
       if (g < 1) continue; // the head opens once the stem is up
       r = f.base - f.t.s;
+      const tint = f.petal - PETAL + PLIGHT;
       for (let j = f.t.h.length - 1; j >= 0; j--, r--) { const line = f.t.h[j], x0 = f.c - (line.length >> 1) + shift;
-        for (let q = 0; q < line.length; q++) { const g = line[q]; if (g !== ' ') put(r, x0 + q, g, CENTERS.includes(g) ? CENTER : f.petal); } }
+        // a paler tint of the petal colour on the top row of a two-row head, and on about a third of the flowers throughout
+        const pk = f.light || (j === 0 && f.t.h.length > 1) ? tint : f.petal;
+        for (let q = 0; q < line.length; q++) { const g = line[q]; if (g !== ' ') put(r, x0 + q, g, CENTERS.includes(g) ? CENTER : pk); } }
+      // a strong gust now and then carries a petal off
+      if (gu > 0.7 && petals.length < 8 && Math.random() < frameDt * 0.2)
+        petals.push({ x: f.c + shift, y: f.base - f.t.s - f.t.h.length + 1, vx: 7 + Math.random() * 6, vy: -1.6 + Math.random(), k: f.light ? tint : f.petal, age: 0, life: 2 + Math.random() * 1.5 });
     }
+    for (let i = petals.length - 1; i >= 0; i--) { const p = petals[i]; p.age += frameDt; p.vy += 1.5 * frameDt; p.x += p.vx * frameDt; p.y += p.vy * frameDt;
+      if (p.age > p.life || p.x >= cols || p.y >= rows) { petals.splice(i, 1); continue; }
+      put(Math.round(p.y), Math.round(p.x), "'·,"[Math.floor(p.age * 5) % 3], p.k); }
     /* ---------- pointer weather (Margaret, 2026-10-20): while the mouse rests on a cloud,
        rain leaves the cloud's underside inside a radius of it and falls to the field, leaning
        about 25 degrees to the left. Eases in and out so crossing a cloud edge never flickers. Off a cloud there is
@@ -577,6 +672,17 @@ export function createSkyField(canvas, options = {}) {
         const c = Math.floor(d.c); if (c < 0 || c >= cols) { drops.splice(i, 1); continue; }
         if (d.y >= skyLimit[c]) { put(skyLimit[c] - 1, c, ',', RAIN); drops.splice(i, 1); sprout(c); continue; }
         put(Math.floor(d.y), c, '/', RAIN); }
+    }
+    if (P.birds && !reduceMotion) {
+      if (T > nextFlock && flocks.length < 2) { spawnFlock(); nextFlock = T + 16 + Math.random() * 22; }
+      for (let i = flocks.length - 1; i >= 0; i--) { const f = flocks[i]; f.x += f.dir * f.v * frameDt;
+        if (f.dir > 0 ? f.x - f.tail > cols : f.x + f.tail < 0) { flocks.splice(i, 1); continue; }
+        for (const b of f.birds) { const bx = f.x + f.dir * b.dx;
+          const by = f.y + f.amp * Math.sin(bx * f.k + f.ph) + b.dy + 0.5 * Math.sin(T * 1.3 + b.ph);
+          const c = Math.round(bx), r = Math.round(by); if (r < 0) continue;
+          const fr = Math.sin(T * 0.9 + b.ph) > 0.5 ? 1 : Math.floor(T * b.rate + b.ph) % 4; // a glide, or the next beat of the wings
+          if (f.far) { if (c >= 0 && c < cols && r < skyLimit[c]) { put(r, c, ' ', 0); smalls.push(r, c, BIRD_FAR[fr], BIRDK); } continue; }
+          const sp = BIRD[fr]; for (let q = 0; q < 3; q++) { const cc = c - 1 + q; if (cc >= 0 && cc < cols && r < skyLimit[cc]) put(r, cc, sp[q], BIRDK); } } }
     }
     for (const b of backSprouts) { b.age += frameDt; put(b.r, b.c, b.far ? '.' : b.age < 0.6 ? '.' : '*', b.petal); }
     G.labels = []; G.eyes = [];

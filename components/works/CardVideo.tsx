@@ -21,6 +21,12 @@ import type { CoverLayer } from "@/lib/works";
     prefers-reduced-motion (autoplaying loops are a vestibular trigger -
     this branch is an OS accessibility setting, not a UI toggle, and stays).
 
+  - On a card it plays only while the card is hovered, like the other
+    cards' hover scenes (Margaret, 2026-11-23: with the other three still
+    until hovered, Atlix running on its own was jarring). Leaving pauses it
+    where it is. A case study's hero (`hoverOnly` false) still plays on its
+    own.
+
   THE SETTLE RULE: the video starts about a second after the route it is
   on has landed, under a static poster until then, so a page's entrance
   never animates a decoding video. It used to play only on "/" (a relic
@@ -32,13 +38,14 @@ import type { CoverLayer } from "@/lib/works";
 /* the page's entrance is a 0.5s fade plus the cards' rise; 1s clears it */
 const SETTLE_MS = 1000;
 
-export default function CardVideo({ layer }: { layer: CoverLayer }) {
+export default function CardVideo({ layer, hoverOnly = false }: { layer: CoverLayer; hoverOnly?: boolean }) {
   const reduce = useReducedMotion();
   const pathname = usePathname();
   const ref = useRef<HTMLVideoElement>(null);
   const [posterOnly, setPosterOnly] = useState(true); // poster-first until the media query resolves
   const [inView, setInView] = useState(false);
   const [settled, setSettled] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     const mq = matchMedia("(hover: none), (pointer: coarse), (max-width: 767px)");
@@ -65,12 +72,23 @@ export default function CardVideo({ layer }: { layer: CoverLayer }) {
     return () => io.disconnect();
   }, [active]);
 
+  /* the hover is the whole card's (its `group` wrapper), since the video itself takes no pointer events */
+  useEffect(() => {
+    const card = ref.current?.closest(".group");
+    if (!card || !active || !hoverOnly) return;
+    const on = () => setHovered(true), off = () => setHovered(false);
+    card.addEventListener("pointerenter", on);
+    card.addEventListener("pointerleave", off);
+    if (card.matches(":hover")) on();
+    return () => { card.removeEventListener("pointerenter", on); card.removeEventListener("pointerleave", off); };
+  }, [active, hoverOnly]);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (active && inView && settled) el.play().catch(() => {});
+    if (active && inView && settled && (!hoverOnly || hovered)) el.play().catch(() => {});
     else el.pause();
-  }, [active, inView, settled]);
+  }, [active, inView, settled, hoverOnly, hovered]);
 
   if (!active) {
     return layer.poster ? (

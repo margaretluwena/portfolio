@@ -81,7 +81,7 @@ export default function SkyFrame() {
   const reduce = useReducedMotion();
   const study = /^\/works\/[^/]+/.test(pathname);
   const home = pathname === "/";
-  const strength = study ? 0 : home ? 0.75 : 0.35;
+  const strength = study ? 0 : home ? 0.9 : 0.35;
   // the engine keeps hit-testing while the sky is faded out on a study; the
   // bubble must not name a ball nobody can see
   const visible = useRef(strength > 0);
@@ -111,7 +111,7 @@ export default function SkyFrame() {
         hills={0.55}
         bumps={1.7}
         hillTexture={0.45}
-        flowers={0.5}
+        flowers={0.8}
         ballX={0.17}
         hint="" /* no "shake me" label on the ball (Margaret, 2026-10-21): the cursor bubble says it on first hover; the idle wiggle stays */
         onThrow={countThrow}

@@ -71,7 +71,7 @@ export function CoverArt({ work, hover = true, sizes = "45vw", priority = false,
                           }}
                         >
                           {layer.video ? (
-                            <CardVideo layer={layer} />
+                            <CardVideo layer={layer} hoverOnly={hover} />
                           ) : layer.crop ? (
                             /* Figma crop fill: the whole image drawn at the crop box, clipped by the layer */
                             <div className="absolute" style={layer.crop}>
@@ -157,17 +157,17 @@ export function WorkCard({ work, index = 0, reveal = true }: { work: Work; index
               <div
                 className="absolute inset-x-0 bottom-[5.9%] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:translate-y-[30px] md:group-hover:translate-y-0"
               >
-                <div className="flex items-center justify-between gap-4 px-[4.6%]"> {/* centred on one line: with items-end the title, year and pill each sat on a different bottom edge */}
+                <div className="flex items-end justify-between gap-4 px-[4.6%]"> {/* name, then year and pill on one line. A name too long for that wraps to two lines and the year and pill sit level with its last line (Margaret, 2026-11-23); the year box and the pill are both 30px tall, so they share a bottom edge */}
                   {/* every card titles itself in text now - the SVG lockups made
                       the set read as four brands and three names (Shub, Margaret
                       2026-10-20). The lockups still head the case studies. */}
-                  <Prox baseOpacity={0.9} maxScale={1} radius={120}>
+                  <Prox className="min-w-0" baseOpacity={0.9} maxScale={1} radius={120}>
                     {/* a step up from the name token (Margaret, 2026-10-20: "larger") */}
-                    <span className={`font-display text-[length:var(--type-base)] whitespace-nowrap leading-none tracking-[-0.02em] xl:text-[length:var(--type-large)] ${work.cardText === "light" ? "text-white" : "text-ink"}`}>{work.title}</span>
+                    <span className={`font-display block text-[length:var(--type-base)] leading-[1.08] tracking-[-0.02em] xl:text-[length:var(--type-large)] ${work.cardText === "light" ? "text-white" : "text-ink"}`}>{work.title}</span>
                   </Prox>
                   {/* the signal pill: one fact about the team or the scale (Shub's feedback, 2026-10-09) */}
                   {/* the year sits on the right with the signal pill, not against the title (Margaret, 2026-11-14) */}
-                  <span className="flex h-[30px] min-w-0 flex-1 flex-wrap items-center justify-end gap-x-3 overflow-hidden"> {/* the title never wraps. On a card too narrow for both, the pill drops to a second line that this 30px-tall box hides, so it disappears whole instead of being cut to "RAISE..." (2026-11-14) */}
+                  <span className="flex h-[30px] shrink-0 items-center justify-end gap-x-3"> {/* never shrinks or wraps: the name gives way instead */}
                   <span className={`flex h-[30px] items-center text-label tabular-nums ${work.cardText === "light" ? "text-white/55" : "text-ink/50"}`}>{work.year}</span>
                   {work.signal && (
                     <span

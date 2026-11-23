@@ -1,4 +1,16 @@
 export interface SkyFieldColors {
+  /** six blues for the open sky, deepest first */
+  skyRamp: string[];
+  /** four greys for cloud undersides, palest first */
+  cloudRamp: string[];
+  /** warm specks on the crests of clouds */
+  cloudLit: string;
+  /** a lighter tint of each of the four petal colours */
+  petalsLight: string[];
+  /** flower leaves */
+  leaf: string;
+  /** flocks that cross the sky */
+  bird: string;
   background: string;
   sky: string;
   skyDense: string;
@@ -28,6 +40,8 @@ export interface SkyFieldColors {
 export interface SkyFieldOptions {
   /** Font size of one ASCII cell in px. Smaller means more detail. Default 9 */
   cellSize?: number;
+  /** Flocks of birds that cross the sky now and then. Default false */
+  birds?: boolean;
   /** Cloud drift and flower sway speed. Default 1 */
   wind?: number;
   /** 0 to 1. Default 0.55 */
@@ -57,7 +71,7 @@ export interface SkyFieldOptions {
   /** The ball was shaken hard enough to call the dog, or the dog was petted. */
   onAction?: (what: 'shake' | 'pet') => void;
   /** Characters used for the sky. Default "dither" */
-  ramp?: 'dither' | 'ascii' | 'stars' | 'binary';
+  ramp?: 'rich' | 'dither' | 'ascii' | 'stars' | 'binary';
   /** Fix the landscape instead of a random one on each load */
   seed?: number;
   /** Tennis ball and poodle fetch game. Default true */
