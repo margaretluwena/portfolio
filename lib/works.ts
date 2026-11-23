@@ -20,6 +20,8 @@ export type Media = {
   video?: true;     // local short excerpt only - full pitches are embedded, never in /public
   poster?: string;
   embed?: string;   // unlisted YouTube/Vimeo URL; takes precedence over src
+  live?: string;    // Play only: a playable page under /public; the piece hangs as its still and opens as the live thing (Garden Radio, 2026-11-23)
+  frame?: [number, number]; // with `live`: the size the page is laid out at in the modal, close around the piece; smaller windows scale it down
 };
 
 export type Block =
@@ -1071,6 +1073,8 @@ export const works: Work[] = [
       {
         type: "artifactGrid",
         media: [
+          /* Garden Radio: the toy itself is one static file at public/toys/garden-radio; filed under UI/UX for now (2026-11-23) */
+          { src: "/images/garden-radio.png", alt: "Garden Radio: a hand-drawn musical garden of fruit, flowers and bugs on a grid, with a play button under it", live: "/toys/garden-radio/index.html", frame: [800, 850] },
           { src: "/images/smallworks-3.png", alt: "Momento screens: homepage, a vinyl record menu, the main feature, settings, about and gallery" },
           { src: "/images/smallworks-hero.png", alt: "Momento gallery page: photo cards with dates on an orange gradient" }, // the Momento gallery site: UI/UX, not graphics (Margaret, 2026-11-03)
         ],

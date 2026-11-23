@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import { setCursorBubble } from "@/components/providers/CursorBubble";
 import { AnimatePresence, animate, motion, motionValue, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue } from "motion/react";
 
 /*
@@ -58,7 +59,8 @@ import { AnimatePresence, animate, motion, motionValue, useMotionValue, useReduc
   rim).
 */
 
-export type PlayItem = { src: string; w: number; h: number; group: string; alt?: string };
+/* `live` is a playable page: the piece hangs as its still and opens as the page itself, in a frame the still's shape (Garden Radio, 2026-11-23) */
+export type PlayItem = { src: string; w: number; h: number; group: string; alt?: string; live?: string; frame?: [number, number] };
 
 const HANG_H = 128;         // a hung piece's height on desktop
 const HANG_H_SM = 100;      // on phones
@@ -141,6 +143,32 @@ function sizeCanvas(canvas: HTMLCanvasElement, w: number, h: number, font: strin
 /* the basket's trapezoid: its left and right x at a row's share k (0 rim, 1 floor) */
 const basketEdge = (bx: number, bw: number, k: number) => [bx - bw / 2 + 28 * k, bx + bw / 2 - 28 * k] as const;
 
+/* a live piece in the modal: the page is laid out at a desk-sized frame
+   (its `frame`, close around the piece) and scaled down to the modal when the
+   modal is smaller, so its own layout never has to cope with a small box */
+function LiveFrame({ src, title, frame }: { src: string; title: string; frame: [number, number] }) {
+  const [LIVE_W, LIVE_H] = frame;
+  const box = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  useLayoutEffect(() => {
+    const el = box.current; if (!el) return;
+    const measure = () => setScale(Math.min(1, el.clientWidth / LIVE_W));
+    const ro = new ResizeObserver(measure); ro.observe(el); measure();
+    return () => ro.disconnect();
+  }, []);
+  const fit = scale < 1;
+  return (
+    <div ref={box} className="h-full w-full overflow-hidden rounded-[4px] bg-white shadow-[0_30px_80px_rgba(0,0,0,0.35)]" onClick={(e) => e.stopPropagation()}>
+      <iframe
+        src={src}
+        title={title}
+        className="block border-0"
+        style={fit ? { width: LIVE_W, height: LIVE_H, transform: `scale(${scale})`, transformOrigin: "0 0" } : { width: "100%", height: "100%" }}
+      />
+    </div>
+  );
+}
+
 export default function Clothesline({ items, groups }: { items: PlayItem[]; groups: string[] }) {
   const reduce = useReducedMotion();
   const scene = useRef<HTMLDivElement>(null);
@@ -153,6 +181,7 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
      "pegs that squeak"), then opens large a beat later */
   const pick = (p: Placed) => {
     if (!p.hung) return;
+    if (p.item.live) setCursorBubble(null);
     if (reduce) { setOpen(p.item); return; }
     push.current.set(p.item.src, (hash(p.item.src + "k") < 0.5 ? 1 : -1) * 1.1);
     setTimeout(() => setOpen(p.item), 170);
@@ -494,7 +523,10 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
       onClick={() => pick(p)}
       role={p.hung ? "button" : undefined}
       tabIndex={p.hung ? 0 : -1}
-      aria-label={p.hung ? `Open ${p.item.alt || p.item.group}` : undefined}
+      aria-label={p.hung ? `${p.item.live ? "Play" : "Open"} ${p.item.alt || p.item.group}` : undefined}
+      // a live piece says so by the pointer; by event, not data-bubble, so opening it can clear the bubble (the pointer then sits over the frame, whose moves never reach this window)
+      onPointerEnter={() => { if (p.hung && p.item.live) setCursorBubble("Play me!"); }}
+      onPointerLeave={() => { if (p.item.live) setCursorBubble(null); }}
       onKeyDown={(e) => { if (p.hung && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); pick(p); } }}
       // the pointer's sideways motion over a hung piece pushes it
       onPointerMove={(e) => { if (p.hung && !reduce) push.current.set(p.item.src, clamp((push.current.get(p.item.src) ?? 0) + e.movementX * PUSH, -PUSH_MAX, PUSH_MAX)); }}
@@ -597,7 +629,12 @@ export default function Clothesline({ items, groups }: { items: PlayItem[]; grou
               style={{ aspectRatio: `${open.w} / ${open.h}`, width: `min(88vw, calc(80vh * ${open.w / open.h}))` }}
             >
               <motion.div key={open.src} className="h-full w-full" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.22 }}>
-                <Image src={open.src} alt={open.alt ?? ""} width={open.w} height={open.h} sizes="92vw" className="block h-full w-full rounded-[4px] object-contain shadow-[0_30px_80px_rgba(0,0,0,0.35)]" priority />
+                {open.live ? (
+                  /* the live piece: clicks inside it are its own, the backdrop still closes */
+                  <LiveFrame src={open.live} title={open.alt || open.group} frame={open.frame ?? [open.w, open.h]} />
+                ) : (
+                  <Image src={open.src} alt={open.alt ?? ""} width={open.w} height={open.h} sizes="92vw" className="block h-full w-full rounded-[4px] object-contain shadow-[0_30px_80px_rgba(0,0,0,0.35)]" priority />
+                )}
               </motion.div>
             </motion.div>
             {/* the next two pieces either way, fetched at the modal's size

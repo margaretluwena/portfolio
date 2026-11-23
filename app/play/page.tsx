@@ -21,7 +21,7 @@ const SIZES = imageSizes as unknown as Record<string, [number, number]>;
 function itemsOf(blocks: Block[] = [], group: string): PlayItem[] {
   return blocks.flatMap((b) => (b.type === "artifactGrid" ? b.media.map((m) => {
     const [w, h] = SIZES[m.src] ?? [1200, 900];
-    return { src: m.src, w, h, group, alt: m.alt || undefined };
+    return { src: m.src, w, h, group, alt: m.alt || undefined, live: m.live, frame: m.frame };
   }) : []));
 }
 
