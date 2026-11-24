@@ -204,7 +204,7 @@ export function createSkyField(canvas, options = {}) {
      the speed of the near clouds, so the two slide past each other. It never blanks the sky;
      it thins it and shifts its tone, which is what gives the blue its depth. */
   function farField(px, py) {
-    const x = px / 560 - drift * 0.42 + 40.5, y = py / 190 + 9.3;
+    const x = px / 400 - drift * 0.42 + 40.5, y = py / 140 + 9.3; // tighter (2026-11-23, was 560 by 190): deep and pale patches alternate more often
     return fbm(x, y + T * 0.004, 3);
   }
   /* high, thin streaks: noise stretched far along the wind, moving faster than everything else */
@@ -584,12 +584,20 @@ export function createSkyField(canvas, options = {}) {
            the sky is heaviest and darkest only well away from any cloud, and thins and pales
            through the whole ramp as it nears one, so every cloud sits in a soft halo; and the
            far layer now opens real white gaps, so there are more clouds and smaller masses */
-        const halo = smooth(0, 0.13, -D);
+        const halo = smooth(0, 0.085, -D);
         let open = dens * (1 - cov) * (0.3 + 0.7 * halo), fv = 0.5, streak = 0;
         if (open > 0.01 && r < skyRows) {
           fv = farAt(r, c);
           open *= 1 - 0.94 * smooth(0.57, 0.68, fv);
           if (open > 0.12) { streak = smooth(0.7, 0.86, cirrus(c * cw, r * ch)); open *= 1 - 0.45 * streak; } // and the streaks comb through it
+          /* depth (Margaret, 2026-11-23: "too many blocks that are low contrast", "more darker
+             areas more often"): the low side of the far layer deepens the sky instead of leaving
+             it mid-weight, and a contrast curve then pushes the middle of the range apart, so a
+             patch is either dense and dark or nearly clear, with only a short pale band between */
+          open = Math.min(1, open * (1 + 0.45 * smooth(0.52, 0.36, fv)));
+          open = smooth(0.1, 0.92, open) * dens + open * (1 - dens);
+          // and the dense patches keep a grain of their own, so they read as depth, not as slabs
+          if (open > 0.3) open *= 0.62 + 0.38 * smooth(0.2, 0.8, vnoise(c * cw / 64 - drift * 3 + 2.2, r * ch / 30 + fv * 6));
         }
         const lv = open * rl + (b - 0.5) * 0.9, ls = sh * SHADE_RAMP.length * 1.6 + (b - 0.5) * 0.9;
         if (lv >= 0.5) {
@@ -601,7 +609,7 @@ export function createSkyField(canvas, options = {}) {
           chars[i] = g;
           /* tone: deepest at the top, paler toward the fade, with the far layer bending the
              bands into contours (no per-cell dither here: long same-coloured runs draw fast) */
-          const t = (r / skySpan) * 0.62 - 0.06 + (fv - 0.5) * 1.35 + streak * 0.14 + (1 - halo) * 0.3;
+          const t = (r / skySpan) * 0.5 - 0.2 + (fv - 0.5) * 2.1 + streak * 0.14 + (1 - halo) * 0.24 + (1 - open) * 0.15;
           col[i] = SKY0 + clamp(Math.floor(t * NSKY + 0.5), 0, NSKY - 1);
         }
         else if (ls >= 0.5) { chars[i] = SHADE_RAMP[Math.min(SHADE_RAMP.length - 1, Math.floor(ls - 0.5))]; col[i] = CLOUD0 + (sh > 0.4 ? 3 : sh > 0.27 ? 2 : sh > 0.15 ? 1 : 0); }
